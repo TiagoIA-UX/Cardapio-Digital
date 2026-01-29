@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+  <rect width="1200" height="600" fill="#eef2f7"/>
+  <rect x="60" y="60" width="1080" height="420" rx="12" fill="#ffffff" stroke="#e6eef2"/>
+  <text x="120" y="160" font-family="Inter, Arial" font-size="32" fill="#0f172a">Cardápio Digital — Demo</text>
+  <text x="120" y="210" font-family="Inter, Arial" font-size="18" fill="#6b7280">Visualização de itens em cards e chat de pedidos (demo)</text>
+  <rect x="120" y="260" width="220" height="140" rx="8" fill="#f8fafc" stroke="#e6eef2"/>
+  <rect x="360" y="260" width="220" height="140" rx="8" fill="#f8fafc" stroke="#e6eef2"/>
+  <rect x="600" y="260" width="220" height="140" rx="8" fill="#f8fafc" stroke="#e6eef2"/>
+</svg>
