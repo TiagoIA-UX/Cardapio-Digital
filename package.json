@@ -1,11 +1,18 @@
 {
-  "name": "cardapio-digital-caragua",
+  "name": "cardapio-digital-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npx http-server -c-1 -p 5173",
-    "preview": "node ./scripts/preview.js",
-    "deploy": "echo \"Deploy via GH Pages configured in workflows\""
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "serve-static-preview": "npx http-server -c-1 -p 5173"
+  },
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

@@ -31,11 +31,14 @@ A small static demo of the Caraguá Digital menu and chat. Recreated from a publ
 - Adicionar imagens/screenshots reais e conteúdo do cardápio
 - Configurar deploy automático (Vercel/GH-Pages) e domínio
 
-## Landing page ✅
-- Criei uma landing page simples: `landing.html` com estilos em `landing/styles.css` e um placeholder em `assets/screenshot-landing.svg`
-- Botão "Ver demo" direciona para `index.html` (demo funcional)
+## Next.js template — conversão otimizada ✅
+- Importei um template Next.js com foco em conversão (gatilhos neurais, CTAs, prova social). Arquivos principais: `app/`, `components/` e rota de captura `app/api/subscribe/route.ts`.
+- Remova o preview estático se preferir; agora pode rodar com Next.js.
 
-Abra localmente: `http://localhost:5173/landing.html`
+Como rodar localmente:
+1. Instale dependências: `npm install`
+2. Rode em dev: `npm run dev` → abra `http://localhost:3000`
 
+Observação: o template inclui um formulário de captura que aponta para `/api/subscribe` (demo, logs no servidor).
 ---
 > Se quiser, eu abro um Pull Request com essas mudanças e configuro CI/CD conforme recomendado.
