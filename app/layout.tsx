@@ -1,36 +1,34 @@
+import React from "react"
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import React from 'react'
 
-export const metadata = {
-  title: 'Cardápio Digital — Caraguá Digital',
-  description: 'Template otimizado para conversão com gatilhos neurais e captura de leads.',
-  icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon-32.png'
-  }
+const _inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: 'Caraguá Digital | Sites que Chamam Cliente no WhatsApp',
+  description: 'Criamos sites simples e rápidos para negócios locais em Caraguatatuba e Litoral Norte. Seu cliente clica e chama direto no WhatsApp.',
+  generator: 'v0.app',
+  keywords: ['site caraguatatuba', 'site litoral norte', 'site whatsapp', 'site negócio local', 'web design caraguá'],
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  themeColor: '#0ea5e9',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <html lang="pt-BR">
-      <body>
-        <div className="container">
-          <header className="header">
-            <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <img src="/assets/logo.svg" alt="Caraguá Digital" className="logo" />
-              <div className="brand">Caraguá Digital</div>
-            </div>
-            <nav>
-              <a href="#features">Recursos</a>
-              {' '}•{' '}
-              <a href="#testimonials">Depoimentos</a>
-            </nav>
-          </header>
-
-          {children}
-
-          <footer className="footer">© {new Date().getFullYear()} Caraguá Digital • Licença por assinatura</footer>
-        </div>
+      <body className={`font-sans antialiased`}>
+        {children}
+        <Analytics />
       </body>
     </html>
   )
