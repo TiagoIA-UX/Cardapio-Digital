@@ -65,7 +65,7 @@ const templates = [
   {
     id: 5,
     title: "Site para Restaurantes",
-    description: "Template completo para restaurantes com cardápio digital e reservas.",
+    description: "Template completo para restaurantes com Cardápio Digital e reservas.",
     price: 247,
     originalPrice: 397,
     category: "nextjs",

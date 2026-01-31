@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 const WHATSAPP_NUMBER = "5512996887993"
-const WHATSAPP_MESSAGE = encodeURIComponent("Olá Tiago! Quero saber mais sobre o site com cardápio digital para meu restaurante.")
+const WHATSAPP_MESSAGE = encodeURIComponent("Olá Tiago! Quero saber mais sobre o Cardápio Digital para meu restaurante.")
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
 const GOOGLE_MAPS_LINK = "https://www.google.com/maps/search/?api=1&query=Rua+50+CEP+11671-318+Caraguatatuba+SP"
 
@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
           
           <p className="mb-8 text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto">
-            Site com cardapio digital, bonito e sem pagar comissao para aplicativos
+            Site com Cardápio Digital, bonito e sem pagar comissão para aplicativos
           </p>
           
           <a
@@ -107,7 +107,7 @@ export default function Home() {
               A solucao e um site simples
             </h2>
             <p className="text-lg text-muted-foreground font-medium">
-              Nao e aplicativo. E um site com cardapio que envia pedido direto no WhatsApp.
+              Não é aplicativo. É um site com Cardápio Digital que envia pedido direto no WhatsApp.
             </p>
           </div>
           
@@ -324,7 +324,7 @@ export default function Home() {
             className="inline-flex items-center gap-3 rounded-lg bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl active:scale-[0.98]"
           >
             <MessageCircle className="h-6 w-6" />
-            Quero meu site com cardapio digital
+            Quero meu site com Cardápio Digital
           </a>
           
           <p className="mt-4 text-sm text-muted-foreground">
@@ -340,7 +340,7 @@ export default function Home() {
             Caraguá Digital
           </p>
           <p className="mb-1 text-sm text-muted-foreground">
-            Tiago Rocha | Sites com cardapio digital para restaurantes
+            Tiago Rocha | Sites com Cardápio Digital para restaurantes
           </p>
           <p className="text-sm text-muted-foreground">
             Atendimento em Caraguatatuba e região
