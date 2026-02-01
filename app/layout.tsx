@@ -6,8 +6,10 @@ import './globals.css'
 
 const _inter = Inter({ subsets: ["latin"] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://cardapio.digital');
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://cardapio.digital'),
+  metadataBase: new URL(siteUrl),
   title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
   description: 'Cardápio digital para restaurantes, lanchonetes e delivery. Mais pedidos no WhatsApp com um cardápio bonito, rápido e simples de compartilhar.',
   generator: 'v0.app',
@@ -19,20 +21,32 @@ export const metadata: Metadata = {
     'cardápio whatsapp',
   ],
   alternates: {
-    canonical: '/',
+    canonical: siteUrl,
+    languages: {
+      'pt-BR': siteUrl,
+    }
   },
   openGraph: {
     title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
     description: 'Cardápio digital para restaurantes, lanchonetes e delivery. Mais pedidos no WhatsApp com um cardápio bonito, rápido e simples de compartilhar.',
-    url: 'https://cardapio.digital',
+    url: siteUrl,
     siteName: 'Cardápio Digital',
     locale: 'pt_BR',
     type: 'website',
+    images: [
+      {
+        url: `${siteUrl}/placeholder.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'Cardápio Digital'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
     description: 'Cardápio digital para restaurantes, lanchonetes e delivery. Mais pedidos no WhatsApp com um cardápio bonito, rápido e simples de compartilhar.',
+    images: [`${siteUrl}/placeholder.jpg`]
   },
   robots: {
     index: true,
@@ -63,6 +77,21 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         {children}
         <Analytics />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Restaurant",
+          "name": "Cardápio Digital",
+          "url": siteUrl,
+          "sameAs": [siteUrl],
+          "logo": `${siteUrl}/placeholder-logo.png`,
+          "description": "Cardápio digital para restaurantes, lanchonetes e delivery.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Caraguatatuba",
+            "addressRegion": "SP",
+            "addressCountry": "BR"
+          }
+        }) }} />
       </body>
     </html>
   )
