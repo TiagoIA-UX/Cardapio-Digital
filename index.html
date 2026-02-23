@@ -25,6 +25,28 @@
         <input id="message" placeholder="Escreva sua mensagem..." autocomplete="off">
         <button type="submit">Enviar</button>
       </form>
+
+      <section class="order-panel" aria-label="Pedido atual">
+        <h3>Seu pedido</h3>
+        <div id="cartEmpty" class="cart-empty">Clique em um item do cardápio para adicionar ao pedido.</div>
+        <ul id="cartList" class="cart-list" aria-live="polite"></ul>
+        <div class="cart-total">
+          <span>Total</span>
+          <strong id="cartTotal">R$ 0,00</strong>
+        </div>
+
+        <div class="order-fields">
+          <input id="customerName" placeholder="Seu nome (opcional)" autocomplete="name">
+          <input id="address" placeholder="Endereço para entrega (opcional)" autocomplete="street-address">
+          <input id="paymentMethod" placeholder="Forma de pagamento (opcional)">
+          <textarea id="notes" rows="3" placeholder="Observações (opcional)"></textarea>
+        </div>
+
+        <div class="order-actions">
+          <button id="clearOrder" type="button" class="secondary">Limpar</button>
+          <button id="sendOrder" type="button">Enviar pedido no WhatsApp</button>
+        </div>
+      </section>
     </aside>
   </main>
 
@@ -32,6 +54,7 @@
     <small>Recriado a partir de protótipo público — demonstrativo</small>
   </footer>
 
+  <script src="src/templates.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>
