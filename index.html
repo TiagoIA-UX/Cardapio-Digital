@@ -37,9 +37,52 @@
         </div>
         <small>Envio direto para WhatsApp: <strong id="targetPhone"></strong></small>
       </div>
+      <section class="order-details">
+        <h3>Dados para agilizar o atendimento</h3>
+        <div class="order-grid">
+          <label for="customerName">Nome do cliente *</label>
+          <input id="customerName" autocomplete="name" placeholder="Seu nome completo">
+
+          <label for="customerPhone">Telefone para contato *</label>
+          <input id="customerPhone" autocomplete="tel" placeholder="(12) 99999-9999">
+
+          <label for="fulfillmentType">Entrega ou retirada *</label>
+          <select id="fulfillmentType">
+            <option value="entrega">Entrega</option>
+            <option value="retirada">Retirada</option>
+          </select>
+
+          <div id="deliveryFields" class="conditional-fields">
+            <label for="addressStreet">Rua/Avenida *</label>
+            <input id="addressStreet" autocomplete="address-line1" placeholder="Ex.: Av. Brasil">
+
+            <label for="addressNumber">Número *</label>
+            <input id="addressNumber" placeholder="Ex.: 123">
+
+            <label for="addressDistrict">Bairro *</label>
+            <input id="addressDistrict" autocomplete="address-level2" placeholder="Ex.: Centro">
+
+            <label for="addressReference">Ponto de referência</label>
+            <input id="addressReference" placeholder="Opcional">
+          </div>
+
+          <label for="paymentMethod">Forma de pagamento *</label>
+          <select id="paymentMethod">
+            <option value="">Selecione</option>
+            <option value="pix">PIX</option>
+            <option value="cartao">Cartão</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
+
+          <div id="cashChangeWrapper" class="conditional-fields">
+            <label for="cashChange">Troco para quanto? *</label>
+            <input id="cashChange" placeholder="Ex.: R$ 100,00">
+          </div>
+        </div>
+      </section>
       <div id="chatLog" class="chat-log"></div>
       <form id="chatForm" class="chat-form">
-        <input id="message" placeholder="Escreva sua mensagem ou aplique um template..." autocomplete="off">
+        <textarea id="message" placeholder="Escreva os itens do pedido ou aplique um template..." autocomplete="off"></textarea>
         <button type="submit">Enviar no WhatsApp</button>
       </form>
     </aside>

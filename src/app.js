@@ -73,30 +73,25 @@ const orderTemplates = {
   },
   entrega: {
     label: 'Pedido para entrega',
-    text: `Olá! Quero fazer um pedido para entrega.
-Itens:
+    text: `Itens:
 - 
 
-Endereço completo:
-Forma de pagamento:
-Troco para:`
+Observações:`
   },
   retirada: {
     label: 'Pedido para retirada',
-    text: `Olá! Quero fazer um pedido para retirada.
-Itens:
+    text: `Itens:
 - 
 
-Nome para identificação:
-Horário estimado para retirada:`
+Horário para retirada:
+Observações:`
   },
   encomenda: {
     label: 'Encomenda especial',
-    text: `Olá! Quero fazer uma encomenda especial.
-Produto:
+    text: `Produto:
 Quantidade:
 Data desejada:
-Observações:`
+Observacoes:`
   }
 }
 
@@ -119,18 +114,15 @@ function renderDishOfDay() {
       <h3>${dishOfDay.name}</h3>
       <p>${dishOfDay.desc}</p>
       <strong class="price">${dishOfDay.price}</strong>
-      <button type="button" class="order-button">Pedir prato do dia</button>
+      <button type="button" class="order-button">Adicionar ao pedido</button>
     </div>
   `
 
   const button = container.querySelector('.order-button')
+  if (!button) return
+
   button.addEventListener('click', () => {
-    const message = buildItemOrderMessage(dishOfDay, 'Prato do Dia')
-    addChatMessage(`Pedido iniciado: ${dishOfDay.name}`, 'user')
-    const sent = openWhatsApp(message)
-    if (sent) {
-      setTimeout(() => addChatMessage('Abrindo WhatsApp para finalizar o pedido do prato do dia.', 'bot'), 400)
-    }
+    prefillOrderItem(dishOfDay, 'Prato do Dia')
   })
 }
 
@@ -153,9 +145,11 @@ function renderCategorySections() {
     `
 
     const cards = section.querySelector('.cards')
-    category.items.forEach(item => {
-      cards.appendChild(buildMenuCard(item, category.title))
-    })
+    if (cards) {
+      category.items.forEach(item => {
+        cards.appendChild(buildMenuCard(item, category.title))
+      })
+    }
 
     container.appendChild(section)
   })
@@ -176,18 +170,30 @@ function buildMenuCard(item, categoryTitle) {
   const button = document.createElement('button')
   button.type = 'button'
   button.className = 'order-button'
-  button.textContent = 'Pedir este item'
+  button.textContent = 'Adicionar ao pedido'
   button.addEventListener('click', () => {
-    const message = buildItemOrderMessage(item, categoryTitle)
-    addChatMessage(`Pedido iniciado: ${item.name}`, 'user')
-    const sent = openWhatsApp(message)
-    if (sent) {
-      setTimeout(() => addChatMessage(`Abrindo WhatsApp para finalizar o pedido de ${item.name}.`, 'bot'), 400)
-    }
+    prefillOrderItem(item, categoryTitle)
   })
 
   el.appendChild(button)
   return el
+}
+
+function prefillOrderItem(item, categoryTitle) {
+  const input = document.getElementById('message')
+  if (!input) return
+
+  const itemLine = `- 1x ${item.name} (${item.price})`
+  const current = input.value.trim()
+
+  if (!current) {
+    input.value = `Categoria: ${categoryTitle}\nItens:\n${itemLine}`
+  } else if (!current.includes(itemLine)) {
+    input.value = `${current}\n${itemLine}`
+  }
+
+  input.focus()
+  addChatMessage(`Item adicionado ao pedido: ${item.name}.`, 'bot')
 }
 
 function addChatMessage(text, who = 'user') {
@@ -209,33 +215,6 @@ function normalizeWhatsappNumber(phone) {
   return digits
 }
 
-function buildItemOrderMessage(item, category = 'Cardápio') {
-  return [
-    'Olá! Quero fazer este pedido:',
-    `Categoria: ${category}`,
-    `- ${item.name} (${item.price})`,
-    '',
-    'Nome:',
-    'Entrega ou retirada:',
-    'Forma de pagamento:',
-    'Observações:'
-  ].join('\n')
-}
-
-function buildChatOrderMessage(content, templateKey) {
-  const templateLabel = orderTemplates[templateKey]?.label ?? orderTemplates.livre.label
-  const timeLabel = new Date().toLocaleString('pt-BR')
-
-  return [
-    '*Pedido via Cardápio Digital*',
-    `*Template:* ${templateLabel}`,
-    '',
-    content,
-    '',
-    `Data: ${timeLabel}`
-  ].join('\n')
-}
-
 function openWhatsApp(message) {
   if (!whatsappNumber) {
     addChatMessage('Número de WhatsApp inválido. Verifique a configuração.', 'bot')
@@ -248,15 +227,133 @@ function openWhatsApp(message) {
   return true
 }
 
+function readFieldValue(id) {
+  const element = document.getElementById(id)
+  return element ? element.value.trim() : ''
+}
+
+function collectOrderData() {
+  return {
+    customerName: readFieldValue('customerName'),
+    customerPhone: readFieldValue('customerPhone'),
+    fulfillmentType: readFieldValue('fulfillmentType') || 'entrega',
+    addressStreet: readFieldValue('addressStreet'),
+    addressNumber: readFieldValue('addressNumber'),
+    addressDistrict: readFieldValue('addressDistrict'),
+    addressReference: readFieldValue('addressReference'),
+    paymentMethod: readFieldValue('paymentMethod'),
+    cashChange: readFieldValue('cashChange')
+  }
+}
+
+function validateOrderData(orderData, itemsDetails) {
+  const missing = []
+
+  if (!orderData.customerName) missing.push('Nome do cliente')
+
+  const phoneDigits = orderData.customerPhone.replace(/\D/g, '')
+  if (phoneDigits.length < 10) missing.push('Telefone válido para contato')
+
+  if (!itemsDetails) missing.push('Itens do pedido')
+
+  if (orderData.fulfillmentType === 'entrega') {
+    if (!orderData.addressStreet) missing.push('Rua/Avenida para entrega')
+    if (!orderData.addressNumber) missing.push('Número para entrega')
+    if (!orderData.addressDistrict) missing.push('Bairro para entrega')
+  }
+
+  if (!orderData.paymentMethod) missing.push('Forma de pagamento')
+
+  if (orderData.paymentMethod === 'dinheiro' && !orderData.cashChange) {
+    missing.push('Troco para quanto (pagamento em dinheiro)')
+  }
+
+  return missing
+}
+
+function isTemplateStillDefault(content, templateKey) {
+  if (templateKey === 'livre') return false
+  const templateText = orderTemplates[templateKey]?.text?.trim()
+  if (!templateText) return false
+  return content.trim() === templateText
+}
+
+function buildChatOrderMessage(content, templateKey, orderData) {
+  const templateLabel = orderTemplates[templateKey]?.label ?? orderTemplates.livre.label
+  const timeLabel = new Date().toLocaleString('pt-BR')
+  const fulfillmentLabel = orderData.fulfillmentType === 'entrega' ? 'Entrega' : 'Retirada'
+  const paymentMap = {
+    pix: 'PIX',
+    cartao: 'Cartão',
+    dinheiro: 'Dinheiro'
+  }
+  const paymentLabel = paymentMap[orderData.paymentMethod] || orderData.paymentMethod
+
+  const lines = [
+    '*Pedido via Cardápio Digital*',
+    `*Template:* ${templateLabel}`,
+    `*Data:* ${timeLabel}`,
+    '',
+    `*Cliente:* ${orderData.customerName}`,
+    `*Telefone:* ${orderData.customerPhone}`,
+    `*Atendimento:* ${fulfillmentLabel}`
+  ]
+
+  if (orderData.fulfillmentType === 'entrega') {
+    lines.push(
+      `*Endereço:* ${orderData.addressStreet}, ${orderData.addressNumber}`,
+      `*Bairro:* ${orderData.addressDistrict}`
+    )
+    if (orderData.addressReference) {
+      lines.push(`*Referência:* ${orderData.addressReference}`)
+    }
+  }
+
+  lines.push(`*Pagamento:* ${paymentLabel}`)
+
+  if (orderData.paymentMethod === 'dinheiro') {
+    lines.push(`*Troco para:* ${orderData.cashChange}`)
+  }
+
+  lines.push('', '*Itens e observações:*', content)
+
+  return lines.join('\n')
+}
+
+function updateConditionalFields() {
+  const fulfillmentType = readFieldValue('fulfillmentType') || 'entrega'
+  const paymentMethod = readFieldValue('paymentMethod')
+  const deliveryFields = document.getElementById('deliveryFields')
+  const cashChangeWrapper = document.getElementById('cashChangeWrapper')
+  const cashChangeInput = document.getElementById('cashChange')
+
+  if (deliveryFields) {
+    deliveryFields.classList.toggle('is-hidden', fulfillmentType !== 'entrega')
+  }
+
+  if (cashChangeWrapper) {
+    const shouldShowCash = paymentMethod === 'dinheiro'
+    cashChangeWrapper.classList.toggle('is-hidden', !shouldShowCash)
+    if (!shouldShowCash && cashChangeInput) cashChangeInput.value = ''
+  }
+}
+
 function applyTemplateToInput() {
   const templateSelect = document.getElementById('templateSelect')
   const input = document.getElementById('message')
+  const fulfillmentType = document.getElementById('fulfillmentType')
   if (!templateSelect || !input) return
 
   const selected = orderTemplates[templateSelect.value]
   if (!selected || !selected.text) return
 
   input.value = selected.text
+
+  if (fulfillmentType && (templateSelect.value === 'entrega' || templateSelect.value === 'retirada')) {
+    fulfillmentType.value = templateSelect.value
+    updateConditionalFields()
+  }
+
   input.focus()
 }
 
@@ -265,36 +362,49 @@ function setupChat() {
   const applyTemplateButton = document.getElementById('applyTemplate')
   const input = document.getElementById('message')
   const numberLabel = document.getElementById('targetPhone')
+  const fulfillmentType = document.getElementById('fulfillmentType')
+  const paymentMethod = document.getElementById('paymentMethod')
+
   if (!form || !applyTemplateButton || !input) return
 
-  if (numberLabel) {
-    numberLabel.textContent = whatsappRawNumber
-  }
+  if (numberLabel) numberLabel.textContent = whatsappRawNumber
 
   applyTemplateButton.addEventListener('click', applyTemplateToInput)
 
-  addChatMessage('Selecione um template e envie o pedido para o WhatsApp.', 'bot')
+  if (fulfillmentType) fulfillmentType.addEventListener('change', updateConditionalFields)
+  if (paymentMethod) paymentMethod.addEventListener('change', updateConditionalFields)
+  updateConditionalFields()
+
+  addChatMessage('Preencha os dados obrigatórios e envie o pedido completo para o WhatsApp.', 'bot')
 
   form.addEventListener('submit', e => {
     e.preventDefault()
     const templateSelect = document.getElementById('templateSelect')
     if (!templateSelect) return
 
-    const template = orderTemplates[templateSelect.value]
+    const template = orderTemplates[templateSelect.value] || orderTemplates.livre
     const typedMessage = input.value.trim()
     const message = typedMessage || template.text.trim()
+    const orderData = collectOrderData()
 
-    if (!message) return
+    const missing = validateOrderData(orderData, message)
+    if (isTemplateStillDefault(message, templateSelect.value)) {
+      missing.push('Detalhar os itens do pedido no campo de mensagem')
+    }
 
-    addChatMessage(message, 'user')
-    const finalMessage = buildChatOrderMessage(message, templateSelect.value)
+    if (missing.length > 0) {
+      addChatMessage(`Faltam dados obrigatórios:\n- ${missing.join('\n- ')}`, 'bot')
+      return
+    }
+
+    addChatMessage(`Pedido validado para ${orderData.customerName}.`, 'user')
+    const finalMessage = buildChatOrderMessage(message, templateSelect.value, orderData)
     const sent = openWhatsApp(finalMessage)
 
     if (sent) {
-      setTimeout(() => addChatMessage('Pedido encaminhado. Finalize os detalhes no WhatsApp.', 'bot'), 500)
+      setTimeout(() => addChatMessage('Pedido enviado. Agora é só confirmar no WhatsApp.', 'bot'), 500)
+      input.value = ''
     }
-
-    input.value = ''
   })
 }
 
