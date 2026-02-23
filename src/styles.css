@@ -9,6 +9,18 @@ body{margin:0;background:var(--bg);color:#111}
 .card p{margin:.25rem 0;color:var(--muted)}
 .chat{background:linear-gradient(180deg,#fff,#f3f4f6);padding:1rem;border-radius:8px;min-height:300px}
 .chat-log{height:220px;overflow:auto;background:white;border-radius:6px;padding:8px;margin-bottom:8px}
+.cart-section{background:#fff;padding:.75rem;border-radius:6px;margin-bottom:.75rem;border:1px solid #e5e7eb}
+.cart-section h3{margin:0 0 .5rem;font-size:.95rem}
+.cart-items{list-style:none;margin:0;padding:0;max-height:120px;overflow:auto}
+.cart-items li{display:flex;align-items:center;justify-content:space-between;padding:.35rem 0;font-size:.9rem;gap:.5rem}
+.cart-items li span:first-child{flex:1}
+.btn-remove{background:#ef4444;color:white;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:1.1rem;line-height:1;padding:0}
+.btn-remove:hover{background:#dc2626}
+.cart-total{margin:.5rem 0;font-size:1rem}
+.btn-send-order{width:100%;background:#25d366;color:white;border:none;padding:.6rem 1rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:.5rem}
+.btn-send-order:hover{background:#20bd5a}
+.card .btn-add{background:var(--accent);color:white;border:none;padding:.4rem .8rem;border-radius:6px;cursor:pointer;margin-top:.5rem;font-size:.9rem}
+.card .btn-add:hover{opacity:.9}
 .chat-form{display:flex;gap:.5rem}
 .chat-form input{flex:1;padding:.5rem;border:1px solid #e5e7eb;border-radius:6px}
 .chat-form button{background:var(--accent);color:white;border:none;padding:.5rem 1rem;border-radius:6px}
