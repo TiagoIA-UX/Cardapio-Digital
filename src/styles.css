@@ -22,6 +22,16 @@ body{margin:0;background:var(--bg);color:#111}
 .card-body{padding:.85rem}
 .card-body h4{margin:.15rem 0}
 .card-body p{margin:.25rem 0;color:var(--muted);line-height:1.35}
+.showcase-templates{background:#fff;border-radius:10px;padding:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.06)}
+.showcase-heading h2{margin:0}
+.showcase-heading p{margin:.35rem 0 .85rem;color:var(--muted)}
+.showcase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.85rem}
+.showcase-card{border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;display:grid;background:#fff}
+.showcase-image{width:100%;height:150px;object-fit:cover}
+.showcase-content{padding:.75rem;display:grid;gap:.35rem}
+.showcase-label{margin:0;color:#0f766e;font-weight:700;font-size:.82rem}
+.showcase-content h4{margin:0}
+.showcase-content p{margin:0;color:var(--muted)}
 .price{font-size:1rem;color:#111}
 .order-button{margin-top:.75rem;width:100%;background:#0f766e;color:#fff;border:none;padding:.55rem .75rem;border-radius:6px;cursor:pointer}
 .order-button:hover{filter:brightness(1.05)}

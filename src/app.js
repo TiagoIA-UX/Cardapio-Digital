@@ -66,6 +66,48 @@ const menuByCategory = [
   }
 ]
 
+const showcaseTemplates = [
+  {
+    id: 'prato',
+    cardLabel: 'Exemplo de prato',
+    title: 'Prato do Dia',
+    subtitle: 'Categoria organizada',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80',
+    fulfillmentType: 'entrega',
+    text: `Categoria: Prato do Dia
+Itens:
+- 1x Parmegiana de Frango (R$ 29,90)
+
+Observações:`
+  },
+  {
+    id: 'pizza',
+    cardLabel: 'Exemplo de pizza',
+    title: 'Pizzas',
+    subtitle: 'Fotos que dão água na boca',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80',
+    fulfillmentType: 'entrega',
+    text: `Categoria: Pizzas
+Itens:
+- 1x Pizza Calabresa (R$ 49,90)
+
+Observações:`
+  },
+  {
+    id: 'lanche',
+    cardLabel: 'Exemplo de lanche',
+    title: 'Lanches',
+    subtitle: 'Precos claros',
+    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80',
+    fulfillmentType: 'retirada',
+    text: `Categoria: Lanches
+Itens:
+- 1x X-Burger Artesanal (R$ 22,90)
+
+Observações:`
+  }
+]
+
 const orderTemplates = {
   livre: {
     label: 'Mensagem livre',
@@ -101,6 +143,7 @@ const whatsappNumber = normalizeWhatsappNumber(whatsappRawNumber)
 function renderMenu() {
   renderDishOfDay()
   renderCategorySections()
+  renderShowcaseTemplates()
 }
 
 function renderDishOfDay() {
@@ -153,6 +196,56 @@ function renderCategorySections() {
 
     container.appendChild(section)
   })
+}
+
+function renderShowcaseTemplates() {
+  const container = document.getElementById('showcaseTemplates')
+  if (!container) return
+
+  container.innerHTML = ''
+
+  showcaseTemplates.forEach(template => {
+    const el = document.createElement('article')
+    el.className = 'showcase-card'
+    el.innerHTML = `
+      <img class="showcase-image" src="${template.image}" alt="${template.cardLabel}">
+      <div class="showcase-content">
+        <p class="showcase-label">${template.cardLabel}</p>
+        <h4>${template.title}</h4>
+        <p>${template.subtitle}</p>
+        <button type="button" class="order-button template-apply-button">Usar este template</button>
+      </div>
+    `
+
+    const button = el.querySelector('.template-apply-button')
+    if (button) {
+      button.addEventListener('click', () => {
+        applyShowcaseTemplate(template)
+      })
+    }
+
+    container.appendChild(el)
+  })
+}
+
+function applyShowcaseTemplate(template) {
+  const input = document.getElementById('message')
+  const templateSelect = document.getElementById('templateSelect')
+  const fulfillmentType = document.getElementById('fulfillmentType')
+  if (!input) return
+
+  if (templateSelect) {
+    templateSelect.value = template.fulfillmentType === 'retirada' ? 'retirada' : 'entrega'
+  }
+  if (fulfillmentType) {
+    fulfillmentType.value = template.fulfillmentType
+  }
+
+  updateConditionalFields()
+  input.value = template.text
+  input.focus()
+  input.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  addChatMessage(`Template aplicado: ${template.cardLabel}.`, 'bot')
 }
 
 function buildMenuCard(item, categoryTitle) {
