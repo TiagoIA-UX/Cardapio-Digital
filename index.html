@@ -20,10 +20,23 @@
 
     <aside class="chat">
       <h2>Chat & Pedidos</h2>
+      <div class="chat-templates">
+        <label for="templateSelect">Template de pedido</label>
+        <div class="template-controls">
+          <select id="templateSelect">
+            <option value="livre">Mensagem livre</option>
+            <option value="entrega">Pedido para entrega</option>
+            <option value="retirada">Pedido para retirada</option>
+            <option value="encomenda">Encomenda especial</option>
+          </select>
+          <button type="button" id="applyTemplate">Aplicar template</button>
+        </div>
+        <small>Envio direto para WhatsApp: <strong id="targetPhone"></strong></small>
+      </div>
       <div id="chatLog" class="chat-log"></div>
       <form id="chatForm" class="chat-form">
-        <input id="message" placeholder="Escreva sua mensagem..." autocomplete="off">
-        <button type="submit">Enviar</button>
+        <input id="message" placeholder="Escreva sua mensagem ou aplique um template..." autocomplete="off">
+        <button type="submit">Enviar no WhatsApp</button>
       </form>
     </aside>
   </main>
