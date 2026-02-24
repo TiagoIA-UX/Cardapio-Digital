@@ -1,4 +1,4 @@
-# Cardápio Digital — Caraguá Digital (Recriado)
+# Cardápio Digital — Caraguá Digital 
 
 Versão demo reconstruída a partir do protótipo público: https://v0.app/chat/caragua-digital-OV08qxRlaH1
 
