@@ -205,6 +205,7 @@ function renderShowcaseTemplates() {
   container.innerHTML = ''
 
   showcaseTemplates.forEach(template => {
+    const redirectUrl = buildTemplateRedirectUrl(template)
     const el = document.createElement('article')
     el.className = 'showcase-card'
     el.innerHTML = `
@@ -213,39 +214,27 @@ function renderShowcaseTemplates() {
         <p class="showcase-label">${template.cardLabel}</p>
         <h4>${template.title}</h4>
         <p>${template.subtitle}</p>
-        <button type="button" class="order-button template-apply-button">Usar este template</button>
+        <a class="order-link-button" href="${redirectUrl}" target="_blank" rel="noopener noreferrer">Abrir template</a>
       </div>
     `
-
-    const button = el.querySelector('.template-apply-button')
-    if (button) {
-      button.addEventListener('click', () => {
-        applyShowcaseTemplate(template)
-      })
-    }
 
     container.appendChild(el)
   })
 }
 
-function applyShowcaseTemplate(template) {
-  const input = document.getElementById('message')
-  const templateSelect = document.getElementById('templateSelect')
-  const fulfillmentType = document.getElementById('fulfillmentType')
-  if (!input) return
+function buildTemplateRedirectUrl(template) {
+  if (!whatsappNumber) return '#'
 
-  if (templateSelect) {
-    templateSelect.value = template.fulfillmentType === 'retirada' ? 'retirada' : 'entrega'
-  }
-  if (fulfillmentType) {
-    fulfillmentType.value = template.fulfillmentType
-  }
+  const message = [
+    '*Template de pedido*',
+    `*${template.cardLabel}*`,
+    '',
+    template.text,
+    '',
+    'Preencha os dados que faltam e finalize seu pedido.'
+  ].join('\n')
 
-  updateConditionalFields()
-  input.value = template.text
-  input.focus()
-  input.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  addChatMessage(`Template aplicado: ${template.cardLabel}.`, 'bot')
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 }
 
 function buildMenuCard(item, categoryTitle) {

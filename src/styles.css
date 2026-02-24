@@ -32,6 +32,8 @@ body{margin:0;background:var(--bg);color:#111}
 .showcase-label{margin:0;color:#0f766e;font-weight:700;font-size:.82rem}
 .showcase-content h4{margin:0}
 .showcase-content p{margin:0;color:var(--muted)}
+.order-link-button{margin-top:.75rem;width:100%;display:inline-block;text-align:center;background:#0f766e;color:#fff;border:none;padding:.55rem .75rem;border-radius:6px;cursor:pointer;text-decoration:none}
+.order-link-button:hover{filter:brightness(1.05)}
 .price{font-size:1rem;color:#111}
 .order-button{margin-top:.75rem;width:100%;background:#0f766e;color:#fff;border:none;padding:.55rem .75rem;border-radius:6px;cursor:pointer}
 .order-button:hover{filter:brightness(1.05)}
