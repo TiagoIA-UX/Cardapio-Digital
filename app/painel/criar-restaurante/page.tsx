@@ -86,12 +86,15 @@ export default function CriarRestaurantePage() {
           user_id: session.user.id,
           nome: form.nome,
           slug: form.slug,
-          telefone: form.telefone.replace(/\D/g, '')
+          telefone: form.telefone.replace(/\D/g, ''),
+          status_pagamento: 'pendente',
+          plano: 'free'
         })
 
       if (insertError) throw insertError
 
-      router.push('/painel')
+      // Redirecionar para checkout
+      router.push('/checkout')
     } catch (err: any) {
       setError(err.message || 'Erro ao criar restaurante')
     } finally {
