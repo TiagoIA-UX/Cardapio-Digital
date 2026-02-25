@@ -25,6 +25,11 @@ export interface Restaurant {
   cor_primaria: string
   cor_secundaria: string
   ativo: boolean
+  status_pagamento: 'pendente' | 'aguardando' | 'ativo' | 'expirado' | 'cancelado'
+  plano: 'free' | 'basico' | 'profissional'
+  valor_pago: number | null
+  data_pagamento: string | null
+  comprovante_url: string | null
   created_at: string
   updated_at: string
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Store, Package, ClipboardList, Settings, LogOut, Menu, X, Loader2 } from "lucide-react"
@@ -9,10 +9,14 @@ import type { Restaurant } from "@/lib/supabase/client"
 
 export default function PainelLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [loading, setLoading] = useState(true)
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const supabase = createClient()
+
+  // Permitir acesso à página de criar restaurante sem verificar pagamento
+  const isCreatePage = pathname === '/painel/criar-restaurante'
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,12 +40,18 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
         return
       }
 
+      // Verificar status de pagamento (exceto na página de criar)
+      if (!isCreatePage && rest.status_pagamento !== 'ativo') {
+        router.push('/checkout')
+        return
+      }
+
       setRestaurant(rest)
       setLoading(false)
     }
 
     checkAuth()
-  }, [])
+  }, [pathname])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
