@@ -13,9 +13,9 @@ const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
+  title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
   description:
-    'Cardápio digital profissional para delivery e negócios alimentícios. Pizzarias, hamburguerias, lanchonetes. Mais pedidos no WhatsApp, Google Maps integrado e site profissional.',
+    'Cardápio digital profissional para restaurantes, pizzarias, hamburguerias, quiosques e operações de alimentação. Edite tudo pelo painel, receba pedidos no seu canal e tenha 0% de comissão por pedido.',
   keywords: [
     'cardápio digital',
     'cardápio online',
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
+    title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
     description:
-      'Cardápio digital profissional para delivery e negócios alimentícios. Pizzarias, hamburguerias, lanchonetes. Mais pedidos no WhatsApp e Google Maps integrado.',
+      'Cardápio digital profissional para restaurantes e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
     url: siteUrl,
     siteName: 'Cardápio Digital',
     locale: 'pt_BR',
@@ -49,9 +49,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cardápio Digital | Cardápio Online Rápido e Fácil',
+    title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
     description:
-      'Cardápio digital profissional para delivery e negócios alimentícios. Pizzarias, hamburguerias, lanchonetes. Mais pedidos no WhatsApp e Google Maps integrado.',
+      'Cardápio digital profissional para restaurantes e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
     images: [`${siteUrl}/placeholder.jpg`],
   },
   robots: {
@@ -81,7 +81,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="overflow-x-hidden">
-      <body className={`${inter.className} font-sans antialiased overflow-x-hidden min-w-0`}>
+      <body className={`${inter.className} min-w-0 overflow-x-hidden font-sans antialiased`}>
         {children}
         <CartDrawer />
         <CookieBanner />
@@ -97,7 +97,7 @@ export default function RootLayout({
               sameAs: [siteUrl],
               logo: `${siteUrl}/placeholder-logo.png`,
               description:
-                'Cardápio digital profissional para delivery e negócios alimentícios. Site com Google Maps integrado.',
+                'Cardápio digital profissional para vender direto no seu canal, com painel visual simples e 0% de comissão sobre pedidos.',
             }),
           }}
         />

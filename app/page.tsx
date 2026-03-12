@@ -58,58 +58,60 @@ const NICHE_TEMPLATES = RESTAURANT_TEMPLATES.map((template) => ({
 const PLATFORM_FEATURES = [
   {
     icon: LayoutTemplate,
-    title: '7 modelos feitos para negócios diferentes',
+    title: 'Templates profissionais para cada tipo de operação',
     description:
-      'Cada modelo foi pensado para um tipo de negócio, sem usar a mesma cara para todo mundo.',
+      'Escolha entre 7 modelos criados para diferentes segmentos de alimentação, com organização visual pensada para facilitar a escolha do cliente e aumentar a conversão.',
   },
   {
     icon: Palette,
-    title: 'Troca fácil de cor, foto e textos',
-    description: 'Dá para mudar cor, foto, banner e textos sem desmontar o que já está pronto.',
+    title: 'Editor visual para atualizar o cardápio com autonomia',
+    description:
+      'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, sem precisar contratar desenvolvedor para fazer mudanças simples no dia a dia.',
   },
   {
     icon: TabletSmartphone,
-    title: 'Mobile-first de verdade',
+    title: 'Operação simples no celular',
     description:
-      'A experiência prioriza o dedo, o tempo de decisão e o fluxo real do cliente no celular.',
+      'O painel foi desenhado para funcionar bem no celular, facilitando a gestão mesmo durante a rotina corrida do restaurante.',
   },
   {
     icon: MousePointerClick,
-    title: 'Feito para gerar mais pedidos',
+    title: 'Mais agilidade para manter o cardápio sempre correto',
     description:
-      'Botões claros, destaque para combos, preços fáceis de ler e caminho simples para o cliente pedir.',
+      'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
   },
   {
     icon: WandSparkles,
-    title: 'Pronto para colocar no ar rápido',
+    title: 'Mais economia com desenvolvimento',
     description:
-      'Você começa com um cardápio com cara de negócio de verdade, não com uma base crua para montar do zero.',
+      'O restaurante ganha autonomia para operar o próprio cardápio e evita gastos recorrentes com ajustes que normalmente dependeriam de programador.',
   },
   {
     icon: Shield,
-    title: 'Bom para crescer depois',
+    title: 'Pedidos organizados no seu próprio canal',
     description:
-      'Você pode começar com um modelo só ou trabalhar mais de um tipo de negócio sem bagunçar a identidade visual.',
+      'O cliente escolhe, envia o pedido e sua equipe recebe tudo com mais clareza no WhatsApp, sem intermediação desnecessária e sem comissão sobre os pedidos.',
   },
 ] as const
 
 const PROCESS_STEPS = [
   {
     step: '01',
-    title: 'Escolha o tipo certo do seu negócio',
-    description: 'Comece por um modelo que já combina com o seu negócio e evite retrabalho.',
+    title: 'Escolha o template ideal para o seu negócio',
+    description:
+      'Selecione o modelo que melhor combina com a sua operação e comece com uma base profissional pronta para uso.',
   },
   {
     step: '02',
-    title: 'Ajuste marca e cardápio',
+    title: 'Edite o cardápio pelo painel visual',
     description:
-      'Troque fotos, textos, categorias e a ordem da vitrine sem perder a estrutura bonita e organizada.',
+      'Personalize produtos, preços, fotos, categorias, banners e textos sem depender de desenvolvedor.',
   },
   {
     step: '03',
-    title: 'Publique e compartilhe',
+    title: 'Publique e receba pedidos',
     description:
-      'Publique seu cardápio em uma URL própria, compartilhe no WhatsApp e Instagram e use QR Code nas mesas para abrir o menu presencial sem depender de outro número.',
+      'Coloque seu cardápio no ar, compartilhe o link no WhatsApp, Instagram e QR Code, e concentre os pedidos no seu próprio canal de atendimento.',
   },
 ] as const
 
@@ -130,7 +132,7 @@ export default function Home() {
               <span className="text-muted-foreground block text-sm font-semibold tracking-[0.18em] uppercase">
                 Cardápio Digital
               </span>
-              <span className="block text-base font-semibold">Modelos prontos para delivery</span>
+              <span className="block text-base font-semibold">Plataforma para operações de alimentação</span>
             </div>
           </Link>
 
@@ -208,20 +210,23 @@ export default function Home() {
           <div className="grid min-h-170 gap-12 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:py-16">
             <div className="max-w-3xl">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
-                <Sparkles className="h-4 w-4 text-orange-300" />7 modelos criados para operações
-                reais de delivery
+                <Sparkles className="h-4 w-4 text-orange-300" />7 templates profissionais para
+                operações de alimentação
               </div>
 
               <h1 className="max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
-                Um cardápio digital com cara de marca séria.
+                Cardápio digital profissional para vender direto, sem comissão por pedido.
                 <span className="mt-3 block text-orange-300">
-                  Escolha um modelo pronto, edite e publique mais rápido.
+                  Escolha um template do seu segmento, edite tudo pelo painel e receba pedidos no
+                  seu canal de atendimento com mais organização, autonomia e controle.
                 </span>
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80 md:text-xl">
-                Restaurante, pizzaria, hamburgueria, bar, cafeteria, açaíteria e sushi. Cada modelo
-                foi pensado para apresentar melhor o cardápio e facilitar o pedido no celular.
+                Criado para restaurantes, pizzarias, hamburguerias, quiosques, cafeterias,
+                açaíterias e operações de alimentação que querem vender online com mais
+                profissionalismo, atualizar o cardápio com rapidez e depender menos de aplicativos
+                de delivery.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -230,21 +235,21 @@ export default function Home() {
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:bg-orange-600"
                 >
                   <Eye className="h-5 w-5" />
-                  Ver os 7 modelos
+                  Ver os 7 templates
                 </Link>
                 <Link
-                  href="/login"
+                  href="/ofertas"
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3.5 text-base font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
                 >
                   <Store className="h-5 w-5" />
-                  Entrar no painel
+                  Quero vender no meu canal
                 </Link>
               </div>
 
               <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-                <DarkMetricCard value="7" label="templates disponíveis" />
-                <DarkMetricCard value="automático" label="após confirmação do pagamento" />
-                <DarkMetricCard value="100%" label="dos pedidos vai pra você" />
+                <DarkMetricCard value="7" label="templates profissionais" />
+                <DarkMetricCard value="editor" label="visual simples" />
+                <DarkMetricCard value="0%" label="de comissão sobre pedidos" />
               </div>
             </div>
 
@@ -335,12 +340,12 @@ export default function Home() {
               Modelos por tipo de negócio
             </p>
             <h2 className="mt-2 max-w-2xl text-3xl font-semibold tracking-tight text-balance md:text-4xl">
-              Cada modelo foi pensado para o jeito que o seu cliente compra.
+              Templates profissionais para cada tipo de operação.
             </h2>
           </div>
           <p className="text-muted-foreground max-w-xl text-base leading-7">
-            O cardápio de uma pizzaria não vende do mesmo jeito que o de um bar ou de uma cafeteria.
-            Aqui cada modelo acompanha o ritmo do negócio e o tipo de produto.
+            Cada modelo foi criado para respeitar o perfil da operação, organizar melhor a
+            apresentação dos produtos e facilitar a decisão de compra do cliente.
           </p>
         </div>
 
@@ -419,15 +424,15 @@ export default function Home() {
           <div className="mb-12 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
               <p className="text-sm font-semibold tracking-[0.18em] text-orange-300 uppercase">
-                Feito para vender melhor
+                Proposta de valor
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
-                Não é só bonito. Ajuda o cliente a escolher mais rápido.
+                Venda online com mais controle e menos dependência operacional.
               </h2>
             </div>
             <p className="max-w-2xl text-base leading-7 text-zinc-300">
-              O cardápio foi organizado para destacar os itens principais, facilitar a leitura no
-              celular e passar mais confiança logo no primeiro acesso.
+              O Cardápio Digital foi desenvolvido para negócios reais de alimentação que precisam
+              vender online com clareza, confiança e agilidade no dia a dia.
             </p>
           </div>
 
@@ -459,11 +464,11 @@ export default function Home() {
               Como funciona
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
-              Saia do zero e coloque seu cardápio no ar em poucos passos.
+              Comece rápido e publique seu cardápio em poucos passos.
             </h2>
             <p className="text-muted-foreground mt-4 max-w-lg text-base leading-7">
-              A ideia é simples: pegar um modelo pronto, colocar suas informações, ajustar as fotos
-              e publicar rápido, sem precisar montar tudo do zero.
+              Você escolhe um template profissional, edita tudo pelo painel visual e publica seu
+              canal próprio para receber pedidos sem depender de desenvolvedor.
             </p>
 
             <div className="border-border mt-8 rounded-[1.75rem] border bg-linear-to-br from-orange-50 to-white p-6 shadow-sm">
@@ -473,11 +478,11 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-foreground text-sm font-semibold">
-                    Ideal para quem quer crescer rápido
+                    Feito para quem quer vender com mais autonomia
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    Bom para quem trabalha com mais de uma marca ou quer testar outro tipo de
-                    negócio.
+                    Atualize preços, fotos, categorias e promoções com rapidez, reduza dependência
+                    de aplicativos e mantenha mais controle sobre a operação.
                   </p>
                 </div>
               </div>
@@ -496,7 +501,7 @@ export default function Home() {
                   className="border-border text-foreground inline-flex items-center gap-2 rounded-full border bg-white px-5 py-3 text-sm font-semibold"
                 >
                   <MessageCircle className="h-4 w-4 text-green-600" />
-                  Tirar dúvidas
+                  Falar com um especialista
                 </a>
               </div>
             </div>
@@ -533,16 +538,16 @@ export default function Home() {
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
                 <BadgeCheck className="h-4 w-4" />
-                Modelos individuais, pacotes e acesso completo
+                Templates individuais, pacotes e implantação assistida
               </div>
               <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance md:text-4xl">
-                Se você vende em mais de um estilo de negócio, sua vitrine também precisa mostrar
-                isso.
+                Seu restaurante pode vender online com mais organização, mais controle e menos
+                dependência de aplicativos.
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">
-                Aqui você pode escolher um modelo pronto, adaptar ao seu negócio e colocar no ar
-                mais rápido. A proposta fica mais clara para quem quer vender por delivery, retirada
-                ou atendimento no local.
+                Escolha um template profissional, publique seu canal próprio e tenha autonomia para
+                atualizar o cardápio sempre que precisar, sem comissão por pedido e sem depender de
+                desenvolvedor.
               </p>
             </div>
 
@@ -552,14 +557,14 @@ export default function Home() {
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-orange-700 transition-colors hover:bg-orange-50"
               >
                 <Eye className="h-4 w-4" />
-                Abrir catálogo de modelos
+                Ver os 7 templates
               </Link>
               <Link
                 href="/ofertas"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
                 <ShoppingBag className="h-4 w-4" />
-                Comparar pacotes
+                Quero vender no meu canal
               </Link>
             </div>
           </div>
