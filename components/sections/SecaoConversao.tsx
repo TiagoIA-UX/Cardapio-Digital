@@ -22,28 +22,28 @@ import { cn } from '@/lib/utils'
 // ─── Bloco 2 — Tabela comparativa ─────────────────────────────────────────────
 const COMPARISON_ROWS = [
   {
-    outros: 'Você monta tudo do zero',
-    nos: 'Template pronto do seu tipo de negócio',
+    outros: 'Cobram comissão sobre pedidos',
+    nos: '0% de comissão sobre os pedidos do seu cardápio',
   },
   {
-    outros: 'Suporte por ticket — espera dias',
-    nos: 'Suporte humano via WhatsApp',
+    outros: 'Mantêm o restaurante dependente de plataformas terceiras',
+    nos: 'Canal próprio para vender com mais independência',
   },
   {
-    outros: 'Mensalidade eterna, sem saída',
-    nos: 'Pagamento único. Sem mensalidade recorrente',
+    outros: 'Dificultam o controle do canal de venda',
+    nos: 'Controle direto do atendimento e da operação',
   },
   {
-    outros: 'Interface de técnico',
-    nos: 'Edita igual a um contato no celular',
+    outros: 'Nem sempre permitem editar o cardápio com liberdade',
+    nos: 'Editor visual para atualizar o cardápio com autonomia',
   },
   {
-    outros: 'Plataformas de delivery cobram comissão',
-    nos: 'Sem comissão. Seu cardápio, suas regras',
+    outros: 'Criam custos recorrentes para operar',
+    nos: 'Mais economia e mais previsibilidade para o negócio',
   },
   {
-    outros: 'Precisa chamar alguém pra mudar preço',
-    nos: 'Você muda em 30 segundos, do celular',
+    outros: 'Exigem suporte para ajustes simples',
+    nos: 'Atualize preços, fotos e promoções em poucos passos',
   },
 ] as const
 
@@ -51,22 +51,31 @@ const COMPARISON_ROWS = [
 const BENEFIT_CARDS = [
   {
     icon: Clock,
-    title: 'Muda um preço em 30 segundos',
-    text: 'Acabou o frango? Desativa em 2 cliques. Promoção no fim de semana? Cria um destaque sem precisar de ninguém.',
-    footer: '⏱️ Tempo médio de edição: 30 segundos',
+    title: 'Mais agilidade para manter o cardápio sempre correto',
+    text: 'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
+    footer: '⏱️ Atualizações rápidas no dia a dia',
   },
   {
     icon: Smartphone,
-    title: 'Se você usa WhatsApp, você edita',
-    text: 'O painel foi feito para dono de delivery e negócio alimentício, não para programador. Clica, digita, salva. Só isso.',
-    footer: '📱 Funciona pelo celular, sem instalar nada',
+    title: 'Editor visual para atualizar o cardápio com autonomia',
+    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, sem precisar contratar desenvolvedor para mudanças simples.',
+    footer: '📱 Painel simples, inclusive no celular',
   },
   {
     icon: MessageCircle,
-    title: 'O pedido chega pronto no seu WhatsApp',
-    text: 'O cliente escolhe no cardápio, clica em pedir, e você recebe tudo organizado. Sem app. Sem maquineta. Sem comissão.',
-    footer: '💸 Sem comissão sobre pedidos no seu cardápio digital',
+    title: 'Pedidos organizados no seu próprio canal',
+    text: 'O cliente escolhe, envia o pedido e sua equipe recebe tudo com mais clareza no WhatsApp, sem intermediação desnecessária e sem comissão sobre os pedidos.',
+    footer: '💸 0% de comissão sobre os pedidos do seu cardápio',
   },
+] as const
+
+const STAGGER_DELAY_CLASSES = [
+  '[transition-delay:0ms]',
+  '[transition-delay:100ms]',
+  '[transition-delay:200ms]',
+  '[transition-delay:300ms]',
+  '[transition-delay:400ms]',
+  '[transition-delay:500ms]',
 ] as const
 
 // ─── Bloco 4 — Planos (preços variam por template — ver /precos) ───────────────
@@ -79,7 +88,7 @@ const PLANS = [
     iconBg: 'bg-blue-500/10',
     badge: null,
     titulo: 'Faça Você Mesmo',
-    subtitulo: 'Você configura no painel, no seu ritmo',
+    subtitulo: 'Ideal para quem quer começar rápido e ter autonomia total para editar o cardápio no painel.',
     precoPix: 197,
     precoCartao: 237,
     parcelas: 3,
@@ -88,11 +97,13 @@ const PLANS = [
     href: '/templates',
     hrefPrecos: '/precos',
     ariaLabel: 'Escolher plano Faça Você Mesmo a partir de 197 reais no PIX',
-    ctaTexto: 'Quero fazer eu mesmo',
+    ctaTexto: 'Quero começar com autonomia',
     itens: [
-      'Template completo pronto para usar',
-      'Painel simples — edita pelo celular',
-      'Você adiciona seus produtos e fotos',
+      'Template profissional pronto para uso',
+      'Editor visual simples',
+      'Cadastro de produtos, fotos e categorias',
+      'Atualização de preços e promoções sem desenvolvedor',
+      'Pedidos enviados para WhatsApp',
       'Suporte via WhatsApp',
       'Hospedagem inclusa',
     ],
@@ -105,7 +116,7 @@ const PLANS = [
     iconBg: 'bg-primary/10',
     badge: '⭐ MAIS POPULAR',
     titulo: 'Feito Pra Você',
-    subtitulo: 'A equipe monta tudo. Você só aprova.',
+    subtitulo: 'Ideal para quem quer entrar no ar com mais rapidez e contar com a implantação conduzida pela equipe.',
     precoPix: 497,
     precoCartao: 597,
     parcelas: 3,
@@ -114,12 +125,13 @@ const PLANS = [
     href: '/templates',
     hrefPrecos: '/precos',
     ariaLabel: 'Escolher plano Feito Pra Você a partir de 497 reais no PIX',
-    ctaTexto: 'Quero que montem pra mim',
+    ctaTexto: 'Quero que a equipe implante',
     itens: [
       'Tudo do plano Faça Você Mesmo',
-      'Cardápio montado pela equipe em até 48h úteis após envio das informações',
-      'Seus produtos com fotos e preços',
-      'Configuração completa do WhatsApp',
+      'Implantação assistida',
+      'Estruturação inicial do cardápio',
+      'Organização de produtos, fotos e preços',
+      'Configuração do canal de pedidos',
       'Suporte prioritário',
     ],
   },
@@ -167,20 +179,24 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 text-center md:mb-16">
           <span className="border-primary/20 bg-primary/10 text-primary mb-4 inline-flex rounded-full border px-4 py-1.5 text-sm font-medium">
-            Sem técnico. Sem curso. Sem complicação.
+            Templates profissionais. Editor visual. 0% de comissão.
           </span>
           <h2
             id="conversao-heading"
             className="text-foreground mx-auto mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl"
           >
-            Você faz a comida.
+            Mais autonomia para atualizar o cardápio.
             <br />
-            <span className="text-primary">A gente cuida do cardápio.</span>
+            <span className="text-primary">
+              Mais controle para vender no seu canal.
+            </span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-            Se você sabe mandar mensagem no WhatsApp, você já sabe editar seu cardápio.{' '}
+            Você começa com um template profissional já adaptado ao seu tipo de operação,
+            personaliza o cardápio no painel visual e publica um canal próprio para receber pedidos
+            sem depender de desenvolvedor.{' '}
             <span className="text-foreground font-medium">
-              E se preferir, a gente monta tudo por você.
+              Se preferir, nossa equipe também pode conduzir a implantação inicial para você.
             </span>
           </p>
         </div>
@@ -193,7 +209,7 @@ export default function SecaoConversao() {
             {/* Coluna esquerda — Os outros */}
             <div className="border-border bg-destructive/5 border-b p-5 md:border-r md:border-b-0">
               <p className="text-muted-foreground mb-4 text-center text-sm font-semibold tracking-wider uppercase">
-                ❌ Os outros
+                ❌ Aplicativos e soluções genéricas
               </p>
               <ul className="space-y-3">
                 {COMPARISON_ROWS.map((row, i) => (
@@ -201,9 +217,9 @@ export default function SecaoConversao() {
                     key={row.outros}
                     className={cn(
                       'text-muted-foreground flex items-start gap-2 text-sm line-through transition-all duration-500',
+                      STAGGER_DELAY_CLASSES[i],
                       isInView ? 'opacity-50' : 'opacity-0'
                     )}
-                    style={{ transitionDelay: `${i * 100}ms` }}
                   >
                     <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                     {row.outros}
@@ -223,24 +239,12 @@ export default function SecaoConversao() {
                     key={row.nos}
                     className={cn(
                       'text-foreground flex items-start gap-2 text-sm font-medium transition-all duration-500',
+                      STAGGER_DELAY_CLASSES[i],
                       isInView ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'
                     )}
-                    style={{ transitionDelay: `${i * 100}ms` }}
                   >
                     <CheckCircle className="text-primary mt-0.5 h-5 w-5 shrink-0" aria-hidden />
-                    <span>
-                      {row.nos.includes('30 segundos') ? (
-                        <>
-                          Você muda em <strong>30 segundos</strong>, do celular
-                        </>
-                      ) : row.nos.includes('Cada real') ? (
-                        <>
-                          Zero comissão. <strong>Cada real</strong> vai pra você
-                        </>
-                      ) : (
-                        row.nos
-                      )}
-                    </span>
+                    <span>{row.nos}</span>
                   </li>
                 ))}
               </ul>
@@ -280,10 +284,10 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 md:mb-16">
           <h3 className="text-foreground mb-2 text-center text-2xl font-bold">
-            Escolha como quer começar
+            Escolha a forma de contratação
           </h3>
           <p className="text-muted-foreground mb-8 text-center text-sm">
-            Você edita quando quiser — ou a gente monta tudo por você em até 48 horas úteis.
+            Escolha a forma de contratação que faz mais sentido para a sua operação.
           </p>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -351,10 +355,11 @@ export default function SecaoConversao() {
                     {plan.destaque && (
                       <div className="bg-primary/10 border-primary/20 mt-3 rounded-lg border p-2.5">
                         <p className="text-primary text-sm font-semibold">
-                          🕐 Cardápio pronto em até 48 horas úteis
+                          🕐 Implantação concluída em até 48 horas úteis
                         </p>
                         <p className="text-muted-foreground mt-0.5 text-xs">
-                          Você foca no negócio. A equipe resolve o cardápio.
+                          Entre no ar com mais rapidez e conte com a implantação conduzida pela
+                          equipe.
                         </p>
                       </div>
                     )}
@@ -397,8 +402,7 @@ export default function SecaoConversao() {
 
           {/* Urgência com variável dinâmica */}
           <p className="text-muted-foreground mt-6 text-center text-sm">
-            Suporte humano disponível para todos os clientes. Tire suas dúvidas pelo WhatsApp antes
-            de comprar.
+            Suporte humano disponível em todos os planos.
           </p>
         </div>
 
@@ -412,15 +416,15 @@ export default function SecaoConversao() {
             </div>
             <div>
               <h3 className="text-foreground text-xl font-bold">
-                Garantia de 30 dias sem burocracia
+                Garantia de 30 dias com processo simples
               </h3>
               <p className="text-muted-foreground mt-2 leading-6">
-                Pague hoje. Use por 30 dias completos. Se você achar que não valeu — por qualquer
-                motivo — a gente devolve tudo. Sem formulário, sem pergunta, sem stress. O risco é
-                nosso, não seu.
+                Você pode contratar, usar a plataforma na rotina do seu negócio e validar se ela
+                faz sentido para a sua operação. Se entender que não atende ao que precisa, o
+                reembolso é integral e sem burocracia.
               </p>
               <p className="text-muted-foreground mt-4 text-sm">
-                🔒 Garantia real. Se não gostar, basta avisar no WhatsApp.
+                🔒 Mais segurança para decidir com confiança.
               </p>
             </div>
           </div>
