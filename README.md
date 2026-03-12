@@ -27,11 +27,11 @@ O software combina site publico do cardapio, painel administrativo, pedidos por 
 
 1. o operador faz login
 2. cria o restaurante
-3. ajusta nome, contatos, banner, cores e configuracoes
-4. cadastra produtos e categorias
-5. publica o link do cardapio
-6. gera QR Code para mesas, se usar atendimento local
-7. recebe pedidos online ou por mesa
+3. ajusta nome, contatos, banner e configuracoes
+5. cadastra produtos e categorias
+6. publica o link do cardapio
+7. gera QR Code para mesas, se usar atendimento local
+8. recebe pedidos online ou por mesa
 
 ## Comecar rapido
 
