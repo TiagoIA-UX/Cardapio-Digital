@@ -4,7 +4,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Beer,
-  CheckCircle,
   ChevronRight,
   Coffee,
   Eye,
@@ -12,7 +11,6 @@ import {
   IceCream,
   LayoutTemplate,
   MessageCircle,
-  MousePointerClick,
   Palette,
   Pizza,
   Rocket,
@@ -21,9 +19,8 @@ import {
   Sparkles,
   Store,
   TabletSmartphone,
-  UtensilsCrossed,
-  WandSparkles,
 } from 'lucide-react'
+import { HomeHeader } from '@/components/home-header'
 import { RESTAURANT_TEMPLATES } from '@/lib/templates-config'
 import SecaoConversao from '@/components/sections/SecaoConversao'
 
@@ -64,33 +61,34 @@ const PLATFORM_FEATURES = [
   },
   {
     icon: Palette,
-    title: 'Painel de edição visual',
+    title: 'Todos os templates são fáceis de editar',
     description:
-      'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, sem precisar contratar desenvolvedor para fazer mudanças simples no dia a dia.',
+      'Altere preços, fotos, categorias, produtos e destaques em um painel simples, sem depender de programador para ajustes do dia a dia.',
   },
   {
     icon: TabletSmartphone,
-    title: 'Operação simples no celular',
+    title: 'Painel simples de usar no celular',
     description:
-      'O painel foi desenhado para funcionar bem no celular, facilitando a gestão mesmo durante a rotina corrida do restaurante.',
-  },
-  {
-    icon: MousePointerClick,
-    title: 'Mais agilidade para manter o cardápio sempre correto',
-    description:
-      'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
-  },
-  {
-    icon: WandSparkles,
-    title: 'Mais economia com desenvolvimento',
-    description:
-      'O restaurante ganha autonomia para operar o próprio cardápio e evita gastos recorrentes com ajustes que normalmente dependeriam de programador.',
+      'O painel foi desenhado para funcionar bem em desktop, tablet e mobile, facilitando a gestão durante a rotina do restaurante.',
   },
   {
     icon: Shield,
     title: 'Pedidos organizados no seu próprio canal',
     description:
       'O cliente escolhe, envia o pedido e sua equipe recebe tudo com mais clareza no WhatsApp, sem intermediação desnecessária e sem comissão sobre os pedidos.',
+  },
+] as const
+
+const HIGHLIGHT_BENEFITS = [
+  {
+    title: 'Mais agilidade para manter o cardápio sempre correto',
+    description:
+      'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
+  },
+  {
+    title: 'Mais economia com desenvolvimento',
+    description:
+      'O restaurante ganha autonomia para operar o próprio cardápio e evita gastos recorrentes com ajustes que normalmente dependeriam de programador.',
   },
 ] as const
 
@@ -118,80 +116,10 @@ const PROCESS_STEPS = [
 export default function Home() {
   const heroTemplate =
     NICHE_TEMPLATES.find((template) => template.slug === 'pizzaria') || NICHE_TEMPLATES[0]
-  const featuredTemplates = NICHE_TEMPLATES.slice(0, 3)
 
   return (
     <main className="bg-background text-foreground min-h-screen">
-      <header className="border-border/80 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-xl">
-        <div className="container-premium flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/20">
-              <Store className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-foreground/75 block text-sm font-semibold tracking-[0.18em] uppercase">
-                Cardápio Digital
-              </span>
-              <span className="block text-base font-semibold">Plataforma para operações de alimentação</span>
-            </div>
-          </Link>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/login"
-              className="text-foreground text-sm font-semibold transition-colors hover:text-orange-600"
-            >
-              Login
-            </Link>
-            <a
-              href="#nichos"
-              className="text-foreground/75 hover:text-foreground text-sm font-medium transition-colors"
-            >
-              Nichos
-            </a>
-            <a
-              href="#estrutura"
-              className="text-foreground/75 hover:text-foreground text-sm font-medium transition-colors"
-            >
-              Estrutura
-            </a>
-            <a
-              href="#como-funciona"
-              className="text-foreground/75 hover:text-foreground text-sm font-medium transition-colors"
-            >
-              Como funciona
-            </a>
-            <a
-              href="#conversao"
-              className="text-foreground/75 hover:text-foreground text-sm font-medium transition-colors"
-            >
-              Planos
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="border-border bg-card hover:bg-secondary inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors md:hidden"
-            >
-              Login
-            </Link>
-            <Link
-              href="/templates"
-              className="border-border bg-card hover:bg-secondary hidden rounded-full border px-4 py-2 text-sm font-medium transition-colors sm:inline-flex"
-            >
-              Ver todos
-            </Link>
-            <Link
-              href="/ofertas"
-              className="bg-foreground text-background inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-transform hover:scale-[1.02]"
-            >
-              Ver preços e planos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <HomeHeader />
 
       <section className="relative isolate overflow-hidden px-4 pt-6 pb-20 md:pt-8 md:pb-24">
         <div className="absolute inset-0">
@@ -209,27 +137,27 @@ export default function Home() {
         <div className="container-premium relative">
           <div className="grid min-h-170 gap-12 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:py-16">
             <div className="max-w-3xl">
-              <div className="animate-enter-fast mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
                 <Sparkles className="h-4 w-4 text-orange-300" />7 templates para negócios de
                 alimentação
               </div>
 
-              <h1 className="animate-enter animation-delay-100 max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
+              <h1 className="max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
                 Cardápio digital profissional para vender direto.
                 <span className="mt-3 block text-orange-300">
-                  Edite no painel, receba no seu canal e não pague comissão por pedido.
+                  Escolha um template, edite no painel e publique sem depender de desenvolvedor.
                 </span>
               </h1>
 
-              <p className="animate-enter animation-delay-200 mt-6 max-w-2xl text-lg leading-8 text-white/90 md:text-xl">
-                Para restaurantes, pizzarias, hamburguerias, quiosques, cafeterias, açaíterias e
-                operações de alimentação que querem vender online com mais autonomia.
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 md:text-xl">
+                Para restaurantes e operações de alimentação que querem manter o cardápio certo,
+                atualizar tudo em poucos passos e receber pedidos no próprio canal.
               </p>
 
-              <div className="animate-enter animation-delay-300 mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/templates"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:bg-orange-600"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-orange-500/30 transition-colors hover:bg-orange-600"
                 >
                   <Eye className="h-5 w-5" />
                   Ver os 7 templates
@@ -239,25 +167,19 @@ export default function Home() {
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3.5 text-base font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
                 >
                   <Store className="h-5 w-5" />
-                  Quero vender no meu canal
+                  Ver planos
                 </Link>
               </div>
 
               <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-                <div className="animate-enter animation-delay-300">
-                  <DarkMetricCard value="7" label="templates profissionais" />
-                </div>
-                <div className="animate-enter animation-delay-400">
-                  <DarkMetricCard value="painel" label="visual de edição" />
-                </div>
-                <div className="animate-enter animation-delay-500">
-                  <DarkMetricCard value="0%" label="de comissão sobre pedidos" />
-                </div>
+                <DarkMetricCard value="7" label="templates profissionais" />
+                <DarkMetricCard value="painel" label="simples de editar" />
+                <DarkMetricCard value="0%" label="de comissão sobre pedidos" />
               </div>
             </div>
 
             <div className="flex items-end justify-end">
-              <div className="animate-enter animation-delay-200 animate-float-gentle w-full max-w-xl rounded-4xl border border-white/12 bg-black/20 p-4 shadow-2xl shadow-black/30 backdrop-blur-md md:p-5">
+              <div className="w-full max-w-xl rounded-4xl border border-white/12 bg-black/20 p-4 shadow-2xl shadow-black/30 backdrop-blur-md md:p-5">
                 <div className="overflow-hidden rounded-[1.6rem] border border-white/12 bg-white/95 shadow-xl">
                   <Image
                     src={heroTemplate.image}
@@ -266,7 +188,7 @@ export default function Home() {
                     height={576}
                     className="h-64 w-full object-cover md:h-72"
                   />
-                  <div className="animate-glow-drift p-6">
+                  <div className="p-6">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
                         <p className="text-foreground/70 text-xs font-semibold tracking-[0.18em] uppercase">
@@ -282,7 +204,7 @@ export default function Home() {
                     </div>
 
                     <p className="text-foreground/80 text-sm leading-6">
-                      Atualize preços, fotos, categorias e destaques em um painel simples, sem
+                      Atualize preços, fotos, categorias e promoções em um painel simples, sem
                       depender de desenvolvedor para manter o cardápio em dia.
                     </p>
 
@@ -327,7 +249,7 @@ export default function Home() {
                 <Link
                   key={template.slug}
                   href={`/templates/${template.slug}`}
-                  className="animate-enter-fast inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium text-white backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/15"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/15"
                 >
                   <Icon className="h-4 w-4" />
                   {template.name}
@@ -335,6 +257,29 @@ export default function Home() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      <section id="beneficios" className="container-premium py-12 md:py-16">
+        <div className="mb-8 max-w-2xl">
+          <p className="text-sm font-semibold tracking-[0.18em] text-orange-600 uppercase">
+            Benefícios em destaque
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
+            Simples de editar e simples de manter.
+          </h2>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {HIGHLIGHT_BENEFITS.map((benefit) => (
+            <article
+              key={benefit.title}
+              className="border-border bg-card rounded-[1.75rem] border p-6 shadow-sm"
+            >
+              <h3 className="text-xl font-semibold">{benefit.title}</h3>
+              <p className="text-foreground/80 mt-3 text-base leading-7">{benefit.description}</p>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -361,15 +306,10 @@ export default function Home() {
             return (
               <article
                 key={template.slug}
-                className="group animate-enter border-border bg-card hover:shadow-premium overflow-hidden rounded-[1.75rem] border shadow-sm transition-all duration-300 hover:-translate-y-1"
+                className="border-border bg-card hover:shadow-premium overflow-hidden rounded-[1.75rem] border shadow-sm transition-shadow"
               >
                 <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src={template.image}
-                    alt={template.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  <Image src={template.image} alt={template.name} fill className="object-cover" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/10 to-transparent" />
                   <div className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-3">
                     <div>
@@ -448,7 +388,7 @@ export default function Home() {
               return (
                 <div
                   key={feature.title}
-                  className="animate-enter rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                  className="rounded-3xl border border-white/10 bg-white/5 p-6"
                 >
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/15 text-orange-300">
                     <Icon className="h-5 w-5" />
@@ -472,8 +412,8 @@ export default function Home() {
               Escolha, edite e publique.
             </h2>
             <p className="text-foreground/80 mt-4 max-w-lg text-base leading-7">
-              Você escolhe um template profissional, edita tudo pelo painel visual e publica seu
-              canal próprio para receber pedidos sem depender de desenvolvedor.
+              Você escolhe um template profissional, edita no painel e publica seu canal próprio
+              para receber pedidos sem depender de desenvolvedor.
             </p>
 
             <div className="border-border mt-8 rounded-[1.75rem] border bg-linear-to-br from-orange-50 to-white p-6 shadow-sm">
@@ -482,9 +422,7 @@ export default function Home() {
                   <Rocket className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-foreground text-sm font-semibold">
-                    Venda com mais autonomia
-                  </p>
+                  <p className="text-foreground text-sm font-semibold">Venda com mais autonomia</p>
                   <p className="text-foreground/80 text-sm">
                     Atualize preços, fotos, categorias e promoções com rapidez, reduza dependência
                     de aplicativos e mantenha mais controle sobre a operação.
@@ -496,7 +434,7 @@ export default function Home() {
                   href="/ofertas"
                   className="bg-foreground text-background inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold"
                 >
-                  Ver ofertas
+                  Ver planos
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
@@ -516,7 +454,7 @@ export default function Home() {
             {PROCESS_STEPS.map((step) => (
               <div
                 key={step.step}
-                className="animate-enter border-border bg-card rounded-[1.75rem] border p-6 shadow-sm"
+                className="border-border bg-card rounded-[1.75rem] border p-6 shadow-sm"
               >
                 <div className="flex items-start gap-5">
                   <div className="bg-secondary text-foreground flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-semibold">
@@ -567,7 +505,7 @@ export default function Home() {
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
                 <ShoppingBag className="h-4 w-4" />
-                Quero vender no meu canal
+                Ver planos
               </Link>
             </div>
           </div>
@@ -577,99 +515,11 @@ export default function Home() {
   )
 }
 
-function MetricCard({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="border-border rounded-[1.25rem] border bg-white/90 p-4 shadow-sm backdrop-blur-sm">
-      <div className="text-foreground text-2xl font-semibold">{value}</div>
-      <div className="text-muted-foreground mt-1 text-sm">{label}</div>
-    </div>
-  )
-}
-
 function DarkMetricCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-[1.25rem] border border-white/12 bg-white/10 p-4 shadow-sm backdrop-blur-md">
       <div className="text-2xl font-semibold text-white">{value}</div>
       <div className="mt-1 text-sm text-white/70">{label}</div>
-    </div>
-  )
-}
-
-function ForWhoCard({ icon, title }: { icon: React.ReactNode; title: string }) {
-  return (
-    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-lg border p-5 text-center transition-shadow hover:shadow-md">
-      <div className="text-primary">{icon}</div>
-      <p className="text-foreground font-semibold">{title}</p>
-    </div>
-  )
-}
-
-function BenefitItem({ text }: { text: string }) {
-  return (
-    <div className="flex items-center gap-3 p-3">
-      <CheckCircle className="text-primary h-5 w-5 shrink-0" />
-      <p className="text-foreground">{text}</p>
-    </div>
-  )
-}
-
-function ManagementCard({
-  icon,
-  title,
-  description,
-  color,
-  bgColor,
-}: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  color: string
-  bgColor: string
-}) {
-  return (
-    <div className="border-border bg-card hover:border-primary/50 rounded-xl border p-5 transition-all hover:shadow-md">
-      <div
-        className={`flex h-12 w-12 items-center justify-center rounded-xl ${bgColor} ${color} mb-4`}
-      >
-        {icon}
-      </div>
-      <h3 className="text-foreground mb-1 font-bold">{title}</h3>
-      <p className="text-muted-foreground text-sm">{description}</p>
-    </div>
-  )
-}
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-  color,
-  bgColor,
-}: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  color: string
-  bgColor: string
-}) {
-  return (
-    <div className="border-border bg-card hover:border-primary/50 rounded-2xl border-2 p-6 text-center transition-all hover:shadow-lg">
-      <div
-        className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl ${bgColor} ${color} mb-4`}
-      >
-        {icon}
-      </div>
-      <h3 className="text-foreground mb-2 text-lg font-bold">{title}</h3>
-      <p className="text-muted-foreground text-sm">{description}</p>
-    </div>
-  )
-}
-
-function FAQItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <div className="border-border bg-card rounded-xl border p-5">
-      <h4 className="text-foreground mb-2 font-bold">{question}</h4>
-      <p className="text-muted-foreground text-sm">{answer}</p>
     </div>
   )
 }

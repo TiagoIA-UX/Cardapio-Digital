@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   Check,
   CheckCircle,
   Clock,
   MessageCircle,
+  PiggyBank,
   Shield,
   Smartphone,
   Sparkles,
@@ -53,29 +53,26 @@ const BENEFIT_CARDS = [
     icon: Clock,
     title: 'Mais agilidade para manter o cardápio sempre correto',
     text: 'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
-    footer: '⏱️ Atualizações rápidas no dia a dia',
+    footer: 'Atualizações rápidas no dia a dia',
+  },
+  {
+    icon: PiggyBank,
+    title: 'Mais economia com desenvolvimento',
+    text: 'O restaurante ganha autonomia para operar o próprio cardápio e evita gastos recorrentes com ajustes que normalmente dependeriam de programador.',
+    footer: 'Menos custo recorrente com ajustes simples',
   },
   {
     icon: Smartphone,
-    title: 'Editor visual para atualizar o cardápio com autonomia',
-    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, sem precisar contratar desenvolvedor para mudanças simples.',
-    footer: '📱 Painel simples, inclusive no celular',
+    title: 'Todos os templates são fáceis de editar',
+    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, com uma estrutura simples de usar inclusive no celular.',
+    footer: 'Painel simples para a rotina do restaurante',
   },
   {
     icon: MessageCircle,
-    title: 'Pedidos organizados no seu próprio canal',
-    text: 'O cliente escolhe, envia o pedido e sua equipe recebe tudo com mais clareza no WhatsApp, sem intermediação desnecessária e sem comissão sobre os pedidos.',
-    footer: '💸 0% de comissão sobre os pedidos do seu cardápio',
+    title: 'O restaurante não precisa de desenvolvedor',
+    text: 'Você mantém o cardápio, organiza promoções e publica mudanças no seu próprio ritmo, sem depender de suporte técnico para cada ajuste.',
+    footer: 'Mais autonomia para operar o cardápio',
   },
-] as const
-
-const STAGGER_DELAY_CLASSES = [
-  '[transition-delay:0ms]',
-  '[transition-delay:100ms]',
-  '[transition-delay:200ms]',
-  '[transition-delay:300ms]',
-  '[transition-delay:400ms]',
-  '[transition-delay:500ms]',
 ] as const
 
 // ─── Bloco 4 — Planos (preços variam por template — ver /precos) ───────────────
@@ -88,13 +85,14 @@ const PLANS = [
     iconBg: 'bg-blue-500/10',
     badge: null,
     titulo: 'Faça Você Mesmo',
-    subtitulo: 'Ideal para quem quer começar rápido e ter autonomia total para editar o cardápio no painel.',
+    subtitulo:
+      'Ideal para quem quer começar rápido e ter autonomia total para editar o cardápio no painel.',
     precoPix: 197,
     precoCartao: 237,
     parcelas: 3,
     parcelaValor: 79,
     precoLabel: 'a partir de',
-    href: '/templates',
+    href: '/ofertas#self-service',
     hrefPrecos: '/precos',
     ariaLabel: 'Escolher plano Faça Você Mesmo a partir de 197 reais no PIX',
     ctaTexto: 'Quero começar com autonomia',
@@ -116,13 +114,14 @@ const PLANS = [
     iconBg: 'bg-primary/10',
     badge: '⭐ MAIS POPULAR',
     titulo: 'Feito Pra Você',
-    subtitulo: 'Ideal para quem quer entrar no ar com mais rapidez e contar com a implantação conduzida pela equipe.',
+    subtitulo:
+      'Ideal para quem quer entrar no ar com mais rapidez e contar com a implantação conduzida pela equipe.',
     precoPix: 497,
     precoCartao: 597,
     parcelas: 3,
     parcelaValor: 199,
     precoLabel: 'a partir de',
-    href: '/templates',
+    href: '/ofertas#feito-pra-voce',
     hrefPrecos: '/precos',
     ariaLabel: 'Escolher plano Feito Pra Você a partir de 497 reais no PIX',
     ctaTexto: 'Quero que a equipe implante',
@@ -137,41 +136,14 @@ const PLANS = [
   },
 ] as const
 
-/** Hook: dispara animação quando elemento entra na viewport */
-function useInView(threshold = 0.08) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isInView, setIsInView] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) setIsInView(true)
-      },
-      { threshold }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-
-  return { ref, isInView }
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 export default function SecaoConversao() {
-  const { ref: sectionRef, isInView } = useInView(0.08)
-
   return (
     <section
-      ref={sectionRef}
       id="conversao"
       role="region"
       aria-labelledby="conversao-heading"
-      className={cn(
-        'border-border bg-muted/30 border-t px-4 py-12 transition-all duration-700 md:py-16',
-        isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-      )}
+      className="border-border bg-muted/30 border-t px-4 py-12 md:py-16"
     >
       <div className="mx-auto max-w-4xl">
         {/* ═══════════════════════════════════════════════════════════════════
@@ -185,16 +157,14 @@ export default function SecaoConversao() {
             id="conversao-heading"
             className="text-foreground mx-auto mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl"
           >
-            Mais autonomia para atualizar o cardápio.
+            Atualize o cardápio sem complicação.
             <br />
-            <span className="text-primary">
-              Mais controle para vender no seu canal.
-            </span>
+            <span className="text-primary">Venda no seu canal com mais autonomia.</span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
             Você começa com um template profissional já adaptado ao seu tipo de operação,
-            personaliza o cardápio no painel visual e publica um canal próprio para receber pedidos
-            sem depender de desenvolvedor.{' '}
+            personaliza o cardápio em um painel simples e publica um canal próprio para receber
+            pedidos sem depender de desenvolvedor.{' '}
             <span className="text-foreground font-medium">
               Se preferir, nossa equipe também pode conduzir a implantação inicial para você.
             </span>
@@ -215,11 +185,7 @@ export default function SecaoConversao() {
                 {COMPARISON_ROWS.map((row, i) => (
                   <li
                     key={row.outros}
-                    className={cn(
-                      'text-muted-foreground flex items-start gap-2 text-sm line-through transition-all duration-500',
-                      STAGGER_DELAY_CLASSES[i],
-                      isInView ? 'opacity-50' : 'opacity-0'
-                    )}
+                    className="text-muted-foreground flex items-start gap-2 text-sm line-through opacity-50"
                   >
                     <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                     {row.outros}
@@ -237,11 +203,7 @@ export default function SecaoConversao() {
                 {COMPARISON_ROWS.map((row, i) => (
                   <li
                     key={row.nos}
-                    className={cn(
-                      'text-foreground flex items-start gap-2 text-sm font-medium transition-all duration-500',
-                      STAGGER_DELAY_CLASSES[i],
-                      isInView ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'
-                    )}
+                    className="text-foreground flex items-start gap-2 text-sm font-medium"
                   >
                     <CheckCircle className="text-primary mt-0.5 h-5 w-5 shrink-0" aria-hidden />
                     <span>{row.nos}</span>
@@ -255,13 +217,13 @@ export default function SecaoConversao() {
         {/* ═══════════════════════════════════════════════════════════════════
             BLOCO 3 — Cards de benefício com prova real
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="mb-12 grid gap-6 md:mb-16 md:grid-cols-3">
+        <div className="mb-12 grid gap-6 md:mb-16 md:grid-cols-2">
           {BENEFIT_CARDS.map((card) => {
             const Icon = card.icon
             return (
               <div
                 key={card.title}
-                className="border-border bg-card hover:border-primary/40 rounded-xl border p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                className="border-border bg-card rounded-xl border p-6 transition-shadow duration-200 hover:shadow-lg"
               >
                 <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
                   <Icon className="h-6 w-6" aria-hidden />
@@ -284,10 +246,11 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 md:mb-16">
           <h3 className="text-foreground mb-2 text-center text-2xl font-bold">
-            Escolha a forma de contratação
+            Escolha um plano para começar
           </h3>
           <p className="text-muted-foreground mb-8 text-center text-sm">
-            Escolha a forma de contratação que faz mais sentido para a sua operação.
+            Os dois caminhos levam para a mesma plataforma. Você escolhe se quer mais autonomia ou
+            implantação assistida.
           </p>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -386,9 +349,9 @@ export default function SecaoConversao() {
                     href={plan.href}
                     aria-label={plan.ariaLabel}
                     className={cn(
-                      'flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 font-semibold shadow transition-all',
+                      'flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 font-semibold shadow transition-colors',
                       plan.destaque
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 text-base hover:scale-[1.02]'
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 text-base'
                         : 'border-border text-foreground bg-background hover:bg-secondary border text-sm'
                     )}
                   >
@@ -419,9 +382,9 @@ export default function SecaoConversao() {
                 Garantia de 30 dias com processo simples
               </h3>
               <p className="text-muted-foreground mt-2 leading-6">
-                Você pode contratar, usar a plataforma na rotina do seu negócio e validar se ela
-                faz sentido para a sua operação. Se entender que não atende ao que precisa, o
-                reembolso é integral e sem burocracia.
+                Você pode contratar, usar a plataforma na rotina do seu negócio e validar se ela faz
+                sentido para a sua operação. Se entender que não atende ao que precisa, o reembolso
+                é integral e sem burocracia.
               </p>
               <p className="text-muted-foreground mt-4 text-sm">
                 🔒 Mais segurança para decidir com confiança.
