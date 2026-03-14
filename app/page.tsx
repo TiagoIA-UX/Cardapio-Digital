@@ -61,15 +61,15 @@ const PLATFORM_FEATURES = [
   },
   {
     icon: Palette,
-    title: 'O dono edita tudo no painel — zero desenvolvedor',
+    title: 'Adicione produtos, edite preços, troque fotos — no painel',
     description:
-      'Altere preços, fotos, categorias, produtos e destaques diretamente no painel. Nada de chamar programador para ajustes do dia a dia.',
+      'O dono adiciona itens, altera preços, cria categorias, ativa ou pausa produtos. Tudo em um painel visual simples, sem chamar desenvolvedor.',
   },
   {
     icon: TabletSmartphone,
-    title: 'Painel simples no celular e no computador',
+    title: 'Painel no celular e no computador',
     description:
-      'O dono faz tudo sozinho: atualiza o cardápio, cadastra produtos e publica mudanças de qualquer lugar, sem suporte técnico.',
+      'Atualize o cardápio, cadastre produtos e publique mudanças de qualquer lugar. Pensado para donos sem conhecimento técnico.',
   },
   {
     icon: Shield,
@@ -81,14 +81,14 @@ const PLATFORM_FEATURES = [
 
 const HIGHLIGHT_BENEFITS = [
   {
-    title: 'O dono faz tudo no painel — sem desenvolvedor',
+    title: 'Adicione produtos, edite preços, troque fotos — no painel',
     description:
-      'Atualize preços, fotos, categorias e promoções em poucos cliques. Mudou algo? Você altera no painel e publica na hora. Zero dependência de programador.',
+      'O dono adiciona itens, altera preços, cria categorias e ativa ou pausa produtos. Tudo em poucos cliques, com atualização em tempo real. Sem desenvolvedor.',
   },
   {
     title: 'Mais economia e autonomia total',
     description:
-      'O restaurante opera o próprio cardápio sozinho. Evita gastos recorrentes com ajustes que antes exigiriam desenvolvedor. O dono resolve tudo pelo painel.',
+      'O restaurante opera o próprio cardápio sozinho. Evita gastos recorrentes com ajustes que antes exigiriam programador. O dono resolve tudo pelo painel.',
   },
 ] as const
 
@@ -101,9 +101,9 @@ const PROCESS_STEPS = [
   },
   {
     step: '02',
-    title: 'Edite tudo no painel — você mesmo, sem desenvolvedor',
+    title: 'Adicione produtos, edite preços, troque fotos — no painel',
     description:
-      'Personalize produtos, preços, fotos, categorias, banners e textos diretamente no painel. O dono faz tudo sozinho, sem chamar programador.',
+      'O dono adiciona itens, altera preços, cria categorias e publica mudanças. Painel visual simples, pensado para quem não tem conhecimento técnico.',
   },
   {
     step: '03',
@@ -145,15 +145,15 @@ export default function Home() {
               <h1 className="max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
                 Cardápio digital profissional para vender direto.
                 <span className="mt-3 block text-orange-300">
-                  O dono faz tudo no painel — edita preços, fotos e produtos sem precisar de
+                  Adicione produtos, edite preços, troque fotos — tudo no painel, sem
                   desenvolvedor.
                 </span>
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 md:text-xl">
-                Para restaurantes que querem autonomia total: manter o cardápio certo, atualizar
-                tudo em poucos cliques e receber pedidos no próprio canal — sem depender de
-                programador.
+                O dono controla tudo: adicionar itens, alterar preços, criar categorias, ativar ou
+                pausar produtos. Painel visual simples, pensado para quem não tem conhecimento
+                técnico.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -194,10 +194,10 @@ export default function Home() {
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
                         <p className="text-foreground/70 text-xs font-semibold tracking-[0.18em] uppercase">
-                          O dono faz tudo no painel
+                          O que o dono faz no painel
                         </p>
                         <h2 className="text-foreground mt-1 text-2xl font-semibold">
-                          Edite preços, fotos e produtos — sem desenvolvedor
+                          Adiciona produtos, edita preços, troca fotos
                         </h2>
                       </div>
                       <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
@@ -206,19 +206,19 @@ export default function Home() {
                     </div>
 
                     <p className="text-foreground/80 text-sm leading-6">
-                      O dono atualiza o cardápio sozinho pelo painel. Preços, fotos, categorias e
-                      promoções — tudo em poucos cliques, sem depender de programador.
+                      Cria categorias, ativa ou pausa itens, atualiza em tempo real. Painel simples
+                      para donos sem conhecimento técnico — sem desenvolvedor.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">
-                        O dono edita tudo
+                        Adicionar produtos
                       </span>
                       <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">
-                        Pelo celular ou PC
+                        Editar preços
                       </span>
                       <span className="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700">
-                        Zero desenvolvedor
+                        Trocar fotos
                       </span>
                     </div>
 

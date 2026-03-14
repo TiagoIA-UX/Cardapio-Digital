@@ -1,67 +1,101 @@
-# Links para auditoria do Cardápio Digital
+# Resposta para auditoria — Cardápio Digital
 
-> **Importante:** O domínio é `card-pio-digital-seven` (com hífen em "card-pio").  
-> Se aparecer "Money Digital", verifique: limpe o cache ou use aba anônima. São projetos diferentes na Vercel.
+> Texto refinado para enviar ao auditor de forma profissional.
 
 ---
 
-## 🔹 Link da landing page
+## Confirmação dos links do Cardápio Digital
+
+O domínio correto do sistema é:
 
 ```
 https://card-pio-digital-seven.vercel.app
 ```
 
+**Observação importante:** O domínio possui hífen em **card-pio**.
+
+Caso apareça algum projeto diferente (como *Money Digital*), provavelmente é **cache do navegador ou URL incorreta**, pois são projetos diferentes hospedados na Vercel.
+
+Recomendamos acessar em **aba anônima** ou limpar o cache do navegador.
+
 ---
 
-## 🔹 Link do painel do restaurante (requer login)
+## Links para auditoria
+
+### Landing page
+
+```
+https://card-pio-digital-seven.vercel.app
+```
+
+### Login
+
+```
+https://card-pio-digital-seven.vercel.app/login
+```
+
+### Painel do restaurante
 
 ```
 https://card-pio-digital-seven.vercel.app/painel
 ```
 
-- **Login:** https://card-pio-digital-seven.vercel.app/login  
-- Após login, o dono acessa: Dashboard, Editor, Produtos, Pedidos, QR Code, Configurações
-
----
-
-## 🔹 Link do cardápio público (exemplo)
-
-Cada restaurante tem um slug único. Exemplo de formato:
+### Cardápio público (exemplo)
 
 ```
 https://card-pio-digital-seven.vercel.app/r/[slug-do-restaurante]
 ```
 
-Para ver um cardápio de exemplo, é necessário ter um restaurante cadastrado. O slug é definido na criação (ex: `pizzaria-do-joao`).
+---
+
+## Funcionamento do sistema
+
+O sistema foi projetado para que **o próprio dono do restaurante controle tudo diretamente no painel**, sem precisar contratar desenvolvedor.
+
+No painel é possível:
+
+- adicionar produtos
+- editar preços
+- trocar fotos
+- criar categorias
+- ativar ou pausar itens
+- criar promoções
+- atualizar o cardápio em tempo real
+
+Tudo é feito em um **painel visual simples**, pensado para donos de restaurante que **não possuem conhecimento técnico**.
+
+Ou seja: **o dono faz tudo no painel, sem depender de desenvolvedor.**
 
 ---
 
-## 🔹 Outras rotas úteis
+## Posicionamento do produto
 
-| Rota | Descrição |
-|------|-----------|
-| `/templates` | Catálogo dos 7 templates |
-| `/ofertas` | Planos e preços |
-| `/precos` | Tabela completa de preços |
-| `/login` | Login do restaurante |
-| `/cadastro` | Cadastro de novo usuário |
+O sistema é um **cardápio digital com sistema de pedidos para restaurantes com entrega própria**.
 
----
+Ele não é marketplace e não intermedia entregas.
 
-## ✅ O que o painel permite (sem desenvolvedor)
+O objetivo é permitir que o restaurante:
 
-- Editar cardápio (preços, fotos, categorias, produtos)
-- Alterar preços
-- Adicionar/remover produtos
-- Ativar/desativar itens
-- Configurar logo, banner, WhatsApp, endereço
-- Ver pedidos e status
-- Gerar QR Code por mesa
+- receba pedidos diretamente dos clientes
+- gerencie o cardápio sozinho
+- utilize sua própria equipe de entrega
 
 ---
 
-## ✅ Posicionamento
+## Pilares do posicionamento
 
-- **0% de comissão** sobre pedidos
-- **Sem motoboy** — para quem já tem entrega própria
-- **Canal próprio** — pedidos vão direto para o WhatsApp do restaurante
+1. **Sem comissão** sobre pedidos
+2. **Sem desenvolvedor** — o dono controla tudo no painel
+3. **Controle total** — canal próprio, pedidos direto no WhatsApp
+
+---
+
+## Próximos passos (conversão)
+
+**Dica de produto:** A landing converte mais quando mostra o painel funcionando:
+
+- Vídeo curto do painel em ação
+- Edição de produto em 5 segundos
+- Troca de preço ao vivo
+
+Poucos sistemas no Brasil mostram isso — é uma oportunidade de diferencial.
