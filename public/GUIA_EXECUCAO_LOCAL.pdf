@@ -1,0 +1,137 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 2663 >>
+stream
+BT
+/F1 11 Tf
+0 g
+/F1 20 Tf
+1 0 0 1 52 784 Tm (Guia rapido para rodar o Cardapio Digital) Tj
+1 0 0 1 52 754 Tm (localmente) Tj
+/F1 11 Tf
+1 0 0 1 52 714 Tm (Este guia foi preparado para Windows e para uso local do projeto principal que) Tj
+1 0 0 1 52 698 Tm (esta na raiz do repositorio.) Tj
+/F1 14 Tf
+1 0 0 1 52 679 Tm (1. O que voce precisa) Tj
+/F1 11 Tf
+1 0 0 1 52 651 Tm (- Node.js 20 ou superior) Tj
+/F1 11 Tf
+1 0 0 1 52 632 Tm (- npm 10 ou superior) Tj
+/F1 11 Tf
+1 0 0 1 52 613 Tm (- Docker Desktop se quiser abrir em Dev Container) Tj
+/F1 11 Tf
+1 0 0 1 52 594 Tm (- Acesso ao Supabase e, se for testar pagamento, ao Mercado Pago Developers) Tj
+/F1 14 Tf
+1 0 0 1 52 575 Tm (2. Rodando sem Docker) Tj
+/F1 11 Tf
+1 0 0 1 52 547 Tm (- Abra um terminal na pasta raiz do projeto: C:/Users/omago/01CardapioDigital) Tj
+/F1 11 Tf
+1 0 0 1 52 528 Tm (- Instale as dependencias com: npm install) Tj
+/F1 11 Tf
+1 0 0 1 52 509 Tm (- Se ainda nao existir .env.local, gere com: npm run setup:local) Tj
+/F1 11 Tf
+1 0 0 1 52 490 Tm (- Como alternativa, copie .env.example para .env.local e preencha as variaveis do) Tj
+1 0 0 1 52 474 Tm (Supabase.) Tj
+/F1 11 Tf
+1 0 0 1 52 455 Tm (- Para pagamentos de teste, mantenha MERCADO_PAGO_ENV=sandbox e) Tj
+1 0 0 1 52 439 Tm (NEXT_PUBLIC_MERCADO_PAGO_ENV=sandbox.) Tj
+/F1 11 Tf
+1 0 0 1 52 420 Tm (- Valide o ambiente com: npm run doctor) Tj
+/F1 11 Tf
+1 0 0 1 52 401 Tm (- Suba o servidor local com: npm run dev) Tj
+/F1 11 Tf
+1 0 0 1 52 382 Tm (- Abra o navegador em: http://localhost:3000) Tj
+/F1 14 Tf
+1 0 0 1 52 363 Tm (3. Rodando com Docker e Dev Container) Tj
+/F1 11 Tf
+1 0 0 1 52 335 Tm (- Confirme que o Docker Desktop esta aberto e com o backend ativo.) Tj
+/F1 11 Tf
+1 0 0 1 52 316 Tm (- No VS Code, use o comando Dev Containers: Reopen in Container.) Tj
+/F1 11 Tf
+1 0 0 1 52 297 Tm (- Quando o container abrir, rode: npm install) Tj
+/F1 11 Tf
+1 0 0 1 52 278 Tm (- Depois rode: npm run dev) Tj
+/F1 11 Tf
+1 0 0 1 52 259 Tm (- Se a porta 3000 for encaminhada, abra http://localhost:3000 no navegador.) Tj
+/F1 14 Tf
+1 0 0 1 52 240 Tm (4. Scripts importantes do projeto) Tj
+/F1 11 Tf
+1 0 0 1 52 212 Tm (- npm run dev -> sobe o projeto em modo desenvolvimento) Tj
+/F1 11 Tf
+1 0 0 1 52 193 Tm (- npm run dev:https -> sobe com HTTPS local) Tj
+/F1 11 Tf
+1 0 0 1 52 174 Tm (- npm run doctor -> verifica variaveis e ambiente) Tj
+/F1 11 Tf
+1 0 0 1 52 155 Tm (- npm run lint -> valida o codigo com ESLint) Tj
+/F1 11 Tf
+1 0 0 1 52 136 Tm (- npm run audit:full -> roda build, lint e testes) Tj
+/F1 14 Tf
+1 0 0 1 52 117 Tm (5. Primeiros testes apos subir o sistema) Tj
+/F1 11 Tf
+1 0 0 1 52 89 Tm (- Acesse a home em http://localhost:3000) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 1022 >>
+stream
+BT
+/F1 11 Tf
+0 g
+/F1 11 Tf
+1 0 0 1 52 784 Tm (- Teste o login em /login) Tj
+/F1 11 Tf
+1 0 0 1 52 765 Tm (- Se necessario, crie o restaurante no painel) Tj
+/F1 11 Tf
+1 0 0 1 52 746 Tm (- Cadastre produtos e confira o cardapio publico) Tj
+/F1 14 Tf
+1 0 0 1 52 727 Tm (6. Problemas comuns) Tj
+/F1 11 Tf
+1 0 0 1 52 699 Tm (- Se localhost nao abrir, confirme que o terminal mostra que o Next.js iniciou sem) Tj
+1 0 0 1 52 683 Tm (erro.) Tj
+/F1 11 Tf
+1 0 0 1 52 664 Tm (- Se o Docker falhar, verifique se o servico com.docker.service esta em execucao.) Tj
+/F1 11 Tf
+1 0 0 1 52 645 Tm (- Se o login Google voltar para uma URL com code, revise as variaveis do Supabase) Tj
+1 0 0 1 52 629 Tm (e o redirect configurado.) Tj
+/F1 11 Tf
+1 0 0 1 52 610 Tm (- Se houver erro de ambiente, rode novamente: npm run doctor) Tj
+/F1 14 Tf
+1 0 0 1 52 591 Tm (Resumo rapido) Tj
+/F1 11 Tf
+1 0 0 1 52 563 Tm (Fluxo minimo: npm install, configurar .env.local, npm run doctor, npm run dev e) Tj
+1 0 0 1 52 547 Tm (abrir http://localhost:3000.) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000002912 00000 n 
+0000003038 00000 n 
+0000004112 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+4238
+%%EOF

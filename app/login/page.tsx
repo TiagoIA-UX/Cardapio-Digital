@@ -12,12 +12,25 @@ import { PizzaIcon, Loader2, ShieldCheck } from 'lucide-react'
 // Redirects legados de compra devem cair no painel para evitar rotas removidas.
 const LEGACY_PURCHASE_REDIRECTS = ['/checkout', '/checkout-novo', '/finalizar-compra']
 
+function isSafeRedirect(path: string): boolean {
+  if (!path.startsWith('/') || path.startsWith('//')) {
+    return false
+  }
+
+  if (path.includes('\r') || path.includes('\n')) {
+    return false
+  }
+
+  return !LEGACY_PURCHASE_REDIRECTS.some(
+    (legacyPath) => path === legacyPath || path.startsWith(`${legacyPath}/`)
+  )
+}
+
 function LoginForm() {
   const searchParams = useSearchParams()
   const { toast } = useToast()
   const rawRedirect = searchParams.get('redirect') || '/painel'
-  // Ignorar redirects inválidos
-  const redirectTo = LEGACY_PURCHASE_REDIRECTS.includes(rawRedirect) ? '/painel' : rawRedirect
+  const redirectTo = isSafeRedirect(rawRedirect) ? rawRedirect : '/painel'
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -42,7 +55,8 @@ function LoginForm() {
       console.error('Erro no login Google:', error)
       toast({
         title: 'Erro ao fazer login',
-        description: 'Não foi possível conectar com o Google. Verifique se o Google OAuth está configurado.',
+        description:
+          'Não foi possível conectar com o Google. Verifique se o Google OAuth está configurado.',
         variant: 'destructive',
       })
       setIsLoading(false)
@@ -72,7 +86,7 @@ function LoginForm() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full h-14 text-lg bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300 shadow-sm"
+            className="h-14 w-full border-2 border-gray-200 bg-white text-lg text-gray-700 shadow-sm hover:border-gray-300 hover:bg-gray-50"
           >
             {isLoading ? (
               <Loader2 className="mr-3 h-6 w-6 animate-spin" />
@@ -106,9 +120,9 @@ function LoginForm() {
           </div>
 
           {/* Benefícios */}
-          <div className="rounded-lg bg-orange-50 p-4 space-y-2">
+          <div className="space-y-2 rounded-lg bg-orange-50 p-4">
             <p className="text-sm font-medium text-orange-800">Por que usar Google?</p>
-            <ul className="text-sm text-orange-700 space-y-1">
+            <ul className="space-y-1 text-sm text-orange-700">
               <li>✓ Login rápido com 1 clique</li>
               <li>✓ Verificação em 2 etapas automática</li>
               <li>✓ Sem precisar decorar senhas</li>

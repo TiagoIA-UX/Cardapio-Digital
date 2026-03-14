@@ -23,14 +23,9 @@ export default function TemplatesPage() {
           >
             ← Voltar
           </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/precos" className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
-              Ver Preços
-            </Link>
-            <Link href="/ofertas" className="text-primary text-sm font-medium hover:underline">
-              Ver Planos
-            </Link>
-          </div>
+          <Link href="/ofertas" className="text-primary text-sm font-medium hover:underline">
+            Ver planos
+          </Link>
         </div>
       </header>
 
@@ -52,7 +47,7 @@ export default function TemplatesPage() {
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
             >
               <Eye className="h-4 w-4" />
-              Comparar planos e valores
+              Ver planos
             </Link>
             {showDevUnlock && (
               <Link

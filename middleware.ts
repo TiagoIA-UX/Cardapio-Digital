@@ -96,10 +96,39 @@ function getClientIP(request: NextRequest): string {
   return forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
 }
 
+function getOauthRecoveryRedirect(request: NextRequest): URL | null {
+  const path = request.nextUrl.pathname
+  const code = request.nextUrl.searchParams.get('code')
+
+  if (!code || matchesRoute(path, '/auth/callback')) {
+    return null
+  }
+
+  const callbackUrl = new URL('/auth/callback', request.url)
+  callbackUrl.searchParams.set('code', code)
+
+  const explicitNext = getSafeRedirectTarget(request.nextUrl.searchParams.get('next'))
+  const remainingParams = new URLSearchParams(request.nextUrl.searchParams)
+  remainingParams.delete('code')
+  remainingParams.delete('next')
+
+  const currentTarget = `${path}${remainingParams.toString() ? `?${remainingParams.toString()}` : ''}`
+  const safeCurrentTarget = path === '/' ? null : getSafeRedirectTarget(currentTarget)
+
+  callbackUrl.searchParams.set('next', explicitNext || safeCurrentTarget || '/painel')
+
+  return callbackUrl
+}
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const clientIP = getClientIP(request)
   const isDev = process.env.NODE_ENV === 'development'
+  const oauthRecoveryRedirect = getOauthRecoveryRedirect(request)
+
+  if (oauthRecoveryRedirect) {
+    return NextResponse.redirect(oauthRecoveryRedirect)
+  }
 
   // ========================================
   // RATE LIMITING (apenas produção)
