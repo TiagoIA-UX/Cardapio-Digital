@@ -43,7 +43,7 @@ const COMPARISON_ROWS = [
   },
   {
     outros: 'Exigem desenvolvedor para ajustes simples',
-    nos: 'O dono atualiza preços, fotos e promoções no painel — sem desenvolvedor',
+    nos: 'O dono adiciona produtos, edita preços e troca fotos no painel',
   },
 ] as const
 
@@ -63,14 +63,14 @@ const BENEFIT_CARDS = [
   },
   {
     icon: Smartphone,
-    title: 'O dono edita tudo no painel — pelo celular ou PC',
-    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel. O dono faz tudo sozinho, sem chamar desenvolvedor.',
+    title: 'Adicione produtos, edite preços, troque fotos — no painel',
+    text: 'O dono adiciona itens, altera preços, cria categorias e ativa ou pausa produtos. Pelo celular ou PC, sem conhecimento técnico.',
     footer: 'Painel simples para a rotina do restaurante',
   },
   {
     icon: MessageCircle,
-    title: 'Zero desenvolvedor — o dono resolve tudo no painel',
-    text: 'Você mantém o cardápio, organiza promoções e publica mudanças no seu próprio ritmo. Tudo pelo painel, sem depender de programador ou suporte técnico.',
+    title: 'O dono controla tudo — sem desenvolvedor',
+    text: 'Adicione produtos, edite preços, troque fotos, crie promoções. Tudo pelo painel, no seu próprio ritmo, sem programador.',
     footer: 'Autonomia total para operar o cardápio',
   },
 ] as const
@@ -151,7 +151,7 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 text-center md:mb-16">
           <span className="border-primary/20 bg-primary/10 text-primary mb-4 inline-flex rounded-full border px-4 py-1.5 text-sm font-medium">
-            O dono faz tudo no painel. Sem desenvolvedor. 0% de comissão.
+            Adicione produtos, edite preços, troque fotos. 0% de comissão.
           </span>
           <h2
             id="conversao-heading"
@@ -159,12 +159,11 @@ export default function SecaoConversao() {
           >
             Atualize o cardápio sem complicação.
             <br />
-            <span className="text-primary">O dono edita tudo no painel — zero programador.</span>
+            <span className="text-primary">O dono controla tudo no painel — sem desenvolvedor.</span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-            Você começa com um template profissional, edita preços e produtos no painel e publica
-            um canal próprio para receber pedidos. O dono faz tudo sozinho, sem depender de
-            desenvolvedor.{' '}
+            Adicione produtos, edite preços, troque fotos, crie categorias. Tudo no painel, pensado
+            para donos sem conhecimento técnico. O dono faz tudo sozinho.{' '}
             <span className="text-foreground font-medium">
               Se preferir, nossa equipe também pode conduzir a implantação inicial para você.
             </span>
