@@ -42,8 +42,8 @@ const COMPARISON_ROWS = [
     nos: 'Mais economia e mais previsibilidade para o negócio',
   },
   {
-    outros: 'Exigem suporte para ajustes simples',
-    nos: 'Atualize preços, fotos e promoções em poucos passos',
+    outros: 'Exigem desenvolvedor para ajustes simples',
+    nos: 'O dono atualiza preços, fotos e promoções no painel — sem desenvolvedor',
   },
 ] as const
 
@@ -63,15 +63,15 @@ const BENEFIT_CARDS = [
   },
   {
     icon: Smartphone,
-    title: 'Todos os templates são fáceis de editar',
-    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel, com uma estrutura simples de usar inclusive no celular.',
+    title: 'O dono edita tudo no painel — pelo celular ou PC',
+    text: 'Altere preços, fotos, categorias, produtos e destaques diretamente no painel. O dono faz tudo sozinho, sem chamar desenvolvedor.',
     footer: 'Painel simples para a rotina do restaurante',
   },
   {
     icon: MessageCircle,
-    title: 'O restaurante não precisa de desenvolvedor',
-    text: 'Você mantém o cardápio, organiza promoções e publica mudanças no seu próprio ritmo, sem depender de suporte técnico para cada ajuste.',
-    footer: 'Mais autonomia para operar o cardápio',
+    title: 'Zero desenvolvedor — o dono resolve tudo no painel',
+    text: 'Você mantém o cardápio, organiza promoções e publica mudanças no seu próprio ritmo. Tudo pelo painel, sem depender de programador ou suporte técnico.',
+    footer: 'Autonomia total para operar o cardápio',
   },
 ] as const
 
@@ -151,7 +151,7 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 text-center md:mb-16">
           <span className="border-primary/20 bg-primary/10 text-primary mb-4 inline-flex rounded-full border px-4 py-1.5 text-sm font-medium">
-            Templates profissionais. Editor visual. 0% de comissão.
+            O dono faz tudo no painel. Sem desenvolvedor. 0% de comissão.
           </span>
           <h2
             id="conversao-heading"
@@ -159,12 +159,12 @@ export default function SecaoConversao() {
           >
             Atualize o cardápio sem complicação.
             <br />
-            <span className="text-primary">Venda no seu canal com mais autonomia.</span>
+            <span className="text-primary">O dono edita tudo no painel — zero programador.</span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-            Você começa com um template profissional já adaptado ao seu tipo de operação,
-            personaliza o cardápio em um painel simples e publica um canal próprio para receber
-            pedidos sem depender de desenvolvedor.{' '}
+            Você começa com um template profissional, edita preços e produtos no painel e publica
+            um canal próprio para receber pedidos. O dono faz tudo sozinho, sem depender de
+            desenvolvedor.{' '}
             <span className="text-foreground font-medium">
               Se preferir, nossa equipe também pode conduzir a implantação inicial para você.
             </span>

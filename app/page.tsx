@@ -61,15 +61,15 @@ const PLATFORM_FEATURES = [
   },
   {
     icon: Palette,
-    title: 'Todos os templates são fáceis de editar',
+    title: 'O dono edita tudo no painel — zero desenvolvedor',
     description:
-      'Altere preços, fotos, categorias, produtos e destaques em um painel simples, sem depender de programador para ajustes do dia a dia.',
+      'Altere preços, fotos, categorias, produtos e destaques diretamente no painel. Nada de chamar programador para ajustes do dia a dia.',
   },
   {
     icon: TabletSmartphone,
-    title: 'Painel simples de usar no celular',
+    title: 'Painel simples no celular e no computador',
     description:
-      'O painel foi desenhado para funcionar bem em desktop, tablet e mobile, facilitando a gestão durante a rotina do restaurante.',
+      'O dono faz tudo sozinho: atualiza o cardápio, cadastra produtos e publica mudanças de qualquer lugar, sem suporte técnico.',
   },
   {
     icon: Shield,
@@ -81,14 +81,14 @@ const PLATFORM_FEATURES = [
 
 const HIGHLIGHT_BENEFITS = [
   {
-    title: 'Mais agilidade para manter o cardápio sempre correto',
+    title: 'O dono faz tudo no painel — sem desenvolvedor',
     description:
-      'Mudou preço, acabou um item ou entrou uma promoção? Você atualiza em poucos passos e mantém o atendimento alinhado com a operação real.',
+      'Atualize preços, fotos, categorias e promoções em poucos cliques. Mudou algo? Você altera no painel e publica na hora. Zero dependência de programador.',
   },
   {
-    title: 'Mais economia com desenvolvimento',
+    title: 'Mais economia e autonomia total',
     description:
-      'O restaurante ganha autonomia para operar o próprio cardápio e evita gastos recorrentes com ajustes que normalmente dependeriam de programador.',
+      'O restaurante opera o próprio cardápio sozinho. Evita gastos recorrentes com ajustes que antes exigiriam desenvolvedor. O dono resolve tudo pelo painel.',
   },
 ] as const
 
@@ -101,9 +101,9 @@ const PROCESS_STEPS = [
   },
   {
     step: '02',
-    title: 'Edite o cardápio pelo painel visual',
+    title: 'Edite tudo no painel — você mesmo, sem desenvolvedor',
     description:
-      'Personalize produtos, preços, fotos, categorias, banners e textos sem depender de desenvolvedor.',
+      'Personalize produtos, preços, fotos, categorias, banners e textos diretamente no painel. O dono faz tudo sozinho, sem chamar programador.',
   },
   {
     step: '03',
@@ -145,13 +145,15 @@ export default function Home() {
               <h1 className="max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
                 Cardápio digital profissional para vender direto.
                 <span className="mt-3 block text-orange-300">
-                  Escolha um template, edite no painel e publique sem depender de desenvolvedor.
+                  O dono faz tudo no painel — edita preços, fotos e produtos sem precisar de
+                  desenvolvedor.
                 </span>
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 md:text-xl">
-                Para restaurantes e operações de alimentação que querem manter o cardápio certo,
-                atualizar tudo em poucos passos e receber pedidos no próprio canal.
+                Para restaurantes que querem autonomia total: manter o cardápio certo, atualizar
+                tudo em poucos cliques e receber pedidos no próprio canal — sem depender de
+                programador.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -192,10 +194,10 @@ export default function Home() {
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
                         <p className="text-foreground/70 text-xs font-semibold tracking-[0.18em] uppercase">
-                          Painel de edição em destaque
+                          O dono faz tudo no painel
                         </p>
                         <h2 className="text-foreground mt-1 text-2xl font-semibold">
-                          Edite seu cardápio no painel
+                          Edite preços, fotos e produtos — sem desenvolvedor
                         </h2>
                       </div>
                       <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
@@ -204,19 +206,19 @@ export default function Home() {
                     </div>
 
                     <p className="text-foreground/80 text-sm leading-6">
-                      Atualize preços, fotos, categorias e promoções em um painel simples, sem
-                      depender de desenvolvedor para manter o cardápio em dia.
+                      O dono atualiza o cardápio sozinho pelo painel. Preços, fotos, categorias e
+                      promoções — tudo em poucos cliques, sem depender de programador.
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">
-                        Atualização rápida
+                        O dono edita tudo
                       </span>
                       <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">
-                        Edição pelo celular
+                        Pelo celular ou PC
                       </span>
-                      <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700">
-                        Sem desenvolvedor
+                      <span className="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700">
+                        Zero desenvolvedor
                       </span>
                     </div>
 
