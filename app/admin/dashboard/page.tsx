@@ -126,7 +126,16 @@ export default function AdminDashboardPage() {
     )
   }
 
-  const { restaurantes, pedidos, ticketMedio, ativacao, produtos, templatesMaisUsados, restaurantesSemPedido, restaurantesEmRisco } = metrics
+  const {
+    restaurantes,
+    pedidos,
+    ticketMedio,
+    ativacao,
+    produtos,
+    templatesMaisUsados,
+    restaurantesSemPedido,
+    restaurantesEmRisco,
+  } = metrics
 
   return (
     <div className="bg-background min-h-screen">
@@ -139,12 +148,24 @@ export default function AdminDashboardPage() {
             </h1>
             <p className="text-muted-foreground text-sm">Dashboard secreto de métricas</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/admin"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
-              Gerenciar clientes
+              Clientes
+            </Link>
+            <Link
+              href="/admin/comissoes"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              Comissões
+            </Link>
+            <Link
+              href="/admin/equipe"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              Equipe
             </Link>
             <Link
               href="/painel"
@@ -223,7 +244,8 @@ export default function AdminDashboardPage() {
             <span className="text-foreground shrink-0 font-medium">{ativacao.taxa}%</span>
           </div>
           <p className="text-muted-foreground mt-2 text-sm">
-            {ativacao.comPrimeiroPedido} de {restaurantes.total} restaurantes receberam o primeiro pedido
+            {ativacao.comPrimeiroPedido} de {restaurantes.total} restaurantes receberam o primeiro
+            pedido
           </p>
         </div>
 

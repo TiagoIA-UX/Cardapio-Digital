@@ -132,6 +132,33 @@ export async function POST(request: NextRequest) {
             p_restaurant_id: subscription.restaurant_id,
           })
           console.log('Restaurante reativado:', subscription.restaurant_id)
+
+          // ── Auto-aprovar comissão de afiliado ──────────────────────────
+          // Quando a assinatura é reativada/renovada, aprova automaticamente
+          // a comissão do afiliado (vendedor 30% + líder 10%)
+          try {
+            const { data: tenant } = await supabaseAdmin
+              .from('restaurants')
+              .select('tenant_id')
+              .eq('id', subscription.restaurant_id)
+              .single()
+
+            const { data: sub } = await supabaseAdmin
+              .from('subscriptions')
+              .select('price_brl')
+              .eq('restaurant_id', subscription.restaurant_id)
+              .single()
+
+            if (tenant?.tenant_id && sub?.price_brl) {
+              await supabaseAdmin.rpc('approve_affiliate_commission', {
+                p_tenant_id: tenant.tenant_id,
+                p_valor_assinatura: sub.price_brl,
+              })
+              console.log('Comissão de afiliado aprovada para tenant:', tenant.tenant_id)
+            }
+          } catch (commErr) {
+            console.warn('Aviso: não foi possível aprovar comissão de afiliado:', commErr)
+          }
         }
       }
 
@@ -141,13 +168,7 @@ export async function POST(request: NextRequest) {
     // Notificação de pagamento de assinatura
     if (type === 'subscription_authorized_payment') {
       const paymentId = data?.id
-
-      // Registrar pagamento
-      // Buscar assinatura pelo payment
-      // Isso requer uma chamada adicional ao MP para obter detalhes do pagamento
-
       console.log('Pagamento de assinatura recebido:', paymentId)
-
       return NextResponse.json({ success: true, payment_id: paymentId })
     }
 
