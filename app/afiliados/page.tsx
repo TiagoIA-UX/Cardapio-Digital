@@ -24,11 +24,12 @@ import {
 } from 'lucide-react'
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
-const PLANO_PRO = 129
+// Preço real do plano Pro (Feito Pra Você, basico×1.5 = R$89/mês — ver lib/pricing.ts)
+const PLANO_PRO = 89
 const PCT_VENDEDOR = 0.3
 const PCT_LIDER = 0.1
-const GANHO_POR_CLIENTE = Math.round(PLANO_PRO * PCT_VENDEDOR) // R$39
-const REDE_BONUS_EX = Math.round(5 * 10 * PLANO_PRO * PCT_LIDER) // 5 vendedores × 10 rest × 10% = R$645
+const GANHO_POR_CLIENTE = Math.round(PLANO_PRO * PCT_VENDEDOR) // R$27/mês por restaurante
+const REDE_BONUS_EX = Math.round(5 * 10 * PLANO_PRO * PCT_LIDER) // 5 vendedores × 10 rest × 10% = R$445
 
 // ── Dados ──────────────────────────────────────────────────────────────────────
 const EXEMPLOS = [
@@ -77,7 +78,7 @@ const FERRAMENTAS = [
   {
     icon: BadgeCheck,
     title: 'Bônus por meta',
-    desc: 'R$50 em 3 clientes · R$150 em 10 · R$300 em 25 · R$600 em 50 · R$1.500 em 100 restaurantes.',
+    desc: 'R$10 em 10 clientes · R$25 em 25 · R$50 em 50 · R$50 em 100 restaurantes. Simbólico e sempre pago.',
   },
 ]
 

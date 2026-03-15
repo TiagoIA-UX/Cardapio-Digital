@@ -26,6 +26,10 @@ export interface AffiliateTier {
   comissaoExtra: number
 }
 
+// ── Bônus simbólicos — validados pela análise financeira (docs/financeiro.md) ──
+// Margem da empresa por restaurante c/ afiliado: ~59% da receita bruta (R$35-39/mês).
+// Bônus máximo = R$50 a cada 50 indicações. Total acumulado 0→100: R$135.
+// Antes da revisão eram R$2.600 acumulados — comprometia a margem.
 export const AFFILIATE_TIERS: AffiliateTier[] = [
   {
     slug: 'trainee',
@@ -40,7 +44,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Analista',
     minRestaurantes: 3,
     maxRestaurantes: 10,
-    bonusUnico: 50,
+    bonusUnico: 0,   // Primeiro marco real é no Coordenador (10 rest)
     comissaoExtra: 0,
   },
   {
@@ -48,7 +52,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Coordenador',
     minRestaurantes: 10,
     maxRestaurantes: 25,
-    bonusUnico: 150,
+    bonusUnico: 10,  // R$10 simbólico — recouped em <1 dia de receita
     comissaoExtra: 0,
   },
   {
@@ -56,7 +60,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Gerente',
     minRestaurantes: 25,
     maxRestaurantes: 50,
-    bonusUnico: 300,
+    bonusUnico: 25,  // R$25 simbólico — recouped em ~1 dia de receita
     comissaoExtra: 0,
   },
   {
@@ -64,7 +68,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Diretor',
     minRestaurantes: 50,
     maxRestaurantes: 100,
-    bonusUnico: 600,
+    bonusUnico: 50,  // R$50 máximo por ciclo — empresa ganha R$1.900+/mês deste afiliado
     comissaoExtra: 0.02, // +2% → total 32% direto
   },
   {
@@ -72,7 +76,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Sócio',
     minRestaurantes: 100,
     maxRestaurantes: Infinity,
-    bonusUnico: 1500,
+    bonusUnico: 50,  // Mesmo R$50 — bônus não escala além do Diretor
     comissaoExtra: 0.05, // +5% → total 35% direto
   },
 ]
