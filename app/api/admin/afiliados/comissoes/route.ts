@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const body = await req.json().catch(() => ({}))
-  const { affiliate_id, valor, referencia_mes, observacao } = body
+  const { affiliate_id, valor, referencia_mes, observacao, bonus_id, bonus_marco } = body
 
   if (!affiliate_id || !valor || Number(valor) <= 0) {
     return NextResponse.json({ error: 'affiliate_id e valor são obrigatórios' }, { status: 400 })
@@ -80,6 +80,37 @@ export async function POST(req: NextRequest) {
 
   if (affErr || !affiliateData) {
     return NextResponse.json({ error: 'Afiliado não encontrado' }, { status: 404 })
+  }
+
+  // ── Bônus de marco: verificar e sacar do bonus_fund ───────────────────────
+  // Se bonus_id está presente, este pagamento é um bônus de marco.
+  // Tenta sacar do fundo; se insuficiente, paga do caixa operacional (log de aviso).
+  let fundoSuficiente = false
+  if (bonus_id) {
+    try {
+      const { data: fundo } = await admin
+        .from('bonus_fund_saldo')
+        .select('saldo_atual')
+        .single()
+      const saldoFundo = Number(fundo?.saldo_atual ?? 0)
+      const bonusValor = Number(valor)
+      fundoSuficiente = saldoFundo >= bonusValor
+
+      if (!fundoSuficiente) {
+        console.warn(
+          `⚠️ Fundo insuficiente (saldo R$${saldoFundo.toFixed(2)}) — bônus R$${bonusValor.toFixed(2)} pago do caixa operacional`
+        )
+      } else {
+        await admin.from('bonus_fund').insert({
+          tipo: 'bonus',
+          valor: bonusValor,
+          affiliate_id,
+          descricao: `Bônus marco ${bonus_marco ?? '?'} restaurantes — ${affiliateData.nome}`,
+        })
+      }
+    } catch (fundErr) {
+      console.error('[comissoes] Erro ao sacar do bonus_fund (não bloqueante):', fundErr)
+    }
   }
 
   // 2. Registra o pagamento
@@ -154,6 +185,18 @@ export async function POST(req: NextRequest) {
   const valorPagoReal = Number(valor) - saldoRestante
   const pagas = idsVendedorPagar.length + idsLiderPagar.length
 
+  // Se era pagamento de bônus de marco, marca o registro como pago
+  if (bonus_id) {
+    try {
+      await admin
+        .from('affiliate_bonuses')
+        .update({ status: 'pago', referencia_mes: referencia_mes ?? new Date().toISOString().slice(0, 7) })
+        .eq('id', bonus_id)
+    } catch (bonusErr) {
+      console.warn('[comissoes] Aviso: falha ao marcar bonus como pago:', bonusErr)
+    }
+  }
+
   return NextResponse.json({
     success: true,
     payment_id: payment.id,
@@ -162,5 +205,6 @@ export async function POST(req: NextRequest) {
     chave_pix: affiliateData.chave_pix,
     pagas,
     saldo_restante: parseFloat(saldoRestante.toFixed(2)),
+    ...(bonus_id ? { fundo_suficiente: fundoSuficiente } : {}),
   })
 }

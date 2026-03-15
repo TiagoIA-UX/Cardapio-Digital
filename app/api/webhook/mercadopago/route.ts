@@ -572,6 +572,28 @@ async function processOnboardingPayment(
 
   const provisioned = await provisionRestaurantForOrder(admin, order, payment, siteUrl)
 
+  // ── Fundo de bônus: 10% do setup alimenta o bonus_fund ────────────────────
+  // Falha aqui NUNCA bloqueia o provisionamento (try/catch isolado)
+  try {
+    const paymentAmount = payment.transaction_amount ?? 0
+    if (paymentAmount > 0 && provisioned.restaurantId) {
+      const reserva = Math.floor(paymentAmount * 0.10 * 100) / 100
+      const { data: restData } = await admin
+        .from('restaurants')
+        .select('nome')
+        .eq('id', provisioned.restaurantId)
+        .maybeSingle()
+      await admin.from('bonus_fund').insert({
+        tipo: 'entrada',
+        valor: reserva,
+        restaurant_id: provisioned.restaurantId,
+        descricao: `Reserva 10% setup — ${restData?.nome ?? provisioned.restaurantId}`,
+      })
+    }
+  } catch (fundErr) {
+    console.error('[webhook] Erro ao alimentar bonus_fund (não bloqueante):', fundErr)
+  }
+
   await admin
     .from('template_orders')
     .update({
