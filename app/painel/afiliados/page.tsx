@@ -17,7 +17,10 @@ import {
   Gift,
   Network,
   UserPlus,
+  Settings,
 } from 'lucide-react'
+import Link from 'next/link'
+import { AFFILIATE_TIERS } from '@/lib/affiliate-tiers'
 
 interface Affiliate {
   id: string
@@ -25,8 +28,12 @@ interface Affiliate {
   nome: string
   chave_pix: string | null
   status: string
-  tier: 'vendedor' | 'lider'
-  lider_id: string | null
+  tier: string  // trainee | analista | coordenador | gerente | diretor | socio
+  commission_rate: number
+  cidade: string | null
+  estado: string | null
+  bio: string | null
+  avatar_url: string | null
   created_at: string
 }
 
@@ -42,9 +49,12 @@ interface Referral {
 
 interface Stats {
   total_indicados: number
+  pendente_analise: number
+  aprovado_aguardando: number
   comissao_pendente: number
   comissao_aprovada: number
   comissao_paga: number
+  proxima_data_pagamento: string
   mrr_direto: number
   mrr_rede: number
   mrr_estimado: number
@@ -77,11 +87,13 @@ const PCT_VENDEDOR = 30
 const PCT_LIDER = 10
 const LIDER_MIN_VENDEDORES = 5
 
-const BONUS_MILESTONES = [
-  { nivel: 10, valor: 200, label: '10 restaurantes' },
-  { nivel: 30, valor: 500, label: '30 restaurantes' },
-  { nivel: 50, valor: 1000, label: '50 restaurantes' },
-]
+// Bônus derivados da fonte de verdade (affiliate-tiers.ts)
+const BONUS_MILESTONES = AFFILIATE_TIERS.filter((t) => t.bonusUnico > 0).map((t) => ({
+  nivel: t.minRestaurantes,
+  valor: t.bonusUnico,
+  nome: t.nome,
+  label: `${t.minRestaurantes} restaurantes (${t.nome})`,
+}))
 
 const statusConfig = {
   pendente: { label: 'Pendente', className: 'bg-amber-100 text-amber-700', icon: Clock },
@@ -425,6 +437,13 @@ export default function AfiliadosPage() {
               <Trophy className="h-3.5 w-3.5 text-yellow-500" />#{posicaoRanking} no ranking
             </span>
           )}
+          <Link
+            href="/painel/afiliados/configuracoes"
+            className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 transition-colors hover:bg-zinc-200"
+          >
+            <Settings className="h-3.5 w-3.5" />
+            Configurações
+          </Link>
         </div>
       </div>
 
@@ -494,15 +513,15 @@ export default function AfiliadosPage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats — 4 cards (TAREFA 6: comissão desagregada em análise / aprovada) */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Users} label="Restaurantes indicados" value={String(total)} />
         <StatCard
           icon={TrendingUp}
-          label="MRR direto (30%)"
+          label="MRR direto"
           value={`R$ ${(stats?.mrr_direto ?? 0).toFixed(2)}`}
           highlight
-          sub="Seus indicados ativos"
+          sub={`${affiliate.commission_rate ?? 30}% — seus indicados ativos`}
         />
         {isLider ? (
           <StatCard
@@ -515,17 +534,35 @@ export default function AfiliadosPage() {
         ) : (
           <StatCard
             icon={Clock}
-            label="Comissão pendente"
-            value={`R$ ${(stats?.comissao_pendente ?? 0).toFixed(2)}`}
-            sub="Aguardando 30 dias"
+            label="🕐 Em análise"
+            value={`R$ ${(stats?.pendente_analise ?? 0).toFixed(2)}`}
+            sub="Aguardando 30 dias para aprovação"
           />
         )}
         <StatCard
-          icon={CircleDollarSign}
-          label="Total já pago"
-          value={`R$ ${(stats?.comissao_paga ?? 0).toFixed(2)}`}
-          sub="via PIX todo dia 5"
+          icon={BadgeCheck}
+          label="✅ Aprovado"
+          value={`R$ ${(stats?.aprovado_aguardando ?? 0).toFixed(2)}`}
+          sub={
+            stats?.aprovado_aguardando && stats.aprovado_aguardando > 0
+              ? `Pagamento em ${stats.proxima_data_pagamento ?? '—'}`
+              : 'via PIX todo dia 5'
+          }
         />
+      </div>
+
+      {/* Card total recebido — separado para não misturar com pendentes */}
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-muted-foreground text-xs">Total já recebido</p>
+            <p className="mt-1 text-2xl font-bold text-zinc-800">
+              R$ {(stats?.comissao_paga ?? 0).toFixed(2)}
+            </p>
+            <p className="mt-0.5 text-xs text-zinc-500">Histórico acumulado via PIX</p>
+          </div>
+          <CircleDollarSign className="h-6 w-6 text-green-500" />
+        </div>
       </div>
 
       {/* Bônus por volume */}
