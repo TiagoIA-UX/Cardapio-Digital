@@ -77,7 +77,7 @@ const FERRAMENTAS = [
   {
     icon: BadgeCheck,
     title: 'Bônus por meta',
-    desc: 'R$200 em 10 clientes · R$500 em 30 · R$1.000 em 50 restaurantes.',
+    desc: 'R$50 em 3 clientes · R$150 em 10 · R$300 em 25 · R$600 em 50 · R$1.500 em 100 restaurantes.',
   },
 ]
 

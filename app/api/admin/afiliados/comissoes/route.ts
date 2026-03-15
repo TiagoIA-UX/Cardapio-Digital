@@ -102,28 +102,65 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Erro ao registrar pagamento' }, { status: 500 })
   }
 
-  // 3. Marca as comissões aprovadas como pagas (cobrindo até o valor pago)
-  // Vendedor
-  await admin
-    .from('affiliate_referrals')
-    .update({ status: 'pago' })
-    .eq('affiliate_id', affiliate_id)
-    .eq('status', 'aprovado')
-    .not('comissao', 'is', null)
+  // 3. FIFO: busca comissões aprovadas ordenadas por data de criação (mais antigas primeiro)
+  const [vendorRefs, liderRefs] = await Promise.all([
+    admin
+      .from('affiliate_referrals')
+      .select('id, comissao')
+      .eq('affiliate_id', affiliate_id)
+      .eq('status', 'aprovado')
+      .not('comissao', 'is', null)
+      .order('created_at', { ascending: true }),
+    admin
+      .from('affiliate_referrals')
+      .select('id, lider_comissao')
+      .eq('lider_id', affiliate_id)
+      .eq('lider_status', 'aprovado')
+      .not('lider_comissao', 'is', null)
+      .order('created_at', { ascending: true }),
+  ])
 
-  // Líder
-  await admin
-    .from('affiliate_referrals')
-    .update({ lider_status: 'pago' })
-    .eq('lider_id', affiliate_id)
-    .eq('lider_status', 'aprovado')
-    .not('lider_comissao', 'is', null)
+  // Acumula FIFO: marca apenas as comissões que cabem no valor pago
+  let saldoRestante = Number(valor)
+  const idsVendedorPagar: string[] = []
+  for (const ref of vendorRefs.data ?? []) {
+    const comissao = Number(ref.comissao ?? 0)
+    if (comissao > 0 && comissao <= saldoRestante) {
+      idsVendedorPagar.push(ref.id)
+      saldoRestante -= comissao
+    }
+  }
+
+  const idsLiderPagar: string[] = []
+  for (const ref of liderRefs.data ?? []) {
+    const comissao = Number(ref.lider_comissao ?? 0)
+    if (comissao > 0 && comissao <= saldoRestante) {
+      idsLiderPagar.push(ref.id)
+      saldoRestante -= comissao
+    }
+  }
+
+  // Atualiza apenas IDs selecionados (não marca todas)
+  if (idsVendedorPagar.length > 0) {
+    await admin.from('affiliate_referrals').update({ status: 'pago' }).in('id', idsVendedorPagar)
+  }
+  if (idsLiderPagar.length > 0) {
+    await admin
+      .from('affiliate_referrals')
+      .update({ lider_status: 'pago' })
+      .in('id', idsLiderPagar)
+  }
+
+  const valorPagoReal = Number(valor) - saldoRestante
+  const pagas = idsVendedorPagar.length + idsLiderPagar.length
 
   return NextResponse.json({
     success: true,
     payment_id: payment.id,
     affiliate: affiliateData.nome,
-    valor_pago: Number(valor),
+    valor_pago: valorPagoReal,
     chave_pix: affiliateData.chave_pix,
+    pagas,
+    saldo_restante: parseFloat(saldoRestante.toFixed(2)),
   })
 }

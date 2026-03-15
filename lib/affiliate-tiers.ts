@@ -1,6 +1,8 @@
 /**
- * Fonte de verdade única para a hierarquia de afiliados.
- * Usada pelo componente HierarquiaWidget, pela migration SQL e pelas APIs.
+ * FONTE DA VERDADE — Hierarquia e bônus do programa de afiliados.
+ *
+ * ⚠️  NÃO edite valores de tier, bônus ou comissão em outros lugares.
+ *     Toda a lógica de negócio (migrations SQL, APIs, UI) importa daqui.
  *
  * Hierarquia: Trainee → Analista → Coordenador → Gerente → Diretor → Sócio
  */

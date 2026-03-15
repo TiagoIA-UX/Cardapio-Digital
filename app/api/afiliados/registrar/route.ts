@@ -10,6 +10,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+// ── Validação de chave PIX ─────────────────────────────────────────────────
+
+/** Formatos aceitos pelo Banco Central para chaves PIX. */
+const PIX_PATTERNS = [
+  { type: 'cpf', regex: /^\d{11}$/ },
+  { type: 'cnpj', regex: /^\d{14}$/ },
+  { type: 'email', regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+  { type: 'telefone', regex: /^\+55\d{10,11}$/ },
+  {
+    type: 'chave_aleatoria',
+    regex: /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  },
+]
+
+export function validatePixKey(key: string): { valid: boolean; type: string } {
+  const clean = key.trim()
+  for (const { type, regex } of PIX_PATTERNS) {
+    if (regex.test(clean)) return { valid: true, type }
+  }
+  return { valid: false, type: 'desconhecido' }
+}
+
 function generateCode(nome: string): string {
   const base = nome
     .toLowerCase()
@@ -35,10 +57,22 @@ export async function POST(req: NextRequest) {
   const nome = String(body.nome ?? '')
     .trim()
     .slice(0, 100)
-  const chave_pix =
-    String(body.chave_pix ?? '')
-      .trim()
-      .slice(0, 200) || null
+  const rawPix = String(body.chave_pix ?? '').trim()
+  const chave_pix = rawPix.slice(0, 200) || null
+
+  // Valida chave PIX se fornecida
+  if (chave_pix) {
+    const pixResult = validatePixKey(chave_pix)
+    if (!pixResult.valid) {
+      return NextResponse.json(
+        {
+          error:
+            'Chave PIX inválida. Formatos aceitos: CPF (11 dígitos), CNPJ (14 dígitos), e-mail, telefone (+55...) ou chave aleatória (UUID).',
+        },
+        { status: 400 }
+      )
+    }
+  }
   // lider_code: quem recrutou este afiliado (pode vir do body ou do cookie aff_ref)
   const lider_code =
     (String(body.lider_code ?? '').trim() || req.cookies.get('aff_ref')?.value || '').slice(
