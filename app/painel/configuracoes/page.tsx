@@ -817,9 +817,15 @@ export default function ConfiguracoesPage() {
         <div className="space-y-6">
           <section className="border-border bg-card rounded-xl border p-6">
             <div>
-              <h2 className="text-foreground font-semibold">Link público</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-foreground font-semibold">Link público</h2>
+                <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-0.5 text-[11px] font-medium text-green-400">
+                  🔒 Permanente — nunca muda
+                </span>
+              </div>
               <p className="text-muted-foreground text-sm">
                 Compartilhe no WhatsApp, Instagram, Google Maps e QR Code de mesa.
+                Mesmo que você mude o nome do restaurante, este link continua funcionando.
               </p>
             </div>
 
@@ -924,6 +930,10 @@ export default function ConfiguracoesPage() {
               isSelected={selectedField === 'nome'}
               onChange={(value) => setForm({ ...form, nome: value })}
             />
+            <p className="-mt-2 text-[11px] text-zinc-500">
+              ✏️ Editável livremente — não altera o link do cardápio. QR Codes e links no WhatsApp
+              continuam funcionando após renomear.
+            </p>
 
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput
