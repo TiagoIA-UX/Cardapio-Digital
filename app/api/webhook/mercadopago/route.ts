@@ -266,6 +266,7 @@ async function activateSubscription(
     payment_gateway: 'mercadopago',
     current_period_start: periodStart.toISOString(),
     current_period_end: periodEnd.toISOString(),
+    price_brl: paymentAmount ?? 0,
   }
 
   if (existingSubscription?.id) {
@@ -296,7 +297,9 @@ async function provisionRestaurantForOrder(
   const owner = await ensureCheckoutOwner(admin, order.user_id, metadata)
   await ensureAdminUserRecord(admin, owner.id)
   const restaurantName = String(metadata.restaurant_name || '').trim() || 'Meu Cardápio Digital'
-  const rawSlug = String(metadata.template_slug || '').trim().toLowerCase()
+  const rawSlug = String(metadata.template_slug || '')
+    .trim()
+    .toLowerCase()
   const templateSlug = normalizeTemplateSlug(rawSlug || 'restaurante')
   const subscriptionPlanSlug = String(metadata.subscription_plan_slug || 'basico')
   const installation = buildRestaurantInstallation(templateSlug, restaurantName)

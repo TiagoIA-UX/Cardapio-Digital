@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
           // Quando a assinatura é reativada/renovada, aprova automaticamente
           // a comissão do afiliado (vendedor 30% + líder 10%)
           try {
-            const { data: tenant } = await supabaseAdmin
+            const { data: restaurant } = await supabaseAdmin
               .from('restaurants')
               .select('tenant_id')
               .eq('id', subscription.restaurant_id)
@@ -149,12 +149,17 @@ export async function POST(request: NextRequest) {
               .eq('restaurant_id', subscription.restaurant_id)
               .single()
 
-            if (tenant?.tenant_id && sub?.price_brl) {
+            const tenantId = restaurant?.tenant_id ?? subscription.restaurant_id
+            const priceBrl = sub?.price_brl ?? 0
+
+            if (tenantId && priceBrl > 0) {
               await supabaseAdmin.rpc('approve_affiliate_commission', {
-                p_tenant_id: tenant.tenant_id,
-                p_valor_assinatura: sub.price_brl,
+                p_tenant_id: tenantId,
+                p_valor_assinatura: priceBrl,
               })
-              console.log('Comissão de afiliado aprovada para tenant:', tenant.tenant_id)
+              console.log('Comissão de afiliado aprovada para tenant:', tenantId)
+            } else {
+              console.warn('Comissão não aprovada: tenant_id ou price_brl ausente', { tenantId, priceBrl })
             }
           } catch (commErr) {
             console.warn('Aviso: não foi possível aprovar comissão de afiliado:', commErr)
