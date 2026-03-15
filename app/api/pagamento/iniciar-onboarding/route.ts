@@ -137,6 +137,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Lê o cookie de afiliado para atribuir comissão ao finalizar o pagamento
+    const affRef = request.cookies.get('aff_ref')?.value?.trim() || null
+
     const { data: order, error: orderError } = await supabaseAdmin
       .from('template_orders')
       .insert({
@@ -164,6 +167,7 @@ export async function POST(request: NextRequest) {
           provisioned_restaurant_id: null,
           provisioned_restaurant_slug: null,
           owner_user_id: session.user.id,
+          aff_ref: affRef,
         },
       })
       .select('id, order_number')
@@ -252,6 +256,7 @@ export async function POST(request: NextRequest) {
           provisioned_restaurant_slug: null,
           owner_user_id: session.user.id,
           mp_preference_id: preference.id,
+          aff_ref: affRef,
         },
       })
       .eq('id', order.id)
