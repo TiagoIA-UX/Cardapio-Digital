@@ -110,8 +110,8 @@ export async function createPreference(data: {
       items: [
         {
           id: data.restaurantId,
-          title: price.description,
-          description: `Cardápio Digital para ${data.restaurantName}`,
+          title: `Cardápio Digital — ${price.description}`,
+          description: `Ativado por Zairyx Soluções Digitais para ${data.restaurantName}`,
           quantity: 1,
           currency_id: 'BRL',
           unit_price: price.amount,
@@ -136,7 +136,9 @@ export async function createPreference(data: {
       auto_return: 'approved',
       external_reference: data.restaurantId,
       notification_url: `${baseUrl}/api/webhooks/mercadopago`,
-      statement_descriptor: 'CARDAPIO DIGITAL',
+      // Aparece na fatura do cartão e no comprovante PIX do pagador
+      // Deve bater com o nome da conta MercadoPago (Zairyx Soluções Digitais)
+      statement_descriptor: 'Zairyx Solucoes',
     },
   })
 
