@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+function getGroq() {
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error('GROQ_API_KEY não configurada')
+  }
+  return new Groq({ apiKey: process.env.GROQ_API_KEY })
+}
 
 const SYSTEM_PROMPT = `Você é o Cadu, assistente comercial especialista do Cardápio Digital — a plataforma que transforma o delivery de restaurantes, pizzarias, hamburguerias, lanchonetes, açaiterias, cafeterias e quiosques. Seu único objetivo é VENDER: responder dúvidas, apresentar benefícios e empurrar o visitante para a compra.
 
@@ -74,7 +79,7 @@ export async function POST(req: NextRequest) {
       .slice(-20) // limita histórico para não exceder tokens
       .map((m) => ({ role: m.role, content: m.content.slice(0, 1000) })) // limita tamanho por mensagem
 
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroq().chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...safeMessages],
       max_tokens: 300,
