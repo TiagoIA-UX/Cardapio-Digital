@@ -416,6 +416,36 @@ async function provisionRestaurantForOrder(
     siteUrl
   )
 
+  // Registrar indicação de afiliado, se o pedido veio via link ?ref=
+  const affRef = String(metadata.aff_ref || '').trim()
+  if (affRef && restaurantId) {
+    try {
+      const { data: tenant } = await admin
+        .from('restaurants')
+        .select('tenant_id')
+        .eq('id', restaurantId)
+        .maybeSingle()
+
+      const tenantId = tenant?.tenant_id ?? restaurantId
+
+      await fetch(`${siteUrl}/api/afiliados/indicacao`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          tenant_id: tenantId,
+          plano: subscriptionPlanSlug,
+          valor_assinatura: payment.transaction_amount || 0,
+          ref_code: affRef,
+        }),
+      })
+    } catch (affErr) {
+      console.warn('[webhook] Não foi possível registrar indicação de afiliado:', affErr)
+    }
+  }
+
   return {
     ownerId: owner.id,
     restaurantId,
