@@ -18,6 +18,7 @@ import {
   Network,
   UserPlus,
   Settings,
+  Info,
 } from 'lucide-react'
 import Link from 'next/link'
 import { AFFILIATE_TIERS } from '@/lib/affiliate-tiers'
@@ -60,6 +61,13 @@ interface Stats {
   mrr_estimado: number
   total_vendedores: number
   rede_indicados: number
+}
+
+interface SaldoInfo {
+  aprovado_aguardando: number
+  proxima_data_pagamento: string
+  dias_ate_pagamento: number
+  rendimento_estimado: number
 }
 
 interface Bonus {
@@ -184,6 +192,7 @@ export default function AfiliadosPage() {
   const [isLider, setIsLider] = useState(false)
   const [bonuses, setBonuses] = useState<Bonus[]>([])
   const [vendedores, setVendedores] = useState<Vendedor[]>([])
+  const [saldoInfo, setSaldoInfo] = useState<SaldoInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [registering, setRegistering] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -193,8 +202,11 @@ export default function AfiliadosPage() {
   const [error, setError] = useState('')
 
   const fetchData = useCallback(async () => {
-    const res = await fetch('/api/afiliados/me')
-    const data = await res.json()
+    const [meRes, saldoRes] = await Promise.all([
+      fetch('/api/afiliados/me'),
+      fetch('/api/afiliados/saldo-info'),
+    ])
+    const data = await meRes.json()
     setAffiliate(data.affiliate ?? null)
     setReferrals(data.referrals ?? [])
     setStats(data.stats ?? null)
@@ -203,6 +215,10 @@ export default function AfiliadosPage() {
     setBonuses(data.bonuses ?? [])
     setVendedores(data.vendedores ?? [])
     setLoading(false)
+    if (saldoRes.ok) {
+      const sData = await saldoRes.json()
+      setSaldoInfo(sData)
+    }
   }, [])
 
   useEffect(() => {
@@ -539,16 +555,43 @@ export default function AfiliadosPage() {
             sub="Aguardando 30 dias para aprovação"
           />
         )}
-        <StatCard
-          icon={BadgeCheck}
-          label="✅ Aprovado"
-          value={`R$ ${(stats?.aprovado_aguardando ?? 0).toFixed(2)}`}
-          sub={
-            stats?.aprovado_aguardando && stats.aprovado_aguardando > 0
+        {/* Card aprovado — customizado para exibir rendimento estimado */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+          <div className="flex items-start justify-between">
+            <span className="text-muted-foreground text-xs">✅ Aprovado</span>
+            <BadgeCheck className="h-4 w-4 text-zinc-400" />
+          </div>
+          <p className="mt-2 text-2xl font-bold text-zinc-800">
+            R$ {(stats?.aprovado_aguardando ?? 0).toFixed(2)}
+          </p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            {stats?.aprovado_aguardando && stats.aprovado_aguardando > 0
               ? `Pagamento em ${stats.proxima_data_pagamento ?? '—'}`
-              : 'via PIX todo dia 5'
-          }
-        />
+              : 'via PIX todo dia 5'}
+          </p>
+          {/* Badge saldo rendendo */}
+          {(stats?.aprovado_aguardando ?? 0) > 0 && (
+            <div className="mt-3 rounded-lg bg-emerald-50 px-3 py-2">
+              <p className="text-xs font-medium text-emerald-800">
+                💰 Seu saldo rende enquanto aguarda o pagamento
+              </p>
+              <p className="mt-0.5 text-xs text-emerald-600">Pago todo dia 5 via PIX</p>
+              {saldoInfo && saldoInfo.rendimento_estimado > 0 && (
+                <div className="mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-emerald-700">
+                    ≈ R$ {saldoInfo.rendimento_estimado.toFixed(2)} de rendimento até o dia 5
+                  </p>
+                  <span
+                    title="Estimativa baseada em CDI 13% a.a. Valor informativo."
+                    className="cursor-help"
+                  >
+                    <Info className="h-3 w-3 text-emerald-500" />
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Card total recebido — separado para não misturar com pendentes */}
