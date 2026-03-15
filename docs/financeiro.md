@@ -170,7 +170,43 @@ Receita bruta:                  R$ 29.500,00
 
 ---
 
-## 8. Fórmulas de Referência
+## 8. Estratégia de Reserva de Setup — Fundo de Bônus
+
+### Como funciona
+
+A cada pagamento de setup aprovado, **10% do valor** é automaticamente reservado em uma tabela `bonus_fund` (migration 021).  
+O saldo fica em **conta-corrente com rendimento externo** (ex: CDB, conta-poupança empresarial).  
+O owner credita o rendimento mensalmente via painel `/admin/bonus-fund`.
+
+### Exemplos de reserva automática
+
+| Valor do Setup | Reserva (10%) | Saldo restante empresa |
+|---|---|---|
+| R$ 197 (self-service simples) | R$ 19,70 | R$ 177,30 |
+| R$ 297 (self-service pizzaria) | R$ 29,70 | R$ 267,30 |
+| R$ 397 (self-service médio card) | R$ 39,70 | R$ 357,30 |
+| R$ 497 (FPV simples) | R$ 49,70 | R$ 447,30 |
+| R$ 697 (FPV pizzaria) | R$ 69,70 | R$ 627,30 |
+
+### Capacidade de custeio de bônus
+
+| Setups/mês (R$297 médio) | Fundo alimentado/mês | Bônus máximo 50 afiliados (R$50 cada) | Cobertura |
+|---|---|---|---|
+| 10 | R$ 297 | R$ 500 | ⚠️ parcial |
+| 20 | R$ 594 | R$ 500 | ✅ total |
+| 50 | R$ 1.485 | R$ 500 | ✅ folga de R$985 |
+
+> **Regra de saque:** ao pagar um bônus de marco pelo painel `/admin/comissoes`, o sistema verifica o saldo disponível e debita o fundo. Se insuficiente, um alerta é logado e o pagamento sai do caixa operacional (não bloqueante).
+
+### Instrução operacional mensal
+1. Acesse o extrato da conta-rendimento empresarial.
+2. Abra `/admin/bonus-fund` e clique em **"Creditar Rendimento"**.
+3. Insira o valor exato gerado no mês + descrição do extrato.
+4. Monitore: saldo < R$200 = alerta laranja; saldo ≥ R$500 = fundo saudável (verde).
+
+---
+
+## 9. Fórmulas de Referência
 
 ```
 // Margem por restaurante/mês com afiliado
