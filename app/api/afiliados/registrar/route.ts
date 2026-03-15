@@ -24,10 +24,29 @@ const PIX_PATTERNS = [
   },
 ]
 
+/**
+ * Normaliza a chave PIX removendo máscaras comuns antes da validação.
+ * - CPF  "123.456.789-00" → "12345678900"
+ * - CNPJ "12.345.678/0001-90" → "12345678000190"
+ * - Fone "+55 (11) 9 9999-9999" → "+5511999999999"
+ * - UUID e e-mail: sem alteração.
+ */
+export function normalizePixKey(key: string): string {
+  const trimmed = key.trim()
+  // E-mail: não modificar
+  if (trimmed.includes('@')) return trimmed
+  // UUID (chave aleatória): apenas normalizar casing
+  if (/^[0-9a-f-]{36}$/i.test(trimmed)) return trimmed.toLowerCase()
+  // Telefone com prefixo +: remover espaços, parênteses e hífens
+  if (trimmed.startsWith('+')) return trimmed.replace(/[\s\-()]/g, '')
+  // CPF / CNPJ / outros: remover pontos, traços, barras, espaços e parênteses
+  return trimmed.replace(/[\s.\-/()]/g, '')
+}
+
 export function validatePixKey(key: string): { valid: boolean; type: string } {
-  const clean = key.trim()
+  const normalized = normalizePixKey(key)
   for (const { type, regex } of PIX_PATTERNS) {
-    if (regex.test(clean)) return { valid: true, type }
+    if (regex.test(normalized)) return { valid: true, type }
   }
   return { valid: false, type: 'desconhecido' }
 }
@@ -58,20 +77,22 @@ export async function POST(req: NextRequest) {
     .trim()
     .slice(0, 100)
   const rawPix = String(body.chave_pix ?? '').trim()
-  const chave_pix = rawPix.slice(0, 200) || null
+  let chave_pix: string | null = rawPix.slice(0, 200) || null
 
-  // Valida chave PIX se fornecida
+  // Valida e normaliza chave PIX se fornecida
   if (chave_pix) {
     const pixResult = validatePixKey(chave_pix)
     if (!pixResult.valid) {
       return NextResponse.json(
         {
           error:
-            'Chave PIX inválida. Formatos aceitos: CPF (11 dígitos), CNPJ (14 dígitos), e-mail, telefone (+55...) ou chave aleatória (UUID).',
+            'Chave PIX inválida. Formatos aceitos: CPF (11 dígitos), CNPJ (14 dígitos), e-mail, telefone (+55 seguido de DDD+número) ou chave aleatória (UUID). Pode cadastrar depois em Configurações.',
         },
         { status: 400 }
       )
     }
+    // Armazena a forma normalizada (sem máscara) para consistência
+    chave_pix = normalizePixKey(chave_pix).slice(0, 200)
   }
   // lider_code: quem recrutou este afiliado (pode vir do body ou do cookie aff_ref)
   const lider_code =
@@ -97,14 +118,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ affiliate: existing })
   }
 
-  // Cria novo afiliado com código único
+  // Cria novo afiliado com código único (verifica colisão antes de usar)
   let code = generateCode(nome)
-  let attempts = 0
-  while (attempts < 5) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     const { data: conflict } = await admin.from('affiliates').select('id').eq('code', code).single()
     if (!conflict) break
-    code = generateCode(nome)
-    attempts++
+    // Só gera novo código se ainda há tentativas restantes
+    if (attempt < 4) code = generateCode(nome)
   }
 
   // Resolve lider_id a partir do lider_code (se fornecido e válido)
@@ -129,8 +149,11 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) {
-    console.error('[afiliados/registrar]', error)
-    return NextResponse.json({ error: 'Erro ao criar afiliado' }, { status: 500 })
+    console.error('[afiliados/registrar] INSERT error:', error)
+    return NextResponse.json(
+      { error: `Erro ao criar afiliado: ${error.message}`, code: error.code },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({ affiliate }, { status: 201 })
