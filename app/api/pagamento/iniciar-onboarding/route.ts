@@ -205,8 +205,8 @@ export async function POST(request: NextRequest) {
         items: [
           {
             id: String(order.id),
-            title: `${planConfig.name} - Template ${templateLabel}`,
-            description: `Criação automática de cardápio digital para ${body.restaurantName.trim()}`,
+            title: `Cardápio Digital — ${planConfig.name} (${templateLabel})`,
+            description: `Ativado por Zairyx Soluções Digitais para ${body.restaurantName.trim()}`,
             quantity: 1,
             currency_id: 'BRL',
             unit_price: total,
@@ -233,7 +233,9 @@ export async function POST(request: NextRequest) {
                 excluded_payment_types: [{ id: 'ticket' }],
               },
         notification_url: `${baseUrl}/api/webhooks/mercadopago`,
-        statement_descriptor: 'CARDAPIO DIGITAL',
+        // Aparece na fatura do cartão e no comprovante PIX do pagador
+        // Deve bater com o nome da conta MercadoPago (Zairyx Soluções Digitais)
+        statement_descriptor: 'Zairyx Solucoes',
       },
     })
 
