@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
     if (!admin) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
+    const adminUserId = admin.id
 
     const supabaseAdmin = getSupabaseAdmin()
     const body = await request.json()
