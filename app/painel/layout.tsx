@@ -40,7 +40,7 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
   const paymentBadge = getPaymentModeBadgeLabel()
 
   // Página de criar restaurante não precisa verificar restaurante
-  const isCreatePage = pathname === '/painel/criar-restaurante'
+  const isCreatePage = pathname === '/painel/criar-restaurante' || pathname === '/painel/editor'
 
   useEffect(() => {
     const checkRestaurant = async () => {
@@ -248,3 +248,4 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
     </div>
   )
 }
+
