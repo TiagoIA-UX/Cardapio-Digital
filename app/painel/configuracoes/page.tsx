@@ -32,6 +32,7 @@ import {
   type RestaurantCustomization,
   type RestaurantTemplateSlug,
 } from '@/lib/restaurant-customization'
+import { ImageUploader } from '@/components/shared/image-uploader'
 
 interface FormState {
   nome: string
@@ -191,7 +192,9 @@ export default function ConfiguracoesPage() {
     useState<EditorSidebarGroupId>('template-content')
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [activeInlineTextField, setActiveInlineTextField] = useState<InlineTextField | null>(null)
-  const [activeInlineImageField, setActiveInlineImageField] = useState<InlineImageField | null>(null)
+  const [activeInlineImageField, setActiveInlineImageField] = useState<InlineImageField | null>(
+    null
+  )
   const [productDrafts, setProductDrafts] = useState<Record<string, InlineProductDraft>>({})
   const [inlineTextDrafts, setInlineTextDrafts] = useState<
     Partial<Record<InlineTextField, string>>
@@ -824,8 +827,8 @@ export default function ConfiguracoesPage() {
                 </span>
               </div>
               <p className="text-muted-foreground text-sm">
-                Compartilhe no WhatsApp, Instagram, Google Maps e QR Code de mesa.
-                Mesmo que você mude o nome do restaurante, este link continua funcionando.
+                Compartilhe no WhatsApp, Instagram, Google Maps e QR Code de mesa. Mesmo que você
+                mude o nome do restaurante, este link continua funcionando.
               </p>
             </div>
 
@@ -1015,18 +1018,20 @@ export default function ConfiguracoesPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <TextInput
-                id="logo-url"
-                label="URL do logo"
+              <ImageUploader
+                label="Logo"
                 value={form.logo_url}
+                folder="logos"
+                aspect="1:1"
                 editorField="logo_url"
                 isSelected={selectedField === 'logo_url'}
                 onChange={(value) => setForm({ ...form, logo_url: value })}
               />
-              <TextInput
-                id="banner-url"
-                label="URL do banner"
+              <ImageUploader
+                label="Banner"
                 value={form.banner_url}
+                folder="banners"
+                aspect="3:1"
                 editorField="banner_url"
                 isSelected={selectedField === 'banner_url'}
                 onChange={(value) => setForm({ ...form, banner_url: value })}
