@@ -34,14 +34,14 @@ export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) 
               className="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors"
             >
               <Zap className="h-4 w-4" />
-              Faça Você Mesmo · R$ {pricing.selfService.monthly}/mês
+              Faça Você Mesmo · R$ {pricing.selfService.pix} no PIX
             </Link>
             <Link
               href={`/comprar/${template.slug}?plano=feito-pra-voce`}
               className="border-border bg-background hover:bg-muted inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors"
             >
               <Sparkles className="h-4 w-4" />
-              Feito Pra Você · R$ {pricing.feitoPraVoce.monthly}/mês
+              Feito Pra Você · R$ {pricing.feitoPraVoce.pix} no PIX
             </Link>
           </div>
         </div>

@@ -17,9 +17,17 @@ export function HomeHeader() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getSession().then(({ data: { session } }: { data: { session: import('@supabase/supabase-js').Session | null } }) => {
-      setIsLoggedIn(!!session)
-    })
+    supabase.auth
+      .getSession()
+      .then(
+        ({
+          data: { session },
+        }: {
+          data: { session: import('@supabase/supabase-js').Session | null }
+        }) => {
+          setIsLoggedIn(!!session)
+        }
+      )
   }, [])
 
   const closeMenu = () => setIsMobileMenuOpen(false)
@@ -71,7 +79,7 @@ export function HomeHeader() {
             href="/ofertas"
             className="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
           >
-            Ver planos
+            Ver opções
           </Link>
         </div>
 
@@ -80,7 +88,7 @@ export function HomeHeader() {
             href="/ofertas"
             className="bg-foreground text-background inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold"
           >
-            Planos
+            Ofertas
           </Link>
           <button
             type="button"
@@ -131,7 +139,7 @@ export function HomeHeader() {
                 onClick={closeMenu}
                 className="bg-foreground text-background inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-semibold"
               >
-                Ver planos
+                Ver opções
               </Link>
             </div>
           </div>
