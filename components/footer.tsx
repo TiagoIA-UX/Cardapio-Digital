@@ -71,7 +71,7 @@ export function Footer() {
             </Link>
 
             <p className="mt-4 max-w-xs text-sm leading-6 text-zinc-300">
-              Cardápio digital profissional para restaurantes, pizzarias, hamburguerias e bares.
+              Cardápio digital profissional para Deliverys, pizzarias, hamburguerias e bares.
               Pedidos direto no WhatsApp. Zero comissão por pedido.
             </p>
 

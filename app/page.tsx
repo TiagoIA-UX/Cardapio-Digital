@@ -94,7 +94,7 @@ const HIGHLIGHT_BENEFITS = [
   {
     title: 'Mais economia e autonomia total',
     description:
-      'O restaurante opera o próprio cardápio sozinho. Evita gastos recorrentes com ajustes que antes exigiriam programador. O dono resolve tudo pelo painel.',
+      'O dono opera o próprio delivery com autonomia. Evita gastos recorrentes com ajustes que antes exigiriam programador. Tudo é resolvido pelo painel.',
   },
 ] as const
 

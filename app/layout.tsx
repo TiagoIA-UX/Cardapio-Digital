@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
   description:
-    'Cardápio digital profissional para restaurantes, pizzarias, hamburguerias, quiosques e operações de alimentação. Edite tudo pelo painel, receba pedidos no seu canal e tenha 0% de comissão por pedido.',
+    'Cardápio digital profissional para Deliverys, pizzarias, hamburguerias, quiosques e operações de alimentação. Edite tudo pelo painel, receba pedidos no seu canal e tenha 0% de comissão por pedido.',
   keywords: [
     'cardápio digital',
     'cardápio online',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
     description:
-      'Cardápio digital profissional para restaurantes e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
+      'Cardápio digital profissional para Deliverys e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
     url: siteUrl,
     siteName: 'Cardápio Digital',
     locale: 'pt_BR',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Cardápio Digital | Cardápio digital profissional para vender direto',
     description:
-      'Cardápio digital profissional para restaurantes e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
+      'Cardápio digital profissional para Deliverys e operações de alimentação. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.',
     images: [`${siteUrl}/placeholder.jpg`],
   },
   robots: {

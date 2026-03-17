@@ -39,7 +39,7 @@ export default function TemplatesPage() {
             Escolha o Template Perfeito
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
-            Cada demo abaixo reutiliza o mesmo template que você recebe no onboarding. Perfeito para delivery, pizzarias, hamburguerias e negócios alimentícios.
+            Cada demo abaixo reutiliza o mesmo template que você recebe no onboarding. Perfeito para Deliverys, pizzarias, hamburguerias e negócios alimentícios.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -93,10 +93,10 @@ export default function TemplatesPage() {
       <section className="bg-primary/5 px-4 py-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-foreground mb-4 text-2xl font-bold">
-            Compra única com template instalado automaticamente
+            Escolha o modelo e ative seu delivery mais rápido
           </h2>
           <p className="text-muted-foreground mb-6">
-            Escolha o nicho, defina o plano e o sistema libera seu cardápio digital e o painel após a confirmação do pagamento.
+            Escolha o modelo, defina se quer fazer sozinho ou receber a implantação pronta e ative seu cardápio com preço claro desde o início.
           </p>
           <Link
             href="/ofertas"
