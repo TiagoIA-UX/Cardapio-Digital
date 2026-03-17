@@ -23,11 +23,17 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { uploadFile, R2_ALLOWED_MIME_TYPES, R2_FOLDERS, type R2AllowedMimeType, type R2Folder } from '@/lib/r2'
+import {
+  uploadFile,
+  R2_ALLOWED_MIME_TYPES,
+  R2_FOLDERS,
+  type R2AllowedMimeType,
+  type R2Folder,
+} from '@/lib/r2'
 
 // ── Constantes ────────────────────────────────────────────────────────────
 
-const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024 // 2 MB após otimização client-side
 
 // ── Log estruturado ───────────────────────────────────────────────────────
 
@@ -75,7 +81,10 @@ export async function POST(req: NextRequest) {
   try {
     formData = await req.formData()
   } catch {
-    return NextResponse.json({ error: 'Corpo da requisição inválido (esperado multipart/form-data)' }, { status: 400 })
+    return NextResponse.json(
+      { error: 'Corpo da requisição inválido (esperado multipart/form-data)' },
+      { status: 400 }
+    )
   }
 
   const file = formData.get('file')
@@ -126,7 +135,7 @@ export async function POST(req: NextRequest) {
   try {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    result = await uploadFile({ buffer, mimeType, folder })
+    result = await uploadFile({ buffer, mimeType, folder, ownerId: user.id })
   } catch (err) {
     logUpload('error', 'upload_failed', {
       user_id: user.id,

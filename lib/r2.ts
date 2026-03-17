@@ -83,6 +83,8 @@ export interface UploadFileParams {
   mimeType: R2AllowedMimeType
   /** Pasta de destino no bucket */
   folder: R2Folder
+  /** Dono do asset para organização de chave no bucket */
+  ownerId?: string
   /**
    * Extensão sem ponto (ex: 'jpg', 'png').
    * Se omitido, usa a extensão padrão do mimeType.
@@ -109,9 +111,9 @@ export async function uploadFile(params: UploadFileParams): Promise<UploadFileRe
   const client = createR2Client()
 
   const ext = params.extension ?? MIME_TO_EXTENSION[mimeType]
-  // UUID v4 gerado com crypto nativo — sem pacote externo
   const uid = crypto.randomUUID()
-  const key = `${folder}/${uid}.${ext}`
+  const ownerSegment = params.ownerId?.replace(/[^a-zA-Z0-9-_]/g, '').trim() || 'anon'
+  const key = `${folder}/${ownerSegment}/${Date.now()}-${uid}.${ext}`
 
   logR2('info', 'r2_upload_started', {
     folder,
