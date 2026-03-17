@@ -6,7 +6,6 @@ import {
   Check,
   CheckCircle,
   Clock,
-  Crown,
   MessageCircle,
   PiggyBank,
   Shield,
@@ -15,6 +14,8 @@ import {
   X,
   Zap,
 } from 'lucide-react'
+import { getTemplateCatalog } from '@/lib/templates-config'
+import { getTemplatePricing } from '@/lib/pricing'
 import { cn } from '@/lib/utils'
 
 // ─── CONFIGURAÇÃO ─────────────────────────────────────────────────────────────
@@ -40,7 +41,7 @@ const COMPARISON_ROWS = [
   },
   {
     outros: 'Criam custos recorrentes para operar',
-    nos: 'Mais economia e mais previsibilidade para o negócio',
+    nos: 'Preço claro por template desde o início',
   },
   {
     outros: 'Exigem desenvolvedor para ajustes simples',
@@ -76,80 +77,61 @@ const BENEFIT_CARDS = [
   },
 ] as const
 
-// ─── Bloco 4 — Planos SaaS recorrentes ───────────────────────────────────────
-const PLANS = [
-  {
-    id: 'start',
-    destaque: false,
-    icon: Zap,
-    iconColor: 'text-foreground/70',
-    iconBg: 'bg-secondary',
-    badge: null,
-    titulo: 'Start',
-    subtitulo: 'Para colocar o cardápio no ar rápido com custo enxuto.',
-    preco: 79,
-    precoAnual: 69,
-    href: '/ofertas#start',
-    ariaLabel: 'Escolher plano Start por 79 reais por mês',
-    ctaTexto: 'Escolher template',
-    itens: [
-      '1 restaurante ativo',
-      'Editor visual do cardápio',
-      'QR Code e link público',
-      'Pedidos via WhatsApp',
-      'Hospedagem incluída',
-    ],
-  },
-  {
-    id: 'pro',
-    destaque: true,
-    icon: Sparkles,
-    iconColor: 'text-primary',
-    iconBg: 'bg-primary/10',
-    badge: '⭐ Mais escolhido',
-    titulo: 'Pro',
-    subtitulo: 'Para quem quer personalização e mais recursos para vender mais.',
-    preco: 129,
-    precoAnual: 109,
-    href: '/ofertas#pro',
-    ariaLabel: 'Escolher plano Pro por 129 reais por mês',
-    ctaTexto: 'Quero o Pro',
-    itens: [
-      'Tudo do plano Start',
-      'Templates premium',
-      'Personalização visual avançada',
-      'Destaque de produtos no cardápio',
-      'Suporte prioritário',
-      'Acompanhamento na ativação',
-    ],
-  },
-  {
-    id: 'elite',
-    destaque: false,
-    icon: Crown,
-    iconColor: 'text-foreground/70',
-    iconBg: 'bg-secondary',
-    badge: null,
-    titulo: 'Elite',
-    subtitulo: 'Para operações maiores que precisam de mais controle.',
-    preco: 199,
-    precoAnual: 169,
-    href: '/ofertas#elite',
-    ariaLabel: 'Escolher plano Elite por 199 reais por mês',
-    ctaTexto: 'Falar sobre Elite',
-    itens: [
-      'Tudo do plano Pro',
-      'Domínio próprio',
-      'Analytics de pedidos',
-      'Integração com automação',
-      'Suporte dedicado',
-      'Prioridade nas melhorias',
-    ],
-  },
-] as const
-
 // ─────────────────────────────────────────────────────────────────────────────
 export default function SecaoConversao() {
+  const templates = getTemplateCatalog()
+  const selfServicePix = templates.map((template) => getTemplatePricing(template.slug).selfService.pix)
+  const selfServiceCard = templates.map((template) => getTemplatePricing(template.slug).selfService.card)
+  const fpvcPix = templates.map((template) => getTemplatePricing(template.slug).feitoPraVoce.pix)
+  const fpvcCard = templates.map((template) => getTemplatePricing(template.slug).feitoPraVoce.card)
+
+  const plans = [
+    {
+      id: 'self-service',
+      destaque: false,
+      icon: Zap,
+      iconColor: 'text-foreground/70',
+      iconBg: 'bg-secondary',
+      badge: null,
+      titulo: 'Faça Você Mesmo',
+      subtitulo: 'Para quem quer editar e publicar o cardápio com autonomia total.',
+      preco: Math.min(...selfServicePix),
+      faixa: `PIX até R$ ${Math.max(...selfServicePix)} · cartão até R$ ${Math.max(...selfServiceCard)}`,
+      href: '/templates',
+      ariaLabel: 'Escolher template no modelo Faça Você Mesmo',
+      ctaTexto: 'Escolher template',
+      itens: [
+        '1 restaurante ativo',
+        'Editor visual do cardápio',
+        'QR Code e link público',
+        'Pedidos via WhatsApp',
+        'Hospedagem incluída',
+      ],
+    },
+    {
+      id: 'feito-pra-voce',
+      destaque: true,
+      icon: Sparkles,
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
+      badge: '⭐ Mais escolhido',
+      titulo: 'Feito Pra Você',
+      subtitulo: 'Para quem quer comprar agora e deixar a implantação com a equipe.',
+      preco: Math.min(...fpvcPix),
+      faixa: `PIX até R$ ${Math.max(...fpvcPix)} · cartão até R$ ${Math.max(...fpvcCard)}`,
+      href: '/templates',
+      ariaLabel: 'Escolher template no modelo Feito Pra Você',
+      ctaTexto: 'Ver opções de compra',
+      itens: [
+        'Tudo do Faça Você Mesmo',
+        'Montagem pela nossa equipe',
+        'Envio de fotos e preços depois da compra',
+        'Acompanhamento na ativação',
+        'Suporte prioritário',
+      ],
+    },
+  ] as const
+
   return (
     <section
       id="conversao"
@@ -253,23 +235,20 @@ export default function SecaoConversao() {
           })}
         </div>
 
-        {/* ═══════════════════════════════════════════════════════════════════
-            BLOCO 4 — Planos
-            Psicologia: quem tem medo de tecnologia → "Feito Pra Você"
-                        quem quer economizar → "Faça Você Mesmo"
-                        Os dois convertem. Ninguém sai sem escolher.
-        ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-foreground mb-2 text-center text-2xl font-bold">Planos e preços</h3>
+          <h3 className="text-foreground mb-2 text-center text-2xl font-bold">
+            Escolha como quer entrar no ar
+          </h3>
           <p className="text-muted-foreground mb-2 text-center text-sm">
-            Assinatura mensal · sem comissão por pedido · cancele quando quiser.
+            No fluxo público atual, a contratação é por template com pagamento único.
           </p>
           <p className="text-muted-foreground mb-8 text-center text-xs">
-            No plano anual você economiza 2 meses (Start R$69 · Pro R$109 · Elite R$169/mês).
+            Você escolhe o template primeiro e depois decide entre fazer sozinho ou deixar a
+            implantação com a equipe.
           </p>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {PLANS.map((plan) => {
+          <div className="grid gap-5 md:grid-cols-2">
+            {plans.map((plan) => {
               const Icon = plan.icon
               return (
                 <div
@@ -296,19 +275,18 @@ export default function SecaoConversao() {
 
                   <div className="mb-5">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-muted-foreground text-base font-medium">R$</span>
                       <span
                         className={cn(
                           'text-3xl font-black',
                           plan.destaque ? 'text-primary' : 'text-foreground'
                         )}
                       >
-                        {plan.preco}
+                        R$ {plan.preco}
                       </span>
-                      <span className="text-muted-foreground text-xs">/mês</span>
+                      <span className="text-muted-foreground text-xs">no PIX</span>
                     </div>
                     <p className="text-muted-foreground mt-0.5 text-xs">
-                      Ou R$ {plan.precoAnual}/mês no plano anual
+                      {plan.faixa}
                     </p>
                   </div>
 
@@ -346,7 +324,7 @@ export default function SecaoConversao() {
           </div>
 
           <p className="text-muted-foreground mt-6 text-center text-sm">
-            Suporte humano disponível em todos os planos.
+            Suporte humano disponível nos dois modelos de contratação.
           </p>
         </div>
 

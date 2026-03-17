@@ -8,8 +8,7 @@ import { getTemplateCatalog } from '@/lib/templates-config'
 
 const templates = getTemplateCatalog()
 const showDevUnlock =
-  process.env.NODE_ENV === 'development' ||
-  process.env.NEXT_PUBLIC_ALLOW_DEV_UNLOCK === 'true'
+  process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ALLOW_DEV_UNLOCK === 'true'
 
 export default function TemplatesPage() {
   return (
@@ -24,7 +23,7 @@ export default function TemplatesPage() {
             ← Voltar
           </Link>
           <Link href="/ofertas" className="text-primary text-sm font-medium hover:underline">
-            Ver planos
+            Ver opções de compra
           </Link>
         </div>
       </header>
@@ -39,7 +38,8 @@ export default function TemplatesPage() {
             Escolha o Template Perfeito
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
-            Cada demo abaixo reutiliza o mesmo template que você recebe no onboarding. Perfeito para Deliverys, pizzarias, hamburguerias e negócios alimentícios.
+            Cada demo abaixo reutiliza o mesmo template que você recebe no onboarding. Perfeito para
+            Deliverys, pizzarias, hamburguerias e negócios alimentícios.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -47,7 +47,7 @@ export default function TemplatesPage() {
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
             >
               <Eye className="h-4 w-4" />
-              Ver planos
+              Ver opções de compra
             </Link>
             {showDevUnlock && (
               <Link
@@ -72,12 +72,12 @@ export default function TemplatesPage() {
               <div className="text-muted-foreground text-sm">Templates</div>
             </div>
             <div>
-              <div className="text-foreground text-2xl font-bold">500+</div>
-              <div className="text-muted-foreground text-sm">Clientes</div>
+              <div className="text-foreground text-2xl font-bold">2</div>
+              <div className="text-muted-foreground text-sm">Modelos de contratação</div>
             </div>
             <div>
-              <div className="text-foreground text-2xl font-bold">4.8</div>
-              <div className="text-muted-foreground text-sm">Avaliação média</div>
+              <div className="text-foreground text-2xl font-bold">0%</div>
+              <div className="text-muted-foreground text-sm">Comissão por pedido</div>
             </div>
           </div>
 
@@ -96,7 +96,8 @@ export default function TemplatesPage() {
             Escolha o modelo e ative seu delivery mais rápido
           </h2>
           <p className="text-muted-foreground mb-6">
-            Escolha o modelo, defina se quer fazer sozinho ou receber a implantação pronta e ative seu cardápio com preço claro desde o início.
+            Escolha o modelo, defina se quer fazer sozinho ou receber a implantação pronta e ative
+            seu cardápio com preço claro desde o início.
           </p>
           <Link
             href="/ofertas"

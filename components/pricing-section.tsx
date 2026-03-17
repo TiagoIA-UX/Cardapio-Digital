@@ -2,71 +2,64 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Check } from 'lucide-react'
-
-const plans = [
-  {
-    name: 'Start',
-    description: 'Para colocar o cardápio no ar rápido com custo enxuto',
-    price: 'R$ 79',
-    priceDescription: '/mês',
-    features: [
-      '1 restaurante ativo',
-      'Editor visual do cardápio',
-      'QR Code e link público',
-      'Pedidos via WhatsApp',
-      'Hospedagem incluída',
-    ],
-    cta: 'Escolher template',
-    popular: false,
-  },
-  {
-    name: 'Pro',
-    description: 'Para quem quer personalização e mais recursos para vender mais',
-    price: 'R$ 129',
-    priceDescription: '/mês',
-    features: [
-      'Tudo do plano Start',
-      'Templates premium',
-      'Personalização visual avançada',
-      'Destaque de produtos no cardápio',
-      'Suporte prioritário',
-      'Acompanhamento na ativação',
-    ],
-    cta: 'Começar com Pro',
-    popular: true,
-  },
-  {
-    name: 'Elite',
-    description: 'Para operações maiores que precisam de mais controle',
-    price: 'R$ 199',
-    priceDescription: '/mês',
-    features: [
-      'Tudo do plano Pro',
-      'Domínio próprio',
-      'Analytics de pedidos',
-      'Integração com automação',
-      'Suporte dedicado',
-      'Prioridade nas melhorias',
-    ],
-    cta: 'Falar sobre Elite',
-    popular: false,
-  },
-]
+import { getTemplateCatalog } from '@/lib/templates-config'
+import { getTemplatePricing } from '@/lib/pricing'
 
 export function PricingSection() {
+  const templates = getTemplateCatalog()
+  const selfPix = templates.map((template) => getTemplatePricing(template.slug).selfService.pix)
+  const selfCard = templates.map((template) => getTemplatePricing(template.slug).selfService.card)
+  const fpvcPix = templates.map((template) => getTemplatePricing(template.slug).feitoPraVoce.pix)
+  const fpvcCard = templates.map((template) => getTemplatePricing(template.slug).feitoPraVoce.card)
+
+  const plans = [
+    {
+      name: 'Faça Você Mesmo',
+      description: 'Para quem quer editar o cardápio no painel com autonomia total.',
+      price: `R$ ${Math.min(...selfPix)}`,
+      priceDescription: 'no PIX',
+      priceFootnote: `ou até R$ ${Math.max(...selfCard)} no cartão`,
+      features: [
+        '1 restaurante ativo',
+        'Editor visual do cardápio',
+        'QR Code e link público',
+        'Pedidos via WhatsApp',
+        'Hospedagem incluída',
+      ],
+      cta: 'Escolher template',
+      popular: false,
+    },
+    {
+      name: 'Feito Pra Você',
+      description: 'Para quem quer comprar agora e deixar a implantação com a equipe.',
+      price: `R$ ${Math.min(...fpvcPix)}`,
+      priceDescription: 'no PIX',
+      priceFootnote: `ou até R$ ${Math.max(...fpvcCard)} no cartão`,
+      features: [
+        'Tudo do Faça Você Mesmo',
+        'Montagem pela nossa equipe',
+        'Envio de fotos e preços depois da compra',
+        'Acompanhamento na ativação',
+        'Suporte prioritário',
+      ],
+      cta: 'Ver opções de compra',
+      popular: true,
+    },
+  ]
+
   return (
     <section id="precos" className="border-border bg-secondary/30 border-y py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-foreground text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-            Planos e Preços
+            Ofertas e preços
           </h2>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Assinatura mensal sem comissão por pedido. Cancele quando quiser.
+            No fluxo público atual, a contratação é feita por template com pagamento único.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-3">
+        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:mx-auto lg:max-w-4xl">
           {plans.map((plan) => (
             <Card
               key={plan.name}
@@ -87,6 +80,7 @@ export function PricingSection() {
                   <span className="text-muted-foreground ml-2 text-sm">
                     {plan.priceDescription}
                   </span>
+                  <p className="text-muted-foreground mt-1 text-xs">{plan.priceFootnote}</p>
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">

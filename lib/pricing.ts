@@ -7,9 +7,9 @@ export type BillingCycle = 'unico' | 'mensal' | 'anual'
 
 /**
  * Estrutura de preço por template e plano.
- * Feito Pra Você inclui custo de freelancer (~R$ 250-400) + margem.
- * Markup FPVC sobre DIY: ~135-152% (cobre mão de obra e lucro).
- * Plano anual = 10 meses (2 meses grátis).
+ * O fluxo público atual usa os valores de PIX/cartão para checkout por template.
+ * Campos monthly/annual permanecem como referência de modelos internos/legados e não devem ser
+ * expostos como cobrança obrigatória no checkout público.
  */
 export interface TemplatePricing {
   template: RestaurantTemplateSlug
@@ -30,7 +30,7 @@ export interface TemplatePricing {
   }
 }
 
-/** Preços mensal/anual. DIY = template; FPVC = +50% (cobre suporte e mão de obra) */
+/** Referências mensal/anual para modelos internos e legados. */
 function getSubscriptionPrices(slug: RestaurantTemplateSlug) {
   const cfg = getRestaurantTemplateConfig(slug)
   const diyMonthly = cfg.priceMonthly ?? 59
@@ -41,9 +41,9 @@ function getSubscriptionPrices(slug: RestaurantTemplateSlug) {
 }
 
 /**
- * Preços por template. Valores justos para cobrir freelancer no plano Feito Pra Você.
- * DIY: plataforma + template. FPVC: DIY + mão de obra (~R$ 300-400) + margem.
- * Mensal/Anual: assinatura recorrente (anual = 2 meses grátis).
+ * Preços por template usados no checkout público atual.
+ * DIY: plataforma + template. FPVC: DIY + mão de obra + implantação assistida.
+ * Mensal/Anual: referências auxiliares, não parte da cobrança obrigatória do checkout público.
  */
 export const TEMPLATE_PRICING: Record<RestaurantTemplateSlug, TemplatePricing> = {
   lanchonete: (() => {

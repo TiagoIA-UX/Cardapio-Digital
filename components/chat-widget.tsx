@@ -162,7 +162,7 @@ export function ChatWidget() {
 
           {/* Atalhos rápidos */}
           <div className="flex gap-2 overflow-x-auto border-t border-zinc-100 bg-white px-3 py-2">
-            {['Ver planos', 'Quanto custa?', 'Tem período de teste?', 'Quero começar'].map((q) => (
+            {['Ver opções', 'Quanto custa?', 'Tem período de teste?', 'Quero começar'].map((q) => (
               <button
                 key={q}
                 onClick={() => {

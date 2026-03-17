@@ -106,7 +106,8 @@ const PLAN_META = {
   },
   'feito-pra-voce': {
     nome: 'Feito Pra Você',
-    descricao: 'Nossa equipe monta o cardápio para você entrar no ar mais rápido.',
+    descricao:
+      'Você compra agora, envia o material depois e nossa equipe monta o cardápio para você.',
     icon: Sparkles,
     cor: 'border-primary bg-primary/5',
     corIcone: 'text-primary bg-primary/10',
@@ -114,7 +115,7 @@ const PLAN_META = {
     beneficios: [
       'Tudo do Faça Você Mesmo',
       'Implantação feita pela nossa equipe',
-      'Cardápio montado com suas fotos e preços',
+      'Você pode mandar fotos e preços após a compra',
       'Pronto em até 48 h úteis',
       'Suporte prioritário',
       'Domínio personalizado incluso',
@@ -227,8 +228,6 @@ function ComprarContent() {
   }
   const planMeta = PLAN_META[selectedPlan]
   const planPrices = selectedPlan === 'feito-pra-voce' ? pricing.feitoPraVoce : pricing.selfService
-  const selfServiceRecurring = pricing.selfService.monthly
-  const fpvcRecurring = pricing.feitoPraVoce.monthly
   const totalPix = planPrices.pix
   const totalCartao = planPrices.card
   const parcelas = planPrices.parcelas
@@ -391,12 +390,13 @@ function ComprarContent() {
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-foreground text-2xl font-bold">
-                      R$ {selfServiceRecurring}
+                      R$ {pricing.selfService.pix}
                     </span>
-                    <span className="text-foreground/70 text-sm">/mês</span>
+                    <span className="text-foreground/70 text-sm">no PIX</span>
                   </div>
-                  <p className="mt-1 text-xs text-foreground/65">
-                    Implantação hoje: PIX R$ {pricing.selfService.pix} ou cartão R$ {pricing.selfService.card}
+                  <p className="text-foreground/65 mt-1 text-xs">
+                    Pagamento único no checkout: PIX R$ {pricing.selfService.pix} ou 3x de R${' '}
+                    {Math.round(pricing.selfService.card / pricing.selfService.parcelas)} no cartão
                   </p>
                 </div>
               </div>
@@ -445,12 +445,14 @@ function ComprarContent() {
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-foreground text-2xl font-bold">
-                      R$ {fpvcRecurring}
+                      R$ {pricing.feitoPraVoce.pix}
                     </span>
-                    <span className="text-foreground/70 text-sm">/mês</span>
+                    <span className="text-foreground/70 text-sm">no PIX</span>
                   </div>
-                  <p className="mt-1 text-xs text-foreground/65">
-                    Implantação hoje: PIX R$ {pricing.feitoPraVoce.pix} ou cartão R$ {pricing.feitoPraVoce.card}
+                  <p className="text-foreground/65 mt-1 text-xs">
+                    Pagamento único no checkout: PIX R$ {pricing.feitoPraVoce.pix} ou 3x de R${' '}
+                    {Math.round(pricing.feitoPraVoce.card / pricing.feitoPraVoce.parcelas)} no
+                    cartão
                   </p>
                 </div>
               </div>
@@ -463,6 +465,19 @@ function ComprarContent() {
                 ))}
               </ul>
             </button>
+
+            {selectedPlan === 'feito-pra-voce' && (
+              <div className="border-primary/20 bg-primary/5 rounded-2xl border p-4">
+                <p className="text-foreground text-sm font-semibold">
+                  Sem disponibilidade agora? Esse plano foi feito para isso.
+                </p>
+                <p className="text-foreground/75 mt-1 text-sm leading-6">
+                  Você conclui a compra, recebe o onboarding e pode mandar fotos, preços, logo e
+                  observações depois. O prazo de até 48 h úteis começa após o envio completo do
+                  material.
+                </p>
+              </div>
+            )}
 
             {/* Forma de Pagamento */}
             <div className="mt-6">
@@ -647,6 +662,17 @@ function ComprarContent() {
                 {couponError ? <p className="mt-2 text-xs text-red-600">{couponError}</p> : null}
               </div>
 
+              <div className="border-border bg-background rounded-xl border p-4 text-sm">
+                <p className="text-foreground font-medium">
+                  Como funciona a cobrança neste checkout
+                </p>
+                <p className="text-foreground/75 mt-1 leading-6">
+                  Aqui você paga somente a implantação do template escolhido. Não existe assinatura
+                  obrigatória neste checkout público. Qualquer serviço recorrente adicional é
+                  tratado separadamente.
+                </p>
+              </div>
+
               {loadingSession ? (
                 <p className="text-foreground/70 text-xs">Carregando dados da sua conta...</p>
               ) : null}
@@ -707,23 +733,27 @@ function ComprarContent() {
 
                 <div className="border-border mt-3 border-t pt-3">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-foreground/75">Pagamento inicial</span>
+                    <span className="text-foreground/75">Pagamento único de implantação</span>
                     <div className="text-right">
                       <span className="text-foreground text-2xl font-bold">
                         R$ {total.toFixed(2)}
                       </span>
                       <p className="text-foreground/70 text-xs">
-                        {paymentMethod === 'pix' ? 'À vista no PIX' : `${parcelas}x de R$ ${parcelaTotal}`}
+                        {paymentMethod === 'pix'
+                          ? 'À vista no PIX'
+                          : `${parcelas}x de R$ ${parcelaTotal}`}
                       </p>
                     </div>
                   </div>
                   <div className="mt-3 flex items-baseline justify-between">
-                    <span className="text-foreground/75">Assinatura após ativação</span>
+                    <span className="text-foreground/75">Cobrança recorrente</span>
                     <div className="text-right">
                       <span className="text-foreground text-base font-semibold">
-                        R$ {planPrices.monthly}/mês
+                        Não incluída aqui
                       </span>
-                      <p className="text-foreground/70 text-xs">ou R$ {planPrices.annual}/ano</p>
+                      <p className="text-foreground/70 max-w-44 text-xs">
+                        Checkout público atual sem mensalidade obrigatória.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -747,7 +777,7 @@ function ComprarContent() {
 
               <div className="text-foreground/70 mt-4 flex items-center justify-center gap-2 text-xs">
                 <Shield className="h-4 w-4" />
-                Pagamento seguro. O painel é liberado após a aprovação do webhook.
+                Pagamento seguro. O acesso é liberado após a aprovação do webhook.
               </div>
 
               <p className="text-foreground/65 mt-2 text-center text-xs leading-5">

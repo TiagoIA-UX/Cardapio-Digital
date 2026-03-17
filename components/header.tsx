@@ -29,10 +29,10 @@ export function Header() {
             href="/ofertas"
             className="text-muted-foreground hover:text-foreground text-sm transition-colors"
           >
-            Planos
+            Ofertas
           </Link>
           <Link
-            href="#precos"
+            href="/precos"
             className="text-muted-foreground hover:text-foreground text-sm transition-colors"
           >
             Preços
@@ -82,10 +82,10 @@ export function Header() {
               href="/ofertas"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
-              Planos
+              Ofertas
             </Link>
             <Link
-              href="#precos"
+              href="/precos"
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               Preços

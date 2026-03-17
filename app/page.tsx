@@ -194,7 +194,7 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3.5 text-base font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
                   >
                     <Store className="h-5 w-5" />
-                    Ver planos
+                    Ver opções de compra
                   </Link>
                 </div>
 
@@ -270,7 +270,7 @@ export default function Home() {
                           href="/ofertas"
                           className="bg-foreground text-background inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold"
                         >
-                          Ver planos
+                          Ver opções de compra
                           <ArrowRight className="h-4 w-4" />
                         </Link>
                         <Link
@@ -559,7 +559,7 @@ export default function Home() {
                     href="/ofertas"
                     className="bg-foreground text-background inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold"
                   >
-                    Ver planos
+                    Ver opções de compra
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <a
@@ -606,7 +606,7 @@ export default function Home() {
               <div>
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
                   <BadgeCheck className="h-4 w-4" />
-                  Templates individuais, pacotes e implantação assistida
+                  Templates individuais e implantação assistida
                 </div>
                 <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance md:text-4xl">
                   Venda online com mais controle.
@@ -630,7 +630,7 @@ export default function Home() {
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   <ShoppingBag className="h-4 w-4" />
-                  Ver planos
+                  Ver opções de compra
                 </Link>
               </div>
             </div>

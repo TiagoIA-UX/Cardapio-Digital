@@ -30,15 +30,9 @@ interface TemplateCardProps {
 }
 
 export function TemplateCard({ template, variant = 'default' }: TemplateCardProps) {
-  const monthly = template.priceMonthly ?? template.price
-  const annual = template.priceAnnual ?? monthly * 10
-  const annualOriginal = monthly * 12
-  const detailedPricing = getTemplatePricing(template.slug as Parameters<typeof getTemplatePricing>[0])
-  const fpvcMonthly = detailedPricing.feitoPraVoce.monthly
-  const hasAnnualDiscount = annual < annualOriginal
-  const annualDiscountPercent = hasAnnualDiscount
-    ? Math.round(((annualOriginal - annual) / annualOriginal) * 100)
-    : 0
+  const detailedPricing = getTemplatePricing(
+    template.slug as Parameters<typeof getTemplatePricing>[0]
+  )
 
   return (
     <div
@@ -60,11 +54,6 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
           <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-xs font-bold text-white">
             <TrendingUp className="h-3 w-3" />
             MAIS VENDIDO
-          </span>
-        )}
-        {hasAnnualDiscount && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-green-600 px-2.5 py-1 text-xs font-bold text-white">
-            -{annualDiscountPercent}% no anual
           </span>
         )}
       </div>
@@ -125,17 +114,18 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
             Faça Você Mesmo
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-foreground text-2xl font-bold">R$ {monthly}/mês</span>
+            <span className="text-foreground text-2xl font-bold">
+              R$ {detailedPricing.selfService.pix}
+            </span>
+            <span className="text-muted-foreground text-sm">no PIX</span>
           </div>
-          <div className="text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm">
-            <span>ou</span>
-            <span className="text-foreground font-semibold">R$ {annual}/ano</span>
-            {hasAnnualDiscount && (
-              <span className="text-green-600 text-xs font-medium">(2 meses grátis)</span>
-            )}
-          </div>
+          <p className="text-muted-foreground text-sm">
+            ou 3x de R$ {Math.round(detailedPricing.selfService.card / detailedPricing.selfService.parcelas)} no cartão
+          </p>
           <p className="text-foreground/70 text-sm">
-            Feito Pra Você a partir de <span className="font-semibold text-foreground">R$ {fpvcMonthly}/mês</span>
+            Feito Pra Você a partir de{' '}
+            <span className="text-foreground font-semibold">R$ {detailedPricing.feitoPraVoce.pix}</span>{' '}
+            no PIX
           </p>
         </div>
 
