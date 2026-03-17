@@ -15,6 +15,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
+import { COMPANY_NAME } from '@/lib/brand'
 
 const WHATSAPP_NUMBER = '5512996887993'
 const WHATSAPP_MESSAGE = encodeURIComponent(
@@ -75,7 +76,9 @@ function PagamentoSucessoContent() {
         })
 
         if (response.status === 401) {
-          router.replace(`/login?redirect=${encodeURIComponent(`/pagamento/sucesso?checkout=${checkout}`)}`)
+          router.replace(
+            `/login?redirect=${encodeURIComponent(`/pagamento/sucesso?checkout=${checkout}`)}`
+          )
           return
         }
 
@@ -88,7 +91,11 @@ function PagamentoSucessoContent() {
 
         const planFeitoPraVoce = data.plan_slug === 'feito-pra-voce'
 
-        if (data.payment_status === 'approved' && planFeitoPraVoce && data.onboarding_status === 'ready') {
+        if (
+          data.payment_status === 'approved' &&
+          planFeitoPraVoce &&
+          data.onboarding_status === 'ready'
+        ) {
           router.replace(`/onboarding?checkout=${checkout}`)
           return
         }
@@ -117,11 +124,14 @@ function PagamentoSucessoContent() {
   if (validated === 'loading') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-green-50 p-4 dark:from-green-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+        <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 text-center shadow-sm">
           <Loader2 className="text-primary mx-auto mb-4 h-10 w-10 animate-spin" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Confirmando seu pagamento...</h1>
           <p className="text-muted-foreground text-sm">
             Estamos aguardando a confirmação final do Mercado Pago antes de liberar seu acesso.
+          </p>
+          <p className="text-muted-foreground mt-3 text-xs">
+            A cobrança pode aparecer como {COMPANY_NAME}.
           </p>
         </div>
       </div>
@@ -131,11 +141,15 @@ function PagamentoSucessoContent() {
   if (validated === 'pending') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-yellow-50 p-4 dark:from-yellow-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-yellow-500/20 bg-card p-8 text-center shadow-sm">
+        <div className="bg-card w-full max-w-md rounded-2xl border border-yellow-500/20 p-8 text-center shadow-sm">
           <AlertCircle className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Pagamento em processamento</h1>
           <p className="text-muted-foreground mb-6 text-sm">
             Você receberá uma confirmação em breve assim que o Mercado Pago concluir a análise.
+          </p>
+          <p className="text-muted-foreground mb-6 text-xs">
+            Se você viu {COMPANY_NAME} no comprovante, isso é esperado: ela é a empresa responsável
+            pela plataforma Cardápio Digital.
           </p>
           <Link
             href="/"
@@ -151,7 +165,7 @@ function PagamentoSucessoContent() {
   if (validated === 'rejected') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-red-50 p-4 dark:from-red-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-red-500/20 bg-card p-8 text-center shadow-sm">
+        <div className="bg-card w-full max-w-md rounded-2xl border border-red-500/20 p-8 text-center shadow-sm">
           <XCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Pagamento não aprovado</h1>
           <p className="text-muted-foreground mb-6 text-sm">
@@ -187,6 +201,9 @@ function PagamentoSucessoContent() {
           {checkingProvision
             ? 'Pagamento confirmado. Finalizando a criação do seu painel...'
             : 'Seu cardápio digital está pronto para usar'}
+        </p>
+        <p className="text-muted-foreground mb-6 text-sm">
+          Sua contratação do Cardápio Digital foi processada por {COMPANY_NAME}.
         </p>
 
         {/* Card de próximos passos */}

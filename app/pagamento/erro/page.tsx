@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { XCircle, ArrowLeft, RefreshCw, MessageCircle } from 'lucide-react'
+import { COMPANY_NAME } from '@/lib/brand'
 
 const WHATSAPP_NUMBER = '5512996887993'
 const WHATSAPP_MESSAGE = encodeURIComponent(
@@ -24,6 +25,10 @@ export default function PagamentoErroPage() {
         <h1 className="text-foreground mb-2 text-3xl font-bold">Pagamento não aprovado</h1>
         <p className="text-muted-foreground mb-8 text-lg">
           Não se preocupe, você pode tentar novamente
+        </p>
+        <p className="text-muted-foreground mb-6 text-sm">
+          Se você viu {COMPANY_NAME} na etapa de pagamento, isso é esperado: ela é a empresa
+          responsável pela plataforma Cardápio Digital.
         </p>
 
         {/* Card de motivos */}
