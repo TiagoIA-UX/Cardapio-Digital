@@ -27,10 +27,10 @@ export default function OfertasPage() {
         anualMin: Math.min(...selfServiceAnnual),
         anualMax: Math.max(...selfServiceAnnual),
         destaque: false,
-        cta: 'Ver templates e escolher',
+        cta: 'Quero começar com menor custo',
         href: '/templates',
         beneficios: [
-          '1 restaurante ativo',
+          '1 delivery ativo',
           'Editor visual do cardápio',
           'QR Code e link público',
           'Pedidos via WhatsApp',
@@ -48,7 +48,7 @@ export default function OfertasPage() {
         anualMin: Math.min(...fpvcAnnual),
         anualMax: Math.max(...fpvcAnnual),
         destaque: true,
-        cta: 'Escolher template com implantação',
+        cta: 'Quero entrar no ar mais rápido',
         href: '/templates',
         beneficios: [
           'Tudo do Faça Você Mesmo',
@@ -61,6 +61,7 @@ export default function OfertasPage() {
       },
     ]
   }, [])
+  const cheapestAnnualMonthly = Math.round(plans[0].anualMin / 10)
 
   return (
     <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
@@ -93,11 +94,11 @@ export default function OfertasPage() {
         <div className="mb-10 text-center">
           <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
             <Sparkles className="h-4 w-4" />
-            Planos recorrentes · 0% de comissão por pedido
+            A partir de R$ {cheapestAnnualMonthly}/mês no anual · 0% de comissão por pedido
           </div>
           <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">Escolha seu plano</h1>
           <p className="text-foreground/80 mx-auto max-w-2xl text-lg">
-            Os valores variam conforme o template escolhido. Primeiro você escolhe o modelo, depois define se quer fazer sozinho ou receber a implantação pronta.
+            Preços pensados para donos de Deliverys que querem vender mais sem entregar comissão por pedido. Escolha o modelo e entre com o plano que faz mais sentido para sua operação.
           </p>
           <div className="border-border bg-card/80 mx-auto mt-6 max-w-3xl rounded-2xl border px-5 py-4 text-left shadow-sm">
             <p className="text-foreground text-sm font-semibold">Transparência na cobrança</p>
@@ -195,7 +196,7 @@ export default function OfertasPage() {
                   )}
                   {ciclo === 'mensal' && (
                     <p className="mt-0.5 text-xs font-medium text-green-600">
-                      Ou a partir de R$ {plan.anualMin}/ano no plano anual
+                      Equivale a partir de R$ {Math.round(plan.anualMin / 10)}/mês no anual
                     </p>
                   )}
                 </div>
@@ -304,7 +305,7 @@ export default function OfertasPage() {
                 Tem template para o meu tipo de negócio?
               </h3>
               <p className="text-foreground/75 text-sm">
-                Sim. Há templates para restaurante, pizzaria, hamburgueria, lanchonete, bar,
+                Sim. Há templates para Deliverys, pizzaria, hamburgueria, lanchonete, bar,
                 cafeteria, açaíteria e sushi. Escolha o template na tela de templates e assine o
                 plano que faz sentido para você.
               </p>
