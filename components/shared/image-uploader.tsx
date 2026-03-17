@@ -34,6 +34,90 @@ const ASPECT_CLASSES: Record<string, string> = {
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+const OPTIMIZED_TARGET_SIZE_BYTES = 450 * 1024 // ~450 KB
+const OPTIMIZED_MAX_SIZE_BYTES = 1024 * 1024 // 1 MB
+const MAX_DIMENSION_PX = 1024
+
+function sanitizeFileName(fileName: string) {
+  return fileName
+    .replace(/\.[^.]+$/, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9-_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+}
+
+function loadImageFromFile(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file)
+    const image = new window.Image()
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+      resolve(image)
+    }
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(new Error('Falha ao carregar imagem'))
+    }
+
+    image.src = objectUrl
+  })
+}
+
+async function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality: number
+): Promise<Blob> {
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, type, quality)
+  })
+
+  if (!blob) throw new Error('Falha ao converter imagem')
+  return blob
+}
+
+async function optimizeImageForUpload(file: File, folder: R2Folder): Promise<File> {
+  const image = await loadImageFromFile(file)
+  const largestSide = Math.max(image.width, image.height)
+  const scale = largestSide > MAX_DIMENSION_PX ? MAX_DIMENSION_PX / largestSide : 1
+  const targetWidth = Math.max(1, Math.round(image.width * scale))
+  const targetHeight = Math.max(1, Math.round(image.height * scale))
+
+  const canvas = document.createElement('canvas')
+  canvas.width = targetWidth
+  canvas.height = targetHeight
+
+  const context = canvas.getContext('2d')
+  if (!context) throw new Error('Canvas indisponível para otimização')
+
+  context.drawImage(image, 0, 0, targetWidth, targetHeight)
+
+  const qualitySteps =
+    folder === 'logos' ? [0.92, 0.86, 0.8, 0.74] : [0.86, 0.8, 0.74, 0.68]
+
+  let bestBlob = await canvasToBlob(canvas, 'image/webp', qualitySteps[0])
+
+  for (const quality of qualitySteps.slice(1)) {
+    if (bestBlob.size <= OPTIMIZED_TARGET_SIZE_BYTES) break
+    bestBlob = await canvasToBlob(canvas, 'image/webp', quality)
+  }
+
+  if (bestBlob.size > OPTIMIZED_MAX_SIZE_BYTES) {
+    throw new Error('A imagem continua muito grande mesmo após otimização.')
+  }
+
+  const optimizedName = `${sanitizeFileName(file.name) || 'imagem'}-${Date.now()}.webp`
+
+  return new File([bestBlob], optimizedName, {
+    type: 'image/webp',
+    lastModified: Date.now(),
+  })
+}
 
 export function ImageUploader({
   value,
@@ -66,6 +150,8 @@ export function ImageUploader({
           return
         }
 
+        const optimizedFile = await optimizeImageForUpload(file, folder)
+
         const supabase = createClient()
         const {
           data: { session },
@@ -77,7 +163,7 @@ export function ImageUploader({
         }
 
         const formData = new FormData()
-        formData.append('file', file)
+  formData.append('file', optimizedFile)
         formData.append('folder', folder)
 
         const res = await fetch('/api/upload', {
@@ -178,7 +264,7 @@ export function ImageUploader({
                 <span className="text-xs">
                   Arraste ou clique para enviar
                   <br />
-                  PNG, JPEG ou WebP — máx. 5 MB
+                  PNG, JPEG ou WebP — otimizado automaticamente
                 </span>
               </>
             )}
