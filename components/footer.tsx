@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Circle, Instagram, MapPin, MessageCircle, Shield, Users } from 'lucide-react'
+import { PRODUCT_ENDORSEMENT } from '@/lib/brand'
 
 const NAV = {
   produto: [
@@ -73,6 +74,8 @@ export function Footer() {
               Cardápio digital profissional para restaurantes, pizzarias, hamburguerias e bares.
               Pedidos direto no WhatsApp. Zero comissão por pedido.
             </p>
+
+            <p className="mt-3 max-w-xs text-xs leading-5 text-zinc-400">{PRODUCT_ENDORSEMENT}</p>
 
             {/* Selos */}
             <div className="mt-5 flex flex-wrap gap-2">

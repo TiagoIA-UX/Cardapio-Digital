@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { HomeHeader } from '@/components/home-header'
 import { Footer } from '@/components/footer'
+import { PRODUCT_ENDORSEMENT } from '@/lib/brand'
 import { RESTAURANT_TEMPLATES } from '@/lib/templates-config'
 import SecaoConversao from '@/components/sections/SecaoConversao'
 
@@ -148,17 +149,34 @@ export default function Home() {
                   alimentação
                 </div>
 
-                <h1 className="max-w-3xl text-4xl leading-[0.95] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
+                <h1 className="max-w-3xl text-4xl leading-[0.96] font-semibold tracking-tight text-balance text-white md:text-6xl lg:text-7xl">
                   Cardápio digital profissional para vender rápido.
-                  <span className="mt-3 block text-orange-300">
-                    Adicione produtos • Edite preços • Troque fotos • Ative ou pause itens
-                  </span>
                 </h1>
 
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 md:text-xl">
-                  Tudo direto no painel. Sem desenvolvedor.{' '}
+                <p className="mt-4 max-w-2xl text-xl leading-8 font-medium text-orange-200 md:text-2xl">
+                  Você mesmo atualiza o cardápio no painel, sem depender de desenvolvedor.
+                </p>
+
+                <div className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
+                  {[
+                    'Adicione produtos em minutos',
+                    'Edite preços sem complicação',
+                    'Troque fotos quando quiser',
+                    'Ative ou pause itens em tempo real',
+                  ].map((benefit) => (
+                    <div
+                      key={benefit}
+                      className="rounded-2xl border border-white/12 bg-white/8 px-4 py-3 text-sm font-semibold text-white/92 shadow-sm backdrop-blur-sm"
+                    >
+                      {benefit}
+                    </div>
+                  ))}
+                </div>
+
+                <p className="mt-6 max-w-2xl text-lg leading-8 text-white/88 md:text-xl">
+                  Tudo direto no painel.{' '}
                   <span className="font-semibold text-white">
-                    Se você sabe usar WhatsApp, consegue usar o painel.
+                    Se você sabe usar WhatsApp, consegue usar o sistema no primeiro dia.
                   </span>
                 </p>
 
@@ -184,6 +202,11 @@ export default function Home() {
                   <DarkMetricCard value="PAINEL" label="simples de editar" />
                   <DarkMetricCard value="0%" label="de comissão sobre pedidos" />
                 </div>
+
+                <p className="mt-5 max-w-2xl text-sm leading-6 text-white/75">
+                  {PRODUCT_ENDORSEMENT} No pagamento, essa operação pode aparecer com o nome
+                  empresarial da Zairyx no Mercado Pago.
+                </p>
               </div>
 
               <div className="flex items-end justify-end">
@@ -318,7 +341,7 @@ export default function Home() {
                     Dashboard
                   </span>
                 </div>
-                <div className="relative aspect-[16/10]">
+                <div className="relative aspect-16/10">
                   <Image
                     src={SCREENSHOT_DASHBOARD}
                     alt="Dashboard do painel com pedidos e estatísticas"
@@ -334,7 +357,7 @@ export default function Home() {
                     Editor visual
                   </span>
                 </div>
-                <div className="relative aspect-[16/10]">
+                <div className="relative aspect-16/10">
                   <Image
                     src={SCREENSHOT_EDITOR}
                     alt="Editor visual para editar o cardápio"

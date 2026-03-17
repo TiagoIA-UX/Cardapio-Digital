@@ -25,6 +25,7 @@ import {
   X,
 } from 'lucide-react'
 import { getTemplatePricing } from '@/lib/pricing'
+import { PAYMENT_BRAND_EXPLANATION } from '@/lib/brand'
 import { createClient } from '@/lib/supabase/client'
 import { normalizePhone } from '@/lib/restaurant-onboarding'
 
@@ -127,7 +128,9 @@ function ComprarContent() {
   const params = useParams()
   const searchParams = useSearchParams()
   const supabase = useMemo(() => createClient(), [])
-  const templateId = String(params.template || '').trim().toLowerCase()
+  const templateId = String(params.template || '')
+    .trim()
+    .toLowerCase()
   const purchaseDraftKey = `purchase_draft:${templateId}`
   const template = TEMPLATES[templateId as keyof typeof TEMPLATES]
 
@@ -326,20 +329,20 @@ function ComprarContent() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-background to-secondary/20">
+    <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
+      <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link
             href={`/templates/${templateId}`}
-            className="flex items-center gap-2 text-foreground/75 transition-colors hover:text-foreground"
+            className="text-foreground/75 hover:text-foreground flex items-center gap-2 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Link>
           <div className="flex items-center gap-2">
-            <Store className="h-5 w-5 text-primary" />
-            <span className="font-semibold text-foreground">Cardápio Digital</span>
+            <Store className="text-primary h-5 w-5" />
+            <span className="text-foreground font-semibold">Cardápio Digital</span>
           </div>
         </div>
       </header>
@@ -347,19 +350,19 @@ function ComprarContent() {
       <main className="mx-auto max-w-6xl px-4 py-8 md:py-12">
         {/* Template Escolhido */}
         <div className="mb-8 text-center">
-          <p className="mb-2 text-sm text-foreground/75">Template escolhido</p>
-          <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2">
-            <div className={`p-1.5 rounded-lg ${template.cor}`}>
+          <p className="text-foreground/75 mb-2 text-sm">Template escolhido</p>
+          <div className="border-border bg-card inline-flex items-center gap-3 rounded-full border px-4 py-2">
+            <div className={`rounded-lg p-1.5 ${template.cor}`}>
               <template.icon className="h-4 w-4 text-white" />
             </div>
-            <span className="font-semibold text-foreground">{template.nome}</span>
+            <span className="text-foreground font-semibold">{template.nome}</span>
           </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Coluna Esquerda - Escolha do Plano */}
           <div className="space-y-4 lg:col-span-2">
-            <h2 className="mb-4 text-xl font-bold text-foreground">Escolha o plano</h2>
+            <h2 className="text-foreground mb-4 text-xl font-bold">Escolha o plano</h2>
 
             <button
               onClick={() => {
@@ -378,27 +381,25 @@ function ComprarContent() {
                 </div>
                 <div className="flex-1">
                   <div className="mb-1 flex items-center gap-2">
-                    <span className="text-lg font-bold text-foreground">
+                    <span className="text-foreground text-lg font-bold">
                       {PLAN_META['self-service'].nome}
                     </span>
-                    {selectedPlan === 'self-service' && (
-                      <Check className="h-5 w-5 text-blue-500" />
-                    )}
+                    {selectedPlan === 'self-service' && <Check className="h-5 w-5 text-blue-500" />}
                   </div>
-                  <p className="mb-3 text-sm text-foreground/75">
+                  <p className="text-foreground/75 mb-3 text-sm">
                     {PLAN_META['self-service'].descricao}
                   </p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-foreground">
+                    <span className="text-foreground text-2xl font-bold">
                       R$ {PLAN_META['self-service'].mensal}
                     </span>
-                    <span className="text-sm text-foreground/70">/mês</span>
+                    <span className="text-foreground/70 text-sm">/mês</span>
                   </div>
                 </div>
               </div>
               <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                 {PLAN_META['self-service'].beneficios.map((b, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground/80">
+                  <li key={i} className="text-foreground/80 flex items-center gap-2 text-sm">
                     <Check className="h-4 w-4 shrink-0 text-blue-500" />
                     {b}
                   </li>
@@ -419,7 +420,7 @@ function ComprarContent() {
               }`}
             >
               <div className="absolute -top-3 left-4">
-                <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
+                <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-bold">
                   RECOMENDADO
                 </span>
               </div>
@@ -429,28 +430,28 @@ function ComprarContent() {
                 </div>
                 <div className="flex-1">
                   <div className="mb-1 flex items-center gap-2">
-                    <span className="text-lg font-bold text-foreground">
+                    <span className="text-foreground text-lg font-bold">
                       {PLAN_META['feito-pra-voce'].nome}
                     </span>
                     {selectedPlan === 'feito-pra-voce' && (
-                      <Check className="h-5 w-5 text-primary" />
+                      <Check className="text-primary h-5 w-5" />
                     )}
                   </div>
-                  <p className="mb-3 text-sm text-foreground/75">
+                  <p className="text-foreground/75 mb-3 text-sm">
                     {PLAN_META['feito-pra-voce'].descricao}
                   </p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-foreground">
+                    <span className="text-foreground text-2xl font-bold">
                       R$ {PLAN_META['feito-pra-voce'].mensal}
                     </span>
-                    <span className="text-sm text-foreground/70">/mês</span>
+                    <span className="text-foreground/70 text-sm">/mês</span>
                   </div>
                 </div>
               </div>
               <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                 {PLAN_META['feito-pra-voce'].beneficios.map((b, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <Check className="h-4 w-4 shrink-0 text-primary" />
+                  <li key={i} className="text-foreground/80 flex items-center gap-2 text-sm">
+                    <Check className="text-primary h-4 w-4 shrink-0" />
                     {b}
                   </li>
                 ))}
@@ -459,7 +460,7 @@ function ComprarContent() {
 
             {/* Forma de Pagamento */}
             <div className="mt-6">
-              <h3 className="mb-3 font-semibold text-foreground">Forma de pagamento</h3>
+              <h3 className="text-foreground mb-3 font-semibold">Forma de pagamento</h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
                   onClick={() => {
@@ -477,10 +478,10 @@ function ComprarContent() {
                       className={`h-5 w-5 ${paymentMethod === 'card' ? 'text-primary' : 'text-muted-foreground'}`}
                     />
                     <div>
-                      <p className="font-medium text-foreground">Cartão de Crédito</p>
-                      <p className="text-sm text-foreground/70">3x sem juros</p>
+                      <p className="text-foreground font-medium">Cartão de Crédito</p>
+                      <p className="text-foreground/70 text-sm">3x sem juros</p>
                     </div>
-                    {paymentMethod === 'card' && <Check className="ml-auto h-4 w-4 text-primary" />}
+                    {paymentMethod === 'card' && <Check className="text-primary ml-auto h-4 w-4" />}
                   </div>
                 </button>
 
@@ -500,23 +501,27 @@ function ComprarContent() {
                       className={`h-5 w-5 ${paymentMethod === 'pix' ? 'text-primary' : 'text-muted-foreground'}`}
                     />
                     <div>
-                      <p className="font-medium text-foreground">PIX</p>
+                      <p className="text-foreground font-medium">PIX</p>
                       <p className="text-sm text-green-600">Pagamento à vista</p>
                     </div>
-                    {paymentMethod === 'pix' && <Check className="ml-auto h-4 w-4 text-primary" />}
+                    {paymentMethod === 'pix' && <Check className="text-primary ml-auto h-4 w-4" />}
                   </div>
                 </button>
               </div>
             </div>
 
-            <form id="purchase-form" onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-card p-6">
+            <form
+              id="purchase-form"
+              onSubmit={handleSubmit}
+              className="border-border bg-card space-y-4 rounded-2xl border p-6"
+            >
               <div>
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                <div className="bg-primary/10 text-primary mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold">
                   <Shield className="h-3.5 w-3.5" />
                   Compra segura com liberação automática do painel
                 </div>
-                <h3 className="text-xl font-bold text-foreground">Dados para liberar o painel</h3>
-                <p className="mt-1 text-sm text-foreground/75">
+                <h3 className="text-foreground text-xl font-bold">Dados para liberar o painel</h3>
+                <p className="text-foreground/75 mt-1 text-sm">
                   O painel é liberado após a confirmação do pagamento. Use o mesmo e-mail que você
                   vai usar no acesso.
                 </p>
@@ -529,28 +534,28 @@ function ComprarContent() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">
+                <label className="text-foreground mb-1 block text-sm font-medium">
                   Nome do negócio
                 </label>
                 <input
                   type="text"
                   value={form.restaurantName}
                   onChange={(event) => setForm({ ...form, restaurantName: event.target.value })}
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-primary"
+                  className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
                   placeholder="Ex: Pizzaria do Centro"
                   required
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">
+                <label className="text-foreground mb-1 block text-sm font-medium">
                   Nome do responsável
                 </label>
                 <input
                   type="text"
                   value={form.customerName}
                   onChange={(event) => setForm({ ...form, customerName: event.target.value })}
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-primary"
+                  className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
                   placeholder="Seu nome"
                   required
                 />
@@ -558,32 +563,32 @@ function ComprarContent() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">E-mail</label>
+                  <label className="text-foreground mb-1 block text-sm font-medium">E-mail</label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(event) => setForm({ ...form, email: event.target.value })}
-                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-primary"
+                    className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
                     placeholder="voce@empresa.com"
                     readOnly={isAuthenticated}
                     required
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">WhatsApp</label>
+                  <label className="text-foreground mb-1 block text-sm font-medium">WhatsApp</label>
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={(event) => setForm({ ...form, phone: event.target.value })}
-                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-primary"
+                    className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
                     placeholder="(11) 99999-9999"
                     required
                   />
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-background p-4">
-                <label className="mb-2 block text-sm font-medium text-foreground">
+              <div className="border-border bg-background rounded-xl border p-4">
+                <label className="text-foreground mb-2 block text-sm font-medium">
                   Cupom de desconto
                 </label>
                 {appliedCoupon ? (
@@ -598,7 +603,7 @@ function ComprarContent() {
                         setCouponCode('')
                         resetCoupon()
                       }}
-                      className="rounded p-1 text-muted-foreground transition hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground rounded p-1 transition"
                       aria-label="Remover cupom"
                     >
                       <X className="h-4 w-4" />
@@ -620,14 +625,14 @@ function ComprarContent() {
                         }
                       }}
                       placeholder="Digite o código"
-                      className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary"
+                      className="border-border bg-card text-foreground focus:border-primary w-full rounded-xl border px-3 py-2 text-sm transition outline-none"
                       disabled={couponLoading}
                     />
                     <button
                       type="button"
                       onClick={() => void handleApplyCoupon()}
                       disabled={couponLoading || !couponCode.trim()}
-                      className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                      className="bg-primary text-primary-foreground shrink-0 rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50"
                     >
                       {couponLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Aplicar'}
                     </button>
@@ -637,7 +642,7 @@ function ComprarContent() {
               </div>
 
               {loadingSession ? (
-                <p className="text-xs text-foreground/70">Carregando dados da sua conta...</p>
+                <p className="text-foreground/70 text-xs">Carregando dados da sua conta...</p>
               ) : null}
 
               {error ? (
@@ -653,8 +658,8 @@ function ComprarContent() {
 
           {/* Coluna Direita - Resumo */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-2xl border border-border bg-card p-6">
-              <h3 className="mb-4 font-bold text-foreground">Resumo do pedido</h3>
+            <div className="border-border bg-card sticky top-24 rounded-2xl border p-6">
+              <h3 className="text-foreground mb-4 font-bold">Resumo do pedido</h3>
 
               {/* Preview do Template */}
               <div className="relative mb-4 h-32 overflow-hidden rounded-xl">
@@ -670,15 +675,15 @@ function ComprarContent() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Template</span>
-                  <span className="font-medium text-foreground">{template.nome}</span>
+                  <span className="text-foreground font-medium">{template.nome}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Plano</span>
-                  <span className="font-medium text-foreground">{planMeta.nome}</span>
+                  <span className="text-foreground font-medium">{planMeta.nome}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Pagamento</span>
-                  <span className="font-medium text-foreground">
+                  <span className="text-foreground font-medium">
                     {paymentMethod === 'pix' ? 'PIX' : `${parcelas}x Cartão`}
                   </span>
                 </div>
@@ -688,18 +693,20 @@ function ComprarContent() {
                       <Tag className="h-4 w-4" />
                       Cupom {appliedCoupon.code}
                     </span>
-                    <span className="font-medium">-R$ {appliedCoupon.discountValue.toFixed(2)}</span>
+                    <span className="font-medium">
+                      -R$ {appliedCoupon.discountValue.toFixed(2)}
+                    </span>
                   </div>
                 ) : null}
 
-                <div className="mt-3 border-t border-border pt-3">
+                <div className="border-border mt-3 border-t pt-3">
                   <div className="flex items-baseline justify-between">
                     <span className="text-foreground/75">Total</span>
                     <div className="text-right">
-                      <span className="text-2xl font-bold text-foreground">
+                      <span className="text-foreground text-2xl font-bold">
                         R$ {planMeta.mensal}/mês
                       </span>
-                      <p className="text-xs text-foreground/70">Assinatura mensal recorrente</p>
+                      <p className="text-foreground/70 text-xs">Assinatura mensal recorrente</p>
                     </div>
                   </div>
                 </div>
@@ -709,7 +716,7 @@ function ComprarContent() {
                 type="submit"
                 form="purchase-form"
                 disabled={processing || loadingSession}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-semibold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 font-semibold transition-all disabled:opacity-50"
               >
                 {processing ? (
                   <>
@@ -721,10 +728,14 @@ function ComprarContent() {
                 )}
               </button>
 
-              <div className="mt-4 flex items-center justify-center gap-2 text-xs text-foreground/70">
+              <div className="text-foreground/70 mt-4 flex items-center justify-center gap-2 text-xs">
                 <Shield className="h-4 w-4" />
                 Pagamento seguro. O painel é liberado após a aprovação do webhook.
               </div>
+
+              <p className="text-foreground/65 mt-2 text-center text-xs leading-5">
+                {PAYMENT_BRAND_EXPLANATION}
+              </p>
             </div>
           </div>
         </div>
@@ -737,8 +748,8 @@ export default function ComprarPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-background">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="bg-background flex min-h-screen items-center justify-center">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
         </div>
       }
     >

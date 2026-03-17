@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Store, ArrowLeft } from 'lucide-react'
+import { COMPANY_NAME, PRODUCT_ENDORSEMENT } from '@/lib/brand'
 
 export default function TermosPage() {
   return (
@@ -33,6 +34,8 @@ export default function TermosPage() {
           <p className="text-muted-foreground">
             Última atualização: {new Date().toLocaleDateString('pt-BR')}
           </p>
+
+          <p>{PRODUCT_ENDORSEMENT}</p>
 
           <section>
             <h2 className="mt-8 mb-4 text-xl font-semibold">1. Aceitação dos Termos</h2>
@@ -120,6 +123,7 @@ export default function TermosPage() {
                 O acesso ao painel é liberado somente após a confirmação do pagamento pelo Mercado
                 Pago
               </li>
+              <li>No extrato ou comprovante, a cobrança pode aparecer como {COMPANY_NAME}</li>
               <li>
                 No plano Feito Pra Você, o prazo de produção começa após o envio completo do
                 onboarding
@@ -178,6 +182,9 @@ export default function TermosPage() {
             <h2 className="mt-8 mb-4 text-xl font-semibold">13. Contato e documentação</h2>
             <p>
               <strong>Email:</strong> contato@cardapio.digital
+            </p>
+            <p className="mt-2">
+              <strong>Empresa responsável:</strong> {COMPANY_NAME}
             </p>
             <p className="mt-2">
               Para informações sobre hospedagem, domínio e o que está incluso no serviço (cardápio

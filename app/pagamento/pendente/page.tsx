@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Clock, RefreshCw, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
+import { COMPANY_NAME } from '@/lib/brand'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -23,7 +24,9 @@ function PagamentoPendenteContent() {
       })
 
       if (response.status === 401) {
-        router.replace(`/login?redirect=${encodeURIComponent(`/pagamento/pendente?checkout=${checkout}`)}`)
+        router.replace(
+          `/login?redirect=${encodeURIComponent(`/pagamento/pendente?checkout=${checkout}`)}`
+        )
         return
       }
 
@@ -91,6 +94,10 @@ function PagamentoPendenteContent() {
         <h1 className="text-foreground mb-2 text-3xl font-bold">Aguardando pagamento</h1>
         <p className="text-muted-foreground mb-8 text-lg">
           Seu PIX foi gerado e está aguardando confirmação
+        </p>
+        <p className="text-muted-foreground mb-6 text-sm">
+          O comprovante ou a tela do Mercado Pago pode exibir {COMPANY_NAME}, empresa responsável
+          pela plataforma Cardápio Digital.
         </p>
 
         {/* Card de instruções */}

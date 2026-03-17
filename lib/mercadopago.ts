@@ -1,4 +1,5 @@
 import { MercadoPagoConfig, Preference, Payment, PreApproval } from 'mercadopago'
+import { COMPANY_NAME, COMPANY_PAYMENT_DESCRIPTOR, PRODUCT_NAME } from '@/lib/brand'
 import { isServerSandboxMode } from '@/lib/payment-mode'
 import { getSiteUrl } from '@/lib/site-url'
 
@@ -110,8 +111,8 @@ export async function createPreference(data: {
       items: [
         {
           id: data.restaurantId,
-          title: `Cardápio Digital — ${price.description}`,
-          description: `Ativado por Zairyx Soluções Digitais para ${data.restaurantName}`,
+          title: `${PRODUCT_NAME} — ${price.description}`,
+          description: `Ativado por ${COMPANY_NAME} para ${data.restaurantName}`,
           quantity: 1,
           currency_id: 'BRL',
           unit_price: price.amount,
@@ -137,8 +138,8 @@ export async function createPreference(data: {
       external_reference: data.restaurantId,
       notification_url: `${baseUrl}/api/webhooks/mercadopago`,
       // Aparece na fatura do cartão e no comprovante PIX do pagador
-      // Deve bater com o nome da conta MercadoPago (Zairyx Soluções Digitais)
-      statement_descriptor: 'Zairyx Solucoes',
+      // Deve bater com o nome da conta Mercado Pago para evitar estranhamento no checkout.
+      statement_descriptor: COMPANY_PAYMENT_DESCRIPTOR,
     },
   })
 

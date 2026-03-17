@@ -13,6 +13,7 @@ import {
 import { TEMPLATE_PRESETS, normalizeTemplateSlug } from '@/lib/restaurant-customization'
 import { validateCoupon } from '@/lib/coupon-validation'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/rate-limit'
+import { COMPANY_NAME, COMPANY_PAYMENT_DESCRIPTOR, PRODUCT_NAME } from '@/lib/brand'
 
 const onboardingSchema = z.object({
   template: z.string().min(1),
@@ -121,10 +122,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Faça login para iniciar a compra' }, { status: 401 })
     }
 
-    const rateLimit = withRateLimit(
-      getRateLimitIdentifier(request, user.id),
-      RATE_LIMITS.checkout
-    )
+    const rateLimit = withRateLimit(getRateLimitIdentifier(request, user.id), RATE_LIMITS.checkout)
     if (rateLimit.limited) {
       return rateLimit.response
     }
@@ -205,8 +203,8 @@ export async function POST(request: NextRequest) {
         items: [
           {
             id: String(order.id),
-            title: `Cardápio Digital — ${planConfig.name} (${templateLabel})`,
-            description: `Ativado por Zairyx Soluções Digitais para ${body.restaurantName.trim()}`,
+            title: `${PRODUCT_NAME} — ${planConfig.name} (${templateLabel})`,
+            description: `Ativado por ${COMPANY_NAME} para ${body.restaurantName.trim()}`,
             quantity: 1,
             currency_id: 'BRL',
             unit_price: total,
@@ -234,8 +232,8 @@ export async function POST(request: NextRequest) {
               },
         notification_url: `${baseUrl}/api/webhooks/mercadopago`,
         // Aparece na fatura do cartão e no comprovante PIX do pagador
-        // Deve bater com o nome da conta MercadoPago (Zairyx Soluções Digitais)
-        statement_descriptor: 'Zairyx Solucoes',
+        // Deve bater com o nome da conta Mercado Pago para evitar estranhamento no checkout.
+        statement_descriptor: COMPANY_PAYMENT_DESCRIPTOR,
       },
     })
 
