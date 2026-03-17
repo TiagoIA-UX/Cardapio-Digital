@@ -188,7 +188,8 @@ export default function OfertasPage() {
                     </p>
                   )}
                   <p className="text-foreground/50 mt-0.5 text-xs">
-                    ou cartão em até 12x · boleto · débito · carteira MP
+                    PIX no menor valor. Nos demais meios, o Mercado Pago usa o valor do checkout e
+                    permite crédito em até 12x.
                   </p>
                   <div className="border-border/60 bg-background/70 mt-4 rounded-xl border p-3 text-left">
                     <p className="text-foreground text-xs font-semibold">Por mês</p>

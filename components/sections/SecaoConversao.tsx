@@ -297,7 +297,7 @@ export default function SecaoConversao() {
                     </div>
                     <p className="text-muted-foreground mt-0.5 text-xs">{plan.faixa}</p>
                     <p className="text-muted-foreground mt-1 text-[11px]">
-                      PIX, boleto, cartão até 12x, débito
+                      PIX no menor valor · outros meios via Mercado Pago · crédito até 12x
                     </p>
                   </div>
 

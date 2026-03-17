@@ -224,11 +224,17 @@ export async function POST(request: NextRequest) {
         payment_methods:
           body.paymentMethod === 'pix'
             ? {
-                excluded_payment_types: [{ id: 'credit_card' }, { id: 'debit_card' }],
+                excluded_payment_types: [
+                  { id: 'ticket' },
+                  { id: 'credit_card' },
+                  { id: 'debit_card' },
+                ],
+                excluded_payment_methods: [{ id: 'account_money' }],
               }
             : {
                 installments: 12,
                 default_installments: 1,
+                excluded_payment_methods: [{ id: 'pix' }],
               },
         notification_url: `${baseUrl}/api/webhooks/mercadopago`,
         // Aparece na fatura do cartão e no comprovante PIX do pagador

@@ -18,7 +18,7 @@ export function PricingSection() {
       description: 'Você configura, publica e ajusta pelo painel.',
       price: `R$ ${Math.min(...selfPix)}`,
       priceDescription: 'hoje no PIX',
-      priceFootnote: 'PIX · Boleto · Cartão em até 12x · Débito · Carteira MP',
+      priceFootnote: 'PIX no menor valor · outros meios via Mercado Pago · crédito até 12x',
       recurringFootnote: `depois R$ ${PUBLIC_SUBSCRIPTION_PRICES.basico.monthly}/mês`,
       features: [
         '1 restaurante ativo',
@@ -35,7 +35,7 @@ export function PricingSection() {
       description: 'A equipe da Zairyx conduz a implantação inicial para você.',
       price: `R$ ${Math.min(...fpvcPix)}`,
       priceDescription: 'hoje no PIX',
-      priceFootnote: 'PIX · Boleto · Cartão em até 12x · Débito · Carteira MP',
+      priceFootnote: 'PIX no menor valor · outros meios via Mercado Pago · crédito até 12x',
       recurringFootnote: `depois R$ ${PUBLIC_SUBSCRIPTION_PRICES.pro.monthly}/mês`,
       features: [
         'Tudo da opção Você configura',

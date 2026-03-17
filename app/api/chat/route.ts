@@ -32,7 +32,7 @@ Cardápio Digital é uma plataforma SaaS brasileira onde o dono do negócio cria
 ### Você configura
 - Hoje: a partir de R$ ${selfServicePixMin} no Pix
 - Depois: R$ ${selfServiceMonthly}/mês
-- Também pode parcelar no cartão em até 3x sem juros, conforme o template
+- No cartão, o Mercado Pago permite até 12x; o custo final varia conforme as parcelas
 - O dono editor tudo pelo painel: nome, logo, banner, produtos, categorias, cores
 - 7 templates prontos: Lanchonete, Açaí, Restaurante, Cafeteria, Pizzaria, Hamburgueria, Quiosque
 - Cardápio publicado com link próprio, QR Code gerado automaticamente
@@ -40,7 +40,7 @@ Cardápio Digital é uma plataforma SaaS brasileira onde o dono do negócio cria
 ### Equipe configura
 - Hoje: a partir de R$ ${feitoPraVocePixMin} no Pix
 - Depois: R$ ${feitoPraVoceMonthly}/mês
-- Também pode parcelar no cartão em até 3x sem juros, conforme o template
+- No cartão, o Mercado Pago permite até 12x; o custo final varia conforme as parcelas
 - A equipe do Cardápio Digital monta o cardápio completo para o cliente
 - O cliente pode comprar agora e enviar fotos, preços e logo depois
 - Ideal para quem não tem tempo ou não quer aprender
@@ -48,7 +48,7 @@ Cardápio Digital é uma plataforma SaaS brasileira onde o dono do negócio cria
 ## FORMAS DE PAGAMENTO ACEITAS
 - PIX: menor valor, pagamento imediato
 - Boleto bancário: vence em 3 dias úteis
-- Cartão de crédito: até 12x (com juros a partir da 4ª parcela)
+- Cartão de crédito: até 12x, com custo final definido pelas parcelas no Mercado Pago
 - Cartão de débito: à vista
 - Carteira MercadoPago: saldo em conta MP
 

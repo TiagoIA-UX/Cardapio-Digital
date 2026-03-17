@@ -230,7 +230,8 @@ function ComprarContent() {
   const totalPix = planPrices.pix
   const totalCartao = planPrices.card
   const parcelas = planPrices.parcelas
-  const parcelaTotal = paymentMethod === 'card' ? Math.round(totalCartao / parcelas) : 0
+  const parcelasMax = planPrices.parcelas_max
+  const parcelaTotal = paymentMethod === 'card' ? planPrices.card_12x.toFixed(2) : '0.00'
 
   const subtotal = paymentMethod === 'pix' ? totalPix : totalCartao
   const discount = appliedCoupon?.discountValue ?? 0
@@ -394,9 +395,10 @@ function ComprarContent() {
                     <span className="text-foreground/70 text-sm">hoje no PIX</span>
                   </div>
                   <p className="text-foreground/65 mt-1 text-xs">
-                    Hoje: PIX R$ {pricing.selfService.pix} ou 3x de R${' '}
-                    {Math.round(pricing.selfService.card / pricing.selfService.parcelas)} no cartão.
-                    Depois: R$ {pricing.selfService.monthly}/mês.
+                    Hoje: PIX R$ {pricing.selfService.pix} ou R$ {pricing.selfService.card} nos
+                    demais meios do Mercado Pago. No crédito, até {pricing.selfService.parcelas_max}
+                    x de R$ {pricing.selfService.card_12x.toFixed(2)}. Depois: R${' '}
+                    {pricing.selfService.monthly}/mês.
                   </p>
                 </div>
               </div>
@@ -450,9 +452,10 @@ function ComprarContent() {
                     <span className="text-foreground/70 text-sm">hoje no PIX</span>
                   </div>
                   <p className="text-foreground/65 mt-1 text-xs">
-                    Hoje: PIX R$ {pricing.feitoPraVoce.pix} ou 3x de R${' '}
-                    {Math.round(pricing.feitoPraVoce.card / pricing.feitoPraVoce.parcelas)} no
-                    cartão. Depois: R$ {pricing.feitoPraVoce.monthly}/mês.
+                    Hoje: PIX R$ {pricing.feitoPraVoce.pix} ou R$ {pricing.feitoPraVoce.card} nos
+                    demais meios do Mercado Pago. No crédito, até {pricing.feitoPraVoce.parcelas_max}
+                    x de R$ {pricing.feitoPraVoce.card_12x.toFixed(2)}. Depois: R${' '}
+                    {pricing.feitoPraVoce.monthly}/mês.
                   </p>
                 </div>
               </div>
@@ -498,8 +501,10 @@ function ComprarContent() {
                       className={`h-5 w-5 ${paymentMethod === 'card' ? 'text-primary' : 'text-muted-foreground'}`}
                     />
                     <div>
-                      <p className="text-foreground font-medium">Cartão, boleto e débito</p>
-                      <p className="text-foreground/70 text-sm">Até 12x no crédito · boleto · carteira MP</p>
+                      <p className="text-foreground font-medium">Cartão, boleto, débito e carteira MP</p>
+                      <p className="text-foreground/70 text-sm">
+                        No valor desta opção · até 12x no crédito
+                      </p>
                     </div>
                     {paymentMethod === 'card' && <Check className="text-primary ml-auto h-4 w-4" />}
                   </div>
@@ -522,7 +527,9 @@ function ComprarContent() {
                     />
                     <div>
                       <p className="text-foreground font-medium">PIX</p>
-                      <p className="text-sm text-green-600">Menor valor total · pagamento à vista</p>
+                      <p className="text-sm text-green-600">
+                        Menor valor total · pagamento à vista
+                      </p>
                     </div>
                     {paymentMethod === 'pix' && <Check className="text-primary ml-auto h-4 w-4" />}
                   </div>
@@ -530,7 +537,8 @@ function ComprarContent() {
               </div>
               <p className="text-foreground/65 mt-3 text-xs leading-5">
                 No Mercado Pago você pode concluir com PIX, boleto, cartão de crédito, débito ou
-                carteira MP. O PIX mantém o menor valor total deste checkout.
+                carteira MP. O PIX mantém o menor valor total; os demais meios seguem o valor desta
+                opção.
               </p>
             </div>
 
@@ -717,7 +725,7 @@ function ComprarContent() {
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Pagamento</span>
                   <span className="text-foreground font-medium">
-                    {paymentMethod === 'pix' ? 'PIX' : `${parcelas}x Cartão`}
+                    {paymentMethod === 'pix' ? 'PIX' : 'Cartão / boleto / débito / carteira MP'}
                   </span>
                 </div>
                 {appliedCoupon ? (
@@ -742,7 +750,7 @@ function ComprarContent() {
                       <p className="text-foreground/70 text-xs">
                         {paymentMethod === 'pix'
                           ? 'À vista no PIX'
-                          : `${parcelas}x de R$ ${parcelaTotal}`}
+                          : `Nesta opção: boleto, débito, carteira MP ou até ${parcelasMax}x de R$ ${parcelaTotal} no crédito`}
                       </p>
                     </div>
                   </div>
@@ -758,8 +766,8 @@ function ComprarContent() {
                     </div>
                   </div>
                   <p className="text-foreground/70 mt-3 text-xs leading-5">
-                    🔒 Pagamento via MercadoPago · PIX · Boleto · Cartão até 12x · Débito ·
-                    Carteira MP
+                    🔒 Pagamento via MercadoPago · PIX · Boleto · Cartão até 12x · Débito · Carteira
+                    MP
                   </p>
                 </div>
               </div>
