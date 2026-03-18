@@ -15,12 +15,15 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
+import { COMPANY_NAME, PAYMENT_DESCRIPTOR_NOTE } from '@/lib/brand'
+import { POST_PURCHASE_OFFERS } from '@/lib/pricing'
 
 const WHATSAPP_NUMBER = '5512996887993'
 const WHATSAPP_MESSAGE = encodeURIComponent(
   'Acabei de concluir meu pagamento e quero ativar a Oferta de Aceleração de Vendas (implantação guiada + revisão estratégica).'
 )
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
+const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${WHATSAPP_MESSAGE}`
+const ACELERACAO_VENDAS_OFFER = POST_PURCHASE_OFFERS.aceleracaoVendas7Dias
 
 function PagamentoSucessoContent() {
   const router = useRouter()
@@ -137,6 +140,7 @@ function PagamentoSucessoContent() {
           <p className="text-muted-foreground text-sm">
             Estamos aguardando a confirmação final do Mercado Pago antes de liberar seu acesso.
           </p>
+          <p className="text-muted-foreground mt-3 text-xs">{PAYMENT_DESCRIPTOR_NOTE}</p>
         </div>
       </div>
     )
@@ -149,8 +153,9 @@ function PagamentoSucessoContent() {
           <AlertCircle className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Pagamento em processamento</h1>
           <p className="text-muted-foreground mb-6 text-sm">
-            Você receberá uma confirmação em breve assim que o Mercado Pago concluir a análise.
+            Seu acesso será liberado automaticamente assim que o Mercado Pago aprovar o pagamento.
           </p>
+          <p className="text-muted-foreground mb-6 text-xs">{PAYMENT_DESCRIPTOR_NOTE}</p>
           <Link
             href="/"
             className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold transition-colors"
@@ -202,6 +207,9 @@ function PagamentoSucessoContent() {
             ? 'Pagamento confirmado. Finalizando a criação do seu painel...'
             : 'Seu cardápio digital está pronto para usar'}
         </p>
+        <p className="text-muted-foreground mb-6 text-sm">
+          Sua contratação do Cardápio Digital foi processada por {COMPANY_NAME}.
+        </p>
 
         {/* Card de próximos passos */}
         <div className="bg-card border-border mb-6 rounded-2xl border p-6 text-left">
@@ -243,7 +251,7 @@ function PagamentoSucessoContent() {
         <p className="text-muted-foreground mt-4 text-sm">
           {restaurantSlug
             ? `Seu cardápio foi publicado em /r/${restaurantSlug}`
-            : 'Se o painel não abrir automaticamente em alguns segundos, você ainda pode acessar pelo botão acima.'}
+            : 'Se o painel não aparecer imediatamente, aguarde alguns minutos e acesse pelo botão acima.'}
         </p>
 
         <div className="border-primary/30 bg-primary/5 mt-6 rounded-2xl border p-5 text-left">
@@ -265,9 +273,11 @@ function PagamentoSucessoContent() {
           </ul>
           <div className="mb-4 flex items-center justify-between gap-2">
             <p className="text-muted-foreground text-sm">
-              De <span className="line-through">R$ 397</span>
+              De <span className="line-through">R$ {ACELERACAO_VENDAS_OFFER.original}</span>
             </p>
-            <p className="text-primary text-lg font-extrabold">R$ 197</p>
+            <p className="text-primary text-lg font-extrabold">
+              R$ {ACELERACAO_VENDAS_OFFER.current}
+            </p>
           </div>
           <p className="mb-4 text-xs font-medium text-amber-600">
             Disponível apenas nos primeiros 7 dias após a compra
