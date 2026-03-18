@@ -149,7 +149,7 @@ export default function OfertasPage() {
                 {plan.destaque && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap">
-                      ⭐ Mais escolhido
+                      ⭐ Recomendado
                     </span>
                   </div>
                 )}

@@ -1,7 +1,9 @@
 # Responsáveis por revisão de código em áreas sensíveis
+
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Segurança e autenticação
+
 /lib/admin-auth.ts @TiagoIA-UX
 /middleware.ts @TiagoIA-UX
 /app/api/webhook/ @TiagoIA-UX
@@ -10,6 +12,7 @@
 /app/api/admin/ @TiagoIA-UX
 
 # Configuração de infraestrutura
+
 /next.config.mjs @TiagoIA-UX
 /vercel.json @TiagoIA-UX
 /.github/ @TiagoIA-UX

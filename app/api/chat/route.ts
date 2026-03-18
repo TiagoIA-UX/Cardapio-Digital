@@ -629,7 +629,7 @@ Cardápio Digital é uma plataforma SaaS brasileira onde o dono do negócio cria
 - Depois: R$ ${selfServiceMonthly}/mês
 - No cartão, o Mercado Pago permite até 12x; o custo final varia conforme as parcelas
 - O dono editor tudo pelo painel: nome, logo, banner, produtos, categorias, cores
-- 8 templates prontos: Lanchonete, Açaí, Restaurante, Cafeteria, Pizzaria, Bar, Sushi, Adega
+- 15 templates prontos: Lanchonete, Açaí, Restaurante, Cafeteria, Pizzaria, Bar, Sushi, Adega, Mercadinho, Padaria, Sorveteria, Açougue, Hortifruti, Petshop, Doceria
 - Cardápio publicado com link próprio, QR Code gerado automaticamente
 
 ### Equipe configura

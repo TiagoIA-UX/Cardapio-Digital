@@ -123,7 +123,7 @@ export default function SecaoConversao() {
       icon: Sparkles,
       iconColor: 'text-primary',
       iconBg: 'bg-primary/10',
-      badge: '⭐ Mais escolhido',
+      badge: '⭐ Recomendado',
       titulo: 'Equipe configura',
       subtitulo: 'Compra agora, manda o material depois. A Zairyx cuida do resto.',
       preco: Math.min(...fpvcPix),

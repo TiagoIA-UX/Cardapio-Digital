@@ -159,7 +159,7 @@ export default function Home() {
             <div className="grid min-h-170 gap-10 py-8 md:gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-end lg:py-16">
               <div className="max-w-3xl lg:max-w-2xl xl:max-w-3xl">
                 <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md">
-                  <Sparkles className="h-4 w-4 text-orange-300" />8 templates para negócios de
+                  <Sparkles className="h-4 w-4 text-orange-300" />15 templates para negócios de
                   alimentação
                 </div>
 
@@ -203,7 +203,7 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-orange-500/30 transition-colors hover:bg-orange-600"
                   >
                     <Eye className="h-5 w-5" />
-                    Ver os 8 templates
+                    Ver os 15 templates
                   </Link>
                   <Link
                     href="/ofertas"
@@ -215,7 +215,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-                  <DarkMetricCard value="7" label="templates profissionais" />
+                  <DarkMetricCard value="15" label="templates profissionais" />
                   <DarkMetricCard value="PAINEL" label="simples de editar" />
                   <DarkMetricCard value="0%" label="de comissão sobre pedidos" />
                 </div>
@@ -643,7 +643,7 @@ export default function Home() {
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-orange-700 transition-colors hover:bg-orange-50"
                 >
                   <Eye className="h-4 w-4" />
-                  Ver os 8 templates
+                  Ver os 15 templates
                 </Link>
                 <Link
                   href="/ofertas"
