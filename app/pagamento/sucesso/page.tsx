@@ -70,17 +70,27 @@ function PagamentoSucessoContent() {
       setCheckingProvision(true)
 
       for (let attempt = 0; attempt < 8; attempt += 1) {
-        const response = await fetch(`/api/pagamento/status?checkout=${checkout}`, {
-          cache: 'no-store',
-        })
+        let response: Response
+        try {
+          response = await fetch(`/api/pagamento/status?checkout=${checkout}`, {
+            cache: 'no-store',
+          })
+        } catch {
+          // Erro de rede — aguarda e tenta novamente
+          await new Promise((resolve) => setTimeout(resolve, 2500))
+          continue
+        }
 
         if (response.status === 401) {
-          router.replace(`/login?redirect=${encodeURIComponent(`/pagamento/sucesso?checkout=${checkout}`)}`)
+          router.replace(
+            `/login?redirect=${encodeURIComponent(`/pagamento/sucesso?checkout=${checkout}`)}`
+          )
           return
         }
 
         if (!response.ok) {
-          break
+          await new Promise((resolve) => setTimeout(resolve, 2500))
+          continue
         }
 
         const data = await response.json()
@@ -88,7 +98,11 @@ function PagamentoSucessoContent() {
 
         const planFeitoPraVoce = data.plan_slug === 'feito-pra-voce'
 
-        if (data.payment_status === 'approved' && planFeitoPraVoce && data.onboarding_status === 'ready') {
+        if (
+          data.payment_status === 'approved' &&
+          planFeitoPraVoce &&
+          data.onboarding_status === 'ready'
+        ) {
           router.replace(`/onboarding?checkout=${checkout}`)
           return
         }
@@ -117,7 +131,7 @@ function PagamentoSucessoContent() {
   if (validated === 'loading') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-green-50 p-4 dark:from-green-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+        <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 text-center shadow-sm">
           <Loader2 className="text-primary mx-auto mb-4 h-10 w-10 animate-spin" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Confirmando seu pagamento...</h1>
           <p className="text-muted-foreground text-sm">
@@ -131,7 +145,7 @@ function PagamentoSucessoContent() {
   if (validated === 'pending') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-yellow-50 p-4 dark:from-yellow-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-yellow-500/20 bg-card p-8 text-center shadow-sm">
+        <div className="bg-card w-full max-w-md rounded-2xl border border-yellow-500/20 p-8 text-center shadow-sm">
           <AlertCircle className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Pagamento em processamento</h1>
           <p className="text-muted-foreground mb-6 text-sm">
@@ -151,7 +165,7 @@ function PagamentoSucessoContent() {
   if (validated === 'rejected') {
     return (
       <div className="to-background flex min-h-screen items-center justify-center bg-linear-to-b from-red-50 p-4 dark:from-red-950/20">
-        <div className="w-full max-w-md rounded-2xl border border-red-500/20 bg-card p-8 text-center shadow-sm">
+        <div className="bg-card w-full max-w-md rounded-2xl border border-red-500/20 p-8 text-center shadow-sm">
           <XCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
           <h1 className="text-foreground mb-2 text-2xl font-bold">Pagamento não aprovado</h1>
           <p className="text-muted-foreground mb-6 text-sm">
@@ -255,6 +269,9 @@ function PagamentoSucessoContent() {
             </p>
             <p className="text-primary text-lg font-extrabold">R$ 197</p>
           </div>
+          <p className="mb-4 text-xs font-medium text-amber-600">
+            Disponível apenas nos primeiros 7 dias após a compra
+          </p>
           <a
             href={WHATSAPP_LINK}
             target="_blank"

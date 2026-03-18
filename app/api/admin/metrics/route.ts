@@ -13,18 +13,18 @@ function isAuthorized(request: NextRequest): Promise<boolean> {
 
   return (async () => {
     const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
-    const user = data?.user
+    const { data: userData } = await supabase.auth.getUser()
+    const user = userData?.user
     if (!user) return false
 
     const admin = createAdminClient()
-    const { data } = await admin
+    const { data: adminData } = await admin
       .from('admin_users')
       .select('id')
       .eq('user_id', user.id)
       .maybeSingle()
 
-    return !!data
+    return !!adminData
   })()
 }
 
@@ -53,11 +53,10 @@ export async function GET(request: NextRequest) {
       templatesRes,
       activatedRes,
     ] = await Promise.all([
-      supabase.from('restaurants').select('id, ativo, template_slug, nome, slug', { count: 'exact' }),
       supabase
-        .from('orders')
-        .select('id', { count: 'exact', head: true })
-        .gte('created_at', today),
+        .from('restaurants')
+        .select('id, ativo, template_slug, nome, slug', { count: 'exact' }),
+      supabase.from('orders').select('id', { count: 'exact', head: true }).gte('created_at', today),
       supabase
         .from('orders')
         .select('id', { count: 'exact', head: true })
@@ -99,11 +98,12 @@ export async function GET(request: NextRequest) {
       .map(([slug, count]) => ({ slug, count }))
 
     const ordersAll = ordersAllRes.data || []
-    const restaurantsWithOrders = new Set(ordersAll.map((o: { restaurant_id: string }) => o.restaurant_id)).size
+    const restaurantsWithOrders = new Set(
+      ordersAll.map((o: { restaurant_id: string }) => o.restaurant_id)
+    ).size
     const activatedCount = activatedRes.data
-      ? new Set(
-          (activatedRes.data || []).map((e: { restaurant_id: string }) => e.restaurant_id)
-        ).size
+      ? new Set((activatedRes.data || []).map((e: { restaurant_id: string }) => e.restaurant_id))
+          .size
       : restaurantsWithOrders
     const activationRate =
       totalRestaurants > 0 ? Math.round((activatedCount / totalRestaurants) * 100) : 0
@@ -171,9 +171,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Erro ao buscar métricas admin:', error)
-    return NextResponse.json(
-      { error: 'Erro ao buscar métricas' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro ao buscar métricas' }, { status: 500 })
   }
 }
