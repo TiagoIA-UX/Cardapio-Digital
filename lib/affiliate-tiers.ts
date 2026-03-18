@@ -1,6 +1,8 @@
 /**
- * Fonte de verdade única para a hierarquia de afiliados.
- * Usada pelo componente HierarquiaWidget, pela migration SQL e pelas APIs.
+ * FONTE DA VERDADE — Hierarquia e bônus do programa de afiliados.
+ *
+ * ⚠️  NÃO edite valores de tier, bônus ou comissão em outros lugares.
+ *     Toda a lógica de negócio (migrations SQL, APIs, UI) importa daqui.
  *
  * Hierarquia: Trainee → Analista → Coordenador → Gerente → Diretor → Sócio
  */
@@ -24,6 +26,10 @@ export interface AffiliateTier {
   comissaoExtra: number
 }
 
+// ── Bônus simbólicos — validados pela análise financeira (docs/financeiro.md) ──
+// Margem da empresa por restaurante c/ afiliado: ~59% da receita bruta (R$35-39/mês).
+// Escala: R$10 (10 rest) · R$25 (25 rest) · R$50 (50 rest) · R$100 (100 rest).
+// Total acumulado 0→100: R$185. Antes da revisão eram R$2.600 — comprometia a margem.
 export const AFFILIATE_TIERS: AffiliateTier[] = [
   {
     slug: 'trainee',
@@ -38,7 +44,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Analista',
     minRestaurantes: 3,
     maxRestaurantes: 10,
-    bonusUnico: 50,
+    bonusUnico: 0, // Primeiro marco real é no Coordenador (10 rest)
     comissaoExtra: 0,
   },
   {
@@ -46,7 +52,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Coordenador',
     minRestaurantes: 10,
     maxRestaurantes: 25,
-    bonusUnico: 150,
+    bonusUnico: 10, // R$10 simbólico — recouped em <1 dia de receita
     comissaoExtra: 0,
   },
   {
@@ -54,7 +60,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Gerente',
     minRestaurantes: 25,
     maxRestaurantes: 50,
-    bonusUnico: 300,
+    bonusUnico: 25, // R$25 simbólico — recouped em ~1 dia de receita
     comissaoExtra: 0,
   },
   {
@@ -62,7 +68,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Diretor',
     minRestaurantes: 50,
     maxRestaurantes: 100,
-    bonusUnico: 600,
+    bonusUnico: 50, // R$50 máximo por ciclo — empresa ganha R$1.900+/mês deste afiliado
     comissaoExtra: 0.02, // +2% → total 32% direto
   },
   {
@@ -70,7 +76,7 @@ export const AFFILIATE_TIERS: AffiliateTier[] = [
     nome: 'Sócio',
     minRestaurantes: 100,
     maxRestaurantes: Infinity,
-    bonusUnico: 1500,
+    bonusUnico: 100, // R$100 — empresa fatura R$3.900+/mês com 100 rest
     comissaoExtra: 0.05, // +5% → total 35% direto
   },
 ]

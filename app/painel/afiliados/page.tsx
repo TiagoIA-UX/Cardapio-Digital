@@ -17,7 +17,11 @@ import {
   Gift,
   Network,
   UserPlus,
+  Settings,
+  Info,
 } from 'lucide-react'
+import Link from 'next/link'
+import { AFFILIATE_TIERS } from '@/lib/affiliate-tiers'
 
 interface Affiliate {
   id: string
@@ -25,8 +29,12 @@ interface Affiliate {
   nome: string
   chave_pix: string | null
   status: string
-  tier: 'vendedor' | 'lider'
-  lider_id: string | null
+  tier: string // trainee | analista | coordenador | gerente | diretor | socio
+  commission_rate: number
+  cidade: string | null
+  estado: string | null
+  bio: string | null
+  avatar_url: string | null
   created_at: string
 }
 
@@ -42,14 +50,24 @@ interface Referral {
 
 interface Stats {
   total_indicados: number
+  pendente_analise: number
+  aprovado_aguardando: number
   comissao_pendente: number
   comissao_aprovada: number
   comissao_paga: number
+  proxima_data_pagamento: string
   mrr_direto: number
   mrr_rede: number
   mrr_estimado: number
   total_vendedores: number
   rede_indicados: number
+}
+
+interface SaldoInfo {
+  aprovado_aguardando: number
+  proxima_data_pagamento: string
+  dias_ate_pagamento: number
+  rendimento_estimado: number
 }
 
 interface Bonus {
@@ -71,17 +89,19 @@ interface Vendedor {
 
 // ── Constantes ─────────────────────────────────────────────────────────────
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cardapiodigital.app'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://zairyx.com'
 
 const PCT_VENDEDOR = 30
 const PCT_LIDER = 10
 const LIDER_MIN_VENDEDORES = 5
 
-const BONUS_MILESTONES = [
-  { nivel: 10, valor: 200, label: '10 restaurantes' },
-  { nivel: 30, valor: 500, label: '30 restaurantes' },
-  { nivel: 50, valor: 1000, label: '50 restaurantes' },
-]
+// Bônus derivados da fonte de verdade (affiliate-tiers.ts)
+const BONUS_MILESTONES = AFFILIATE_TIERS.filter((t) => t.bonusUnico > 0).map((t) => ({
+  nivel: t.minRestaurantes,
+  valor: t.bonusUnico,
+  nome: t.nome,
+  label: `${t.minRestaurantes} restaurantes (${t.nome})`,
+}))
 
 const statusConfig = {
   pendente: { label: 'Pendente', className: 'bg-amber-100 text-amber-700', icon: Clock },
@@ -147,8 +167,7 @@ function BonusMilestones({ total }: { total: number }) {
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-100">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${atingido ? 'bg-green-500' : 'bg-orange-400'}`}
-                  style={{ width: `${pct}%` }}
+                  className={`h-full rounded-full transition-all duration-500 w-[${pct}%] ${atingido ? 'bg-green-500' : 'bg-orange-400'}`}
                 />
               </div>
               {!atingido && (
@@ -172,6 +191,7 @@ export default function AfiliadosPage() {
   const [isLider, setIsLider] = useState(false)
   const [bonuses, setBonuses] = useState<Bonus[]>([])
   const [vendedores, setVendedores] = useState<Vendedor[]>([])
+  const [saldoInfo, setSaldoInfo] = useState<SaldoInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [registering, setRegistering] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -181,8 +201,11 @@ export default function AfiliadosPage() {
   const [error, setError] = useState('')
 
   const fetchData = useCallback(async () => {
-    const res = await fetch('/api/afiliados/me')
-    const data = await res.json()
+    const [meRes, saldoRes] = await Promise.all([
+      fetch('/api/afiliados/me'),
+      fetch('/api/afiliados/saldo-info'),
+    ])
+    const data = await meRes.json()
     setAffiliate(data.affiliate ?? null)
     setReferrals(data.referrals ?? [])
     setStats(data.stats ?? null)
@@ -191,6 +214,10 @@ export default function AfiliadosPage() {
     setBonuses(data.bonuses ?? [])
     setVendedores(data.vendedores ?? [])
     setLoading(false)
+    if (saldoRes.ok) {
+      const sData = await saldoRes.json()
+      setSaldoInfo(sData)
+    }
   }, [])
 
   useEffect(() => {
@@ -425,6 +452,13 @@ export default function AfiliadosPage() {
               <Trophy className="h-3.5 w-3.5 text-yellow-500" />#{posicaoRanking} no ranking
             </span>
           )}
+          <Link
+            href="/painel/afiliados/configuracoes"
+            className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 transition-colors hover:bg-zinc-200"
+          >
+            <Settings className="h-3.5 w-3.5" />
+            Configurações
+          </Link>
         </div>
       </div>
 
@@ -441,10 +475,7 @@ export default function AfiliadosPage() {
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-amber-100">
             <div
-              className="h-full rounded-full bg-amber-400 transition-all duration-500"
-              style={{
-                width: `${Math.min(100, (vendedores.length / LIDER_MIN_VENDEDORES) * 100)}%`,
-              }}
+              className={`h-full rounded-full bg-amber-400 transition-all duration-500 w-[${Math.min(100, Math.round((vendedores.length / LIDER_MIN_VENDEDORES) * 100))}%]`}
             />
           </div>
           <p className="mt-2 text-xs text-amber-700">
@@ -494,15 +525,15 @@ export default function AfiliadosPage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats — 4 cards (TAREFA 6: comissão desagregada em análise / aprovada) */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Users} label="Restaurantes indicados" value={String(total)} />
         <StatCard
           icon={TrendingUp}
-          label="MRR direto (30%)"
+          label="MRR direto"
           value={`R$ ${(stats?.mrr_direto ?? 0).toFixed(2)}`}
           highlight
-          sub="Seus indicados ativos"
+          sub={`${affiliate.commission_rate ?? 30}% — seus indicados ativos`}
         />
         {isLider ? (
           <StatCard
@@ -515,17 +546,62 @@ export default function AfiliadosPage() {
         ) : (
           <StatCard
             icon={Clock}
-            label="Comissão pendente"
-            value={`R$ ${(stats?.comissao_pendente ?? 0).toFixed(2)}`}
-            sub="Aguardando 30 dias"
+            label="🕐 Em análise"
+            value={`R$ ${(stats?.pendente_analise ?? 0).toFixed(2)}`}
+            sub="Aguardando 30 dias para aprovação"
           />
         )}
-        <StatCard
-          icon={CircleDollarSign}
-          label="Total já pago"
-          value={`R$ ${(stats?.comissao_paga ?? 0).toFixed(2)}`}
-          sub="via PIX todo dia 5"
-        />
+        {/* Card aprovado — customizado para exibir rendimento estimado */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+          <div className="flex items-start justify-between">
+            <span className="text-muted-foreground text-xs">✅ Aprovado</span>
+            <BadgeCheck className="h-4 w-4 text-zinc-400" />
+          </div>
+          <p className="mt-2 text-2xl font-bold text-zinc-800">
+            R$ {(stats?.aprovado_aguardando ?? 0).toFixed(2)}
+          </p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            {stats?.aprovado_aguardando && stats.aprovado_aguardando > 0
+              ? `Pagamento em ${stats.proxima_data_pagamento ?? '—'}`
+              : 'via PIX todo dia 5'}
+          </p>
+          {/* Badge saldo rendendo */}
+          {(stats?.aprovado_aguardando ?? 0) > 0 && (
+            <div className="mt-3 rounded-lg bg-emerald-50 px-3 py-2">
+              <p className="text-xs font-medium text-emerald-800">
+                💰 Seu saldo rende enquanto aguarda o pagamento
+              </p>
+              <p className="mt-0.5 text-xs text-emerald-600">Pago todo dia 5 via PIX</p>
+              {saldoInfo && saldoInfo.rendimento_estimado > 0 && (
+                <div className="mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-emerald-700">
+                    ≈ R$ {saldoInfo.rendimento_estimado.toFixed(2)} de rendimento até o dia 5
+                  </p>
+                  <span
+                    title="Estimativa baseada em CDI 13% a.a. Valor informativo."
+                    className="cursor-help"
+                  >
+                    <Info className="h-3 w-3 text-emerald-500" />
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Card total recebido — separado para não misturar com pendentes */}
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-muted-foreground text-xs">Total já recebido</p>
+            <p className="mt-1 text-2xl font-bold text-zinc-800">
+              R$ {(stats?.comissao_paga ?? 0).toFixed(2)}
+            </p>
+            <p className="mt-0.5 text-xs text-zinc-500">Histórico acumulado via PIX</p>
+          </div>
+          <CircleDollarSign className="h-6 w-6 text-green-500" />
+        </div>
       </div>
 
       {/* Bônus por volume */}
