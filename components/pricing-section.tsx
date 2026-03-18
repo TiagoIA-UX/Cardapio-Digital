@@ -79,7 +79,7 @@ export function PricingSection() {
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="bg-accent text-accent-foreground rounded-full px-3 py-1 text-xs font-medium">
-                    Mais Popular
+                    Mais completo
                   </span>
                 </div>
               )}

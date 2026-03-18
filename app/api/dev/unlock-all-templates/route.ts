@@ -153,7 +153,7 @@ const TEMPLATES_SEED = [
 /**
  * POST /api/dev/unlock-all-templates
  * Libera todos os templates para o usuário logado (como se tivesse pago todos).
- * Se a tabela templates estiver vazia, insere os 8 templates padrão antes.
+ * Se a tabela templates estiver vazia, insere os 15 templates padrão antes.
  * Também define status_pagamento = 'ativo' no restaurante do usuário, se existir.
  */
 export async function POST(req: NextRequest) {

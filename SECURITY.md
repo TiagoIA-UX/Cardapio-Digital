@@ -2,8 +2,8 @@
 
 ## Versões com Suporte
 
-| Versão | Suporte          |
-| ------ | ---------------- |
+| Versão | Suporte           |
+| ------ | ----------------- |
 | latest | ✅ Ativo          |
 | < 1.0  | ⚠️ Melhor esforço |
 
@@ -23,4 +23,4 @@ Responderemos em até **48 horas** e trabalharemos com você de forma privada at
 ## Divulgação Responsável
 
 Pedimos que aguarde a publicação do patch antes de divulgar publicamente.
-Agradecemos pesquisadores que seguem boas práticas de *responsible disclosure*.
+Agradecemos pesquisadores que seguem boas práticas de _responsible disclosure_.

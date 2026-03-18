@@ -9,7 +9,16 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        disallow: ['/painel', '/admin', '/api', '/dev', '/checkout', '/auth', '/onboarding', '/status'],
+        disallow: [
+          '/painel',
+          '/admin',
+          '/api',
+          '/dev',
+          '/checkout',
+          '/auth',
+          '/onboarding',
+          '/status',
+        ],
         allow: ['/', '/templates', '/ofertas', '/precos'],
       },
     ],
