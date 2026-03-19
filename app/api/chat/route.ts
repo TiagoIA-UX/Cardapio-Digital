@@ -76,7 +76,10 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json()
 
     if (!Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json({ error: 'messages inválido' }, { status: 400, headers: rateLimit.headers })
+      return NextResponse.json(
+        { error: 'messages inválido' },
+        { status: 400, headers: rateLimit.headers }
+      )
     }
 
     // Valida que cada mensagem tem role e content string (evita injeção)
