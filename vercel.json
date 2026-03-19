@@ -4,6 +4,14 @@
     {
       "path": "/api/cron/check-subscriptions",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/check-sla",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/expire-access",
+      "schedule": "0 * * * *"
     }
   ],
   "headers": [
