@@ -79,21 +79,30 @@ export async function POST(req: NextRequest) {
   const rawPix = String(body.chave_pix ?? '').trim()
   let chave_pix: string | null = rawPix.slice(0, 200) || null
 
-  // Valida e normaliza chave PIX se fornecida
-  if (chave_pix) {
-    const pixResult = validatePixKey(chave_pix)
-    if (!pixResult.valid) {
-      return NextResponse.json(
-        {
-          error:
-            'Chave PIX inválida. Formatos aceitos: CPF (11 dígitos), CNPJ (14 dígitos), e-mail, telefone (+55 seguido de DDD+número) ou chave aleatória (UUID). Pode cadastrar depois em Configurações.',
-        },
-        { status: 400 }
-      )
-    }
-    // Armazena a forma normalizada (sem máscara) para consistência
-    chave_pix = normalizePixKey(chave_pix).slice(0, 200)
+  // PIX é OBRIGATÓRIO para afiliados (recebem comissões)
+  if (!chave_pix) {
+    return NextResponse.json(
+      {
+        error:
+          'Chave PIX obrigatória. Você receberá comissões por PIX. Formatos aceitos: CPF, CNPJ, e-mail, telefone (+55) ou chave aleatória (UUID).',
+      },
+      { status: 400 }
+    )
   }
+
+  // Valida e normaliza chave PIX
+  const pixResult = validatePixKey(chave_pix)
+  if (!pixResult.valid) {
+    return NextResponse.json(
+      {
+        error:
+          'Chave PIX inválida. Formatos aceitos: CPF (11 dígitos), CNPJ (14 dígitos), e-mail, telefone (+55 seguido de DDD+número) ou chave aleatória (UUID).',
+      },
+      { status: 400 }
+    )
+  }
+  // Armazena a forma normalizada (sem máscara) para consistência
+  chave_pix = normalizePixKey(chave_pix).slice(0, 200)
   // lider_code: quem recrutou este afiliado (pode vir do body ou do cookie aff_ref)
   const lider_code =
     (String(body.lider_code ?? '').trim() || req.cookies.get('aff_ref')?.value || '').slice(
