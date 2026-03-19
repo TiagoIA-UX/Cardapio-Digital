@@ -54,48 +54,51 @@ As credenciais estão no `.env.local` (linhas 38-53). Resumo do que você vai pr
 
 **Contas de teste:**
 
-| Papel | Localização no .env.local | Uso |
-|-------|--------------------------|-----|
+| Papel     | Localização no .env.local      | Uso                  |
+| --------- | ------------------------------ | -------------------- |
 | Comprador | Linha 43-44 (TESTUSER + senha) | Login no checkout MP |
-| Vendedor | Linha 45 (TESTUSER + senha) | Recebe o pagamento |
+| Vendedor  | Linha 45 (TESTUSER + senha)    | Recebe o pagamento   |
 
 **Cartões de teste:**
 
-| Bandeira | Localização | CVV | Validade |
-|----------|-------------|-----|----------|
-| Mastercard | .env.local linha 47 | 123 | 11/30 |
-| Visa | .env.local linha 48 | 123 | 11/30 |
-| Amex | .env.local linha 49 | 1234 | 11/30 |
-| Elo Débito | .env.local linha 50 | 123 | 11/30 |
+| Bandeira   | Localização         | CVV  | Validade |
+| ---------- | ------------------- | ---- | -------- |
+| Mastercard | .env.local linha 47 | 123  | 11/30    |
+| Visa       | .env.local linha 48 | 123  | 11/30    |
+| Amex       | .env.local linha 49 | 1234 | 11/30    |
+| Elo Débito | .env.local linha 50 | 123  | 11/30    |
 
 **Nomes mágicos do titular** (controlam o resultado):
 
-| Nome no campo titular | Resultado |
-|-----------------------|-----------|
-| APRO | Pagamento **aprovado** |
-| OTHE | Erro genérico |
-| CONT | Pagamento **pendente** |
-| FUND | Saldo insuficiente |
-| SECU | CVV inválido |
-| EXPI | Cartão vencido |
-| FORM | Erro no formulário |
+| Nome no campo titular | Resultado              |
+| --------------------- | ---------------------- |
+| APRO                  | Pagamento **aprovado** |
+| OTHE                  | Erro genérico          |
+| CONT                  | Pagamento **pendente** |
+| FUND                  | Saldo insuficiente     |
+| SECU                  | CVV inválido           |
+| EXPI                  | Cartão vencido         |
+| FORM                  | Erro no formulário     |
 
 **CPF de teste:** `12345678909` (usar em todos os testes)
 
 ### 1.3 Abrir o site no celular
 
 **Opção A — Servidor local:**
+
 1. No PC, rode `npm run dev`
 2. No celular, acesse `http://[IP-DO-PC]:3000`
    - Descubra o IP: `ipconfig` no terminal → IPv4 Address
    - Ex: `http://192.168.1.10:3000`
 
 **Opção B — Preview Vercel (recomendado):**
+
 1. Faça push do código com env sandbox
 2. Acesse a preview URL que Vercel gera
 3. Ex: `https://cardapio-digital-xxxx.vercel.app`
 
 **Opção C — Produção:**
+
 1. `https://zairyx.com`
 2. APENAS se o env estiver em sandbox na Vercel
 
@@ -158,12 +161,12 @@ No PC, abra Supabase Dashboard → Table Editor:
 
 ### Resultado esperado
 
-| Item | Esperado |
-|------|----------|
-| Redirect MP | Funciona sem tela branca |
-| QR Code PIX | Exibe corretamente no celular |
-| Callback | Retorna ao site após pagamento |
-| Página sucesso | Carrega < 3s, confete funciona |
+| Item           | Esperado                         |
+| -------------- | -------------------------------- |
+| Redirect MP    | Funciona sem tela branca         |
+| QR Code PIX    | Exibe corretamente no celular    |
+| Callback       | Retorna ao site após pagamento   |
+| Página sucesso | Carrega < 3s, confete funciona   |
 | Dados no banco | Restaurante + assinatura criados |
 
 ---
@@ -211,13 +214,13 @@ No PC, abra Supabase Dashboard → Table Editor:
 
 ### Resultado esperado
 
-| Item | Esperado |
-|------|----------|
-| Parcelamento | 3x exibido corretamente |
-| Cartão de teste | Aceito sem erro |
-| Nome APRO | Pagamento aprovado |
-| Redirect | Retorna ao site automaticamente |
-| Onboarding | Link disponível na página de sucesso |
+| Item            | Esperado                             |
+| --------------- | ------------------------------------ |
+| Parcelamento    | 3x exibido corretamente              |
+| Cartão de teste | Aceito sem erro                      |
+| Nome APRO       | Pagamento aprovado                   |
+| Redirect        | Retorna ao site automaticamente      |
+| Onboarding      | Link disponível na página de sucesso |
 
 ---
 
@@ -251,12 +254,12 @@ No PC, abra Supabase Dashboard → Table Editor:
 
 ### Variações para testar
 
-| Titular | Resultado esperado |
-|---------|-------------------|
-| FUND | Saldo insuficiente |
-| SECU | CVV inválido (security code) |
-| EXPI | Cartão vencido |
-| OTHE | Erro genérico |
+| Titular | Resultado esperado           |
+| ------- | ---------------------------- |
+| FUND    | Saldo insuficiente           |
+| SECU    | CVV inválido (security code) |
+| EXPI    | Cartão vencido               |
+| OTHE    | Erro genérico                |
 
 Teste pelo menos 2 variações para confirmar que cada uma exibe a mensagem correta.
 
@@ -335,19 +338,19 @@ Teste pelo menos 2 variações para confirmar que cada uma exibe a mensagem corr
 
 Acesse `/comprar/pizzaria` e teste cada cenário:
 
-| Campo | Input | Esperado |
-|-------|-------|----------|
-| Nome negócio | vazio | Não permite enviar |
-| Nome negócio | "AB" (2 chars) | Erro: mínimo 3 caracteres |
-| Nome negócio | 121 caracteres | Erro: máximo 120 |
-| Seu nome | vazio | Não permite enviar |
-| Seu nome | "A" | Erro: mínimo 3 |
-| Email | "emailsemarroba" | Erro: email inválido |
-| Email | vazio | Não permite enviar |
-| WhatsApp | "abc" | Erro ou normaliza para vazio |
-| WhatsApp | "123" (< 10 dígitos) | Erro: mínimo 10 dígitos |
-| WhatsApp | 21 dígitos | Erro: máximo 20 |
-| WhatsApp | "12999887766" | Aceito (11 dígitos) |
+| Campo        | Input                | Esperado                     |
+| ------------ | -------------------- | ---------------------------- |
+| Nome negócio | vazio                | Não permite enviar           |
+| Nome negócio | "AB" (2 chars)       | Erro: mínimo 3 caracteres    |
+| Nome negócio | 121 caracteres       | Erro: máximo 120             |
+| Seu nome     | vazio                | Não permite enviar           |
+| Seu nome     | "A"                  | Erro: mínimo 3               |
+| Email        | "emailsemarroba"     | Erro: email inválido         |
+| Email        | vazio                | Não permite enviar           |
+| WhatsApp     | "abc"                | Erro ou normaliza para vazio |
+| WhatsApp     | "123" (< 10 dígitos) | Erro: mínimo 10 dígitos      |
+| WhatsApp     | 21 dígitos           | Erro: máximo 20              |
+| WhatsApp     | "12999887766"        | Aceito (11 dígitos)          |
 
 ### Teste de envio sem login
 
@@ -485,12 +488,12 @@ Complete o Teste 2 (compra Feito Pra Você) primeiro.
 3. Preencha com dados de teste:
    Tipo: "Pizzaria"
    WhatsApp: 12999887766
-   
+
    Categoria 1: "Pizzas"
    - Margherita — R$ 39,90
    - Calabresa — R$ 35,90
    - Quatro Queijos — R$ 42,90
-   
+
    Categoria 2: "Bebidas"
    - Coca-Cola 2L — R$ 12,00
    - Guaraná — R$ 10,00
@@ -544,7 +547,7 @@ Email: admin@zairyx.com' OR '1'='1
 3. Teste URLs fake:
    • /pagamento/sucesso?checkout=FAKE-123
    → Esperado: mostra erro ou "pedido não encontrado"
-   
+
    • /pagamento/sucesso?checkout=../../etc/passwd
    → Esperado: não exibe dados sensíveis
 ```
@@ -567,17 +570,17 @@ Recarregue a página 20+ vezes em sequência rápida
 
 ### Checklist de páginas públicas
 
-| Página | URL | Verificar |
-|--------|-----|-----------|
-| Home | / | Hero visível, CTA clicável, não corta texto |
-| Templates | /templates | Cards em grid/lista, scroll funciona |
-| Preview | /templates/pizzaria | Imagens carregam, botão comprar visível |
-| Preços | /precos | Tabela de preços legível, não quebra |
-| Afiliados | /afiliados | Landing page completa |
-| Ranking | /afiliados/ranking | Lista carrega |
-| Login | /login | Botão Google funciona |
-| Termos | /termos | Texto completo, scroll funciona |
-| Privacidade | /privacidade | Texto completo |
+| Página      | URL                 | Verificar                                   |
+| ----------- | ------------------- | ------------------------------------------- |
+| Home        | /                   | Hero visível, CTA clicável, não corta texto |
+| Templates   | /templates          | Cards em grid/lista, scroll funciona        |
+| Preview     | /templates/pizzaria | Imagens carregam, botão comprar visível     |
+| Preços      | /precos             | Tabela de preços legível, não quebra        |
+| Afiliados   | /afiliados          | Landing page completa                       |
+| Ranking     | /afiliados/ranking  | Lista carrega                               |
+| Login       | /login              | Botão Google funciona                       |
+| Termos      | /termos             | Texto completo, scroll funciona             |
+| Privacidade | /privacidade        | Texto completo                              |
 
 ### Checklist visual mobile
 
@@ -609,6 +612,7 @@ Recarregue a página 20+ vezes em sequência rápida
 ### Depois de todos os testes, marque:
 
 **Fluxo de compra:**
+
 ```
 [ ] PIX aprovado (Teste 1) — página sucesso
 [ ] Cartão aprovado (Teste 2) — página sucesso
@@ -619,6 +623,7 @@ Recarregue a página 20+ vezes em sequência rápida
 ```
 
 **Formulários:**
+
 ```
 [ ] Validação de campos obrigatórios (Teste 6)
 [ ] Redirect login → retorna ao checkout (Teste 6)
@@ -626,6 +631,7 @@ Recarregue a página 20+ vezes em sequência rápida
 ```
 
 **Pós-compra:**
+
 ```
 [ ] Painel carrega com dados (Teste 7)
 [ ] Produtos de amostra criados (Teste 7)
@@ -635,6 +641,7 @@ Recarregue a página 20+ vezes em sequência rápida
 ```
 
 **Afiliados:**
+
 ```
 [ ] Cadastro funciona (Teste 8)
 [ ] Link de indicação gerado (Teste 8)
@@ -642,12 +649,14 @@ Recarregue a página 20+ vezes em sequência rápida
 ```
 
 **Onboarding:**
+
 ```
 [ ] Formulário preenchido e enviado (Teste 9)
 [ ] Status tracking funciona (Teste 9)
 ```
 
 **Segurança:**
+
 ```
 [ ] XSS bloqueado (Teste 10)
 [ ] SQL injection bloqueado (Teste 10)
@@ -657,6 +666,7 @@ Recarregue a página 20+ vezes em sequência rápida
 ```
 
 **Mobile:**
+
 ```
 [ ] Todas as páginas públicas renderizam (Teste 11)
 [ ] Formulários usáveis com teclado mobile (Teste 11)
@@ -746,7 +756,7 @@ SANDBOX OK:
 PRÓXIMO PASSO — TESTE EM PRODUÇÃO:
   [ ] Trocar env para production
   [ ] Fazer UMA compra real com cartão (R$ mais barato possível)
-  [ ] Confirmar webhook em produção 
+  [ ] Confirmar webhook em produção
   [ ] Fazer refund pelo dashboard Mercado Pago
   [ ] Confirmar que refund processa corretamente
   [ ] GO-LIVE ✅
