@@ -11,12 +11,12 @@
 
 ### 1.1 Build / Lint / Testes
 
-| Check       | Status | Detalhe                        |
-|-------------|--------|--------------------------------|
-| Build       | PASS   | `npm run build` sem erros      |
-| Lint        | PASS   | 0 erros (921 corrigidos)       |
-| Testes      | PASS   | 11/11 passando (Playwright)    |
-| TypeScript  | WARN   | `ignoreBuildErrors: true` ativo |
+| Check      | Status | Detalhe                         |
+| ---------- | ------ | ------------------------------- |
+| Build      | PASS   | `npm run build` sem erros       |
+| Lint       | PASS   | 0 erros (921 corrigidos)        |
+| Testes     | PASS   | 11/11 passando (Playwright)     |
+| TypeScript | WARN   | `ignoreBuildErrors: true` ativo |
 
 - [ ] Remover `ignoreBuildErrors: true` de next.config.mjs e corrigir erros TS
 
@@ -24,17 +24,18 @@
 
 ### 1.2 Sistema de Afiliados — IMPLEMENTADO
 
-| Componente               | Status | Arquivo                                     |
-|--------------------------|--------|---------------------------------------------|
-| Cadastro afiliado        | OK     | app/afiliados/                              |
-| Ranking gamificado       | OK     | app/afiliados/ranking/page.tsx              |
-| Comissão por venda       | OK     | services/affiliate.service.ts               |
-| Webhook idempotente      | OK     | app/api/webhooks/mercadopago/route.ts       |
-| Admin: tiers e strikes   | OK     | app/admin/afiliados/page.tsx                |
-| Fundo de bônus           | OK     | app/api/admin/bonus-fund/route.ts           |
-| Chaos tests (prompts)    | OK     | docs/AFFILIATE_CHAOS_TEST_PROMPT_FINAL.md   |
+| Componente             | Status | Arquivo                                   |
+| ---------------------- | ------ | ----------------------------------------- |
+| Cadastro afiliado      | OK     | app/afiliados/                            |
+| Ranking gamificado     | OK     | app/afiliados/ranking/page.tsx            |
+| Comissão por venda     | OK     | services/affiliate.service.ts             |
+| Webhook idempotente    | OK     | app/api/webhooks/mercadopago/route.ts     |
+| Admin: tiers e strikes | OK     | app/admin/afiliados/page.tsx              |
+| Fundo de bônus         | OK     | app/api/admin/bonus-fund/route.ts         |
+| Chaos tests (prompts)  | OK     | docs/AFFILIATE_CHAOS_TEST_PROMPT_FINAL.md |
 
 **Pendente para produção:**
+
 - [ ] Validar fluxo completo com Mercado Pago em produção (não sandbox)
 - [ ] Testar saque real via Pix
 - [ ] Definir regras de comissão finais com Cadu (ver Parte 5)
@@ -45,19 +46,20 @@
 
 **O sistema está 100% implementado no código.** Freelancers são prestadores de serviço contratados pela plataforma para criar/configurar cardápios para restaurantes clientes.
 
-| Componente                 | Status | Arquivo                                  |
-|----------------------------|--------|------------------------------------------|
-| DB: 4 tabelas + RLS        | OK     | supabase/migrations/027_*.sql            |
-| Types                      | OK     | types/support.ts                         |
-| Service (lógica negócio)   | OK     | services/freelancer.service.ts           |
-| API Admin (CRUD + jobs)    | OK     | app/api/admin/freelancers/route.ts       |
-| API Self-service           | OK     | app/api/freelancer/job/route.ts          |
-| UI Admin (lista + ações)   | OK     | app/admin/freelancers/page.tsx           |
-| Cron: expirar acessos      | OK     | app/api/cron/expire-access/route.ts      |
-| Acesso temporário (48h)    | OK     | freelancer_access table + permissões     |
-| Precificação automática    | OK     | R$40-100 base + por item + urgência      |
+| Componente               | Status | Arquivo                              |
+| ------------------------ | ------ | ------------------------------------ |
+| DB: 4 tabelas + RLS      | OK     | supabase/migrations/027\_\*.sql      |
+| Types                    | OK     | types/support.ts                     |
+| Service (lógica negócio) | OK     | services/freelancer.service.ts       |
+| API Admin (CRUD + jobs)  | OK     | app/api/admin/freelancers/route.ts   |
+| API Self-service         | OK     | app/api/freelancer/job/route.ts      |
+| UI Admin (lista + ações) | OK     | app/admin/freelancers/page.tsx       |
+| Cron: expirar acessos    | OK     | app/api/cron/expire-access/route.ts  |
+| Acesso temporário (48h)  | OK     | freelancer_access table + permissões |
+| Precificação automática  | OK     | R$40-100 base + por item + urgência  |
 
 **Tabelas Supabase:**
+
 - `freelancers` — cadastro, skills, rating, status
 - `freelancer_jobs` — jobs atribuídos, tipo, preço calculado, status
 - `freelancer_access` — acesso temporário ao restaurante (48h), RLS
@@ -65,19 +67,21 @@
 
 **Precificação automática implementada:**
 
-| Tipo           | Base   | Por item | Urgência <24h | Urgência <48h |
-|----------------|--------|----------|---------------|---------------|
-| Cardápio       | R$ 50  | +R$ 2    | 1.5x          | 1.25x         |
-| Design         | R$ 80  | +R$ 5    | 1.5x          | 1.25x         |
-| Configuração   | R$ 40  | +R$ 0    | 1.5x          | 1.25x         |
-| Personalizado  | R$ 100 | +R$ 10   | 1.5x          | 1.25x         |
+| Tipo          | Base   | Por item | Urgência <24h | Urgência <48h |
+| ------------- | ------ | -------- | ------------- | ------------- |
+| Cardápio      | R$ 50  | +R$ 2    | 1.5x          | 1.25x         |
+| Design        | R$ 80  | +R$ 5    | 1.5x          | 1.25x         |
+| Configuração  | R$ 40  | +R$ 0    | 1.5x          | 1.25x         |
+| Personalizado | R$ 100 | +R$ 10   | 1.5x          | 1.25x         |
 
 **Afiliado vs Freelancer — diferença no código:**
+
 - **Afiliado** = gera link de indicação, ganha comissão passiva por vendas
 - **Freelancer** = executa serviço ativo (criar cardápio), ganha pagamento fixo por job
 - São sistemas independentes, tabelas separadas, não conflitam
 
 **Pendente para produção:**
+
 - [ ] Decidir se freelancers sobem no MVP ou ficam em beta fechado
 - [ ] Criar página pública de cadastro de freelancer (hoje só admin cria)
 - [ ] Definir forma de pagamento ao freelancer (Pix manual? Mercado Pago?)
@@ -86,23 +90,25 @@
 
 ### 1.4 Sistema Admin — IMPLEMENTADO
 
-| Página               | Status | Rota                         |
-|----------------------|--------|------------------------------|
-| Dashboard principal  | OK     | /admin                       |
-| Clientes (detalhe)   | OK     | /admin/clientes/[id]         |
-| Afiliados            | OK     | /admin/afiliados             |
-| Freelancers          | OK     | /admin/freelancers           |
-| Suporte (tickets)    | OK     | /admin/suporte               |
-| Logs de auditoria    | OK     | /admin/logs                  |
-| Venda direta         | OK     | /admin/venda-direta          |
-| Métricas             | BÁSICO | /admin/metrics               |
+| Página              | Status | Rota                 |
+| ------------------- | ------ | -------------------- |
+| Dashboard principal | OK     | /admin               |
+| Clientes (detalhe)  | OK     | /admin/clientes/[id] |
+| Afiliados           | OK     | /admin/afiliados     |
+| Freelancers         | OK     | /admin/freelancers   |
+| Suporte (tickets)   | OK     | /admin/suporte       |
+| Logs de auditoria   | OK     | /admin/logs          |
+| Venda direta        | OK     | /admin/venda-direta  |
+| Métricas            | BÁSICO | /admin/metrics       |
 
 **Auth implementada:** `lib/admin-auth.ts`
+
 - Hierarquia: owner(3) > admin(2) > support(1)
 - Dois modos: session cookie (browser) + Bearer token (API)
 - Rate limiting configurado por endpoint
 
 **10 APIs Admin implementadas:**
+
 - GET/POST/PATCH /api/admin/freelancers
 - GET/POST /api/admin/bonus-fund
 - GET /api/admin/logs
@@ -111,6 +117,7 @@
 - E outros endpoints de gestão
 
 **Pendente para produção:**
+
 - [ ] Registrar globemarket7@gmail.com como owner na tabela `admin_users`
 - [ ] Ativar 2FA para conta admin (Supabase suporta)
 - [ ] Adicionar gráficos ao /admin/metrics
@@ -119,25 +126,26 @@
 
 ### 1.5 Infraestrutura — STATUS
 
-| Serviço          | Status      | Detalhe                            |
-|------------------|-------------|------------------------------------|
-| Supabase (DB)    | CONFIGURADO | 27 migrations, RLS ativado         |
-| Mercado Pago     | CONFIGURADO | Prod + Sandbox com webhooks        |
-| Cloudflare R2    | CONFIGURADO | CDN em cdn.zairyx.com              |
-| Vercel           | CONFIGURADO | 3 cron jobs diários                |
-| Groq (chatbot)   | CONFIGURADO | API para chat widget               |
-| Sentry           | PENDENTE    | Código pronto, DSN não configurado |
-| Redis (Upstash)  | OPCIONAL    | Rate-limiting usa in-memory hoje   |
+| Serviço         | Status      | Detalhe                            |
+| --------------- | ----------- | ---------------------------------- |
+| Supabase (DB)   | CONFIGURADO | 27 migrations, RLS ativado         |
+| Mercado Pago    | CONFIGURADO | Prod + Sandbox com webhooks        |
+| Cloudflare R2   | CONFIGURADO | CDN em cdn.zairyx.com              |
+| Vercel          | CONFIGURADO | 3 cron jobs diários                |
+| Groq (chatbot)  | CONFIGURADO | API para chat widget               |
+| Sentry          | PENDENTE    | Código pronto, DSN não configurado |
+| Redis (Upstash) | OPCIONAL    | Rate-limiting usa in-memory hoje   |
 
 **Cron jobs ativos (vercel.json):**
 
-| Horário | Job                    | Endpoint                        |
-|---------|------------------------|---------------------------------|
-| 08:00   | Verificar assinaturas  | /api/cron/check-subscriptions   |
-| 09:00   | Verificar SLA suporte  | /api/cron/check-sla             |
-| 10:00   | Expirar acessos        | /api/cron/expire-access         |
+| Horário | Job                   | Endpoint                      |
+| ------- | --------------------- | ----------------------------- |
+| 08:00   | Verificar assinaturas | /api/cron/check-subscriptions |
+| 09:00   | Verificar SLA suporte | /api/cron/check-sla           |
+| 10:00   | Expirar acessos       | /api/cron/expire-access       |
 
 **Segurança já implementada no código:**
+
 - Headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options (middleware.ts)
 - CORS restrito ao domínio (vercel.json)
 - Rate-limiting: webhooks 500/min, auth 100/min, API 500/min
@@ -252,23 +260,23 @@ ROLLBACK DE BANCO (se migration corrompeu dados):
 
 ## PARTE 4: SEGURANÇA — IMPLEMENTADO vs PENDENTE
 
-| Controle                  | Status        | Implementação                         |
-|---------------------------|---------------|---------------------------------------|
-| SQL Injection             | PROTEGIDO     | Supabase client, queries parametrizadas |
-| XSS                       | PROTEGIDO     | React escapa HTML nativamente          |
-| CSRF                      | PROTEGIDO     | SameSite cookies via Supabase Auth     |
-| CORS                      | PROTEGIDO     | Restrito ao domínio (vercel.json)      |
-| Rate Limiting             | PROTEGIDO     | In-memory: webhook/auth/API            |
-| Auth rotas protegidas     | PROTEGIDO     | middleware.ts protege /painel, /admin  |
-| HTTPS                     | PROTEGIDO     | Vercel força SSL automaticamente       |
-| Security Headers          | PROTEGIDO     | HSTS, CSP, X-Frame-Options            |
-| Senhas                    | PROTEGIDO     | Supabase Auth (bcrypt interno)         |
-| RLS (Row Level Security)  | PROTEGIDO     | Todas as tabelas sensíveis             |
-| Webhook signature         | PROTEGIDO     | Validação Mercado Pago                 |
-| 2FA para admin            | PENDENTE      | Supabase suporta, precisa ativar       |
-| Sentry (error tracking)   | PENDENTE      | Código pronto, falta DSN              |
-| Dados sensíveis em logs   | VERIFICAR     | Revisar se CPF/token aparece em logs   |
-| Backup criptografado      | AUTOMÁTICO    | Supabase faz backup diário             |
+| Controle                 | Status     | Implementação                           |
+| ------------------------ | ---------- | --------------------------------------- |
+| SQL Injection            | PROTEGIDO  | Supabase client, queries parametrizadas |
+| XSS                      | PROTEGIDO  | React escapa HTML nativamente           |
+| CSRF                     | PROTEGIDO  | SameSite cookies via Supabase Auth      |
+| CORS                     | PROTEGIDO  | Restrito ao domínio (vercel.json)       |
+| Rate Limiting            | PROTEGIDO  | In-memory: webhook/auth/API             |
+| Auth rotas protegidas    | PROTEGIDO  | middleware.ts protege /painel, /admin   |
+| HTTPS                    | PROTEGIDO  | Vercel força SSL automaticamente        |
+| Security Headers         | PROTEGIDO  | HSTS, CSP, X-Frame-Options              |
+| Senhas                   | PROTEGIDO  | Supabase Auth (bcrypt interno)          |
+| RLS (Row Level Security) | PROTEGIDO  | Todas as tabelas sensíveis              |
+| Webhook signature        | PROTEGIDO  | Validação Mercado Pago                  |
+| 2FA para admin           | PENDENTE   | Supabase suporta, precisa ativar        |
+| Sentry (error tracking)  | PENDENTE   | Código pronto, falta DSN                |
+| Dados sensíveis em logs  | VERIFICAR  | Revisar se CPF/token aparece em logs    |
+| Backup criptografado     | AUTOMÁTICO | Supabase faz backup diário              |
 
 ---
 
@@ -318,16 +326,16 @@ ROLLBACK DE BANCO (se migration corrompeu dados):
 
 ## PARTE 6: CRITÉRIOS DE SUCESSO
 
-| Métrica                      | Meta           |
-|------------------------------|----------------|
-| Uptime                       | > 99%          |
-| Page load (P95)              | < 3s           |
-| Zero perda de dados          | Obrigatório    |
-| Webhook processado           | 100%           |
-| Admin funcional              | 100%           |
-| Checkout funcional           | 100%           |
-| Taxa de chargeback           | < 1%           |
-| Tempo de resposta suporte    | < 24h          |
+| Métrica                   | Meta        |
+| ------------------------- | ----------- |
+| Uptime                    | > 99%       |
+| Page load (P95)           | < 3s        |
+| Zero perda de dados       | Obrigatório |
+| Webhook processado        | 100%        |
+| Admin funcional           | 100%        |
+| Checkout funcional        | 100%        |
+| Taxa de chargeback        | < 1%        |
+| Tempo de resposta suporte | < 24h       |
 
 ---
 
