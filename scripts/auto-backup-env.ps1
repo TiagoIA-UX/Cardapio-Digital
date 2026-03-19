@@ -26,7 +26,7 @@ $root = Split-Path $PSScriptRoot -Parent
 $envFile = Join-Path $root ".env.local"
 $backupDir = Join-Path $root ".env-backups"
 $taskName = "CardapioDigital-EnvBackup"
-$hookDir = Join-Path $root ".git" "hooks"
+$hookDir = Join-Path (Join-Path $root ".git") "hooks"
 $maxBackupDays = 30
 $maxBackups = 50
 
@@ -70,30 +70,88 @@ function Invoke-EnvBackup {
   return $true
 }
 
-# === Limpeza de backups antigos ===
+# === Limpeza inteligente com retenção escalonada ===
+# Política de retenção (inspirada em backup enterprise):
+#   - Últimas 24h: mantém TODOS (granularidade máxima)
+#   - 1-7 dias:    mantém 1 por dia (snapshot diário)
+#   - 7-30 dias:   mantém 1 por semana (snapshot semanal)
+#   - > 30 dias:   apaga tudo
+#   - Hard cap:    máximo 50 arquivos / 5 MB total
+$maxSizeMB = 5
+
 function Invoke-BackupCleanup {
   if (-not (Test-Path $backupDir)) { return }
 
-  $cutoff = (Get-Date).AddDays(-$maxBackupDays)
-  $old = Get-ChildItem $backupDir -Filter "*.env.local.bak" |
-    Where-Object { $_.LastWriteTime -lt $cutoff }
-
-  if ($old.Count -gt 0) {
-    $old | Remove-Item -Force
-    Write-Host "Removidos $($old.Count) backups com mais de $maxBackupDays dias." -ForegroundColor Yellow
-  }
-
-  # Manter no máximo $maxBackups mais recentes
+  $now = Get-Date
   $all = Get-ChildItem $backupDir -Filter "*.env.local.bak" |
     Sort-Object LastWriteTime -Descending
-  if ($all.Count -gt $maxBackups) {
-    $excess = $all | Select-Object -Skip $maxBackups
-    $excess | Remove-Item -Force
-    Write-Host "Removidos $($excess.Count) backups excedentes (limite: $maxBackups)." -ForegroundColor Yellow
+
+  if ($all.Count -le 1) { return }  # Sempre manter pelo menos 1
+
+  $keep = [System.Collections.Generic.HashSet[string]]::new()
+  $keep.Add($all[0].FullName) | Out-Null  # Sempre manter o mais recente
+
+  # Fase 1: Últimas 24h — manter todos
+  $all | Where-Object { $_.LastWriteTime -ge $now.AddHours(-24) } | ForEach-Object {
+    $keep.Add($_.FullName) | Out-Null
   }
 
-  $remaining = (Get-ChildItem $backupDir -Filter "*.env.local.bak" -ErrorAction SilentlyContinue).Count
-  Write-Host "Backups restantes: $remaining" -ForegroundColor Cyan
+  # Fase 2: 1-7 dias — manter 1 por dia (o mais recente de cada dia)
+  $weekFiles = $all | Where-Object {
+    $_.LastWriteTime -lt $now.AddHours(-24) -and $_.LastWriteTime -ge $now.AddDays(-7)
+  }
+  $weekFiles | Group-Object { $_.LastWriteTime.Date.ToString("yyyy-MM-dd") } | ForEach-Object {
+    $best = $_.Group | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    $keep.Add($best.FullName) | Out-Null
+  }
+
+  # Fase 3: 7-30 dias — manter 1 por semana (o mais recente da semana)
+  $monthFiles = $all | Where-Object {
+    $_.LastWriteTime -lt $now.AddDays(-7) -and $_.LastWriteTime -ge $now.AddDays(-$maxBackupDays)
+  }
+  $monthFiles | Group-Object {
+    $cal = [System.Globalization.CultureInfo]::CurrentCulture.Calendar
+    "$($_.LastWriteTime.Year)-W$($cal.GetWeekOfYear($_.LastWriteTime, 'FirstDay', 'Monday'))"
+  } | ForEach-Object {
+    $best = $_.Group | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    $keep.Add($best.FullName) | Out-Null
+  }
+
+  # Fase 4: Apagar tudo que não está no $keep
+  $toRemove = $all | Where-Object { -not $keep.Contains($_.FullName) }
+  if ($toRemove.Count -gt 0) {
+    $toRemove | Remove-Item -Force
+    Write-Host "Limpeza escalonada: removidos $($toRemove.Count) backups redundantes." -ForegroundColor Yellow
+  }
+
+  # Fase 5: Hard cap — máximo de arquivos
+  $remaining = Get-ChildItem $backupDir -Filter "*.env.local.bak" |
+    Sort-Object LastWriteTime -Descending
+  if ($remaining.Count -gt $maxBackups) {
+    $excess = $remaining | Select-Object -Skip $maxBackups
+    $excess | Remove-Item -Force
+    Write-Host "Hard cap: removidos $($excess.Count) (limite $maxBackups arquivos)." -ForegroundColor Yellow
+  }
+
+  # Fase 6: Hard cap — tamanho total
+  $remaining = Get-ChildItem $backupDir -Filter "*.env.local.bak" |
+    Sort-Object LastWriteTime -Descending
+  $totalMB = ($remaining | Measure-Object -Property Length -Sum).Sum / 1MB
+  if ($totalMB -gt $maxSizeMB) {
+    $cumulative = 0
+    foreach ($f in $remaining) {
+      $cumulative += $f.Length / 1MB
+      if ($cumulative -gt $maxSizeMB) {
+        Remove-Item $f.FullName -Force
+      }
+    }
+    Write-Host "Hard cap tamanho: reduzido para ~${maxSizeMB}MB." -ForegroundColor Yellow
+  }
+
+  # Log resumido
+  $final = Get-ChildItem $backupDir -Filter "*.env.local.bak" -ErrorAction SilentlyContinue
+  $sizeMB = [math]::Round(($final | Measure-Object Length -Sum).Sum / 1MB, 2)
+  Write-Host "Backups: $($final.Count) arquivos ($sizeMB MB)" -ForegroundColor Cyan
 }
 
 # === INSTALL ===
