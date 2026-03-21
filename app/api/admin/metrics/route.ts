@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getRateLimitIdentifier, withRateLimit } from '@/lib/rate-limit'
 
 function isAuthorized(request: NextRequest): Promise<boolean> {
   const secret = process.env.ADMIN_SECRET_KEY
@@ -30,9 +31,17 @@ function isAuthorized(request: NextRequest): Promise<boolean> {
 
 export async function GET(request: NextRequest) {
   try {
+    const rateLimit = await withRateLimit(
+      getRateLimitIdentifier(request),
+      { limit: 30, windowMs: 60_000 }
+    )
+    if (rateLimit.limited) {
+      return rateLimit.response
+    }
+
     const authorized = await isAuthorized(request)
     if (!authorized) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401, headers: rateLimit.headers })
     }
 
     const supabase = createAdminClient()
@@ -168,7 +177,7 @@ export async function GET(request: NextRequest) {
       templatesMaisUsados,
       restaurantesSemPedido: restaurantesSemPedidoList.slice(0, 10),
       restaurantesEmRisco: restaurantesEmRisco.slice(0, 10),
-    })
+    }, { headers: rateLimit.headers })
   } catch (error) {
     console.error('Erro ao buscar métricas admin:', error)
     return NextResponse.json({ error: 'Erro ao buscar métricas' }, { status: 500 })
