@@ -11,6 +11,7 @@ import {
   slugifyRestaurantName,
 } from '@/lib/restaurant-onboarding'
 import { normalizeTemplateSlug } from '@/lib/restaurant-customization'
+import { notifyPaymentRejected, notifyPaymentApproved } from '@/lib/notifications'
 
 function getSupabase() {
   return createAdminClient()
@@ -415,6 +416,7 @@ async function provisionRestaurantForOrder(
       },
       { onConflict: 'user_id,template_id', ignoreDuplicates: false }
     )
+    await admin.rpc('increment_template_sales', { template_id: templateRow.id })
   }
 
   const activationUrl = await generateActivationUrl(
@@ -508,6 +510,18 @@ async function processOnboardingPayment(
       })
       .eq('id', orderId)
 
+    // Notificar admin sobre pagamento rejeitado
+    if (mappedStatus.paymentStatus === 'rejected') {
+      await notifyPaymentRejected({
+        orderId,
+        customerEmail: String(metadata.customer_email || ''),
+        customerName: String(metadata.customer_name || ''),
+        amount: payment.transaction_amount ?? undefined,
+        reason: payment.status_detail ?? undefined,
+        paymentId: payment.id ?? undefined,
+      }).catch(() => {}) // não quebra o webhook
+    }
+
     return
   }
 
@@ -547,6 +561,14 @@ async function processOnboardingPayment(
   }
 
   const provisioned = await provisionRestaurantForOrder(admin, order, payment, siteUrl)
+
+  // Notificar admin sobre novo pagamento aprovado
+  await notifyPaymentApproved({
+    orderId,
+    customerEmail: String(metadata.customer_email || ''),
+    amount: payment.transaction_amount ?? undefined,
+    restaurantSlug: provisioned.restaurantSlug,
+  }).catch(() => {}) // não quebra o webhook
 
   await admin
     .from('template_orders')
@@ -600,30 +622,36 @@ export async function POST(request: NextRequest) {
 
     console.log('Webhook recebido:', JSON.stringify(body, null, 2))
 
+    // Validação de assinatura HMAC deve ocorrer ANTES de qualquer processamento
+    const webhookSecret = process.env.MP_WEBHOOK_SECRET
+    if (!webhookSecret) {
+      console.error('❌ MP_WEBHOOK_SECRET não configurado — webhook rejeitado por segurança')
+      return NextResponse.json({ error: 'Configuração de segurança ausente' }, { status: 500 })
+    }
+
+    const dataId = String(body.data?.id || '')
+    if (!dataId) {
+      return NextResponse.json({ error: 'Payload inválido' }, { status: 400 })
+    }
+
+    const isValid = validateMercadoPagoWebhookSignature(
+      xSignature,
+      xRequestId,
+      dataId,
+      webhookSecret
+    )
+
+    if (!isValid) {
+      console.error('❌ Assinatura inválida no webhook do Mercado Pago')
+      return NextResponse.json({ error: 'Assinatura inválida' }, { status: 401 })
+    }
+
     // Mercado Pago envia diferentes tipos de notificação
     if (body.type === 'payment') {
       const paymentId = body.data?.id
 
       if (!paymentId) {
         return NextResponse.json({ received: true })
-      }
-
-      const webhookSecret = process.env.MP_WEBHOOK_SECRET
-      if (!webhookSecret) {
-        console.error('❌ MP_WEBHOOK_SECRET não configurado — webhook rejeitado por segurança')
-        return NextResponse.json({ error: 'Configuração de segurança ausente' }, { status: 500 })
-      }
-
-      const isValid = validateMercadoPagoWebhookSignature(
-        xSignature,
-        xRequestId,
-        paymentId.toString(),
-        webhookSecret
-      )
-
-      if (!isValid) {
-        console.error('❌ Assinatura inválida no webhook do Mercado Pago')
-        return NextResponse.json({ error: 'Assinatura inválida' }, { status: 401 })
       }
 
       // Buscar detalhes do pagamento
@@ -692,6 +720,17 @@ export async function POST(request: NextRequest) {
         console.log(
           `Restaurante ${externalReference} atualizado para ${mappedStatus.restaurantPaymentStatus}`
         )
+      }
+
+      // Notificar admin sobre pagamentos rejeitados (fluxo legado)
+      if (status === 'rejected' || status === 'cancelled') {
+        await notifyPaymentRejected({
+          orderId: externalReference,
+          customerEmail: payment.payer?.email || 'desconhecido',
+          amount: payment.transaction_amount ?? undefined,
+          reason: payment.status_detail ?? undefined,
+          paymentId: payment.id ?? undefined,
+        }).catch(() => {})
       }
     }
 
