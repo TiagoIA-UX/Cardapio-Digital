@@ -36,6 +36,21 @@ interface Purchase {
   restaurantNome?: string
 }
 
+interface UserPurchaseRow {
+  id: string
+  template_id: string
+  status: string
+  purchased_at: string
+  license_key?: string | null
+}
+
+interface TemplateRow {
+  id: string
+  name: string
+  slug: string
+  image_url?: string | null
+}
+
 export default function MeusTemplatesPage() {
   const showDevUnlock =
     process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ALLOW_DEV_UNLOCK === 'true'
@@ -67,39 +82,57 @@ export default function MeusTemplatesPage() {
 
     setHasRestaurant(!!(restaurants && restaurants.length > 0))
 
-    const { data, error } = await supabase
+    const { data: purchaseRows, error: purchasesError } = await supabase
       .from('user_purchases')
-      .select(
-        `
-        id,
-        template_id,
-        status,
-        purchased_at,
-        license_key,
-        templates (
-          name,
-          slug,
-          image_url
-        )
-      `
-      )
+      .select('id, template_id, status, purchased_at, license_key')
       .eq('user_id', session.user.id)
       .order('purchased_at', { ascending: false })
 
-    if (!error && data) {
+    if (purchasesError) {
+      console.error('Erro ao carregar user_purchases:', purchasesError)
+      setPurchases([])
+      setLoading(false)
+      return
+    }
+
+    if (!purchaseRows || purchaseRows.length === 0) {
+      setPurchases([])
+      setLoading(false)
+      return
+    }
+
+    const typedPurchaseRows = purchaseRows as UserPurchaseRow[]
+    const templateIds = [...new Set(typedPurchaseRows.map((purchase) => purchase.template_id).filter(Boolean))]
+
+    const { data: templateRows, error: templatesError } = await supabase
+      .from('templates')
+      .select('id, name, slug, image_url')
+      .in('id', templateIds)
+
+    if (templatesError) {
+      console.error('Erro ao carregar templates das compras:', templatesError)
+    }
+
+    const templatesById = new Map(
+      ((templateRows || []) as TemplateRow[]).map((template) => [template.id, template])
+    )
+
+    if (typedPurchaseRows.length > 0) {
       setPurchases(
-        data.map((p: any) => {
-          const tSlug = p.templates?.slug || ''
+        typedPurchaseRows.map((purchase) => {
+          const template = templatesById.get(purchase.template_id)
+          const tSlug = template?.slug || ''
           const linkedRestaurant = restaurants?.find((r: any) => r.template_slug === tSlug)
+
           return {
-            id: p.id,
-            templateId: p.template_id,
-            templateName: p.templates?.name || 'Template',
+            id: purchase.id,
+            templateId: purchase.template_id,
+            templateName: template?.name || 'Template',
             templateSlug: tSlug,
-            templateImage: p.templates?.image_url || '',
-            status: p.status,
-            purchasedAt: p.purchased_at,
-            licenseKey: p.license_key,
+            templateImage: template?.image_url || '',
+            status: purchase.status,
+            purchasedAt: purchase.purchased_at,
+            licenseKey: purchase.license_key || undefined,
             restaurantId: linkedRestaurant?.id,
             restaurantSlug: linkedRestaurant?.slug,
             restaurantNome: linkedRestaurant?.nome,
