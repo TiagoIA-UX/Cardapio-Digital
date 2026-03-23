@@ -2,18 +2,18 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-      - rename/cardapio-digital
+    branches: [main]
   pull_request:
-    branches:
-      - main
-      - rename/cardapio-digital
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-lint:
+  quality:
+    name: Lint + Types
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,29 +27,113 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
+      - name: ESLint
         run: npm run lint
 
-      - name: Build
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+  security:
+    name: Dependency Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit
+        run: npm audit --audit-level=high
+
+      - name: Secret scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+    needs: [quality]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export build environment
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          node -e "const fs=require('node:fs'); const secrets=JSON.parse(process.env.SECRETS_CONTEXT || '{}'); const keys=['NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_ANON_KEY','SUPABASE_SERVICE_ROLE_KEY','NEXT_PUBLIC_SITE_URL','NEXT_PUBLIC_MERCADO_PAGO_ENV','MERCADO_PAGO_ENV','MERCADO_PAGO_ACCESS_TOKEN','MP_ACCESS_TOKEN','NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY','MERCADO_PAGO_PUBLIC_KEY','MERCADO_PAGO_TEST_ACCESS_TOKEN','NEXT_PUBLIC_MERCADO_PAGO_TEST_PUBLIC_KEY','MERCADO_PAGO_TEST_PUBLIC_KEY','CRON_SECRET','MP_WEBHOOK_SECRET','ADMIN_SECRET_KEY','OWNER_EMAIL','GROQ_API_KEY','INTERNAL_API_SECRET','RESEND_API_KEY','R2_ACCOUNT_ID','R2_ACCESS_KEY_ID','R2_SECRET_ACCESS_KEY','R2_BUCKET_NAME','R2_PUBLIC_URL','NEXT_PUBLIC_COMPANY_CNPJ','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN']; const lines=[]; for (const key of keys) { const value=secrets[key]; if (!value) continue; lines.push(`${key}<<__EOF__`); lines.push(String(value)); lines.push('__EOF__'); } fs.appendFileSync(process.env.GITHUB_ENV, lines.join('\n') + '\n');"
+
+      - name: Validate environment for build
+        run: node scripts/doctor.mjs
+
+      - name: Build production app
         run: npm run build
 
-      - name: Test
+  tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: [quality]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
         run: npm test
 
-  # Deploy opcional via Vercel (configure seus secrets antes de ativar)
-  # vercel-deploy:
-  #   needs: build-and-lint
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Vercel Deploy
-  #       uses: amondnet/vercel-action@v25
-  #       with:
-  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
-  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-  #         working-directory: ./
-  #         vercel-args: '--prod'
+  pre-deploy:
+    name: Pre-deploy Checklist
+    runs-on: ubuntu-latest
+    needs: [build, security, tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export checklist environment
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          node -e "const fs=require('node:fs'); const secrets=JSON.parse(process.env.SECRETS_CONTEXT || '{}'); const keys=['NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_ANON_KEY','SUPABASE_SERVICE_ROLE_KEY','NEXT_PUBLIC_SITE_URL','NEXT_PUBLIC_MERCADO_PAGO_ENV','MERCADO_PAGO_ENV','MERCADO_PAGO_ACCESS_TOKEN','MP_ACCESS_TOKEN','NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY','MERCADO_PAGO_PUBLIC_KEY','MERCADO_PAGO_TEST_ACCESS_TOKEN','NEXT_PUBLIC_MERCADO_PAGO_TEST_PUBLIC_KEY','MERCADO_PAGO_TEST_PUBLIC_KEY','CRON_SECRET','MP_WEBHOOK_SECRET','ADMIN_SECRET_KEY','OWNER_EMAIL','GROQ_API_KEY','INTERNAL_API_SECRET','RESEND_API_KEY','R2_ACCOUNT_ID','R2_ACCESS_KEY_ID','R2_SECRET_ACCESS_KEY','R2_BUCKET_NAME','R2_PUBLIC_URL','NEXT_PUBLIC_COMPANY_CNPJ','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN']; const lines=[]; for (const key of keys) { const value=secrets[key]; if (!value) continue; lines.push(`${key}<<__EOF__`); lines.push(String(value)); lines.push('__EOF__'); } fs.appendFileSync(process.env.GITHUB_ENV, lines.join('\n') + '\n');"
+
+      - name: Local project checklist
+        run: npm run check

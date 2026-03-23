@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "next build",
+    "check": "node scripts/check.mjs",
     "dev": "next dev",
     "dev:https": "next dev --experimental-https",
     "dev:checked": "npm run doctor && next dev",
