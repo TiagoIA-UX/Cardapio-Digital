@@ -166,7 +166,7 @@ async function main() {
     live_mode: false,
     // É esperado que retorne 500 porque mercadopago.get() vai rejeitar o ID falso
     // Em produção, use um payment_id real do MP Sandbox
-  })
+  }, { expectStatus: 500 })
 
   // T7 — Duplicata: reenvia T2 com o mesmo notification_id
   //       Se a rota + webhook_events estão funcionando, deve retornar 200 imediato

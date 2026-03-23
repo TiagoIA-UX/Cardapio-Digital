@@ -731,7 +731,8 @@ export async function POST(request: NextRequest) {
 
     const dataId = String(body.data?.id || '')
     if (!dataId) {
-      return NextResponse.json({ error: 'Payload inválido' }, { status: 400 })
+      console.warn('Webhook ignorado: payload sem data.id')
+      return NextResponse.json({ received: true, ignored: 'missing_data_id' })
     }
 
     const isValid = validateMercadoPagoWebhookSignature(
