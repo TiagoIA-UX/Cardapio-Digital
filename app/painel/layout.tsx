@@ -21,6 +21,7 @@ import {
   Users,
   ChevronDown,
   ShoppingBag,
+  BarChart2,
 } from 'lucide-react'
 import type { Restaurant } from '@/lib/supabase/client'
 import { getPaymentModeBadgeLabel, isPublicSandboxMode } from '@/lib/payment-mode'
@@ -136,6 +137,7 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
     { href: '/painel/pedidos', icon: ClipboardList, label: 'Pedidos' },
     { href: '/painel/qrcode', icon: QrCode, label: 'QR Code' },
     { href: '/meus-templates', icon: ShoppingBag, label: 'Meus Cardápios' },
+    { href: '/painel/analytics', icon: BarChart2, label: 'Analytics' },
     { href: '/painel/afiliados', icon: Users, label: 'Afiliados' },
     { href: '/painel/configuracoes', icon: Settings, label: 'Configurações' },
   ]

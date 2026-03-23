@@ -1,0 +1,22 @@
+{
+  "name": "Zairyx — Cardápio Digital",
+  "short_name": "Zairyx",
+  "description": "Cardápio digital profissional para restaurantes. Edite pelo painel, receba pedidos no seu canal e venda sem comissão por pedido.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0ea5e9",
+  "background_color": "#ffffff",
+  "lang": "pt-BR",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "business"],
+  "screenshots": []
+}
