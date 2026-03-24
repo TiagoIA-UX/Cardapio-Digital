@@ -53,6 +53,7 @@ VENDAS_PIZZARIAS.md
 cardapio-digital-notes.md
 docs/ANALISE_MERCADO.md
 docs/AUDITORIA_*.md
+!docs/AUDITORIA_CODIGO.md
 docs/SESSAO_PROXIMA.md
 docs/financeiro.md
 docs/PLANO_LANCAMENTO_24H.md
@@ -65,3 +66,6 @@ Prompt's de Trabalho/
 # Arquivos privados locais para uso operacional
 /private/
 /private/CREDENCIAIS_IA_TESTES_PRIVADO.md
+
+# Pre-merge check reports
+/reports/
