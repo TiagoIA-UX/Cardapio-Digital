@@ -290,10 +290,10 @@ async function asyncPool<T, R>(
       if (current >= items.length) break
       try {
         results[current] = await fn(items[current], current)
-      } catch (err) {
-        // Store the error as undefined and let the caller handle it via results
+      } catch {
+        // Store undefined so caller can detect missing results;
+        // Promise.allSettled captures the rejection — no re-throw needed.
         results[current] = undefined as unknown as R
-        throw err
       }
     }
   }

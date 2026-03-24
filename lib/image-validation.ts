@@ -80,6 +80,8 @@ const KNOWN_IMAGE_CDN_HOSTS = [
   'via.placeholder.com',
   'picsum.photos',
   'loremflickr.com',
+  // Pollinations.ai — geração gratuita de imagens por prompt (ex: generate-product-images-pollinations.ts)
+  'image.pollinations.ai',
 ]
 
 /**

@@ -59,6 +59,11 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.pollinations.ai',
+        pathname: '/prompt/**',
+      },
     ],
   },
 }
