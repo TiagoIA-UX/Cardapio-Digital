@@ -85,6 +85,11 @@ function getArgValue(name: string): string | undefined {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// R2 config
+// ─────────────────────────────────────────────────────────────────
+const R2_PRODUCTS_PREFIX = 'pratos/products'
+
+// ─────────────────────────────────────────────────────────────────
 // MIME detection from file header
 // ─────────────────────────────────────────────────────────────────
 function detectMimeType(filePath: string): 'image/png' | 'image/jpeg' | 'image/webp' | null {
@@ -130,7 +135,12 @@ async function main() {
 
   const DRY_RUN = getFlag('dry-run')
   const FORCE = getFlag('force')
-  const LIMIT = parseInt(getArgValue('limit') ?? '0', 10)
+  const limitRaw = getArgValue('limit')
+  const LIMIT = limitRaw !== undefined ? parseInt(limitRaw, 10) : 0
+  if (limitRaw !== undefined && (Number.isNaN(LIMIT) || LIMIT < 0)) {
+    console.error('❌ --limit deve ser um número inteiro não-negativo.')
+    process.exit(1)
+  }
 
   const ROOT = process.cwd()
   const JSON_PATH = path.join(ROOT, 'scripts', 'products-to-generate.json')
@@ -203,7 +213,7 @@ async function main() {
   for (let i = 0; i < candidates.length; i++) {
     const p = candidates[i]
     const localPath = path.join(OUTPUT_DIR, p.filename)
-    const r2Key = `pratos/products/${p.filename}`
+    const r2Key = `${R2_PRODUCTS_PREFIX}/${p.filename}`
 
     process.stdout.write(`[${i + 1}/${candidates.length}] ${p.nome} ... `)
 

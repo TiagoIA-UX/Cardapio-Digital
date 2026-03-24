@@ -49,8 +49,21 @@ function getArgValue(name: string): string | undefined {
 }
 
 const DRY_RUN = getFlag('dry-run')
-const START_FROM = parseInt(getArgValue('start') ?? '0', 10)
-const LIMIT = parseInt(getArgValue('limit') ?? '0', 10)
+
+const startRaw = getArgValue('start')
+const START_FROM = startRaw !== undefined ? parseInt(startRaw, 10) : 0
+if (startRaw !== undefined && (Number.isNaN(START_FROM) || START_FROM < 0)) {
+  console.error('❌ --start deve ser um número inteiro não-negativo.')
+  process.exit(1)
+}
+
+const limitRaw = getArgValue('limit')
+const LIMIT = limitRaw !== undefined ? parseInt(limitRaw, 10) : 0
+if (limitRaw !== undefined && (Number.isNaN(LIMIT) || LIMIT < 0)) {
+  console.error('❌ --limit deve ser um número inteiro não-negativo.')
+  process.exit(1)
+}
+
 const API_KEY = process.env.OPENAI_API_KEY
 
 // ─────────────────────────────────────────────────────────────────

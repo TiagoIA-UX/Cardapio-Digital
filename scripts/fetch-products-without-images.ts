@@ -192,7 +192,8 @@ async function main() {
   const DRY_RUN = args.includes('--dry-run')
   const ALL = args.includes('--all')
   const tenantArg = args.find((a) => a.startsWith('--tenant='))
-  const TENANT_FILTER = tenantArg ? tenantArg.split('=')[1] : null
+  const tenantRaw = tenantArg ? tenantArg.split('=').slice(1).join('=') : null
+  const TENANT_FILTER = tenantRaw && tenantRaw.trim() !== '' ? tenantRaw.trim() : null
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

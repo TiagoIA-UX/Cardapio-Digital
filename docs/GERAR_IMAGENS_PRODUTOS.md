@@ -1,6 +1,6 @@
 # Gerar Imagens de Produtos — Pipeline Automatizado
 
-> Fluxo completo para gerar imagens via IA (DALL-E 3) para todos os produtos sem imagem no banco, fazer upload para Cloudflare R2 e atualizar o banco de dados.
+> Fluxo completo para gerar imagens via IA para todos os produtos sem imagem no banco e atualizar o banco de dados. Duas opções: **Pollinations.ai (grátis)** ou **DALL-E 3 (pago, melhor qualidade)**.
 
 ---
 
@@ -8,13 +8,14 @@
 
 1. [Visão geral](#visão-geral)
 2. [Pré-requisitos](#pré-requisitos)
-3. [Passo a passo](#passo-a-passo)
-4. [Scripts disponíveis](#scripts-disponíveis)
-5. [Estilo e prompts](#estilo-e-prompts)
-6. [Uso manual (sem API)](#uso-manual-sem-api)
-7. [Checklist final de validação](#checklist-final-de-validação)
-8. [Repetir para produtos futuros](#repetir-para-produtos-futuros)
-9. [FAQ](#faq)
+3. [Opção A — Pollinations.ai (grátis, recomendado para começar)](#opção-a--pollinationsai-grátis)
+4. [Opção B — DALL-E 3 (pago, melhor qualidade)](#opção-b--dall-e-3-pago)
+5. [Scripts disponíveis](#scripts-disponíveis)
+6. [Estilo e prompts](#estilo-e-prompts)
+7. [Uso manual (sem API)](#uso-manual-sem-api)
+8. [Checklist final de validação](#checklist-final-de-validação)
+9. [Repetir para produtos futuros](#repetir-para-produtos-futuros)
+10. [FAQ](#faq)
 
 ---
 
@@ -23,17 +24,22 @@
 ```
 [Supabase DB]
   └─ products (sem imagem_url ou com placeholder)
-        ↓
-[fetch-products-without-images.ts]
-  └─ gera: scripts/products-to-generate.csv
-           scripts/products-to-generate.json
-        ↓
-[generate-product-images-dalle.ts]  ← DALL-E 3 (OpenAI API)
-  └─ baixa imagens para: public/products/<slug>.png
-        ↓
-[upload-product-images-to-r2.ts]
-  └─ faz upload para: R2 bucket / pratos/products/<slug>.png
-  └─ atualiza DB: products.imagem_url = <url pública R2>
+
+  OPÇÃO A — Pollinations.ai (GRÁTIS)
+  ─────────────────────────────────
+  [generate-product-images-pollinations.ts]
+    └─ gera URL dinâmica (Pollinations.ai, sem download)
+    └─ atualiza DB diretamente: products.imagem_url = <url pollinations>
+
+  OPÇÃO B — DALL-E 3 (PAGO)
+  ──────────────────────────
+  [fetch-products-without-images.ts]
+    └─ gera: scripts/products-to-generate.csv + .json
+  [generate-product-images-dalle.ts]  ← DALL-E 3 (OpenAI API)
+    └─ baixa imagens para: public/products/<slug>.png
+  [upload-product-images-to-r2.ts]
+    └─ faz upload para R2: pratos/products/<slug>.png
+    └─ atualiza DB: products.imagem_url = <url pública R2>
 ```
 
 **Regras de segurança:**
@@ -50,26 +56,70 @@
 Configure em `.env.local` (na raiz do projeto):
 
 ```env
-# Supabase (obrigatório)
+# Supabase (obrigatório para todos os scripts)
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# Cloudflare R2 (obrigatório para upload)
+# Cloudflare R2 (obrigatório apenas para Opção B — upload)
 R2_ACCOUNT_ID=abc123
 R2_ACCESS_KEY_ID=key123
 R2_SECRET_ACCESS_KEY=secret123
 R2_BUCKET_NAME=cardapio-digital
 R2_PUBLIC_URL=https://cdn.seudominio.com
 
-# OpenAI DALL-E (obrigatório para geração automática)
+# OpenAI DALL-E (obrigatório apenas para Opção B — geração DALL-E 3)
 OPENAI_API_KEY=sk-proj-...
 ```
 
-> **Dica:** Execute `npm run doctor` para verificar se o ambiente está configurado.
+> **Dica:** A Opção A (Pollinations.ai) só precisa das credenciais do Supabase.
 
 ---
 
-## Passo a passo
+## Opção A — Pollinations.ai (grátis)
+
+> **Recomendado para começar.** Sem custo, sem API key de IA, atualiza o banco em segundos.
+
+### Como funciona
+
+O script gera uma URL dinâmica do Pollinations.ai para cada produto e salva diretamente em `products.imagem_url`. A imagem é renderizada pelo Pollinations sob demanda quando o cardápio é aberto — sem download, sem R2.
+
+### Passo a passo
+
+**Apenas 1 comando:**
+
+```bash
+npx tsx scripts/generate-product-images-pollinations.ts
+```
+
+**Opções:**
+```bash
+# Ver exemplos sem alterar o banco
+npx tsx scripts/generate-product-images-pollinations.ts --dry-run
+
+# Filtrar por restaurante
+npx tsx scripts/generate-product-images-pollinations.ts --tenant=<uuid>
+
+# Limitar para testar
+npx tsx scripts/generate-product-images-pollinations.ts --limit=10
+
+# Processar em paralelo (default: 3)
+npx tsx scripts/generate-product-images-pollinations.ts --concurrency=5
+
+# Regenerar mesmo produtos com imagem
+npx tsx scripts/generate-product-images-pollinations.ts --force
+```
+
+**Custo:** $0  
+**Tempo:** ~5 minutos para 800 produtos (paralelo)  
+**Qualidade:** Boa (modelo Flux do Pollinations, 800×800)  
+
+> **Nota:** Imagens Pollinations são dinâmicas. Se quiser imagens estáticas hospedadas no R2, use a Opção B depois.
+
+---
+
+## Opção B — DALL-E 3 (pago)
+
+> **Melhor qualidade.** Imagens geradas e armazenadas definitivamente no R2. Custo: ~$0,04 por imagem.
 
 ### Etapa 1 — Buscar produtos sem imagem
 
@@ -151,11 +201,12 @@ npx tsx scripts/upload-product-images-to-r2.ts --limit=10
 
 ## Scripts disponíveis
 
-| Script npm | Comando completo | Descrição |
-|-----------|-----------------|-----------|
-| `npm run gen:products:fetch` | `npx tsx scripts/fetch-products-without-images.ts` | Etapa 1: buscar produtos sem imagem |
-| `npm run gen:products:dalle` | `OPENAI_API_KEY=sk-... npx tsx scripts/generate-product-images-dalle.ts` | Etapa 2: gerar via DALL-E 3 |
-| `npm run gen:products:upload` | `npx tsx scripts/upload-product-images-to-r2.ts` | Etapa 3: upload R2 + atualizar DB |
+| Script npm | Descrição |
+|-----------|-----------|
+| `npm run gen:products:fetch` | Etapa B1: buscar produtos sem imagem, exportar CSV/JSON |
+| `npm run gen:products:pollinations` | **Opção A** — gerar via Pollinations.ai (grátis, atualiza DB direto) |
+| `npm run gen:products:dalle` | Etapa B2: gerar via DALL-E 3 (baixa para `public/products/`) |
+| `npm run gen:products:upload` | Etapa B3: upload R2 + atualizar DB |
 
 ---
 
@@ -218,6 +269,12 @@ Se preferir gerar as imagens manualmente (via interface web do DALL-E, Midjourne
 
 Após executar o pipeline completo, verifique:
 
+**Opção A (Pollinations.ai):**
+- [ ] `products.imagem_url` no Supabase atualizado com URLs `image.pollinations.ai/...`
+- [ ] Imagens aparecem corretamente no painel admin → Cardápio → Produtos
+- [ ] Imagens aparecem no cardápio público
+
+**Opção B (DALL-E 3):**
 - [ ] Arquivo `scripts/products-to-generate.csv` existe e tem todos os produtos sem imagem
 - [ ] Pasta `public/products/` contém arquivos `.png` para cada produto
 - [ ] Nomes dos arquivos correspondem ao campo `slug` do CSV
@@ -239,35 +296,51 @@ WHERE imagem_url IS NULL OR imagem_url ILIKE '%placeholder%';
 SELECT tipo, COUNT(*) FROM products
 WHERE imagem_url IS NOT NULL AND imagem_url NOT ILIKE '%placeholder%'
 GROUP BY tipo;
+
+-- Produtos usando Pollinations.ai
+SELECT COUNT(*) FROM products
+WHERE imagem_url ILIKE '%pollinations.ai%';
 ```
 
 ---
 
 ## Repetir para produtos futuros
 
-Para novos produtos adicionados posteriormente:
+**Opção A (Pollinations.ai):**
 
-1. Execute `npm run gen:products:fetch` — o script detecta automaticamente os novos produtos sem imagem.
-2. Execute `npm run gen:products:dalle` — gera apenas as novas imagens (pula as já existentes via progress file).
+Apenas 1 comando:
+```bash
+npx tsx scripts/generate-product-images-pollinations.ts
+```
+O script detecta automaticamente os novos produtos sem imagem e pula os que já têm URL.
+
+**Opção B (DALL-E 3):**
+
+1. Execute `npm run gen:products:fetch` — detecta os novos produtos sem imagem.
+2. Execute `npm run gen:products:dalle` — gera apenas as novas imagens (pula as já existentes).
 3. Execute `npm run gen:products:upload` — faz upload e atualiza o banco.
-
-O script `fetch-products-without-images.ts` sempre filtra apenas produtos SEM imagem (ou com placeholder), portanto nunca processa produtos que já têm imagem manual configurada.
 
 ---
 
 ## FAQ
 
+**P: Qual opção escolher — Pollinations.ai ou DALL-E 3?**
+R: Para começar, use a Opção A (Pollinations.ai). É gratuita e rápida. Se a qualidade não for satisfatória para algum produto, use a Opção B (DALL-E 3) com `--tenant=<uuid>` para um restaurante específico.
+
 **P: Posso usar Gemini (Google Imagen) em vez de DALL-E?**
-R: Sim. Gere o CSV com a etapa 1, baixe as imagens manualmente do Gemini e siga o processo de upload (etapa 3). A etapa 2 atualmente usa DALL-E 3; um script para Gemini pode ser adicionado no futuro.
+R: Sim. Gere o CSV com a etapa B1, baixe as imagens manualmente do Gemini e siga o processo de upload (etapa B3). A etapa B2 atualmente usa DALL-E 3; um script para Gemini pode ser adicionado no futuro.
 
 **P: As imagens antigas vão ser sobrescritas?**
-R: Não. O script de upload verifica `imagem_url_atual` do produto. Se já tiver uma URL real (não placeholder), pula o produto. Use `--force` apenas se quiser substituir intencionalmente.
+R: Não. Ambos os scripts verificam se o produto já tem imagem (não-placeholder). Use `--force` apenas se quiser substituir intencionalmente.
 
-**P: O custo é recorrente?**
-R: Não. Cada imagem é gerada uma vez e armazenada no R2 com cache de 1 ano. O custo é único por produto.
+**P: As URLs do Pollinations.ai ficam disponíveis para sempre?**
+R: O Pollinations.ai é um serviço público gratuito. Se quiser garantia de disponibilidade permanente, use a Opção B para armazenar as imagens no R2 definitivamente.
+
+**P: O custo do DALL-E é recorrente?**
+R: Não. Cada imagem é gerada uma vez e armazenada no R2 com cache de 1 ano. O custo é único por produto (~$0,04/imagem).
 
 **P: E os sabores de pizza (`product_flavors`)?**
 R: Este pipeline cobre a tabela `products`. Para `product_flavors.imagem_url`, o processo é similar — adapte o script de fetch para consultar `product_flavors` em vez de `products`.
 
-**P: Onde ficam armazenadas as imagens?**
-R: No Cloudflare R2, na pasta `pratos/products/`. A URL pública segue o padrão `${R2_PUBLIC_URL}/pratos/products/<slug>.png`.
+**P: Onde ficam armazenadas as imagens no R2 (Opção B)?**
+R: Na pasta `pratos/products/`. A URL pública segue o padrão `${R2_PUBLIC_URL}/pratos/products/<slug>.png`.
