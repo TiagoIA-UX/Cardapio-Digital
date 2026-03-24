@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S tsx --tsconfig tsconfig.scripts.json
 /**
  * generate-product-images-dalle.ts
  *
@@ -8,10 +8,12 @@
  * As imagens são salvas em:  public/products/<slug>.png
  *
  * Uso:
- *   OPENAI_API_KEY=sk-... npx tsx scripts/generate-product-images-dalle.ts
- *   npx tsx scripts/generate-product-images-dalle.ts --dry-run       # sem gerar
- *   npx tsx scripts/generate-product-images-dalle.ts --start=50      # retoma do produto 50
- *   npx tsx scripts/generate-product-images-dalle.ts --limit=10      # gera só 10
+ *   npm run gen:products:dalle
+ *   npm run gen:products:dalle -- --dry-run       # sem gerar
+ *   npm run gen:products:dalle -- --start=50      # retoma do produto 50
+ *   npm run gen:products:dalle -- --limit=10      # gera só 10
+ *   $env:OPENAI_API_KEY="sk-..."; npm run gen:products:dalle  # Windows PowerShell
+ *   OPENAI_API_KEY=sk-... npm run gen:products:dalle          # Mac/Linux
  *
  * Custo estimado: ~$0.04/imagem (DALL-E 3 standard 1024×1024)
  * Throttle padrão: 5 imgs/min (tier 1) → delay de 13 s entre chamadas
@@ -203,13 +205,14 @@ function callOpenAI(prompt: string): Promise<string> {
 async function main() {
   if (!fs.existsSync(CSV_PATH)) {
     console.error('❌ Arquivo não encontrado:', CSV_PATH)
-    console.error('   Execute primeiro: npx tsx scripts/fetch-products-without-images.ts')
+    console.error('   Execute primeiro: npm run gen:products:fetch')
     process.exit(1)
   }
 
   if (!API_KEY && !DRY_RUN) {
     console.error('❌ OPENAI_API_KEY não definida.')
-    console.error('   Uso: OPENAI_API_KEY=sk-... npx tsx scripts/generate-product-images-dalle.ts')
+    console.error('   Windows: $env:OPENAI_API_KEY="sk-..."; npm run gen:products:dalle')
+    console.error('   Mac/Linux: OPENAI_API_KEY=sk-... npm run gen:products:dalle')
     console.error('   Ou use --dry-run para visualizar prompts sem gerar')
     process.exit(1)
   }
@@ -292,7 +295,7 @@ async function main() {
   console.log(`   Erros:    ${errors}`)
   console.log(`\n📁 Imagens salvas em: ${OUTPUT_DIR}`)
   console.log('\n📌 Próximo passo: fazer upload para R2 e atualizar o banco:')
-  console.log('   npx tsx scripts/upload-product-images-to-r2.ts')
+  console.log('   npm run gen:products:upload')
 }
 
 main().catch((err) => {

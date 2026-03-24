@@ -51,6 +51,12 @@
 
 ## Pré-requisitos
 
+### Compatibilidade Node.js
+
+> **Node.js v22+ (Windows/Linux/Mac):** Use sempre `npm run gen:products:...` (não `npx tsx scripts/...` diretamente).
+>
+> O projeto usa `tsconfig.json` com `"moduleResolution": "bundler"` (Next.js). Os scripts de geração usam `tsconfig.scripts.json` que corrige isso automaticamente — o `npm run` carrega essa config, já `npx tsx scripts/...` pode ignorá-la em certas versões do Node.
+
 ### Variáveis de ambiente
 
 Configure em `.env.local` (na raiz do projeto):
@@ -88,25 +94,25 @@ O script gera uma URL dinâmica do Pollinations.ai para cada produto e salva dir
 **Apenas 1 comando:**
 
 ```bash
-npx tsx scripts/generate-product-images-pollinations.ts
+npm run gen:products:pollinations
 ```
 
 **Opções:**
 ```bash
 # Ver exemplos sem alterar o banco
-npx tsx scripts/generate-product-images-pollinations.ts --dry-run
+npm run gen:products:pollinations -- --dry-run
 
 # Filtrar por restaurante
-npx tsx scripts/generate-product-images-pollinations.ts --tenant=<uuid>
+npm run gen:products:pollinations -- --tenant=<uuid>
 
 # Limitar para testar
-npx tsx scripts/generate-product-images-pollinations.ts --limit=10
+npm run gen:products:pollinations -- --limit=10
 
 # Processar em paralelo (default: 3)
-npx tsx scripts/generate-product-images-pollinations.ts --concurrency=5
+npm run gen:products:pollinations -- --concurrency=5
 
 # Regenerar mesmo produtos com imagem
-npx tsx scripts/generate-product-images-pollinations.ts --force
+npm run gen:products:pollinations -- --force
 ```
 
 **Custo:** $0  
@@ -124,7 +130,7 @@ npx tsx scripts/generate-product-images-pollinations.ts --force
 ### Etapa 1 — Buscar produtos sem imagem
 
 ```bash
-npx tsx scripts/fetch-products-without-images.ts
+npm run gen:products:fetch
 ```
 
 Isso consulta o Supabase e gera dois arquivos:
@@ -134,19 +140,25 @@ Isso consulta o Supabase e gera dois arquivos:
 **Opções:**
 ```bash
 # Apenas ver a contagem (sem gravar arquivos)
-npx tsx scripts/fetch-products-without-images.ts --dry-run
+npm run gen:products:fetch -- --dry-run
 
 # Incluir todos os produtos (mesmo os que já têm imagem)
-npx tsx scripts/fetch-products-without-images.ts --all
+npm run gen:products:fetch -- --all
 
 # Filtrar por restaurante específico
-npx tsx scripts/fetch-products-without-images.ts --tenant=<uuid-do-tenant>
+npm run gen:products:fetch -- --tenant=<uuid-do-tenant>
 ```
 
 ### Etapa 2 — Gerar imagens via DALL-E 3
 
+**Windows (PowerShell):**
+```powershell
+$env:OPENAI_API_KEY="sk-proj-..."; npm run gen:products:dalle
+```
+
+**Mac/Linux:**
 ```bash
-OPENAI_API_KEY=sk-proj-... npx tsx scripts/generate-product-images-dalle.ts
+OPENAI_API_KEY=sk-proj-... npm run gen:products:dalle
 ```
 
 As imagens são salvas em `public/products/<slug>.png`.
@@ -154,13 +166,13 @@ As imagens são salvas em `public/products/<slug>.png`.
 **Opções:**
 ```bash
 # Ver prompts sem gerar (recomendado para revisar antes)
-npx tsx scripts/generate-product-images-dalle.ts --dry-run
+npm run gen:products:dalle -- --dry-run
 
 # Retomar de onde parou (ex: a partir do produto 50)
-npx tsx scripts/generate-product-images-dalle.ts --start=50
+npm run gen:products:dalle -- --start=50
 
 # Gerar só os primeiros 10 (para testar)
-npx tsx scripts/generate-product-images-dalle.ts --limit=10
+npm run gen:products:dalle -- --limit=10
 ```
 
 **Progresso:** O script salva o progresso em `scripts/.product-dalle-progress.json`. Se interrompido, pode ser retomado sem regerar imagens já feitas.
@@ -176,7 +188,7 @@ npx tsx scripts/generate-product-images-dalle.ts --limit=10
 ### Etapa 3 — Upload para R2 e atualizar banco
 
 ```bash
-npx tsx scripts/upload-product-images-to-r2.ts
+npm run gen:products:upload
 ```
 
 O script:
@@ -188,13 +200,13 @@ O script:
 **Opções:**
 ```bash
 # Visualizar sem gravar nada
-npx tsx scripts/upload-product-images-to-r2.ts --dry-run
+npm run gen:products:upload -- --dry-run
 
 # Forçar re-upload (mesmo produtos com imagem)
-npx tsx scripts/upload-product-images-to-r2.ts --force
+npm run gen:products:upload -- --force
 
 # Limitar para os primeiros 10
-npx tsx scripts/upload-product-images-to-r2.ts --limit=10
+npm run gen:products:upload -- --limit=10
 ```
 
 ---
@@ -242,7 +254,7 @@ Se preferir gerar as imagens manualmente (via interface web do DALL-E, Midjourne
 
 1. Execute a etapa 1 para gerar o CSV:
    ```bash
-   npx tsx scripts/fetch-products-without-images.ts
+   npm run gen:products:fetch
    ```
 
 2. Abra `scripts/products-to-generate.csv` em um editor de planilha.
@@ -260,7 +272,7 @@ Se preferir gerar as imagens manualmente (via interface web do DALL-E, Midjourne
 
 5. Após baixar todas as imagens, execute a etapa 3 para upload:
    ```bash
-   npx tsx scripts/upload-product-images-to-r2.ts
+   npm run gen:products:upload
    ```
 
 ---
@@ -310,7 +322,7 @@ WHERE imagem_url ILIKE '%pollinations.ai%';
 
 Apenas 1 comando:
 ```bash
-npx tsx scripts/generate-product-images-pollinations.ts
+npm run gen:products:pollinations
 ```
 O script detecta automaticamente os novos produtos sem imagem e pula os que já têm URL.
 
@@ -325,13 +337,16 @@ O script detecta automaticamente os novos produtos sem imagem e pula os que já 
 ## FAQ
 
 **P: Qual opção escolher — Pollinations.ai ou DALL-E 3?**
-R: Para começar, use a Opção A (Pollinations.ai). É gratuita e rápida. Se a qualidade não for satisfatória para algum produto, use a Opção B (DALL-E 3) com `--tenant=<uuid>` para um restaurante específico.
+R: Para começar, use a Opção A (Pollinations.ai). É gratuita e rápida. Se a qualidade não for satisfatória para algum produto, use a Opção B (DALL-E 3) com `-- --tenant=<uuid>` para um restaurante específico.
+
+**P: `npx tsx scripts/...` dá erro `ERR_MODULE_NOT_FOUND` no Windows/Node.js v24.**
+R: Use sempre `npm run gen:products:...` em vez de `npx tsx scripts/...`. O projeto usa configurações do tsconfig.json específicas para o Next.js (bundler resolution) que conflitam com tsx direto. O `npm run` carrega automaticamente o `tsconfig.scripts.json` correto.
 
 **P: Posso usar Gemini (Google Imagen) em vez de DALL-E?**
-R: Sim. Gere o CSV com a etapa B1, baixe as imagens manualmente do Gemini e siga o processo de upload (etapa B3). A etapa B2 atualmente usa DALL-E 3; um script para Gemini pode ser adicionado no futuro.
+R: Sim. Gere o CSV com `npm run gen:products:fetch`, baixe as imagens manualmente do Gemini e siga o processo de upload com `npm run gen:products:upload`. A etapa B2 atualmente usa DALL-E 3; um script para Gemini pode ser adicionado no futuro.
 
 **P: As imagens antigas vão ser sobrescritas?**
-R: Não. Ambos os scripts verificam se o produto já tem imagem (não-placeholder). Use `--force` apenas se quiser substituir intencionalmente.
+R: Não. Ambos os scripts verificam se o produto já tem imagem (não-placeholder). Use `-- --force` apenas se quiser substituir intencionalmente.
 
 **P: As URLs do Pollinations.ai ficam disponíveis para sempre?**
 R: O Pollinations.ai é um serviço público gratuito. Se quiser garantia de disponibilidade permanente, use a Opção B para armazenar as imagens no R2 definitivamente.

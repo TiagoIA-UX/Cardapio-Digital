@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S tsx --tsconfig tsconfig.scripts.json
 /**
  * fetch-products-without-images.ts
  *
@@ -9,10 +9,10 @@
  *   scripts/products-to-generate.json — JSON para uso programático
  *
  * Uso:
- *   npx tsx scripts/fetch-products-without-images.ts
- *   npx tsx scripts/fetch-products-without-images.ts --all        # inclui todos (mesmo com imagem)
- *   npx tsx scripts/fetch-products-without-images.ts --dry-run    # mostra apenas a contagem
- *   npx tsx scripts/fetch-products-without-images.ts --tenant=<uuid>  # filtra por restaurante
+ *   npm run gen:products:fetch
+ *   npm run gen:products:fetch -- --all        # inclui todos (mesmo com imagem)
+ *   npm run gen:products:fetch -- --dry-run    # mostra apenas a contagem
+ *   npm run gen:products:fetch -- --tenant=<uuid>  # filtra por restaurante
  *
  * Requer (em .env.local ou .env.production):
  *   NEXT_PUBLIC_SUPABASE_URL
@@ -335,12 +335,11 @@ async function main() {
   }
 
   console.log('\n📌 Próximos passos:')
-  console.log('   1. Gerar imagens via DALL-E:')
-  console.log(
-    '      OPENAI_API_KEY=sk-... npx tsx scripts/generate-product-images-dalle.ts',
-  )
-  console.log('   2. Fazer upload para R2 e atualizar DB:')
-  console.log('      npx tsx scripts/upload-product-images-to-r2.ts')
+  console.log('   Opção A (grátis): npm run gen:products:pollinations')
+  console.log('   Opção B (DALL-E):')
+  console.log('      Windows: $env:OPENAI_API_KEY="sk-..."; npm run gen:products:dalle')
+  console.log('      Mac/Linux: OPENAI_API_KEY=sk-... npm run gen:products:dalle')
+  console.log('      Depois: npm run gen:products:upload')
   console.log('\n   Veja docs/GERAR_IMAGENS_PRODUTOS.md para instruções completas.')
 }
 

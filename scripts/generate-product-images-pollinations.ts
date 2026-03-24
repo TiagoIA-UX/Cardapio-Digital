@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S tsx --tsconfig tsconfig.scripts.json
 /**
  * generate-product-images-pollinations.ts
  *
@@ -12,12 +12,12 @@
  *   - Qualidade inferior ao DALL-E 3, porém excelente para catálogos
  *
  * Uso:
- *   npx tsx scripts/generate-product-images-pollinations.ts
- *   npx tsx scripts/generate-product-images-pollinations.ts --dry-run
- *   npx tsx scripts/generate-product-images-pollinations.ts --tenant=<uuid>
- *   npx tsx scripts/generate-product-images-pollinations.ts --limit=20
- *   npx tsx scripts/generate-product-images-pollinations.ts --concurrency=5
- *   npx tsx scripts/generate-product-images-pollinations.ts --force   # sobrescreve existentes
+ *   npm run gen:products:pollinations
+ *   npm run gen:products:pollinations -- --dry-run
+ *   npm run gen:products:pollinations -- --tenant=<uuid>
+ *   npm run gen:products:pollinations -- --limit=20
+ *   npm run gen:products:pollinations -- --concurrency=5
+ *   npm run gen:products:pollinations -- --force   # sobrescreve existentes
  *
  * Requer (em .env.local ou .env.production):
  *   NEXT_PUBLIC_SUPABASE_URL

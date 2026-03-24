@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S tsx --tsconfig tsconfig.scripts.json
 /**
  * upload-product-images-to-r2.ts
  *
@@ -11,10 +11,10 @@
  *   - Só faz upload se o arquivo .png existir localmente em public/products/
  *
  * Uso:
- *   npx tsx scripts/upload-product-images-to-r2.ts
- *   npx tsx scripts/upload-product-images-to-r2.ts --dry-run    # sem gravar nada
- *   npx tsx scripts/upload-product-images-to-r2.ts --force      # re-upload mesmo com imagem
- *   npx tsx scripts/upload-product-images-to-r2.ts --limit=10   # só os primeiros 10
+ *   npm run gen:products:upload
+ *   npm run gen:products:upload -- --dry-run    # sem gravar nada
+ *   npm run gen:products:upload -- --force      # re-upload mesmo com imagem
+ *   npm run gen:products:upload -- --limit=10   # só os primeiros 10
  *
  * Requer (em .env.local ou .env.production):
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -148,7 +148,7 @@ async function main() {
 
   if (!fs.existsSync(JSON_PATH)) {
     console.error('❌ Arquivo não encontrado:', JSON_PATH)
-    console.error('   Execute primeiro: npx tsx scripts/fetch-products-without-images.ts')
+    console.error('   Execute primeiro: npm run gen:products:fetch')
     process.exit(1)
   }
 
@@ -202,7 +202,7 @@ async function main() {
     console.log(
       '\nℹ️  Nenhuma imagem para fazer upload. Gere as imagens primeiro:',
     )
-    console.log('   npx tsx scripts/generate-product-images-dalle.ts')
+    console.log('   npm run gen:products:dalle')
     return
   }
 
