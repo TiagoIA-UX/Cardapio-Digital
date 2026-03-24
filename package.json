@@ -32,6 +32,8 @@
     "test:e2e:chaos": "npx playwright test cliente-burro",
     "validate:mp": "tsx scripts/validate-mp-credentials.ts",
     "screenshots": "node scripts/capture-screenshots.mjs",
+    "setup:completo": "node scripts/setup-completo.mjs",
+    "audit:completo": "node scripts/audit-completo.mjs",
     "start": "next start",
     "test": "tsx --test tests/**/*.test.ts"
   },

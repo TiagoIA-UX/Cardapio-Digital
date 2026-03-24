@@ -15,6 +15,12 @@ const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Cardápio Digital',
+  },
   verification: {
     google: 'google1a0b3e572aae5f34',
   },
