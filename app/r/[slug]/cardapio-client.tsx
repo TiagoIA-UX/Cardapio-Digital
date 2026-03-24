@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import {
@@ -15,6 +15,7 @@ import {
   Plus,
   ShoppingCart,
   Store,
+  Tag,
   X,
 } from 'lucide-react'
 import type { CardapioProduct, CardapioRestaurant } from '@/lib/cardapio-renderer'
@@ -23,6 +24,7 @@ import type { RestaurantPresentation } from '@/lib/restaurant-customization'
 import { formatCurrency } from '@/lib/format-currency'
 import { cn, formatPhone } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import type { ValidatedCoupon } from '@/lib/coupon-validation'
 
 interface CartItem {
   id: string
@@ -81,8 +83,13 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
   const [success, setSuccess] = useState(false)
   const [orderForm, setOrderForm] = useState<OrderFormState>(createInitialOrderForm(isTableOrder))
   const [activeCategory, setActiveCategory] = useState<string | null>(categories[0] || null)
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<ValidatedCoupon | null>(null)
+  const [couponLoading, setCouponLoading] = useState(false)
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const [deliveryZoneTaxa, setDeliveryZoneTaxa] = useState<number | null>(null)
 
-  const { totalItems, totalPrice } = useMemo(() => {
+  const { totalItems, totalPrice, subtotal, discountAmount, deliveryFee } = useMemo(() => {
     let items = 0
     let price = 0
 
@@ -91,8 +98,30 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       price += item.product.preco * item.quantity
     })
 
-    return { totalItems: items, totalPrice: price }
-  }, [cart])
+    let discount = 0
+    if (appliedCoupon) {
+      if (appliedCoupon.discountType === 'percentage') {
+        discount = Math.round(price * (appliedCoupon.rawDiscountValue / 100))
+      } else {
+        discount = appliedCoupon.rawDiscountValue
+      }
+      discount = Math.min(discount, price)
+    }
+
+    const fee =
+      orderForm.fulfillment === 'entrega'
+        ? (deliveryZoneTaxa ?? restaurant.taxa_entrega ?? 0)
+        : 0
+    const finalTotal = Math.max(0, price - discount) + fee
+
+    return {
+      totalItems: items,
+      totalPrice: finalTotal,
+      subtotal: price,
+      discountAmount: discount,
+      deliveryFee: fee,
+    }
+  }, [cart, appliedCoupon, deliveryZoneTaxa, orderForm.fulfillment, restaurant.taxa_entrega])
 
   const addProduct = (product: CardapioProduct) => {
     setCart((prev) => {
@@ -157,6 +186,81 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
     setOrderForm((prev) => ({ ...prev, [field]: value }))
   }
 
+  // Lookup taxa de entrega pela zona/bairro quando o cliente preenche o bairro
+  const lookupDeliveryZone = useCallback(
+    async (bairro: string) => {
+      if (!bairro.trim() || !restaurant.id) {
+        setDeliveryZoneTaxa(null)
+        return
+      }
+      try {
+        const res = await fetch(
+          `/api/delivery-zones?restaurant_id=${encodeURIComponent(restaurant.id)}`
+        )
+        if (!res.ok) return
+        const { zones } = (await res.json()) as {
+          zones: Array<{ bairros: string[]; taxa: number }>
+        }
+        const bairroNorm = bairro.trim().toLowerCase()
+        const match = zones.find((z) =>
+          z.bairros.some((b) => b.toLowerCase() === bairroNorm)
+        )
+        setDeliveryZoneTaxa(match ? match.taxa : null)
+      } catch {
+        setDeliveryZoneTaxa(null)
+      }
+    },
+    [restaurant.id]
+  )
+
+  const handleApplyCoupon = useCallback(async () => {
+    if (!couponCode.trim()) return
+    setCouponLoading(true)
+    setCouponError(null)
+    try {
+      const res = await fetch('/api/checkout/validar-cupom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: couponCode.trim(),
+          subtotal: subtotal,
+          restaurant_id: restaurant.id,
+        }),
+      })
+      const data = (await res.json()) as {
+        valid: boolean
+        coupon?: ValidatedCoupon
+        error?: string
+      }
+      if (data.valid && data.coupon) {
+        setAppliedCoupon(data.coupon)
+        setCouponError(null)
+      } else {
+        setCouponError(data.error ?? 'Cupom inválido')
+        setAppliedCoupon(null)
+      }
+    } catch {
+      setCouponError('Erro ao validar cupom')
+    } finally {
+      setCouponLoading(false)
+    }
+  }, [couponCode, subtotal, restaurant.id])
+
+  const removeCoupon = useCallback(() => {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    setCouponError(null)
+  }, [])
+
+  // Atualiza taxa de entrega ao trocar bairro
+  useEffect(() => {
+    if (orderForm.fulfillment === 'entrega' && orderForm.addressDistrict) {
+      void lookupDeliveryZone(orderForm.addressDistrict)
+    } else {
+      setDeliveryZoneTaxa(null)
+    }
+  }, [orderForm.fulfillment, orderForm.addressDistrict, lookupDeliveryZone])
+
   const canSubmit =
     cart.length > 0 &&
     !!restaurant.telefone &&
@@ -210,7 +314,14 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       message += `${index + 1}. ${item.quantity}x ${item.product.nome} - ${formatCurrency(itemTotal)}\n`
     })
 
-    message += `\n*Total:* ${formatCurrency(totalPrice)}\n`
+    message += `\n💰 *Subtotal:* ${formatCurrency(subtotal)}\n`
+    if (discountAmount > 0 && appliedCoupon) {
+      message += `🏷️ *Cupom (${appliedCoupon.code}):* -${formatCurrency(discountAmount)}\n`
+    }
+    if (deliveryFee > 0) {
+      message += `🛵 *Taxa de entrega:* ${formatCurrency(deliveryFee)}\n`
+    }
+    message += `*Total:* ${formatCurrency(totalPrice)}\n`
 
     if (orderForm.formaPagamentoNaEntrega) {
       const formas: Record<string, string> = {
@@ -284,6 +395,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
                 return !isNaN(v) && v > 0 ? v : undefined
               })()
             : undefined,
+        cupom_codigo: appliedCoupon?.code ?? undefined,
       }
 
       const response = await fetch('/api/orders', {
@@ -305,6 +417,9 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
 
       setCart([])
       setOrderForm(createInitialOrderForm(isTableOrder))
+      setAppliedCoupon(null)
+      setCouponCode('')
+      setCouponError(null)
       setIsCartOpen(false)
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
@@ -660,6 +775,9 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
           cart={cart}
           totalItems={totalItems}
           totalPrice={totalPrice}
+          subtotal={subtotal}
+          discountAmount={discountAmount}
+          deliveryFee={deliveryFee}
           restaurant={restaurant}
           error={error}
           isSubmitting={isSubmitting}
@@ -667,11 +785,18 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
           isTableOrder={isTableOrder}
           tableNumber={tableNumber}
           presentation={presentation}
+          couponCode={couponCode}
+          appliedCoupon={appliedCoupon}
+          couponLoading={couponLoading}
+          couponError={couponError}
           onClose={() => setIsCartOpen(false)}
           onIncrement={incrementItem}
           onDecrement={decrementItem}
           onRemove={removeItem}
           onOrderFormChange={updateOrderForm}
+          onCouponCodeChange={setCouponCode}
+          onApplyCoupon={handleApplyCoupon}
+          onRemoveCoupon={removeCoupon}
           onSubmit={submitOrder}
           canSubmit={canSubmit}
         />
@@ -741,6 +866,9 @@ interface CartDrawerProps {
   cart: CartItem[]
   totalItems: number
   totalPrice: number
+  subtotal: number
+  discountAmount: number
+  deliveryFee: number
   restaurant: CardapioRestaurant
   error: string | null
   isSubmitting: boolean
@@ -748,6 +876,10 @@ interface CartDrawerProps {
   isTableOrder: boolean
   tableNumber: string
   presentation: RestaurantPresentation
+  couponCode: string
+  appliedCoupon: ValidatedCoupon | null
+  couponLoading: boolean
+  couponError: string | null
   onClose: () => void
   onIncrement: (id: string) => void
   onDecrement: (id: string) => void
@@ -756,6 +888,9 @@ interface CartDrawerProps {
     field: Key,
     value: OrderFormState[Key]
   ) => void
+  onCouponCodeChange: (code: string) => void
+  onApplyCoupon: () => void
+  onRemoveCoupon: () => void
   onSubmit: () => void
   canSubmit: boolean
 }
@@ -764,6 +899,9 @@ function CartDrawer({
   cart,
   totalItems,
   totalPrice,
+  subtotal,
+  discountAmount,
+  deliveryFee,
   restaurant,
   error,
   isSubmitting,
@@ -771,11 +909,18 @@ function CartDrawer({
   isTableOrder,
   tableNumber,
   presentation,
+  couponCode,
+  appliedCoupon,
+  couponLoading,
+  couponError,
   onClose,
   onIncrement,
   onDecrement,
   onRemove,
   onOrderFormChange,
+  onCouponCodeChange,
+  onApplyCoupon,
+  onRemoveCoupon,
   onSubmit,
   canSubmit,
 }: CartDrawerProps) {
@@ -1028,11 +1173,69 @@ function CartDrawer({
               </div>
             )}
 
+            {/* Campo de cupom */}
+            {!appliedCoupon ? (
+              <div className="space-y-1">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Tag className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Código do cupom"
+                      value={couponCode}
+                      onChange={(e) => onCouponCodeChange(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') void onApplyCoupon()
+                      }}
+                      className="border-border bg-background text-foreground focus:ring-primary w-full rounded-lg border py-2 pl-9 pr-3 text-sm uppercase focus:border-transparent focus:ring-2"
+                    />
+                  </div>
+                  <button
+                    onClick={onApplyCoupon}
+                    disabled={couponLoading || !couponCode.trim()}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50"
+                  >
+                    {couponLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Aplicar'}
+                  </button>
+                </div>
+                {couponError && (
+                  <p className="text-destructive text-xs">{couponError}</p>
+                )}
+              </div>
+            ) : (
+              <div className="bg-green-50 border-green-200 flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+                <div className="flex items-center gap-2 text-green-700">
+                  <Tag className="h-4 w-4" />
+                  <span className="font-semibold">{appliedCoupon.code}</span>
+                  <span>— -{formatCurrency(discountAmount)}</span>
+                </div>
+                <button
+                  onClick={onRemoveCoupon}
+                  className="text-green-600 hover:text-green-800"
+                  title="Remover cupom"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
             <div className="space-y-2 text-sm">
               <div className="text-muted-foreground flex justify-between">
-                <span>Itens</span>
-                <span>{totalItems}</span>
+                <span>Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'itens'})</span>
+                <span>{formatCurrency(subtotal)}</span>
               </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Desconto</span>
+                  <span>-{formatCurrency(discountAmount)}</span>
+                </div>
+              )}
+              {deliveryFee > 0 && (
+                <div className="text-muted-foreground flex justify-between">
+                  <span>Taxa de entrega</span>
+                  <span>{formatCurrency(deliveryFee)}</span>
+                </div>
+              )}
               <div className="border-border flex justify-between border-t pt-2 text-lg font-bold">
                 <span>Total</span>
                 <span className="text-primary">{formatCurrency(totalPrice)}</span>

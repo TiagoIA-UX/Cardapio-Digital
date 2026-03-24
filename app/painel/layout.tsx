@@ -21,6 +21,9 @@ import {
   Users,
   ChevronDown,
   ShoppingBag,
+  Tag,
+  Star,
+  Truck,
 } from 'lucide-react'
 import type { Restaurant } from '@/lib/supabase/client'
 import { getPaymentModeBadgeLabel, isPublicSandboxMode } from '@/lib/payment-mode'
@@ -134,6 +137,9 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
     { href: '/painel/produtos', icon: Package, label: 'Produtos' },
     { href: '/painel/categorias', icon: FolderOpen, label: 'Categorias' },
     { href: '/painel/pedidos', icon: ClipboardList, label: 'Pedidos' },
+    { href: '/painel/cupons', icon: Tag, label: 'Cupons' },
+    { href: '/painel/entregas', icon: Truck, label: 'Zonas de Entrega' },
+    { href: '/painel/fidelidade', icon: Star, label: 'Fidelidade' },
     { href: '/painel/qrcode', icon: QrCode, label: 'QR Code' },
     { href: '/meus-templates', icon: ShoppingBag, label: 'Meus Cardápios' },
     { href: '/painel/afiliados', icon: Users, label: 'Afiliados' },

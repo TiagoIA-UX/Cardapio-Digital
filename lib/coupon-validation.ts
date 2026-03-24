@@ -5,6 +5,8 @@ export interface ValidatedCoupon {
   code: string
   discountType: 'percentage' | 'fixed'
   discountValue: number
+  /** Valor original: percentual (ex: 20) ou fixo (ex: 5.00) para recálculo no frontend */
+  rawDiscountValue: number
 }
 
 export interface CouponValidationResult {
@@ -60,23 +62,35 @@ async function ensureCouponExists(
 
 /**
  * Valida cupom no servidor. Usado por validar-cupom e iniciar-onboarding.
+ * Se restaurant_id for fornecido, busca cupons desse restaurante primeiro;
+ * se não encontrar, tenta cupons de plataforma (restaurant_id IS NULL).
  */
 export async function validateCoupon(
   supabase: SupabaseClient,
   code: string,
-  subtotal: number
+  subtotal: number,
+  restaurant_id?: string
 ): Promise<CouponValidationResult> {
   const normalizedCode = code.toUpperCase().trim()
   if (!normalizedCode || subtotal < 0) {
     return { valid: false, error: 'Código ou valor inválido' }
   }
 
-  let { data: coupon, error } = await supabase
+  // Busca cupom do restaurante específico, ou cupom de plataforma
+  let query = supabase
     .from('coupons')
     .select('*')
     .eq('code', normalizedCode)
     .eq('is_active', true)
-    .single()
+
+  if (restaurant_id) {
+    query = query.or(`restaurant_id.eq.${restaurant_id},restaurant_id.is.null`)
+  }
+
+  let { data: coupon, error } = await query
+    .order('restaurant_id', { ascending: false, nullsFirst: false }) // preferir cupom do restaurante
+    .limit(1)
+    .maybeSingle()
 
   if ((error || !coupon) && (await ensureCouponExists(supabase, normalizedCode))) {
     const retry = await supabase
@@ -84,7 +98,8 @@ export async function validateCoupon(
       .select('*')
       .eq('code', normalizedCode)
       .eq('is_active', true)
-      .single()
+      .limit(1)
+      .maybeSingle()
     coupon = retry.data
     error = retry.error
   }
@@ -121,6 +136,7 @@ export async function validateCoupon(
       code: coupon.code,
       discountType: coupon.discount_type,
       discountValue,
+      rawDiscountValue: Number(coupon.discount_value),
     },
   }
 }

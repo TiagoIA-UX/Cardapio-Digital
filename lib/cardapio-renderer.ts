@@ -23,6 +23,10 @@ export interface CardapioRestaurant {
   endereco_texto?: string | null
   customizacao?: Record<string, unknown> | null
   ativo: boolean
+  taxa_entrega?: number | null
+  pedido_minimo?: number | null
+  aceita_entrega?: boolean | null
+  aceita_retirada?: boolean | null
 }
 
 export interface CardapioProduct {

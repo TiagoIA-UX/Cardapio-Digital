@@ -7,6 +7,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 const validateCouponSchema = z.object({
   code: z.string().min(1, 'Código do cupom é obrigatório'),
   subtotal: z.number().min(0, 'Subtotal inválido'),
+  restaurant_id: z.string().uuid().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -27,8 +28,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { code, subtotal } = result.data
-    const validation = await validateCoupon(supabase, code, subtotal)
+    const { code, subtotal, restaurant_id } = result.data
+    const validation = await validateCoupon(supabase, code, subtotal, restaurant_id)
 
     if (!validation.valid) {
       return NextResponse.json(

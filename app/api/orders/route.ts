@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/rate-limit'
+import { validateCoupon } from '@/lib/coupon-validation'
 
 interface OrderItemInput {
   product_id: string
@@ -23,6 +24,7 @@ interface CreateOrderBody {
   forma_pagamento?: string
   troco_para?: number
   observacoes?: string
+  cupom_codigo?: string
 }
 
 const MAX_ITEMS_PER_ORDER = 50
@@ -43,6 +45,8 @@ interface OrderInsertPayload {
   troco_para: number | null
   observacoes: string | null
   total: number
+  desconto: number
+  cupom_codigo: string | null
   status: 'pending'
 }
 
@@ -250,6 +254,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Total do pedido inválido' }, { status: 400 })
     }
 
+    // Validar e aplicar cupom de desconto (server-side, nunca confiar no frontend)
+    let desconto = 0
+    let cupomCodigo: string | null = null
+
+    if (body.cupom_codigo?.trim()) {
+      const couponValidation = await validateCoupon(
+        supabase,
+        body.cupom_codigo.trim(),
+        total,
+        body.restaurant_id
+      )
+      if (couponValidation.valid && couponValidation.coupon) {
+        desconto = couponValidation.coupon.discountValue
+        cupomCodigo = couponValidation.coupon.code
+        total = Math.max(0, total - desconto)
+
+        // Incrementar uso do cupom atomicamente (best-effort, não bloqueia o pedido)
+        await supabase
+          .rpc('increment_coupon_uses', { p_coupon_id: couponValidation.coupon.id })
+          .then(() => null)
+          .catch(() => null)
+      }
+    }
+
     const isTableOrder = body.order_origin === 'mesa'
     let validatedMesaNumero: string | null = null
 
@@ -310,6 +338,8 @@ export async function POST(request: NextRequest) {
       troco_para: body.troco_para != null ? body.troco_para : null,
       observacoes: buildOrderNotes(body, isTableOrder),
       total: total,
+      desconto: desconto,
+      cupom_codigo: cupomCodigo,
       status: 'pending',
     }
 
@@ -367,12 +397,79 @@ export async function POST(request: NextRequest) {
       console.error('Erro ao registrar activation_event received_first_order:', e)
     }
 
+    // Creditar pontos de fidelidade (best-effort, não bloqueia o pedido)
+    if (body.cliente_telefone?.trim()) {
+      try {
+        const { data: loyaltyConfig } = await supabase
+          .from('loyalty_config')
+          .select('ativo, pontos_por_real')
+          .eq('restaurant_id', body.restaurant_id)
+          .eq('ativo', true)
+          .maybeSingle()
+
+        if (loyaltyConfig) {
+          const pontosGanhos = Math.floor(total * Number(loyaltyConfig.pontos_por_real))
+
+          if (pontosGanhos > 0) {
+            const telefone = body.cliente_telefone.trim()
+
+            // Cria a conta de fidelidade se não existir
+            await supabase
+              .from('loyalty_accounts')
+              .upsert(
+                {
+                  restaurant_id: body.restaurant_id,
+                  cliente_telefone: telefone,
+                  cliente_nome: body.cliente_nome?.trim() || null,
+                },
+                { onConflict: 'restaurant_id,cliente_telefone', ignoreDuplicates: true }
+              )
+
+            // Busca a conta e incrementa contadores
+            const { data: account } = await supabase
+              .from('loyalty_accounts')
+              .select('id, pontos_total, total_gasto, total_pedidos')
+              .eq('restaurant_id', body.restaurant_id)
+              .eq('cliente_telefone', telefone)
+              .single()
+
+            if (account) {
+              await supabase
+                .from('loyalty_accounts')
+                .update({
+                  pontos_total: account.pontos_total + pontosGanhos,
+                  total_gasto: Number(account.total_gasto) + total,
+                  total_pedidos: account.total_pedidos + 1,
+                  ultimo_pedido_at: new Date().toISOString(),
+                  ...(body.cliente_nome?.trim() ? { cliente_nome: body.cliente_nome.trim() } : {}),
+                  updated_at: new Date().toISOString(),
+                })
+                .eq('id', account.id)
+
+              await supabase.from('loyalty_transactions').insert({
+                restaurant_id: body.restaurant_id,
+                account_id: account.id,
+                order_id: order.id,
+                tipo: 'ganhou',
+                pontos: pontosGanhos,
+                descricao: `Pedido #${order.numero_pedido}`,
+              })
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao creditar pontos de fidelidade:', e)
+      }
+    }
+
     return NextResponse.json(
       {
         success: true,
         order_id: order.id,
         numero_pedido: order.numero_pedido,
         total: total,
+        desconto: desconto,
+        cupom_codigo: cupomCodigo,
       },
       { headers: rateLimit.headers }
     )
