@@ -41,8 +41,12 @@ const paymentMode = (
 const siteUrl = (env.NEXT_PUBLIC_SITE_URL || '').trim().toLowerCase()
 const isLocalSiteUrl =
   siteUrl === '' || siteUrl.includes('localhost') || siteUrl.includes('127.0.0.1')
+const isVercelDeploy = !!env.VERCEL_ENV
 const isProductionTarget =
   env.VERCEL_ENV === 'production' || env.NODE_ENV === 'production' || env.CI === 'true'
+// In CI without a Vercel deployment context (e.g. PR build), missing secrets are
+// treated as warnings so the build can still proceed to catch compile errors.
+const strictEnvRequired = isVercelDeploy || env.STRICT_ENV_CHECK === 'true'
 
 const requiredAlways = [
   'NEXT_PUBLIC_SUPABASE_URL',
@@ -107,11 +111,18 @@ if (!fs.existsSync(envPath)) {
 console.log(`Modo de pagamento detectado: ${paymentMode}`)
 
 if (missing.length > 0) {
-  console.error('Variaveis ausentes:')
-  for (const key of missing) {
-    console.error(`- ${key}`)
+  if (strictEnvRequired) {
+    console.error('Variaveis ausentes:')
+    for (const key of missing) {
+      console.error(`- ${key}`)
+    }
+    process.exit(1)
+  } else {
+    console.warn('Variaveis ausentes (aviso — nao e um deploy Vercel):')
+    for (const key of missing) {
+      console.warn(`- ${key}`)
+    }
   }
-  process.exit(1)
 }
 
 if (warnings.length > 0) {
