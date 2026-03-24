@@ -33,8 +33,6 @@
     "validate:mp": "tsx scripts/validate-mp-credentials.ts",
     "gen:products:fetch": "tsx --tsconfig tsconfig.scripts.json scripts/fetch-products-without-images.ts",
     "gen:products:pollinations": "tsx --tsconfig tsconfig.scripts.json scripts/generate-product-images-pollinations.ts",
-    "gen:products:dalle": "tsx --tsconfig tsconfig.scripts.json scripts/generate-product-images-dalle.ts",
-    "gen:products:upload": "tsx --tsconfig tsconfig.scripts.json scripts/upload-product-images-to-r2.ts",
     "screenshots": "node scripts/capture-screenshots.mjs",
     "start": "next start",
     "test": "tsx --test tests/**/*.test.ts"

@@ -66,13 +66,6 @@ Prompt's de Trabalho/
 /private/
 /private/CREDENCIAIS_IA_TESTES_PRIVADO.md
 
-# Imagens de produtos geradas localmente (são enviadas para R2, não devem ir no git)
-/public/products/
-
-# Arquivos de progresso de geração de imagens
-scripts/.product-dalle-progress.json
-scripts/.dalle-progress.json
-
 # Arquivos de saída do pipeline de imagens (regenerados pelo script)
 scripts/products-to-generate.csv
 scripts/products-to-generate.json
