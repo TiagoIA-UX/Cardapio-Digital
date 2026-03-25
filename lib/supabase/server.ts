@@ -6,14 +6,21 @@ import { cookies } from 'next/headers'
 // Para uso em Server Components, Route Handlers e Server Actions
 // =====================================================
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
 /**
  * Cria cliente Supabase para Server Components
  * Usa cookies para manter sessão
  */
 export async function createClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      '@supabase/ssr: Your project\'s URL and API key are required to create a Supabase client! ' +
+      'Check your Supabase project\'s API settings to find these values https://supabase.com/dashboard/project/_/settings/api'
+    )
+  }
+
   const cookieStore = await cookies()
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
