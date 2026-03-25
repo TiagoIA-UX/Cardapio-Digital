@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-zinc-400">
                   <span className="flex items-center gap-1.5">
                     <Check className="h-4 w-4 text-green-400" />
-                    Pronto em 30 min
+                    Ativação em até 48h úteis
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Check className="h-4 w-4 text-green-400" />
@@ -147,7 +147,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               <ProofStat value="0%" label="de comissão por pedido" />
               <ProofStat value="15" label="modelos por segmento" />
-              <ProofStat value="30 min" label="pra colocar no ar" />
+              <ProofStat value="48h" label="ativação com equipe" />
               <ProofStat value="30 dias" label="garantia de reembolso" />
             </div>
           </div>
@@ -318,8 +318,8 @@ export default function Home() {
               />
               <BenefitCard
                 icon={<Rocket className="h-5 w-5" />}
-                title="Pronto em 30 minutos"
-                text="Escolha o modelo, personalize e publique. Se preferir, nossa equipe faz a configuração inicial."
+                title="Ativação em até 48h"
+                text="Escolha o modelo, envie as informações e nossa equipe monta tudo pra você em até 2 dias úteis."
               />
               <BenefitCard
                 icon={<Clock className="h-5 w-5" />}

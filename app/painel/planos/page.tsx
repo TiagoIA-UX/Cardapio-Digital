@@ -51,7 +51,7 @@ const PLANS: UiPlan[] = [
     highlights: [
       'Produtos ilimitados',
       'Templates premium',
-      'Domínio personalizado',
+      'Domínio próprio (config. adicional)',
       'Remoção de marca',
       'Suporte prioritário',
     ],

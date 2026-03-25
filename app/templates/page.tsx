@@ -123,11 +123,10 @@ export default function TemplatesPage() {
       <section className="bg-primary/5 px-4 py-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-foreground mb-4 text-2xl font-bold">
-            Compra única com template instalado automaticamente
+            Implantação + plano mensal: tudo configurado pela nossa equipe
           </h2>
           <p className="text-muted-foreground mb-6">
-            Escolha o nicho, defina o plano e o sistema libera seu cardápio digital e o painel após
-            a confirmação do pagamento.
+            Escolha o nicho, pague a implantação inicial e nossa equipe monta seu cardápio digital em até 48h úteis. Depois, o plano mensal mantém tudo ativo.
           </p>
           <Link
             href="/precos"

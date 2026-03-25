@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -78,12 +78,12 @@ const FERRAMENTAS = [
   {
     icon: BadgeCheck,
     title: 'Bônus por meta',
-    desc: 'R$10 em 10 clientes · R$25 em 25 · R$50 em 50 · R$100 em 100 restaurantes. Simbólico e sempre pago.',
+    desc: 'R$10 em 10 clientes · R$25 em 25 · R$50 em 50 · R$100 em 100 restaurantes ativos. Simbólico e creditado no ciclo de pagamento.',
   },
   {
     icon: ShieldCheck,
-    title: '💰 Saldo protegido e rendendo',
-    desc: 'Seu saldo aprovado fica guardado enquanto aguarda o ciclo de pagamento. Você recebe via PIX na chave cadastrada no painel.',
+    title: 'Saldo protegido',
+    desc: 'Seu saldo aprovado fica registrado enquanto aguarda o ciclo de pagamento. Você recebe via PIX na chave cadastrada no painel.',
   },
 ]
 
@@ -94,7 +94,7 @@ const FAQ = [
   },
   {
     q: 'Quando é feito o pagamento?',
-    a: 'Comissões entram em aprovação automática após 30 dias da ativação elegível do cliente. Depois disso, entram no próximo ciclo oficial de pagamento via PIX, sempre nos dias 1 e 15, na chave cadastrada no painel.',
+    a: 'Comissões entram em análise 30 dias após a ativação elegível do cliente. Após aprovação interna, entram no próximo ciclo de pagamento via PIX, sempre nos dias 1 e 15, na chave cadastrada no painel.',
   },
   {
     q: 'Preciso pagar algo para ser afiliado?',

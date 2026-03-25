@@ -149,6 +149,13 @@ export default function TermosPage() {
                 até 7 (sete) dias corridos após a contratação, sem custo, conforme Art. 49 do Código
                 de Defesa do Consumidor.
               </li>
+              <li>
+                <strong>Garantia comercial de satisfação (30 dias):</strong> além do direito legal de arrependimento,
+                oferecemos garantia comercial estendida de 30 (trinta) dias corridos a partir da ativação do cardápio.
+                Se você não estiver satisfeito com o serviço nesse período, pode solicitar o reembolso integral da taxa de implantação
+                via email (zairyx.ai@gmail.com) ou WhatsApp. O reembolso será processado em até 10 dias úteis após a solicitação.
+                Esta garantia não se aplica a casos de uso indevido ou violação destes termos.
+              </li>
             </ul>
           </section>
 

@@ -42,7 +42,7 @@ const plans = [
     priceDescription: '/mês',
     features: [
       'Tudo do plano Pro',
-      'Domínio próprio',
+      'Domínio próprio (config. adicional)',
       'Analytics de pedidos',
       'Integração com automação',
       'Suporte dedicado',

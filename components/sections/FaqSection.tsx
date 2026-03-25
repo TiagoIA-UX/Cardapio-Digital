@@ -17,7 +17,7 @@ const FAQ_ITEMS = [
   {
     question: 'Quanto tempo leva pra colocar no ar?',
     answer:
-      'Menos de 30 minutos. Você escolhe o modelo do seu segmento, personaliza os produtos e publica. Se preferir, nossa equipe faz a configuração inicial pra você.',
+      'Até 48 horas úteis. Você escolhe o modelo do seu segmento, envia as informações no onboarding e nossa equipe monta e publica seu cardápio em até 2 dias úteis.',
   },
   {
     question: 'Como meus clientes fazem o pedido?',
