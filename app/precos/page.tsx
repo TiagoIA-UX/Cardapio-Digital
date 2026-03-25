@@ -69,7 +69,7 @@ export default function PrecosPage() {
             Preços por template
           </h1>
           <p className="text-foreground/80 mx-auto max-w-2xl text-lg">
-            Veja quanto paga hoje e quanto mantém por mês em cada formato.
+            Veja quanto paga hoje e quanto mantém por mês em cada formato. Preços calibrados para catálogo digital curatorial.
           </p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
             <Check className="h-4 w-4" />
@@ -82,6 +82,9 @@ export default function PrecosPage() {
           <p className="text-foreground/50 mt-1 text-xs">
             Marketplaces cobram de 12% a 27% por pedido. Aqui você paga mensalidade fixa e
             fica com 100% do faturamento.
+          </p>
+          <p className="text-foreground/50 mt-2 text-xs">
+            <strong>Nota:</strong> Limite de produtos refere-se ao catálogo digital que você oferta (os itens curados, mais vendidos), não ao estoque físico. Um mercado com 1.500+ itens lista digitalmente ~300–800 dos melhores.
           </p>
         </div>
 

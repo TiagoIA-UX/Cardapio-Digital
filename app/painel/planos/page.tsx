@@ -128,6 +128,10 @@ export default function PlanosPage() {
         indisponíveis.
       </div>
 
+      <div className="mb-4 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-800">
+        <strong>Limite de produtos:</strong> Refere-se ao catálogo digital que você oferta (itens curados, mais vendidos), não ao estoque físico. Um mercadinho com 1.500+ itens lista digitalmente ~300–800 dos melhores.
+      </div>
+
       {message && (
         <div className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-800">
           {message}

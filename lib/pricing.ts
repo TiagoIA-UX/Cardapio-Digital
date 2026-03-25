@@ -54,7 +54,12 @@ export const PUBLIC_SUBSCRIPTION_PRICES = {
   },
 } as const
 
-/** Limites de cada plano — alinhado com migration_planos.sql */
+/**
+ * Limites de catálogo digital por plano — não estoque físico.
+ * O catálogo digital é sempre menor: cliente lista apenas os mais vendidos, curados.
+ * Mercado físico ~1.500 itens → digital lista 300-800 (curadoria dos melhores).
+ * Alinhado com migration_planos.sql
+ */
 export const PLAN_LIMITS = {
   basico: { maxProducts: 60, label: 'Básico' },
   pro: { maxProducts: 200, label: 'Profissional' },
@@ -97,9 +102,10 @@ function createPlanPricing(pix: number, card: number, monthly: number, annual: n
 }
 
 /**
- * Preços públicos por template.
- * PIX/Cartão representam a implantação inicial.
- * Mensal/Anual representam a continuidade do plano do cardápio após a ativação.
+ * Preços públicos por template, calibrados para catálogo digital.
+ * PIX/Cartão = implantação inicial (variam por complexidade do template).
+ * Mensal/Anual = continuidade do plano após ativação.
+ * Importante: complexidade é baseada no cardápio digital (curado), não estoque físico.
  */
 export const TEMPLATE_PRICING: Record<RestaurantTemplateSlug, TemplatePricing> = {
   lanchonete: (() => {
