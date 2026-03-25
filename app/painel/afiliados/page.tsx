@@ -66,13 +66,6 @@ interface Stats {
   rede_indicados: number
 }
 
-interface SaldoInfo {
-  aprovado_aguardando: number
-  proxima_data_pagamento: string
-  dias_ate_pagamento: number
-  rendimento_estimado: number
-}
-
 interface Bonus {
   id: string
   nivel: number
@@ -210,7 +203,6 @@ export default function AfiliadosPage() {
   const [isLider, setIsLider] = useState(false)
   const [bonuses, setBonuses] = useState<Bonus[]>([])
   const [vendedores, setVendedores] = useState<Vendedor[]>([])
-  const [saldoInfo, setSaldoInfo] = useState<SaldoInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [registering, setRegistering] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -223,10 +215,7 @@ export default function AfiliadosPage() {
   const affLink = affiliate ? `${getAffiliateSiteUrl()}/?ref=${affiliate.code}` : ''
 
   const fetchData = useCallback(async () => {
-    const [meRes, saldoRes] = await Promise.all([
-      fetch('/api/afiliados/me'),
-      fetch('/api/afiliados/saldo-info'),
-    ])
+    const meRes = await fetch('/api/afiliados/me')
     const data = await meRes.json()
     setAffiliate(data.affiliate ?? null)
     setReferrals(data.referrals ?? [])
@@ -236,10 +225,6 @@ export default function AfiliadosPage() {
     setBonuses(data.bonuses ?? [])
     setVendedores(data.vendedores ?? [])
     setLoading(false)
-    if (saldoRes.ok) {
-      const sData = await saldoRes.json()
-      setSaldoInfo(sData)
-    }
   }, [])
 
   useEffect(() => {
@@ -636,10 +621,10 @@ export default function AfiliadosPage() {
             sub="Janela automática de 30 dias para aprovação"
           />
         )}
-        {/* Card aprovado — customizado para exibir rendimento estimado */}
+        {/* Card aprovado */}
         <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
           <div className="flex items-start justify-between">
-            <span className="text-muted-foreground text-xs">✅ Aprovado</span>
+            <span className="text-muted-foreground text-xs">Aprovado</span>
             <BadgeCheck className="h-4 w-4 text-zinc-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-zinc-800">
@@ -650,29 +635,6 @@ export default function AfiliadosPage() {
               ? `Pagamento em ${stats.proxima_data_pagamento ?? '—'}`
               : 'via PIX nos dias 1 e 15'}
           </p>
-          {/* Badge saldo rendendo */}
-          {(stats?.aprovado_aguardando ?? 0) > 0 && (
-            <div className="mt-3 rounded-lg bg-emerald-50 px-3 py-2">
-              <p className="text-xs font-medium text-emerald-800">
-                💰 Seu saldo rende enquanto aguarda o pagamento
-              </p>
-              <p className="mt-0.5 text-xs text-emerald-600">Pago via PIX nos dias 1 e 15</p>
-              {saldoInfo && saldoInfo.rendimento_estimado > 0 && (
-                <div className="mt-1.5 flex items-center gap-1">
-                  <p className="text-xs text-emerald-700">
-                    ≈ R$ {saldoInfo.rendimento_estimado.toFixed(2)} de rendimento até{' '}
-                    {saldoInfo.proxima_data_pagamento}
-                  </p>
-                  <span
-                    title="Estimativa baseada em CDI 13% a.a. Valor informativo."
-                    className="cursor-help"
-                  >
-                    <Info className="h-3 w-3 text-emerald-500" />
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
