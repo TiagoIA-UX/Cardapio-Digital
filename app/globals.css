@@ -116,7 +116,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', 'Inter Fallback', system-ui, sans-serif; /* Preserved from existing */
+  --font-sans: var(--font-body, 'DM Sans'), 'DM Sans', system-ui, sans-serif;
+  --font-heading: var(--font-heading, 'Outfit'), 'Outfit', system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -178,6 +179,7 @@
   h5,
   h6 {
     @apply text-foreground font-semibold tracking-tight;
+    font-family: var(--font-heading, 'Outfit'), 'Outfit', system-ui, sans-serif;
   }
 
   /* Focus states - Premium Accessibility */
@@ -508,4 +510,54 @@
       animation: none !important;
     }
   }
+}
+
+
+/* ─── Savings Calculator Sliders ─── */
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f97316;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+  transition: box-shadow 0.2s;
+}
+.calc-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.15);
+}
+.calc-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f97316;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+}
+
+.calc-slider-red::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f87171;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.2);
+  transition: box-shadow 0.2s;
+}
+.calc-slider-red::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 8px rgba(248, 113, 113, 0.15);
+}
+.calc-slider-red::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f87171;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.2);
 }
