@@ -15,7 +15,7 @@ import {
   setStoredActiveRestaurantId,
 } from '@/lib/active-restaurant'
 import { resolvePanelCapabilities, type PanelCapabilities } from '@/lib/panel/capabilities'
-import { getPanelNavigationItems } from '@/lib/panel/navigation'
+import { getGroupedNavigationItems, isNavigationItemActive } from '@/lib/panel/navigation'
 import { PanelAccessProvider } from '@/lib/panel/panel-context'
 
 // ========================================
@@ -140,7 +140,7 @@ function PainelLayoutContent({ children }: { children: React.ReactNode }) {
     return <>{children}</>
   }
 
-  const menuItems = getPanelNavigationItems(capabilities, restaurant?.id)
+  const groupedItems = getGroupedNavigationItems(capabilities, restaurant?.id)
 
   const switchRestaurant = (rest: Restaurant) => {
     setRestaurant(rest)
@@ -212,17 +212,33 @@ function PainelLayoutContent({ children }: { children: React.ReactNode }) {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <nav className="flex-1 space-y-2 p-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className="hover:bg-secondary text-foreground flex items-center gap-3 rounded-lg px-4 py-3 transition-colors"
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
-                </Link>
+            <nav className="flex-1 space-y-4 overflow-y-auto p-4">
+              {groupedItems.map((group) => (
+                <div key={group.id}>
+                  <p className="text-muted-foreground mb-1 px-4 text-[11px] font-semibold uppercase tracking-wider">
+                    {group.label}
+                  </p>
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const active = isNavigationItemActive(item, pathname)
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setSidebarOpen(false)}
+                          className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
+                            active
+                              ? 'bg-primary/10 text-primary font-medium'
+                              : 'text-foreground hover:bg-secondary'
+                          }`}
+                        >
+                          <item.icon className="h-5 w-5" />
+                          {item.label}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
               ))}
             </nav>
             <div className="border-border border-t p-4">
@@ -317,16 +333,32 @@ function PainelLayoutContent({ children }: { children: React.ReactNode }) {
               )}
             </div>
           </div>
-          <nav className="flex-1 space-y-2 p-4">
-            {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="hover:bg-secondary text-foreground flex items-center gap-3 rounded-lg px-4 py-3 transition-colors"
-              >
-                <item.icon className="h-5 w-5" />
-                {item.label}
-              </Link>
+          <nav className="flex-1 space-y-5 overflow-y-auto p-4">
+            {groupedItems.map((group) => (
+              <div key={group.id}>
+                <p className="text-muted-foreground mb-1 px-4 text-[11px] font-semibold uppercase tracking-wider">
+                  {group.label}
+                </p>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => {
+                    const active = isNavigationItemActive(item, pathname)
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors ${
+                          active
+                            ? 'bg-primary/10 text-primary font-medium'
+                            : 'text-foreground hover:bg-secondary'
+                        }`}
+                      >
+                        <item.icon className="h-4.5 w-4.5" />
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
             ))}
           </nav>
           <div className="border-border border-t p-4">

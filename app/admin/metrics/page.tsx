@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Bot } from 'lucide-react'
 
 interface Metrics {
   totalRestaurants: number
@@ -11,10 +11,19 @@ interface Metrics {
   activationRate: number
 }
 
+interface AIMetrics {
+  totalEscalations: number
+  pendingEscalations: number
+  resolvedEscalations: number
+  resolutionRate: number
+  totalLearningEntries: number
+}
+
 export default function AdminMetricsPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [metrics, setMetrics] = useState<Metrics | null>(null)
+  const [aiMetrics, setAiMetrics] = useState<AIMetrics | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -65,11 +74,41 @@ export default function AdminMetricsPage() {
       const activationRate =
         totalRestaurants > 0 ? (activatedRestaurants / totalRestaurants) * 100 : 0
 
+      const { count: totalEscalations } = await supabase
+        .from('ai_escalations')
+        .select('id', { count: 'exact', head: true })
+
+      const { count: pendingEscalations } = await supabase
+        .from('ai_escalations')
+        .select('id', { count: 'exact', head: true })
+        .eq('resolved', false)
+
+      const { count: resolvedEscalations } = await supabase
+        .from('ai_escalations')
+        .select('id', { count: 'exact', head: true })
+        .eq('resolved', true)
+
+      const { count: totalLearningEntries } = await supabase
+        .from('ai_learning_entries')
+        .select('id', { count: 'exact', head: true })
+
+      const resolutionRate =
+        (totalEscalations || 0) > 0
+          ? ((resolvedEscalations || 0) / (totalEscalations || 0)) * 100
+          : 0
+
       setMetrics({
         totalRestaurants,
         activeSubscriptions,
         mrr,
         activationRate,
+      })
+      setAiMetrics({
+        totalEscalations: totalEscalations || 0,
+        pendingEscalations: pendingEscalations || 0,
+        resolvedEscalations: resolvedEscalations || 0,
+        resolutionRate,
+        totalLearningEntries: totalLearningEntries || 0,
       })
       setLoading(false)
     }
@@ -125,6 +164,42 @@ export default function AdminMetricsPage() {
             </p>
           </div>
         </div>
+
+        {aiMetrics && (
+          <section className="mt-8">
+            <div className="mb-4 flex items-center gap-2">
+              <Bot className="h-5 w-5 text-orange-500" />
+              <h2 className="text-foreground text-xl font-semibold">Métricas de IA</h2>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="bg-card border-border rounded-xl border p-4">
+                <p className="text-muted-foreground mb-1 text-sm">Escalações totais</p>
+                <p className="text-foreground text-2xl font-bold">{aiMetrics.totalEscalations}</p>
+              </div>
+
+              <div className="bg-card border-border rounded-xl border p-4">
+                <p className="text-muted-foreground mb-1 text-sm">Escalações pendentes</p>
+                <p className="text-foreground text-2xl font-bold">{aiMetrics.pendingEscalations}</p>
+              </div>
+
+              <div className="bg-card border-border rounded-xl border p-4">
+                <p className="text-muted-foreground mb-1 text-sm">Escalações resolvidas</p>
+                <p className="text-foreground text-2xl font-bold">{aiMetrics.resolvedEscalations}</p>
+              </div>
+
+              <div className="bg-card border-border rounded-xl border p-4">
+                <p className="text-muted-foreground mb-1 text-sm">Taxa de resolução</p>
+                <p className="text-foreground text-2xl font-bold">{aiMetrics.resolutionRate.toFixed(1)}%</p>
+              </div>
+
+              <div className="bg-card border-border rounded-xl border p-4 md:col-span-2 lg:col-span-2">
+                <p className="text-muted-foreground mb-1 text-sm">Entradas de aprendizado</p>
+                <p className="text-foreground text-2xl font-bold">{aiMetrics.totalLearningEntries}</p>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </main>
   )
