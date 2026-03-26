@@ -28,6 +28,7 @@
     "test:affiliate": "tsx scripts/test-affiliate-flow.ts",
     "test:webhook": "tsx scripts/test-webhook-mp.ts",
     "test:pix-sandbox": "tsx scripts/test-pix-sandbox.ts",
+    "test:e2e:payment-full": "tsx scripts/test-e2e-payment-full.ts",
     "test:r2": "tsx scripts/test-r2-upload.ts",
     "test:e2e": "npx playwright test",
     "test:e2e:checkout": "npx playwright test checkout-happy-path",

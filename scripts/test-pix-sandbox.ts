@@ -24,7 +24,8 @@ config({ path: path.resolve(process.cwd(), '.env.local') })
 const TEST_TOKEN = process.env.MERCADO_PAGO_TEST_ACCESS_TOKEN?.trim()
 const PROD_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim()
 const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET?.trim() ?? ''
-const BUYER_EMAIL = process.env.MERCADO_PAGO_TEST_BUYER_EMAIL?.trim() || 'test_user_4621239926520623429@testuser.com'
+const BUYER_EMAIL =
+  process.env.MERCADO_PAGO_TEST_BUYER_EMAIL?.trim() || 'test_user_4621239926520623429@testuser.com'
 const LOCAL_URL = process.env.TEST_SERVER_URL?.trim() || 'http://localhost:3001'
 
 interface TestResult {
@@ -56,8 +57,16 @@ function validateCredentials(): boolean {
   }
 
   log('T1', true, `Token sandbox: ${TEST_TOKEN.substring(0, 15)}...`)
-  log('T1', !!PROD_TOKEN, `Token produção: ${PROD_TOKEN ? PROD_TOKEN.substring(0, 12) + '...' : 'NÃO CONFIGURADO'}`)
-  log('T1', !!WEBHOOK_SECRET, `Webhook secret: ${WEBHOOK_SECRET ? 'configurado' : 'NÃO CONFIGURADO'}`)
+  log(
+    'T1',
+    !!PROD_TOKEN,
+    `Token produção: ${PROD_TOKEN ? PROD_TOKEN.substring(0, 12) + '...' : 'NÃO CONFIGURADO'}`
+  )
+  log(
+    'T1',
+    !!WEBHOOK_SECRET,
+    `Webhook secret: ${WEBHOOK_SECRET ? 'configurado' : 'NÃO CONFIGURADO'}`
+  )
   return true
 }
 
@@ -77,18 +86,20 @@ async function createPreference(): Promise<PreferenceResult | null> {
     const res = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${TEST_TOKEN}`,
+        Authorization: `Bearer ${TEST_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        items: [{
-          id: 'sandbox-test-onboarding',
-          title: 'Zairyx — Cardápio Digital Básico (Pizzaria)',
-          description: 'Teste sandbox — plano mensal R$ 97',
-          quantity: 1,
-          currency_id: 'BRL',
-          unit_price: 97.00,
-        }],
+        items: [
+          {
+            id: 'sandbox-test-onboarding',
+            title: 'Zairyx — Cardápio Digital Básico (Pizzaria)',
+            description: 'Teste sandbox — plano mensal R$ 97',
+            quantity: 1,
+            currency_id: 'BRL',
+            unit_price: 97.0,
+          },
+        ],
         payer: { email: BUYER_EMAIL },
         payment_methods: {
           excluded_payment_types: [{ id: 'ticket' }],
@@ -106,13 +117,21 @@ async function createPreference(): Promise<PreferenceResult | null> {
     const data = await res.json()
 
     if (res.status !== 201) {
-      log('T2', false, `HTTP ${res.status}: ${JSON.stringify(data.message || data).substring(0, 200)}`)
+      log(
+        'T2',
+        false,
+        `HTTP ${res.status}: ${JSON.stringify(data.message || data).substring(0, 200)}`
+      )
       return null
     }
 
     log('T2', true, `Preference criada: ${data.id}`)
     log('T2', !!data.init_point, `init_point: ${data.init_point ? 'presente' : 'VAZIO'}`)
-    log('T2', !!data.sandbox_init_point, `sandbox_init_point: ${data.sandbox_init_point ? 'presente' : 'VAZIO'}`)
+    log(
+      'T2',
+      !!data.sandbox_init_point,
+      `sandbox_init_point: ${data.sandbox_init_point ? 'presente' : 'VAZIO'}`
+    )
     log('T2', true, `collector_id: ${data.collector_id}`)
 
     return {
@@ -132,7 +151,11 @@ async function createPreference(): Promise<PreferenceResult | null> {
 function verifyCheckoutUrls(pref: PreferenceResult) {
   console.log('\n── T3: Verificar URLs de checkout ──')
 
-  log('T3', pref.sandboxInitPoint.includes('sandbox.mercadopago'), 'URL sandbox contém sandbox.mercadopago')
+  log(
+    'T3',
+    pref.sandboxInitPoint.includes('sandbox.mercadopago'),
+    'URL sandbox contém sandbox.mercadopago'
+  )
   log('T3', pref.sandboxInitPoint.includes(pref.id), 'URL sandbox contém preference ID')
   log('T3', pref.initPoint.includes('mercadopago.com.br'), 'URL produção contém mercadopago.com.br')
   log('T3', pref.collectorId > 0, `Collector ID válido: ${pref.collectorId}`)
@@ -149,12 +172,12 @@ async function testPaymentApi(): Promise<{ id: number; worked: boolean }> {
     const res = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${TEST_TOKEN}`,
+        Authorization: `Bearer ${TEST_TOKEN}`,
         'Content-Type': 'application/json',
         'X-Idempotency-Key': crypto.randomUUID(),
       },
       body: JSON.stringify({
-        transaction_amount: 1.00,
+        transaction_amount: 1.0,
         description: 'Teste PIX Sandbox',
         payment_method_id: 'pix',
         payer: {
@@ -230,14 +253,26 @@ async function simulateWebhookApproval(paymentId: number): Promise<boolean> {
     })
 
     const text = await res.text()
-    log('T5', res.status === 200 || res.status === 500, `HTTP ${res.status}: ${text.substring(0, 120)}`)
-    log('T5', true, `Assinatura HMAC: ${WEBHOOK_SECRET ? 'válida (verificada pelo server)' : 'sem secret'}`)
+    log(
+      'T5',
+      res.status === 200 || res.status === 500,
+      `HTTP ${res.status}: ${text.substring(0, 120)}`
+    )
+    log(
+      'T5',
+      true,
+      `Assinatura HMAC: ${WEBHOOK_SECRET ? 'válida (verificada pelo server)' : 'sem secret'}`
+    )
 
     // Teste segurança: assinatura inválida deve retornar 401
     const badSig = `ts=${ts},v1=0000000000000000000000000000000000000000000000000000000000000000`
     const resBad = await fetch(`${LOCAL_URL}/api/webhook/mercadopago`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-request-id': crypto.randomUUID(), 'x-signature': badSig },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-request-id': crypto.randomUUID(),
+        'x-signature': badSig,
+      },
       body: JSON.stringify(webhookPayload),
     })
     log('T5', resBad.status === 401, `Assinatura inválida → HTTP ${resBad.status} (esperado: 401)`)
@@ -291,9 +326,11 @@ async function main() {
   console.log(`  ✅ Passou: ${passed}/${total}`)
   if (failed > 0) {
     console.log(`  ❌ Falhou: ${failed}/${total}`)
-    results.filter((r) => !r.passed).forEach((r) => {
-      console.log(`     → [${r.step}] ${r.detail}`)
-    })
+    results
+      .filter((r) => !r.passed)
+      .forEach((r) => {
+        console.log(`     → [${r.step}] ${r.detail}`)
+      })
   }
 
   console.log('\n💡 Fluxo real do sistema:')
@@ -307,7 +344,7 @@ async function main() {
   console.log('\n' + '═'.repeat(60))
 
   // PIX direto (T4) pode falhar em sandbox (limitação MP), não conta como erro fatal
-  const fatalFails = results.filter(r => !r.passed && r.step !== 'T4').length
+  const fatalFails = results.filter((r) => !r.passed && r.step !== 'T4').length
   process.exit(fatalFails > 0 ? 1 : 0)
 }
 
