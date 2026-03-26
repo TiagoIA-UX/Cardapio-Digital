@@ -42,12 +42,7 @@ function section(name: string) {
   console.log(`${'═'.repeat(60)}`)
 }
 
-async function test(
-  id: string,
-  name: string,
-  fn: () => Promise<void>,
-  fatal = true
-) {
+async function test(id: string, name: string, fn: () => Promise<void>, fatal = true) {
   const start = Date.now()
   try {
     await fn()
@@ -106,7 +101,9 @@ async function runPreFlight() {
     // Verifica se podemos acessar as APIs necessárias
     // 404 = tabela existe, pagamento não encontrado
     // 500 = tabela não existe ainda (migration 042 pendente) — aceitável
-    const { status } = await fetchJSON('/api/pagamento/delivery-status?orderId=00000000-0000-0000-0000-000000000000')
+    const { status } = await fetchJSON(
+      '/api/pagamento/delivery-status?orderId=00000000-0000-0000-0000-000000000000'
+    )
     assert([404, 500].includes(status), `Esperado 404 ou 500, recebido ${status}`)
   })
 
@@ -227,60 +224,70 @@ async function runWebhookDelivery() {
     assert(status === 401, `Esperado 401, recebido ${status}`)
   })
 
-  await test('D3.3', 'Webhook aceita HMAC válido (delivery reference)', async () => {
-    if (!MP_WEBHOOK_SECRET) {
-      throw new Error('MP_WEBHOOK_SECRET não configurado — skip')
-    }
+  await test(
+    'D3.3',
+    'Webhook aceita HMAC válido (delivery reference)',
+    async () => {
+      if (!MP_WEBHOOK_SECRET) {
+        throw new Error('MP_WEBHOOK_SECRET não configurado — skip')
+      }
 
-    const dataId = '888888888'
-    const requestId = 'test-delivery-req-1'
-    const ts = String(Math.floor(Date.now() / 1000))
-    const hmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
+      const dataId = '888888888'
+      const requestId = 'test-delivery-req-1'
+      const ts = String(Math.floor(Date.now() / 1000))
+      const hmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
 
-    const { status, json } = await fetchJSON('/api/webhook/mercadopago', {
-      method: 'POST',
-      headers: {
-        'x-signature': `ts=${ts},v1=${hmac}`,
-        'x-request-id': requestId,
-      },
-      body: JSON.stringify({
-        type: 'payment',
-        data: { id: dataId },
-        action: 'payment.updated',
-      }),
-    })
+      const { status, json } = await fetchJSON('/api/webhook/mercadopago', {
+        method: 'POST',
+        headers: {
+          'x-signature': `ts=${ts},v1=${hmac}`,
+          'x-request-id': requestId,
+        },
+        body: JSON.stringify({
+          type: 'payment',
+          data: { id: dataId },
+          action: 'payment.updated',
+        }),
+      })
 
-    // Com HMAC válido, o webhook aceita e retorna 200 (mesmo que o pagamento
-    // não exista no MP — ele tenta buscar e pode falhar graciosamente)
-    assert([200, 500].includes(status), `Esperado 200 ou 500 (MP API), recebido ${status}`)
-  }, false)
+      // Com HMAC válido, o webhook aceita e retorna 200 (mesmo que o pagamento
+      // não exista no MP — ele tenta buscar e pode falhar graciosamente)
+      assert([200, 500].includes(status), `Esperado 200 ou 500 (MP API), recebido ${status}`)
+    },
+    false
+  )
 
   await test('D3.4', 'Webhook GET retorna 200 (MP verification)', async () => {
     const { status } = await fetchJSON('/api/webhook/mercadopago', { method: 'GET' })
     assert(status === 200, `Esperado 200, recebido ${status}`)
   })
 
-  await test('D3.5', 'Webhook body vazio retorna 200 (evita retry MP)', async () => {
-    if (!MP_WEBHOOK_SECRET) {
-      throw new Error('MP_WEBHOOK_SECRET não configurado — skip')
-    }
+  await test(
+    'D3.5',
+    'Webhook body vazio retorna 200 (evita retry MP)',
+    async () => {
+      if (!MP_WEBHOOK_SECRET) {
+        throw new Error('MP_WEBHOOK_SECRET não configurado — skip')
+      }
 
-    const dataId = ''
-    const requestId = 'test-empty-body'
-    const ts = String(Math.floor(Date.now() / 1000))
-    const hmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
+      const dataId = ''
+      const requestId = 'test-empty-body'
+      const ts = String(Math.floor(Date.now() / 1000))
+      const hmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
 
-    const { status } = await fetchJSON('/api/webhook/mercadopago', {
-      method: 'POST',
-      headers: {
-        'x-signature': `ts=${ts},v1=${hmac}`,
-        'x-request-id': requestId,
-      },
-      body: JSON.stringify({}),
-    })
-    // Empty body should still be accepted to prevent MP retries
-    assert([200, 401].includes(status), `Esperado 200 ou 401, recebido ${status}`)
-  }, false)
+      const { status } = await fetchJSON('/api/webhook/mercadopago', {
+        method: 'POST',
+        headers: {
+          'x-signature': `ts=${ts},v1=${hmac}`,
+          'x-request-id': requestId,
+        },
+        body: JSON.stringify({}),
+      })
+      // Empty body should still be accepted to prevent MP retries
+      assert([200, 401].includes(status), `Esperado 200 ou 401, recebido ${status}`)
+    },
+    false
+  )
 }
 
 // ── SECTION D4: MP PREFERENCE API (DELIVERY) ─────────────────────
@@ -309,7 +316,7 @@ async function runMPPreferenceDelivery() {
             description: 'Teste de pedido de delivery via E2E',
             quantity: 1,
             currency_id: 'BRL',
-            unit_price: 39.90,
+            unit_price: 39.9,
           },
         ],
         external_reference: 'delivery:00000000-0000-0000-0000-000000000099',
@@ -354,7 +361,7 @@ async function runMPPreferenceDelivery() {
             title: 'Pedido PIX — Test Delivery',
             quantity: 1,
             currency_id: 'BRL',
-            unit_price: 25.50,
+            unit_price: 25.5,
           },
         ],
         external_reference: 'delivery:00000000-0000-0000-0000-000000000098',
@@ -388,7 +395,7 @@ async function runMPPreferenceDelivery() {
             title: 'Pedido Cartão — Test Delivery',
             quantity: 1,
             currency_id: 'BRL',
-            unit_price: 75.00,
+            unit_price: 75.0,
           },
         ],
         external_reference: 'delivery:00000000-0000-0000-0000-000000000097',
@@ -490,67 +497,79 @@ async function runSecurity() {
     )
   })
 
-  await test('D5.5', 'Rate limit delivery-status (burst)', async () => {
-    const promises = Array.from({ length: 70 }, () =>
-      fetchJSON(`/api/pagamento/delivery-status?orderId=00000000-0000-0000-0000-${String(Math.random()).slice(2, 14).padEnd(12, '0')}`)
-    )
-    const responses = await Promise.all(promises)
-    const statuses = responses.map((r) => r.status)
-    const has429 = statuses.includes(429)
-    assert(
-      has429 || statuses.every((s) => [400, 404].includes(s)),
-      `Burst de 70 reqs: esperado 429 ou 400/404, recebidos: ${[...new Set(statuses)].join(', ')}`
-    )
-  }, false)
+  await test(
+    'D5.5',
+    'Rate limit delivery-status (burst)',
+    async () => {
+      const promises = Array.from({ length: 70 }, () =>
+        fetchJSON(
+          `/api/pagamento/delivery-status?orderId=00000000-0000-0000-0000-${String(Math.random()).slice(2, 14).padEnd(12, '0')}`
+        )
+      )
+      const responses = await Promise.all(promises)
+      const statuses = responses.map((r) => r.status)
+      const has429 = statuses.includes(429)
+      assert(
+        has429 || statuses.every((s) => [400, 404].includes(s)),
+        `Burst de 70 reqs: esperado 429 ou 400/404, recebidos: ${[...new Set(statuses)].join(', ')}`
+      )
+    },
+    false
+  )
 
-  await test('D5.6', 'Webhook HMAC timing-safe (constant-time)', async () => {
-    // Test that webhook properly rejects tampered signatures
-    if (!MP_WEBHOOK_SECRET) {
-      throw new Error('MP_WEBHOOK_SECRET não configurado')
-    }
+  await test(
+    'D5.6',
+    'Webhook HMAC timing-safe (constant-time)',
+    async () => {
+      // Test that webhook properly rejects tampered signatures
+      if (!MP_WEBHOOK_SECRET) {
+        throw new Error('MP_WEBHOOK_SECRET não configurado')
+      }
 
-    const dataId = '777777777'
-    const requestId = 'timing-test'
-    const ts = String(Math.floor(Date.now() / 1000))
+      const dataId = '777777777'
+      const requestId = 'timing-test'
+      const ts = String(Math.floor(Date.now() / 1000))
 
-    // Correct HMAC
-    const correctHmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
-    // Tampered HMAC (flip one char)
-    const tamperedHmac = correctHmac.slice(0, -1) + (correctHmac.slice(-1) === '0' ? '1' : '0')
+      // Correct HMAC
+      const correctHmac = generateHMAC(dataId, requestId, ts, MP_WEBHOOK_SECRET)
+      // Tampered HMAC (flip one char)
+      const tamperedHmac = correctHmac.slice(0, -1) + (correctHmac.slice(-1) === '0' ? '1' : '0')
 
-    const { status: correctStatus } = await fetchJSON('/api/webhook/mercadopago', {
-      method: 'POST',
-      headers: {
-        'x-signature': `ts=${ts},v1=${correctHmac}`,
-        'x-request-id': requestId,
-      },
-      body: JSON.stringify({
-        type: 'payment',
-        data: { id: dataId },
-        action: 'payment.created',
-      }),
-    })
+      const { status: correctStatus } = await fetchJSON('/api/webhook/mercadopago', {
+        method: 'POST',
+        headers: {
+          'x-signature': `ts=${ts},v1=${correctHmac}`,
+          'x-request-id': requestId,
+        },
+        body: JSON.stringify({
+          type: 'payment',
+          data: { id: dataId },
+          action: 'payment.created',
+        }),
+      })
 
-    const { status: tamperedStatus } = await fetchJSON('/api/webhook/mercadopago', {
-      method: 'POST',
-      headers: {
-        'x-signature': `ts=${ts},v1=${tamperedHmac}`,
-        'x-request-id': requestId,
-      },
-      body: JSON.stringify({
-        type: 'payment',
-        data: { id: dataId },
-        action: 'payment.created',
-      }),
-    })
+      const { status: tamperedStatus } = await fetchJSON('/api/webhook/mercadopago', {
+        method: 'POST',
+        headers: {
+          'x-signature': `ts=${ts},v1=${tamperedHmac}`,
+          'x-request-id': requestId,
+        },
+        body: JSON.stringify({
+          type: 'payment',
+          data: { id: dataId },
+          action: 'payment.created',
+        }),
+      })
 
-    assert(tamperedStatus === 401, `HMAC adulterado deve dar 401, recebido ${tamperedStatus}`)
-    // Correct HMAC may give 200 or 500 (MP API call may fail for fake payment ID)
-    assert(
-      [200, 500].includes(correctStatus),
-      `HMAC correto deve dar 200/500, recebido ${correctStatus}`
-    )
-  }, false)
+      assert(tamperedStatus === 401, `HMAC adulterado deve dar 401, recebido ${tamperedStatus}`)
+      // Correct HMAC may give 200 or 500 (MP API call may fail for fake payment ID)
+      assert(
+        [200, 500].includes(correctStatus),
+        `HMAC correto deve dar 200/500, recebido ${correctStatus}`
+      )
+    },
+    false
+  )
 }
 
 // ── SECTION D6: INTEGRAÇÃO WHATSAPP ──────────────────────────────
@@ -590,7 +609,7 @@ async function runFullFlowSmoke() {
       body: JSON.stringify({
         restaurantSlug: 'test-delivery',
         pedidoId: '00000000-0000-0000-0000-000000000001',
-        valor: 50.00,
+        valor: 50.0,
       }),
     })
     // Should be 404 (restaurant not found) — confirms the old endpoint still works
@@ -677,7 +696,9 @@ async function main() {
     }
   }
 
-  console.log(`\n  ${fatal.length === 0 ? '🎉 TODOS OS TESTES FATAIS PASSARAM!' : `💥 ${fatal.length} FALHA(S) FATAL(IS)`}`)
+  console.log(
+    `\n  ${fatal.length === 0 ? '🎉 TODOS OS TESTES FATAIS PASSARAM!' : `💥 ${fatal.length} FALHA(S) FATAL(IS)`}`
+  )
   console.log('═'.repeat(60) + '\n')
 
   process.exit(fatal.length > 0 ? 1 : 0)
