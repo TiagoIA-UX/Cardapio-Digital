@@ -27,6 +27,7 @@
     "verify:migrations": "tsx scripts/verify-migrations.ts",
     "test:affiliate": "tsx scripts/test-affiliate-flow.ts",
     "test:webhook": "tsx scripts/test-webhook-mp.ts",
+    "test:pix-sandbox": "tsx scripts/test-pix-sandbox.ts",
     "test:r2": "tsx scripts/test-r2-upload.ts",
     "test:e2e": "npx playwright test",
     "test:e2e:checkout": "npx playwright test checkout-happy-path",
