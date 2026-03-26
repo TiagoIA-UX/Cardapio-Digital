@@ -1,20 +1,34 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 
 export function CookieBanner() {
   const [show, setShow] = useState(false)
+  const bannerRef = useRef<HTMLDivElement>(null)
+
+  const syncOffset = useCallback((visible: boolean) => {
+    if (visible && bannerRef.current) {
+      const h = bannerRef.current.offsetHeight
+      document.documentElement.style.setProperty('--cookie-banner-offset', `${h}px`)
+    } else {
+      document.documentElement.style.setProperty('--cookie-banner-offset', '0px')
+    }
+  }, [])
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent')
     if (!consent) {
-      // Mostrar após 1 segundo
       const timer = setTimeout(() => setShow(true), 1000)
       return () => clearTimeout(timer)
     }
   }, [])
+
+  useEffect(() => {
+    syncOffset(show)
+    return () => syncOffset(false)
+  }, [show, syncOffset])
 
   const setCookieConsent = (value: 'accepted' | 'rejected') => {
     localStorage.setItem('cookie-consent', value)
@@ -35,7 +49,10 @@ export function CookieBanner() {
   if (!show) return null
 
   return (
-    <div className="bg-background border-border animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-50 border-t p-4 shadow-lg duration-300">
+    <div
+      ref={bannerRef}
+      className="bg-background border-border animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-50 border-t p-4 shadow-lg duration-300"
+    >
       <div className="container mx-auto flex max-w-4xl flex-col items-start gap-4 sm:flex-row sm:items-center">
         <div className="flex-1">
           <p className="text-foreground text-sm">

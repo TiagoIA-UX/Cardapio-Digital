@@ -26,6 +26,7 @@ import { formatCurrency } from '@/lib/format-currency'
 import { cn, formatPhone } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { createClient } from '@/lib/supabase/client'
+import { formatarTelefoneWhatsApp } from '@/modules/whatsapp'
 
 interface CartItem {
   id: string
@@ -52,6 +53,25 @@ interface OrderFormState {
 interface CardapioClientProps {
   restaurant: CardapioRestaurant
   products: CardapioProduct[]
+}
+
+function normalizePhoneDigits(phone: string): string {
+  return phone.replace(/\D/g, '').slice(0, 11)
+}
+
+function isValidBrazilPhone(phone: string): boolean {
+  const digits = normalizePhoneDigits(phone)
+  return digits.length >= 10 && digits.length <= 13
+}
+
+function formatPhoneMask(phone: string): string {
+  const digits = normalizePhoneDigits(phone)
+
+  if (digits.length === 0) return ''
+  if (digits.length <= 2) return `(${digits}`
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
 function createInitialOrderForm(isTableOrder: boolean): OrderFormState {
@@ -133,9 +153,9 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       const existingIndex = prev.findIndex((item) => item.product.id === product.id)
 
       if (existingIndex >= 0) {
-        const updated = [...prev]
-        updated[existingIndex].quantity += 1
-        return updated
+        return prev.map((item, i) =>
+          i === existingIndex ? { ...item, quantity: item.quantity + 1 } : item
+        )
       }
 
       return [
@@ -160,9 +180,9 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       if (index < 0) return prev
 
       if (prev[index].quantity > 1) {
-        const updated = [...prev]
-        updated[index].quantity -= 1
-        return updated
+        return prev.map((item, i) =>
+          i === index ? { ...item, quantity: item.quantity - 1 } : item
+        )
       }
 
       return prev.filter((item) => item.id !== cartItemId)
@@ -174,9 +194,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       const index = prev.findIndex((item) => item.id === cartItemId)
       if (index < 0) return prev
 
-      const updated = [...prev]
-      updated[index].quantity += 1
-      return updated
+      return prev.map((item, i) => (i === index ? { ...item, quantity: item.quantity + 1 } : item))
     })
   }
 
@@ -195,6 +213,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
     cart.length > 0 &&
     !!restaurant.telefone &&
     (!!orderForm.customerName.trim() || isTableOrder) &&
+    (!orderForm.customerPhone.trim() || isValidBrazilPhone(orderForm.customerPhone)) &&
     (orderForm.fulfillment !== 'entrega' ||
       (!!orderForm.addressStreet.trim() && !!orderForm.addressDistrict.trim())) &&
     !!orderForm.formaPagamentoNaEntrega
@@ -274,14 +293,13 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
   }
 
   const openWhatsApp = (message: string) => {
-    const whatsappNumber = restaurant.telefone?.replace(/\D/g, '')
-
-    if (!whatsappNumber) {
+    if (!restaurant.telefone?.replace(/\D/g, '')) {
       throw new Error('Este restaurante não configurou o WhatsApp.')
     }
 
+    const whatsappNumber = formatarTelefoneWhatsApp(restaurant.telefone)
     const encodedMessage = encodeURIComponent(message)
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=55${whatsappNumber}&text=${encodedMessage}`
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`
     window.location.href = whatsappUrl
   }
 
@@ -332,8 +350,20 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
   }
 
   const submitOrder = async () => {
+    if (!restaurant?.id || !restaurant?.telefone?.trim()) {
+      setError(
+        'Este cardápio não foi encontrado ou não está disponível no momento. Atualize a página e tente novamente.'
+      )
+      return
+    }
+
     if (!canSubmit) {
       setError('Preencha os dados necessários para enviar o pedido.')
+      return
+    }
+
+    if (orderForm.customerPhone.trim() && !isValidBrazilPhone(orderForm.customerPhone)) {
+      setError('Digite um telefone válido com DDD para continuar.')
       return
     }
 
@@ -699,7 +729,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
                       {formatPhone(restaurant.telefone)}
                     </a>
                     <a
-                      href={`https://api.whatsapp.com/send?phone=55${restaurant.telefone.replace(/\D/g, '')}`}
+                      href={`https://api.whatsapp.com/send?phone=${formatarTelefoneWhatsApp(restaurant.telefone)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:text-primary/80 mt-2 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
@@ -717,8 +747,12 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
 
       {/* Botão flutuante do carrinho - abre o drawer de pedido */}
       {!isCartOpen && totalItems > 0 && (
-        <div className="fixed right-4 bottom-6 left-4 z-40">
+        <div
+          className="fixed right-4 left-4 z-40 transition-[bottom] duration-300"
+          style={{ bottom: 'calc(1.5rem + var(--cookie-banner-offset, 0px))' }}
+        >
           <button
+            data-testid="btn-open-cart"
             onClick={() => {
               trackEvent('checkout_started', {
                 restaurant_id: restaurant.id,
@@ -731,7 +765,10 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
             <span className="flex items-center gap-3">
               <div className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="text-primary absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-bold">
+                <span
+                  data-testid="cart-badge"
+                  className="text-primary absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-bold"
+                >
                   {totalItems}
                 </span>
               </div>
@@ -819,6 +856,7 @@ function ProductCard({ product, restaurant, onAdd }: ProductCardProps) {
               e.stopPropagation()
               onAdd()
             }}
+            data-testid="btn-add-product"
             className="border-border bg-background hover:bg-muted flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-all active:scale-95"
           >
             <Plus className="h-4 w-4" />
@@ -880,8 +918,11 @@ function CartDrawer({
   onSubmit,
   canSubmit,
 }: CartDrawerProps) {
+  const [touchedStreet, setTouchedStreet] = useState(false)
+  const [touchedDistrict, setTouchedDistrict] = useState(false)
+
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50" data-testid="cart-drawer">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div className="bg-background absolute top-0 right-0 bottom-0 left-0 flex w-full flex-col shadow-2xl sm:left-auto sm:max-w-md">
@@ -904,7 +945,10 @@ function CartDrawer({
 
         <div className="flex-1 overflow-y-auto p-4">
           {cart.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-center">
+            <div
+              data-testid="cart-empty"
+              className="flex h-full flex-col items-center justify-center text-center"
+            >
               <ShoppingCart className="text-muted-foreground/30 mb-4 h-12 w-12" />
               <p className="text-muted-foreground">Seu carrinho está vazio</p>
               <p className="text-muted-foreground/60 mt-1 text-sm">
@@ -922,6 +966,7 @@ function CartDrawer({
               {cart.map((item) => (
                 <div
                   key={item.id}
+                  data-testid="cart-item"
                   className="bg-card border-border flex items-start gap-3 rounded-xl border p-3"
                 >
                   {item.product.imagem_url && (
@@ -998,8 +1043,19 @@ function CartDrawer({
               />
               <InputField
                 label="Telefone"
+                type="tel"
                 value={orderForm.customerPhone}
                 onChange={(value) => onOrderFormChange('customerPhone', value)}
+                hint={
+                  orderForm.customerPhone.trim() && !isValidBrazilPhone(orderForm.customerPhone)
+                    ? 'Digite um telefone válido com DDD'
+                    : undefined
+                }
+                hintTone={
+                  orderForm.customerPhone.trim() && !isValidBrazilPhone(orderForm.customerPhone)
+                    ? 'error'
+                    : 'muted'
+                }
               />
 
               {isTableOrder ? (
@@ -1030,11 +1086,25 @@ function CartDrawer({
                     label="Rua e número"
                     value={orderForm.addressStreet}
                     onChange={(value) => onOrderFormChange('addressStreet', value)}
+                    onBlur={() => setTouchedStreet(true)}
+                    hint={
+                      touchedStreet && !orderForm.addressStreet.trim()
+                        ? 'Informe a rua e o número para entrega'
+                        : undefined
+                    }
+                    hintTone="error"
                   />
                   <InputField
                     label="Bairro"
                     value={orderForm.addressDistrict}
                     onChange={(value) => onOrderFormChange('addressDistrict', value)}
+                    onBlur={() => setTouchedDistrict(true)}
+                    hint={
+                      touchedDistrict && !orderForm.addressDistrict.trim()
+                        ? 'Informe o bairro para entrega'
+                        : undefined
+                    }
+                    hintTone="error"
                   />
                   <InputField
                     label="Complemento"
@@ -1195,11 +1265,14 @@ function CartDrawer({
               </div>
               <div className="border-border flex justify-between border-t pt-2 text-lg font-bold">
                 <span>Total</span>
-                <span className="text-primary">{formatCurrency(totalPrice)}</span>
+                <span data-testid="cart-total" className="text-primary">
+                  {formatCurrency(totalPrice)}
+                </span>
               </div>
             </div>
 
             <button
+              data-testid="btn-submit-order"
               onClick={onSubmit}
               disabled={isSubmitting || !restaurant.telefone || !canSubmit}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-4 font-semibold text-white transition-all hover:bg-[#20bd5a] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
@@ -1222,23 +1295,49 @@ function InputField({
   label,
   value,
   onChange,
+  type = 'text',
+  hint,
+  hintTone = 'muted',
+  onBlur,
 }: {
   label: string
   value: string
   onChange: (value: string) => void
+  type?: 'text' | 'tel' | 'email'
+  hint?: string
+  hintTone?: 'muted' | 'error'
+  onBlur?: () => void
 }) {
+  const displayValue = type === 'tel' ? formatPhoneMask(value) : value
+
   return (
     <div>
       <label className="text-foreground mb-1 block text-sm font-medium">{label}</label>
       <input
-        type="text"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
+        type={type}
+        inputMode={type === 'tel' ? 'tel' : undefined}
+        data-testid={`input-${label.toLowerCase().replace(/\s+/g, '-')}`}
+        value={displayValue}
+        onChange={(event) =>
+          onChange(type === 'tel' ? normalizePhoneDigits(event.target.value) : event.target.value)
+        }
+        autoComplete={type === 'tel' ? 'tel' : undefined}
+        onBlur={onBlur}
         title={label}
         aria-label={label}
         placeholder={label}
         className="border-border bg-background text-foreground focus:ring-primary w-full rounded-xl border px-4 py-3 focus:border-transparent focus:ring-2"
       />
+      {hint ? (
+        <p
+          className={cn(
+            'mt-1 text-xs',
+            hintTone === 'error' ? 'text-destructive' : 'text-muted-foreground'
+          )}
+        >
+          {hint}
+        </p>
+      ) : null}
     </div>
   )
 }
