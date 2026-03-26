@@ -137,3 +137,45 @@ jobs:
 
       - name: Local project checklist
         run: npm run check
+
+  e2e:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: [build]
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Export E2E environment
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: |
+          node -e "const fs=require('node:fs'); const secrets=JSON.parse(process.env.SECRETS_CONTEXT || '{}'); const keys=['NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_ANON_KEY','SUPABASE_SERVICE_ROLE_KEY','NEXT_PUBLIC_SITE_URL']; const lines=[]; for (const key of keys) { const value=secrets[key]; if (!value) continue; lines.push(\`\${key}<<__EOF__\`); lines.push(String(value)); lines.push('__EOF__'); } fs.appendFileSync(process.env.GITHUB_ENV, lines.join('\n') + '\n');"
+
+      - name: Build app
+        run: npm run build
+
+      - name: Run E2E tests
+        run: npx playwright test --project=chromium
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
