@@ -1,11 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   ClipboardList,
+  CreditCard,
   FolderOpen,
   LayoutTemplate,
   Link2,
   Package,
-  CreditCard,
   QrCode,
   Settings,
   ShoppingBag,
@@ -15,6 +15,8 @@ import {
 import { getRestaurantScopedHref } from '@/lib/active-restaurant'
 import type { PanelCapabilities, PanelCapabilityKey } from '@/lib/panel/capabilities'
 
+// ── Types ──────────────────────────────────────────────────────────────────
+
 export interface PanelNavigationItem {
   id: string
   href: string
@@ -22,9 +24,21 @@ export interface PanelNavigationItem {
   label: string
   matchPrefixes: string[]
   requires: PanelCapabilityKey[]
+  groupId: NavigationGroupId
 }
 
+export type NavigationGroupId = 'overview' | 'cardapio' | 'canais' | 'conta'
+
+export interface NavigationGroup {
+  id: NavigationGroupId
+  label: string
+  items: PanelNavigationItem[]
+}
+
+// ── Registry ───────────────────────────────────────────────────────────────
+
 const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
+  // ── Overview
   {
     id: 'dashboard',
     href: '/painel',
@@ -32,30 +46,7 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
     label: 'Dashboard',
     matchPrefixes: ['/painel'],
     requires: ['canAccessDashboard'],
-  },
-  {
-    id: 'editor',
-    href: '/painel/editor',
-    icon: LayoutTemplate,
-    label: 'Editor Visual',
-    matchPrefixes: ['/painel/editor'],
-    requires: ['canAccessVisualEditor'],
-  },
-  {
-    id: 'produtos',
-    href: '/painel/produtos',
-    icon: Package,
-    label: 'Produtos',
-    matchPrefixes: ['/painel/produtos'],
-    requires: ['canManageCatalog'],
-  },
-  {
-    id: 'categorias',
-    href: '/painel/categorias',
-    icon: FolderOpen,
-    label: 'Categorias',
-    matchPrefixes: ['/painel/categorias'],
-    requires: ['canManageCatalog'],
+    groupId: 'overview',
   },
   {
     id: 'pedidos',
@@ -64,7 +55,39 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
     label: 'Pedidos',
     matchPrefixes: ['/painel/pedidos'],
     requires: ['canViewOrders'],
+    groupId: 'overview',
   },
+
+  // ── Cardápio
+  {
+    id: 'editor',
+    href: '/painel/editor',
+    icon: LayoutTemplate,
+    label: 'Editor Visual',
+    matchPrefixes: ['/painel/editor'],
+    requires: ['canAccessVisualEditor'],
+    groupId: 'cardapio',
+  },
+  {
+    id: 'produtos',
+    href: '/painel/produtos',
+    icon: Package,
+    label: 'Produtos',
+    matchPrefixes: ['/painel/produtos'],
+    requires: ['canManageCatalog'],
+    groupId: 'cardapio',
+  },
+  {
+    id: 'categorias',
+    href: '/painel/categorias',
+    icon: FolderOpen,
+    label: 'Categorias',
+    matchPrefixes: ['/painel/categorias'],
+    requires: ['canManageCatalog'],
+    groupId: 'cardapio',
+  },
+
+  // ── Canais
   {
     id: 'meu-link',
     href: '/painel/meu-link',
@@ -72,30 +95,7 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
     label: 'Meu Link',
     matchPrefixes: ['/painel/meu-link', '/painel/qrcode'],
     requires: ['canViewPublicLink'],
-  },
-  {
-    id: 'templates',
-    href: '/meus-templates',
-    icon: ShoppingBag,
-    label: 'Meus Canais Digitais',
-    matchPrefixes: ['/meus-templates'],
-    requires: ['canViewTemplates'],
-  },
-  {
-    id: 'planos',
-    href: '/painel/planos',
-    icon: CreditCard,
-    label: 'Plano',
-    matchPrefixes: ['/painel/planos'],
-    requires: ['canViewPlans'],
-  },
-  {
-    id: 'afiliados',
-    href: '/painel/afiliados',
-    icon: Users,
-    label: 'Afiliados',
-    matchPrefixes: ['/painel/afiliados'],
-    requires: ['canManageAffiliates'],
+    groupId: 'canais',
   },
   {
     id: 'qrcode',
@@ -104,6 +104,36 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
     label: 'QR Code',
     matchPrefixes: ['/painel/qrcode'],
     requires: ['canManageQrCode'],
+    groupId: 'canais',
+  },
+  {
+    id: 'templates',
+    href: '/meus-templates',
+    icon: ShoppingBag,
+    label: 'Meus Canais Digitais',
+    matchPrefixes: ['/meus-templates'],
+    requires: ['canViewTemplates'],
+    groupId: 'canais',
+  },
+
+  // ── Conta
+  {
+    id: 'planos',
+    href: '/painel/planos',
+    icon: CreditCard,
+    label: 'Plano',
+    matchPrefixes: ['/painel/planos'],
+    requires: ['canViewPlans'],
+    groupId: 'conta',
+  },
+  {
+    id: 'afiliados',
+    href: '/painel/afiliados',
+    icon: Users,
+    label: 'Afiliados',
+    matchPrefixes: ['/painel/afiliados'],
+    requires: ['canManageAffiliates'],
+    groupId: 'conta',
   },
   {
     id: 'configuracoes',
@@ -112,12 +142,33 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
     label: 'Configurações',
     matchPrefixes: ['/painel/configuracoes'],
     requires: ['canManageSettings'],
+    groupId: 'conta',
   },
 ]
+
+const GROUP_LABELS: Record<NavigationGroupId, string> = {
+  overview: 'Visão geral',
+  cardapio: 'Cardápio',
+  canais: 'Canais',
+  conta: 'Conta',
+}
+
+const GROUP_ORDER: NavigationGroupId[] = ['overview', 'cardapio', 'canais', 'conta']
+
+// ── Helpers ────────────────────────────────────────────────────────────────
 
 function hasRequiredCapabilities(capabilities: PanelCapabilities, requires: PanelCapabilityKey[]) {
   return requires.every((capability) => capabilities[capability])
 }
+
+export function isNavigationItemActive(item: PanelNavigationItem, pathname: string): boolean {
+  if (item.id === 'dashboard') {
+    return pathname === '/painel' || pathname === '/painel/'
+  }
+  return item.matchPrefixes.some((prefix) => pathname.startsWith(prefix))
+}
+
+// ── Public API (backward compatible) ───────────────────────────────────────
 
 export function getPanelNavigationItems(
   capabilities: PanelCapabilities,
@@ -129,4 +180,17 @@ export function getPanelNavigationItems(
     ...item,
     href: getRestaurantScopedHref(item.href, restaurantId),
   }))
+}
+
+export function getGroupedNavigationItems(
+  capabilities: PanelCapabilities,
+  restaurantId?: string | null
+): NavigationGroup[] {
+  const filteredItems = getPanelNavigationItems(capabilities, restaurantId)
+
+  return GROUP_ORDER.map((groupId) => ({
+    id: groupId,
+    label: GROUP_LABELS[groupId],
+    items: filteredItems.filter((item) => item.groupId === groupId),
+  })).filter((group) => group.items.length > 0)
 }

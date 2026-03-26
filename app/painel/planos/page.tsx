@@ -12,6 +12,7 @@ import {
   formatNetworkExpansionLabel,
 } from '@/lib/pricing'
 import { getActiveRestaurantForUser, getRestaurantScopedHref } from '@/lib/active-restaurant'
+import { calculateNetworkPrice } from '@/lib/network-expansion'
 
 type PlanSlug = 'basico' | 'pro' | 'premium'
 
@@ -22,6 +23,8 @@ interface UiPlan {
   description: string
   highlights: string[]
 }
+
+type NetworkPaymentMethod = 'pix' | 'card'
 
 const WHATSAPP_SUPPORT_LINK = 'https://api.whatsapp.com/send?phone=5512996887993'
 
@@ -72,6 +75,9 @@ export default function PlanosPage() {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState<string | null>(null)
   const [extraUnits, setExtraUnits] = useState<number>(NETWORK_EXPANSION_UNIT_OPTIONS[0])
+  const [branchEmailsInput, setBranchEmailsInput] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<NetworkPaymentMethod>('pix')
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     const load = async () => {
@@ -102,6 +108,56 @@ export default function PlanosPage() {
       `Olá, quero avaliar o plano de rede para ${restaurantName}. Preciso de matriz + ${unitLabel}.`
     )}`
   }, [extraUnits, restaurant?.nome])
+
+  const networkPricing = useMemo(() => calculateNetworkPrice(extraUnits), [extraUnits])
+
+  const handleNetworkCheckout = async () => {
+    if (!restaurant?.id || checkoutLoading) return
+
+    const branchEmails = branchEmailsInput
+      .split(/[,\n;]+/)
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+
+    if (branchEmails.length !== extraUnits) {
+      setMessage(`Informe exatamente ${extraUnits} e-mail(s) para as filiais.`)
+      return
+    }
+
+    setCheckoutLoading(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/pagamento/network-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          parentRestaurantId: restaurant.id,
+          branchEmails,
+          paymentMethod,
+        }),
+      })
+
+      const payload = await response.json()
+
+      if (!response.ok) {
+        setMessage(payload?.error || 'Não foi possível iniciar o checkout da expansão de rede.')
+        return
+      }
+
+      const initPoint = payload?.data?.initPoint || payload?.data?.sandboxInitPoint
+      if (initPoint) {
+        window.location.href = initPoint
+        return
+      }
+
+      setMessage('Checkout criado, mas não foi retornado link de pagamento.')
+    } catch {
+      setMessage('Falha ao iniciar checkout. Tente novamente em instantes.')
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -236,10 +292,65 @@ export default function PlanosPage() {
               <p className="mt-1">
                 Estrutura estimada: 1 matriz + {formatNetworkExpansionLabel(extraUnits)}.
               </p>
+              <p className="mt-1 text-zinc-700">
+                Valor unitário: {paymentMethod === 'pix' ? 'PIX' : 'Cartão'}{' '}
+                {new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                }).format(paymentMethod === 'pix' ? networkPricing.pixPrice : networkPricing.cardPrice)}
+              </p>
+              <p className="mt-1 font-medium text-zinc-900">
+                Total estimado:{' '}
+                {new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                }).format(paymentMethod === 'pix' ? networkPricing.totalPix : networkPricing.totalCard)}
+              </p>
               <p className="mt-1 text-zinc-600">
                 A expansão de rede precisa liberar quantidade de unidades e governança da matriz no
                 cadastro. Por isso, a contratação segue atendimento comercial guiado.
               </p>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <div>
+                <p className="text-foreground text-sm font-medium">E-mails das filiais</p>
+                <p className="text-muted-foreground text-xs">
+                  Informe um e-mail por linha ou separado por vírgula.
+                </p>
+              </div>
+              <textarea
+                value={branchEmailsInput}
+                onChange={(event) => setBranchEmailsInput(event.target.value)}
+                rows={4}
+                placeholder="filial1@empresa.com\nfilial2@empresa.com"
+                className="border-border bg-background text-foreground w-full rounded-xl border px-3 py-2 text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+              />
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('pix')}
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                    paymentMethod === 'pix'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-foreground'
+                  }`}
+                >
+                  Pagar com PIX
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('card')}
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                    paymentMethod === 'card'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-foreground'
+                  }`}
+                >
+                  Pagar com Cartão
+                </button>
+              </div>
             </div>
           </div>
 
@@ -249,14 +360,22 @@ export default function PlanosPage() {
               Quando o cliente quiser plano de rede, ele já pode escolher quantas unidades extras
               precisa e enviar a solicitação para implantação comercial.
             </p>
+            <button
+              type="button"
+              onClick={() => void handleNetworkCheckout()}
+              disabled={checkoutLoading || !restaurant}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
+              {checkoutLoading ? 'Criando checkout...' : 'Ir para pagamento da rede'}
+            </button>
             <a
               href={networkRequestMessage}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-orange-300 bg-white px-4 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-100"
             >
-              <MessageCircle className="h-4 w-4" />
-              Solicitar plano de rede
+              Falar com consultor no WhatsApp
             </a>
           </div>
         </div>

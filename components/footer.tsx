@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Circle, Instagram, MapPin, MessageCircle, Shield } from 'lucide-react'
+import { ArrowRight, Circle, Instagram, MapPin, MessageCircle, Shield, Sparkles } from 'lucide-react'
 
 const NAV = {
   produto: [
@@ -24,6 +24,27 @@ const NAV = {
 export function Footer() {
   return (
     <footer className="border-t border-zinc-800 bg-zinc-950">
+      {/* ── CTA com IA ──────────────────────────────────────────────── */}
+      <div className="bg-linear-to-b from-zinc-900 to-zinc-950">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-4 py-14 text-center sm:px-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10">
+            <Sparkles className="h-6 w-6 text-orange-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            Pronto para transformar seu delivery?
+          </h2>
+          <p className="max-w-md text-sm leading-relaxed text-zinc-300">
+            Monte seu cardápio digital em minutos com ajuda da nossa IA. Sem taxa por pedido, sem mensalidade surpresa.
+          </p>
+          <Link
+            href="/templates"
+            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+          >
+            Começar agora
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
       {/* ── Corpo do rodapé ──────────────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
@@ -149,6 +170,29 @@ export function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+      </div>
+
+      {/* ── Newsletter ─────────────────────────────────────────────── */}
+      <div className="border-t border-zinc-800">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-10 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+          <div>
+            <h3 className="text-sm font-semibold text-white">Receba dicas de delivery</h3>
+            <p className="mt-1 text-xs text-zinc-400">Templates novos, estratégias de vendas e novidades da plataforma.</p>
+          </div>
+          <form className="flex w-full max-w-sm gap-2">
+            <input
+              type="email"
+              placeholder="Seu melhor e-mail"
+              className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none"
+            />
+            <button
+              type="button"
+              className="shrink-0 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+            >
+              Inscrever
+            </button>
+          </form>
         </div>
       </div>
 

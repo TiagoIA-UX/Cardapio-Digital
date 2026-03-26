@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import {
   ArrowUp,
   Bot,
@@ -9,6 +9,7 @@ import {
   Copy,
   Loader2,
   MessageCircle,
+  Phone,
   Send,
   X,
 } from 'lucide-react'
@@ -38,6 +39,22 @@ const QUICK_QUESTIONS = [
   'Quero ver templates',
   'Quero começar',
 ]
+
+const ESCALATION_KEYWORDS = [
+  'falar com humano',
+  'atendente',
+  'pessoa real',
+  'suporte humano',
+  'não entendi',
+  'não ajudou',
+  'falar com alguém',
+  'atendimento humano',
+  'reclamação',
+  'problema sério',
+]
+
+const ESCALATION_THRESHOLD = 6
+const WHATSAPP_NUMBER = '5512996887993'
 
 const CHAT_CONFIG = {
   greeting: GREETING,
@@ -69,8 +86,10 @@ export function ChatWidget() {
   const [unread, setUnread] = useState(1)
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null)
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [showEscalation, setShowEscalation] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const userMessageCount = useRef(0)
 
   useEffect(() => {
     setMessages([CHAT_CONFIG.greeting])
@@ -111,6 +130,14 @@ export function ChatWidget() {
     setMessages(nextMessages)
     setInput('')
     setLoading(true)
+    userMessageCount.current += 1
+
+    // Verificar se deve oferecer escalation
+    const lowerText = trimmed.toLowerCase()
+    const hasKeyword = ESCALATION_KEYWORDS.some((kw) => lowerText.includes(kw))
+    if (hasKeyword || userMessageCount.current >= ESCALATION_THRESHOLD) {
+      setShowEscalation(true)
+    }
 
     try {
       const res = await fetch(CHAT_CONFIG.endpoint, {
@@ -176,6 +203,34 @@ export function ChatWidget() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleEscalateToHuman = useCallback(() => {
+    const lastUserMessages = messages
+      .filter((m) => m.role === 'user')
+      .slice(-3)
+      .map((m) => m.content)
+      .join(' | ')
+
+    const contextText = encodeURIComponent(
+      `Oi! Vim do chat da Zairyx e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
+    )
+
+    window.open(
+      `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${contextText}`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'assistant',
+        content:
+          '✅ Abrindo conversa com nossa equipe no WhatsApp! Um humano vai continuar te ajudando por lá. 😊',
+      },
+    ])
+    setShowEscalation(false)
+  }, [messages])
+
   return (
     <>
       {open && (
@@ -211,6 +266,20 @@ export function ChatWidget() {
               imprecisões.
             </p>
           </div>
+
+          {showEscalation && (
+            <div className="flex items-center justify-between border-b border-blue-100 bg-blue-50 px-3 py-2">
+              <p className="text-xs text-blue-700">Prefere falar com um humano?</p>
+              <button
+                type="button"
+                onClick={handleEscalateToHuman}
+                className="inline-flex items-center gap-1 rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-green-600"
+              >
+                <Phone className="h-3 w-3" />
+                WhatsApp
+              </button>
+            </div>
+          )}
 
           <div className="flex-1 space-y-3 overflow-y-auto bg-zinc-50 px-4 py-4">
             {messages.map((msg, index) => (
