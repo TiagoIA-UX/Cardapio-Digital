@@ -40,7 +40,10 @@ export function buildQuickOrderMessage(
  * Usa encodeURIComponent para garantir que caracteres especiais não quebrem.
  */
 export function getQuickOrderWhatsAppUrl(phone: string, message: string): string {
-  const cleanPhone = phone.replace(/\D/g, '')
+  let cleanPhone = phone.replace(/\D/g, '')
+  if (!cleanPhone.startsWith('55')) {
+    cleanPhone = '55' + cleanPhone
+  }
   const encodedMessage = encodeURIComponent(message)
-  return `https://api.whatsapp.com/send?phone=55${cleanPhone}&text=${encodedMessage}`
+  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMessage}`
 }
