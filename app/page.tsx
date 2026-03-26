@@ -71,7 +71,7 @@ export default function Home() {
                 <p className="mt-5 max-w-lg text-lg leading-relaxed text-zinc-200">
                   Seu cardápio digital pronto em 30 minutos.{' '}
                   <strong className="text-white">Zero comissão por pedido, pra sempre.</strong>{' '}
-                  Pedidos organizados no WhatsApp. Sem app intermediário sugando seu faturamento.
+                  Pedidos direto no WhatsApp. IA que atende 24h. O iFood traz gente nova — o SEU cardápio fideliza.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -172,16 +172,17 @@ export default function Home() {
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
                 <p className="text-sm font-bold tracking-[0.2em] text-red-600 uppercase">
-                  A verdade que ninguém te conta
+                  A conta que ninguém faz pra você
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                  Você está <span className="text-red-500">pagando pra trabalhar.</span>
+                  Seu cliente já te conhece. <span className="text-red-500">O iFood cobra como se tivesse apresentado.</span>
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                  Se seu delivery já tem motoboy próprio, por que dar ~15% de cada pedido pro iFood?*
-                  Em 1 mês de R$ 20.000 de faturamento, são{' '}
-                  <strong className="text-red-600">R$ 3.150 jogados no lixo.</strong> Com canal
-                  próprio, esse dinheiro fica no seu caixa.
+                  Daqueles 200 pedidos/mês, quantos são de <strong>gente que já é seu cliente?</strong>{' '}
+                  Se for metade, você paga ~15% de comissão em 100 pedidos que <em>viriam de qualquer jeito</em>.
+                  Com ticket médio de R$ 50, são{' '}
+                  <strong className="text-red-600">R$ 750/mês que o iFood fatura nas suas costas.</strong>{' '}
+                  Mande esses clientes pro SEU cardápio e esse dinheiro fica no seu caixa.
                 </p>
                 <p className="mt-2 text-xs text-zinc-400">
                   *Plano Básico iFood: 12% comissão + 3,2% pgto online + R$110/mês (entrega própria). O Plano Entrega (motoboy do iFood) cobra até 27%, mas inclui logística que a Zairyx não oferece. Fonte: blog-parceiros.ifood.com.br
@@ -194,15 +195,15 @@ export default function Home() {
                 <div className="rounded-3xl border-2 border-red-200 bg-red-50/50 p-8">
                   <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-sm font-bold text-red-700">
                     <X className="h-4 w-4" />
-                    iFood, Rappi & Cia — O ralo do seu lucro
+                    Depender só do iFood — O ralo silencioso
                   </div>
                   <ul className="space-y-4">
                     {[
-                      'Cobram ~15% de CADA pedido (Plano Básico)',
-                      'Seus clientes veem concorrentes ao lado do seu nome',
-                      'Você depende 100% — saiu, perdeu tudo',
+                      'Cobra ~15% até em cliente que já é SEU',
+                      'Seu cliente fiel vê concorrentes ao lado do seu nome',
+                      'Sem canal próprio = referto do iFood. Saiu, perdeu tudo',
                       'Cobram pra aparecer melhor na busca',
-                      'Mudam regras quando querem, sem te consultar',
+                      'Você não tem a lista de contatos dos seus clientes',
                       'Quanto mais vende, mais paga de comissão',
                     ].map((item) => (
                       <li
@@ -216,9 +217,9 @@ export default function Home() {
                   </ul>
                   <div className="mt-6 rounded-xl bg-red-100/80 p-4 text-center">
                     <p className="text-sm font-bold text-red-700">
-                      Faturamento R$ 20k/mês = R$ 3.150 de comissão
+                      100 pedidos de cliente fiel/mês × R$50 × 15% = R$ 750 perdidos
                     </p>
-                    <p className="mt-1 text-xs text-red-600">Isso por ANO = R$ 37.800 perdidos</p>
+                    <p className="mt-1 text-xs text-red-600">Só nos pedidos que viriam de qualquer jeito</p>
                   </div>
                 </div>
 
@@ -231,11 +232,11 @@ export default function Home() {
                   <ul className="space-y-4">
                     {[
                       '0% de comissão — venda R$ 1.000 ou R$ 100.000',
-                      'Sua marca, sua vitrine, seus clientes',
-                      'Editor visual — troque preço em 5 segundos',
-                      'IA atende seus clientes 24h dentro do cardápio',
-                      'Assinatura fixa de R$ 97/mês — previsível',
-                      'Quanto mais vende, mais LUCRA (não mais paga)',
+                      'Sua marca, seus clientes, sua lista de contatos',
+                      'IA assistente 24h — atende e vende até de madrugada',
+                      'Editor visual — troque preço em 5 segundos pelo celular',
+                      'Use junto com iFood: novo pelo app, fiel pelo SEU cardápio',
+                      'Quanto mais migra pro canal próprio, mais LUCRA',
                     ].map((item) => (
                       <li
                         key={item}
@@ -261,10 +262,10 @@ export default function Home() {
               <div className="mt-10 rounded-2xl border border-orange-200 bg-orange-50 p-6 text-center">
                 <p className="text-lg font-bold text-zinc-900">
                   <Flame className="mr-2 inline h-5 w-5 text-orange-500" />
-                  Cada dia sem canal próprio é dinheiro que você não recupera.
+                  iFood pra pescar gente nova. Seu cardápio pra fidelizar. Dinheiro no SEU bolso.
                 </p>
                 <p className="mt-2 text-sm text-zinc-600">
-                  Comece em 30 minutos. Se não gostar, devolvemos 100% em até 30 dias.
+                  Comece em 30 minutos. IA que vende 24h + editor visual + 0% comissão. Garantia de 30 dias.
                 </p>
               </div>
             </div>
@@ -573,35 +574,35 @@ export default function Home() {
             <div className="container-premium">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Feito pra quem já faz as próprias entregas
+                  Estratégia inteligente pra quem já tem entrega
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                  Já tem motoboy? <span className="text-orange-500">Pare de pagar comissão.</span>
+                  iFood pra pescar. <span className="text-orange-500">Seu cardápio pra fidelizar.</span>
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-zinc-700">
-                  A Zairyx é pra deliverys que <strong>já têm entregador fixo</strong> e não
-                  precisam da logística do iFood. Se você já cuida da entrega, por que dar 15%
-                  de cada pedido pra uma plataforma?
+                  Não precisa sair do iFood. Use ele como vitrine pra <strong>atrair gente nova</strong>.
+                  Mas quando o cliente já te conhece, manda pro seu cardápio digital. Assim você para
+                  de pagar 15% em quem <strong>já ia pedir de qualquer jeito</strong>.
                 </p>
                 <div className="mt-8 grid gap-4 sm:grid-cols-3">
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
                     <p className="mt-2 text-sm font-bold text-zinc-900">Tem motoboy próprio</p>
-                    <p className="mt-1 text-xs text-zinc-500">Já faz suas entregas sem depender de app</p>
+                    <p className="mt-1 text-xs text-zinc-500">Já faz entrega — não precisa pagar 15% por isso</p>
                   </div>
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
-                    <p className="mt-2 text-sm font-bold text-zinc-900">Trabalha com retirada</p>
-                    <p className="mt-1 text-xs text-zinc-500">Cliente busca no balcão — zero logística</p>
+                    <p className="mt-2 text-sm font-bold text-zinc-900">Tem clientes fiéis</p>
+                    <p className="mt-1 text-xs text-zinc-500">Gente que já pede sempre — mande pro SEU canal</p>
                   </div>
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
-                    <p className="mt-2 text-sm font-bold text-zinc-900">Quer canal próprio</p>
-                    <p className="mt-1 text-xs text-zinc-500">Cansar de depender de marketplace</p>
+                    <p className="mt-2 text-sm font-bold text-zinc-900">Quer canal próprio + IA</p>
+                    <p className="mt-1 text-xs text-zinc-500">Cardápio com sua marca, IA assistente, link e QR Code</p>
                   </div>
                 </div>
                 <p className="mt-6 text-xs text-zinc-400">
-                  Se você depende do motoboy do iFood para entregas, o Plano Entrega (27%) pode fazer sentido — mas custa muito mais. A Zairyx é ideal pra quem já resolveu a logística.
+                  Se você depende do motoboy do iFood para entregas, o Plano Entrega (27%) pode fazer sentido — mas custa muito mais. A Zairyx é ideal pra quem já resolveu a logística e quer parar de pagar comissão nos clientes que já são seus.
                 </p>
               </div>
             </div>
@@ -619,11 +620,10 @@ export default function Home() {
                   Compare e decida com números reais
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                  iFood, Rappi ou <span className="text-orange-500">canal próprio?</span>
+                  iFood, Rappi ou <span className="text-orange-500">os dois + canal próprio?</span>
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                  Dados públicos. Contas que qualquer um pode verificar. Veja quanto você está
-                  deixando na mesa todo mês.
+                  Use o iFood como vitrine. Mas veja quanto do seu dinheiro fica lá — e quanto voltaria pro seu bolso com canal próprio.
                 </p>
               </div>
 
@@ -741,7 +741,7 @@ export default function Home() {
                   className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-xl"
                 >
                   <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
-                  Quero pagar R$ 97/mês em vez de milhares
+                  Quero meu cardápio por R$ 97/mês
                 </TrackedLink>
               </div>
             </div>
@@ -790,8 +790,8 @@ export default function Home() {
                 </div>
                 <div className="mt-8 rounded-xl bg-red-50 p-4">
                   <p className="text-sm font-bold text-red-700">
-                    No iFood (Plano Básico), R$ 20k/mês de vendas = R$ 3.150 de comissão*.{' '}
-                    <span className="text-green-700">Na Zairyx, os mesmos R$ 20k = R$ 97/mês.</span>
+                    No iFood, cada cliente fiel que pede gera ~15% de comissão pra eles.{' '}
+                    <span className="text-green-700">Na Zairyx, esse pedido gera R$ 0 de comissão. Você paga só R$ 97/mês fixo.</span>
                   </p>
                   <p className="mt-1 text-xs text-red-400">
                     *12% comissão + 3,2% pgto online + R$110 mensalidade (entrega própria). Fonte: blog-parceiros.ifood.com.br
@@ -815,15 +815,15 @@ export default function Home() {
                   <div>
                     <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-300">
                       <AlertTriangle className="h-4 w-4" />
-                      Cada dia sem canal próprio = dinheiro perdido
+                      Cada pedido de cliente fiel no iFood = comissão desnecessária
                     </div>
                     <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-                      Quanto mais você demora,{' '}
-                      <span className="text-red-400">mais lucro escorre pelo ralo.</span>
+                      iFood traz gente nova.{' '}
+                      <span className="text-orange-400">Seu cardápio fideliza e lucra 100%.</span>
                     </h2>
                     <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-200">
-                      Seu cardápio digital com IA, terminal de pedidos, zero comissão e garantia
-                      total. Monte em 30 minutos.{' '}
+                      Cardápio digital com IA assistente 24h, editor visual, 15 modelos de nicho,
+                      pedidos pelo WhatsApp e zero comissão. Monte em 30 minutos.{' '}
                       <strong className="text-white">
                         Se não gostar em 30 dias, devolvemos cada centavo.
                       </strong>

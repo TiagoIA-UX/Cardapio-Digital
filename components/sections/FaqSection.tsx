@@ -47,7 +47,7 @@ const FAQ_ITEMS = [
   {
     question: 'E se eu já uso iFood, Rappi ou outro app?',
     answer:
-      'Você pode manter e usar os dois ao mesmo tempo. Mas cada pedido que migrar pro seu canal próprio é comissão que você deixa de pagar. Se você já tem motoboy próprio e fatura R$ 20k/mês, a comissão do iFood (Plano Básico) chega a R$ 3.000. Na Zairyx, são R$ 97.',
+      'Não precisa sair! Use o iFood pra atrair cliente NOVO. Mas quando ele já te conhece e pede sempre, mande o link do SEU cardápio por WhatsApp. Cada pedido que migra é comissão que fica no seu bolso. Com 100 pedidos/mês de clientes fiéis a R$ 50, você economiza R$ 750/mês só de comissão. Na Zairyx: R$ 97 fixo, IA assistente 24h, editor visual e 0% de comissão.',
   },
 ] as const
 
