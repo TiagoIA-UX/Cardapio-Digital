@@ -4,6 +4,7 @@ import { validateMercadoPagoWebhookSignature } from '@/lib/mercadopago-webhook'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getRequestSiteUrl } from '@/lib/site-url'
 import { mapMercadoPagoStatus } from '@/lib/payment-status'
+import { processDeliveryPayment } from '@/lib/delivery-payment'
 import {
   buildRestaurantInstallation,
   normalizePhone,
@@ -1010,6 +1011,34 @@ export async function POST(request: NextRequest) {
             payment_method_id: payment.payment_method_id,
             payment_type_id: payment.payment_type_id,
             date_approved: payment.date_approved,
+          },
+          siteUrl
+        )
+
+        await finishWebhookEvent(supabase, {
+          eventId: webhookEventId,
+          status: 'processed',
+        })
+
+        return NextResponse.json({ received: true })
+      }
+
+      // ── Pagamento de pedido de delivery ──────────────────────────
+      if (typeof externalReference === 'string' && externalReference.startsWith('delivery:')) {
+        const deliveryOrderId = externalReference.replace('delivery:', '')
+
+        await processDeliveryPayment(
+          supabase,
+          deliveryOrderId,
+          {
+            id: payment.id,
+            status,
+            status_detail: payment.status_detail,
+            transaction_amount: payment.transaction_amount,
+            payment_method_id: payment.payment_method_id,
+            payment_type_id: payment.payment_type_id,
+            date_approved: payment.date_approved,
+            payer: payment.payer,
           },
           siteUrl
         )
