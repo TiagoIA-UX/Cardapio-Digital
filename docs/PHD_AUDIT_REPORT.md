@@ -10,25 +10,25 @@
 
 ### Resumo
 
-| Tipo | Contagem |
-|------|----------|
-| Páginas (app/) | 84 |
-| API Routes (app/api/) | 48+ |
-| Webhooks | 2 (mercadopago, subscriptions) |
-| Cron Jobs | 3 (health, payout, trial-check) |
+| Tipo                  | Contagem                        |
+| --------------------- | ------------------------------- |
+| Páginas (app/)        | 84                              |
+| API Routes (app/api/) | 48+                             |
+| Webhooks              | 2 (mercadopago, subscriptions)  |
+| Cron Jobs             | 3 (health, payout, trial-check) |
 
 ### Rotas Removidas Nesta Auditoria
 
-| Rota | Motivo |
-|------|--------|
-| `/api/webhooks/mercadopago` | Duplicata (re-export de `/api/webhook/mercadopago`) |
-| `/api/checkout/criar-sessao` | Stub 410 — Sistema migrou para `/comprar/[template]` |
-| `/api/pagamento/criar` | Stub 410 |
-| `/api/pagamento/criar-assinatura` | Stub 410 |
-| `/api/pagamento/criar-pacote` | Stub 410 |
-| `/checkout` (page) | Redirect deprecado para `/templates` |
-| `/finalizar-compra-pacote` (page) | Stub legado |
-| `/ofertas` (page) | Redirect para `/templates` |
+| Rota                              | Motivo                                               |
+| --------------------------------- | ---------------------------------------------------- |
+| `/api/webhooks/mercadopago`       | Duplicata (re-export de `/api/webhook/mercadopago`)  |
+| `/api/checkout/criar-sessao`      | Stub 410 — Sistema migrou para `/comprar/[template]` |
+| `/api/pagamento/criar`            | Stub 410                                             |
+| `/api/pagamento/criar-assinatura` | Stub 410                                             |
+| `/api/pagamento/criar-pacote`     | Stub 410                                             |
+| `/checkout` (page)                | Redirect deprecado para `/templates`                 |
+| `/finalizar-compra-pacote` (page) | Stub legado                                          |
+| `/ofertas` (page)                 | Redirect para `/templates`                           |
 
 ---
 
@@ -36,13 +36,13 @@
 
 ### Status: ✅ EXCELENTE
 
-| Aspecto | Avaliação |
-|---------|-----------|
-| OAuth Callback | `exchangeCodeForSession` com validação segura |
-| Redirect Validation | `getSafeNext()` — bloqueia `//`, CRLF, protocolos externos |
-| Rate Limiting | 100 req/min em rotas de auth |
-| Session | Cookie-based Supabase, server-side validation |
-| Admin Auth | Header Bearer + Cookie session, role weights (support < admin < owner) |
+| Aspecto             | Avaliação                                                              |
+| ------------------- | ---------------------------------------------------------------------- |
+| OAuth Callback      | `exchangeCodeForSession` com validação segura                          |
+| Redirect Validation | `getSafeNext()` — bloqueia `//`, CRLF, protocolos externos             |
+| Rate Limiting       | 100 req/min em rotas de auth                                           |
+| Session             | Cookie-based Supabase, server-side validation                          |
+| Admin Auth          | Header Bearer + Cookie session, role weights (support < admin < owner) |
 
 ---
 
@@ -51,6 +51,7 @@
 ### Status: ✅ BOM (com correções aplicadas)
 
 **Fluxo atual**:
+
 ```
 /comprar/[template] → /api/pagamento/iniciar-onboarding → MercadoPago Preference
     → Checkout externo MercadoPago
@@ -59,6 +60,7 @@
 ```
 
 **Segurança**:
+
 - ✅ Preço calculado server-side via `getOnboardingPriceByTemplate()` (nunca confia no frontend)
 - ✅ Schema Zod para validação de input
 - ✅ Rate limiting: 5 requisições/minuto
@@ -74,12 +76,14 @@
 ### Status: ✅ FUNCIONAL
 
 **Campos editáveis**:
+
 - Nome, telefone, endereço, slogan
 - Logo URL, banner URL
 - Hero title, hero slogan preset, section title
 - Primary CTA label
 
 **Funcionalidades**:
+
 - Auto-save com debounce de 2 segundos
 - Edição inline (click para editar campos)
 - Upload de imagem com validação de magic bytes e MIME type
@@ -92,13 +96,14 @@
 
 ### Status: ✅ ESTRUTURADO
 
-| Plano | Preço/mês | Max Produtos |
-|-------|-----------|-------------|
-| Básico | R$ 97 | 60 |
-| Pro | R$ 149 | 200 |
-| Premium | R$ 199 | Ilimitado |
+| Plano   | Preço/mês | Max Produtos |
+| ------- | --------- | ------------ |
+| Básico  | R$ 97     | 60           |
+| Pro     | R$ 149    | 200          |
+| Premium | R$ 199    | Ilimitado    |
 
 **Preços por template** (15 templates × 2 modalidades):
+
 - **Self-service**: R$ 197–347 (PIX) / R$ 237–397 (cartão)
 - **Feito-pra-você**: R$ 497–897 (PIX) / R$ 597–1.077 (cartão)
 
@@ -121,6 +126,7 @@
 | Cookies | `/cookies` | 7 seções (tabela de cookies) |
 
 **Correções aplicadas**:
+
 - ✅ Alias pages (`/politica-de-privacidade`, `/termos-de-uso`) agora têm canonical metadata apontando para URLs canônicas
 - ✅ Sitemap: removidas URLs duplicadas (`/politica-de-privacidade`, `/termos-de-uso`) e `/ofertas`
 - ✅ Robots.txt: removido `/ofertas` do allow e `/checkout` do disallow
@@ -132,44 +138,44 @@
 
 ### Status: ✅ ZERO LINKS QUEBRADOS
 
-| Componente | Links Auditados | Quebrados |
-|------------|-----------------|-----------|
-| Header (home-header.tsx) | 5 | 0 |
-| Footer (footer.tsx) | 10 | 0 |
-| Sidebar painel (navigation.ts) | 11 | 0 |
+| Componente                     | Links Auditados | Quebrados |
+| ------------------------------ | --------------- | --------- |
+| Header (home-header.tsx)       | 5               | 0         |
+| Footer (footer.tsx)            | 10              | 0         |
+| Sidebar painel (navigation.ts) | 11              | 0         |
 
 ---
 
 ## 8. FUNCIONALIDADES VALIDADAS
 
-| Fluxo | Status |
-|-------|--------|
+| Fluxo                                                     | Status   |
+| --------------------------------------------------------- | -------- |
 | `/comprar/[template]` → Onboarding → Pagamento → Provisão | ✅ VALID |
-| `/painel/editor` → Editor visual | ✅ VALID |
-| `/painel/planos` → Gestão de planos | ✅ VALID |
-| `/auth/callback` → OAuth callback | ✅ VALID |
-| `/templates` → Catálogo de templates | ✅ VALID |
-| `/templates/[slug]` → Detalhe de template | ✅ VALID |
-| `/r/[slug]` → Cardápio público | ✅ VALID |
-| Pedidos → WhatsApp | ✅ VALID |
-| Upload de imagens → R2/Storage | ✅ VALID |
+| `/painel/editor` → Editor visual                          | ✅ VALID |
+| `/painel/planos` → Gestão de planos                       | ✅ VALID |
+| `/auth/callback` → OAuth callback                         | ✅ VALID |
+| `/templates` → Catálogo de templates                      | ✅ VALID |
+| `/templates/[slug]` → Detalhe de template                 | ✅ VALID |
+| `/r/[slug]` → Cardápio público                            | ✅ VALID |
+| Pedidos → WhatsApp                                        | ✅ VALID |
+| Upload de imagens → R2/Storage                            | ✅ VALID |
 
 ---
 
 ## 9. API ROUTES
 
-| Rota | Method | Rate Limit | Status |
-|------|--------|------------|--------|
-| `/api/pagamento/iniciar-onboarding` | POST | ✅ 5/min | ✅ OK |
-| `/api/pagamento/provisionar` | POST | ✅ | ✅ OK |
-| `/api/pagamento/status` | GET | ✅ | ✅ OK |
-| `/api/webhook/mercadopago` | POST | - (idempotente) | ✅ OK |
-| `/api/webhook/subscriptions` | POST | - (idempotente) | ✅ OK |
-| `/api/templates` | GET | ✅ public | ✅ OK |
-| `/api/orders` | POST | ✅ | ✅ OK |
-| `/api/onboarding/submit` | POST | - | ✅ OK |
-| `/api/upload` | POST | - (auth req.) | ✅ OK |
-| `/api/checkout/validar-cupom` | POST | ✅ | ✅ OK |
+| Rota                                | Method | Rate Limit      | Status |
+| ----------------------------------- | ------ | --------------- | ------ |
+| `/api/pagamento/iniciar-onboarding` | POST   | ✅ 5/min        | ✅ OK  |
+| `/api/pagamento/provisionar`        | POST   | ✅              | ✅ OK  |
+| `/api/pagamento/status`             | GET    | ✅              | ✅ OK  |
+| `/api/webhook/mercadopago`          | POST   | - (idempotente) | ✅ OK  |
+| `/api/webhook/subscriptions`        | POST   | - (idempotente) | ✅ OK  |
+| `/api/templates`                    | GET    | ✅ public       | ✅ OK  |
+| `/api/orders`                       | POST   | ✅              | ✅ OK  |
+| `/api/onboarding/submit`            | POST   | -               | ✅ OK  |
+| `/api/upload`                       | POST   | - (auth req.)   | ✅ OK  |
+| `/api/checkout/validar-cupom`       | POST   | ✅              | ✅ OK  |
 
 ---
 
@@ -177,36 +183,36 @@
 
 ### 🟢 Nenhuma Vulnerabilidade Crítica
 
-| Categoria OWASP | Status |
-|------------------|--------|
-| Broken Access Control | ✅ RLS + requireAdmin + session auth |
-| Cryptographic Failures | ✅ Supabase managed |
-| Injection | ✅ Zod validation + parameterized queries |
-| Insecure Design | ✅ Server-side price validation |
-| Security Misconfiguration | ✅ Rate limiting aplicado |
-| Auth Failures | ✅ OAuth + safe redirect |
-| SSRF | ✅ Redirect validation blocks external URLs |
+| Categoria OWASP           | Status                                      |
+| ------------------------- | ------------------------------------------- |
+| Broken Access Control     | ✅ RLS + requireAdmin + session auth        |
+| Cryptographic Failures    | ✅ Supabase managed                         |
+| Injection                 | ✅ Zod validation + parameterized queries   |
+| Insecure Design           | ✅ Server-side price validation             |
+| Security Misconfiguration | ✅ Rate limiting aplicado                   |
+| Auth Failures             | ✅ OAuth + safe redirect                    |
+| SSRF                      | ✅ Redirect validation blocks external URLs |
 
 ---
 
 ## 11. LIMPEZA REALIZADA
 
-| Métrica | Valor |
-|---------|-------|
-| Arquivos removidos nesta sessão | 8 |
-| Linhas removidas | -297 |
-| Dead code eliminado | `types/checkout.ts`, testes de rotas 410 |
-| Bugs corrigidos | Slug collision retry |
-| SEO fixes | Canonical metadata, sitemap, robots.txt |
+| Métrica                         | Valor                                    |
+| ------------------------------- | ---------------------------------------- |
+| Arquivos removidos nesta sessão | 8                                        |
+| Linhas removidas                | -297                                     |
+| Dead code eliminado             | `types/checkout.ts`, testes de rotas 410 |
+| Bugs corrigidos                 | Slug collision retry                     |
+| SEO fixes                       | Canonical metadata, sitemap, robots.txt  |
 
 ---
 
 ## 12. RECOMENDAÇÕES FUTURAS
 
-| Prioridade | Ação |
-|------------|------|
-| **Média** | Migrar preços de `lib/pricing.ts` para tabela no Supabase (permite ajustes sem deploy) |
-| **Média** | Implementar upgrade self-service de planos no `/painel/planos` |
-| **Baixa** | Adicionar metadata (`title`, `description`) nas páginas legais canônicas (`/privacidade`, `/termos`, `/politica`, `/cookies`) |
-| **Baixa** | Lazy-load ícones em `/comprar/[template]` (100+ imports do lucide-react) |
-| **Baixa** | Adicionar rate limiting em `/api/onboarding/submit` |
+| Prioridade | Ação                                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Média**  | Migrar preços de `lib/pricing.ts` para tabela no Supabase (permite ajustes sem deploy)                                        |
+| **Média**  | Implementar upgrade self-service de planos no `/painel/planos`                                                                |
+| **Baixa**  | Adicionar metadata (`title`, `description`) nas páginas legais canônicas (`/privacidade`, `/termos`, `/politica`, `/cookies`) |
+| **Baixa**  | Lazy-load ícones em `/comprar/[template]` (100+ imports do lucide-react)                                                      |
+| **Baixa**  | Adicionar rate limiting em `/api/onboarding/submit`                                                                           |

@@ -6,20 +6,21 @@ import { useEffect } from 'react'
 
 const VARIANTS = {
   A: {
-    badge: 'Já tem motoboy? Você perde até R$ 3.000/mês em comissões',
+    badge: 'Seu cliente já te conhece — por que pagar 15% ao iFood?',
     heading: (
       <>
-        Pare de dar <span className="text-red-400">15% do seu faturamento</span> pra plataforma.
-        <span className="mt-2 block text-orange-400">Venda direto. Lucre 100%.</span>
+        Cliente fiel pedindo pelo iFood?{' '}
+        <span className="text-red-400">Você paga R$ 3.000/mês por isso.</span>
+        <span className="mt-2 block text-orange-400">Mande pro SEU cardápio. Lucre 100%.</span>
       </>
     ),
   },
   B: {
-    badge: 'Deliverys com motoboy próprio já economizam R$ 3.000+/mês',
+    badge: 'Use o iFood pra pescar cliente novo. O fiel pede no SEU canal.',
     heading: (
       <>
-        Recupere até <span className="text-green-400">R$ 3.000 por mês</span> que o iFood cobra.
-        <span className="mt-2 block text-orange-400">Seu cardápio. Seu lucro. Sem comissão.</span>
+        Pare de pagar <span className="text-red-400">15% de comissão</span> em quem já é seu cliente.
+        <span className="mt-2 block text-orange-400">Seu cardápio. Sua marca. Seu lucro.</span>
       </>
     ),
   },
