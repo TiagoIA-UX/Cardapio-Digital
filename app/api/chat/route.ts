@@ -3,7 +3,10 @@ import Groq from 'groq-sdk'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/rate-limit'
 import { getRestaurantAiAssistantSettings } from '@/lib/restaurant-customization'
-import { buildDeliveryAssistantSystemPrompt } from '@/lib/delivery-assistant'
+import {
+  buildDeliveryAssistantSystemPrompt,
+  buildPanelAssistantSystemPrompt,
+} from '@/lib/delivery-assistant'
 import { isTerminalEnabled, resolveDeliveryMode } from '@/lib/delivery-mode'
 
 const CHAT_HISTORY_LIMIT = 20
@@ -20,6 +23,8 @@ type ChatRequestBody = {
   context?: {
     restaurantId?: string
     restaurantSlug?: string
+    pageType?: 'marketing' | 'panel'
+    pathname?: string
   }
 }
 
@@ -124,6 +129,10 @@ function resolveIsOpenNow(
 function buildFallbackReply(restaurantName?: string | null) {
   const prefix = restaurantName ? `Posso te ajudar com ${restaurantName}` : 'Posso te ajudar'
   return `${prefix} com cardápio, preços, horários e entrega. Se quiser, me diga o que você está procurando.`
+}
+
+function buildPanelFallbackReply() {
+  return 'Posso te orientar no painel em passos curtos. Me diga o que você quer fazer agora: editar canal, cadastrar produtos, ajustar categorias, QR Code, pedidos ou configurações.'
 }
 
 function buildCompletionTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -387,17 +396,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const fallbackPrompt = buildDeliveryAssistantSystemPrompt({
-      restaurantName: 'atendimento geral da Zairyx',
-      mode: 'support',
-      scope: 'support',
-      context: {
-        categories: [],
-        topProducts: [],
-        productCount: 0,
-        isOpenNow: null,
-      },
-    })
+    const isPanelRequest = context?.pageType === 'panel' || context?.pathname?.startsWith('/painel')
+
+    const fallbackPrompt = isPanelRequest
+      ? buildPanelAssistantSystemPrompt({ pathname: context?.pathname })
+      : buildDeliveryAssistantSystemPrompt({
+          restaurantName: 'atendimento geral da Zairyx',
+          mode: 'support',
+          scope: 'support',
+          context: {
+            categories: [],
+            topProducts: [],
+            productCount: 0,
+            isOpenNow: null,
+          },
+        })
 
     try {
       const completion = await buildCompletionTimeout(
@@ -410,7 +423,9 @@ export async function POST(req: NextRequest) {
         CHAT_TIMEOUT_MS
       )
 
-      const reply = completion.choices[0]?.message?.content?.trim() || buildFallbackReply(null)
+      const reply =
+        completion.choices[0]?.message?.content?.trim() ||
+        (isPanelRequest ? buildPanelFallbackReply() : buildFallbackReply(null))
 
       console.log(
         '[CHAT_OK]',
@@ -418,7 +433,7 @@ export async function POST(req: NextRequest) {
           requestId,
           restaurantId: null,
           restaurantSlug: null,
-          mode: 'support',
+          mode: isPanelRequest ? 'panel' : 'support',
           messageCount: safeMessages.length,
           categories: 0,
           topProducts: 0,
@@ -446,7 +461,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json(
         {
-          reply: buildFallbackReply(null),
+          reply: isPanelRequest ? buildPanelFallbackReply() : buildFallbackReply(null),
           fallback: true,
         },
         { headers: rateLimit.headers }
