@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { usePathname } from 'next/navigation'
 import {
   ArrowUp,
   Bot,
@@ -21,12 +22,20 @@ interface Message {
 
 interface ChatRequestContext {
   restaurantSlug?: string
+  pageType?: 'marketing' | 'panel'
+  pathname?: string
 }
 
-const GREETING: Message = {
+const MARKETING_GREETING: Message = {
   role: 'assistant',
   content:
     '👋 Oi! Sou o Cadu, assistente IA da Zairyx. Posso te ajudar a:\n\n• Encontrar o plano ideal para seu negócio\n• Mostrar como funciona na prática\n• Tirar dúvidas técnicas ou de preço\n\nMe conta: qual é o seu tipo de negócio? 😊',
+}
+
+const PANEL_GREETING: Message = {
+  role: 'assistant',
+  content:
+    '👋 Oi! Sou o assistente do painel. Posso te ajudar a editar seu canal digital, cadastrar produtos, ajustar categorias, QR Code, pedidos e configurações. Me diga onde você travou que eu te passo o caminho mais curto.',
 }
 
 interface QuickReplyCategory {
@@ -34,7 +43,7 @@ interface QuickReplyCategory {
   questions: string[]
 }
 
-const QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
+const MARKETING_QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
   {
     label: '💰 Preços',
     questions: ['Quanto custa?', 'Tem período de teste?', 'Tem desconto para rede?'],
@@ -49,7 +58,39 @@ const QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
   },
 ]
 
-const ALL_QUICK_QUESTIONS = QUICK_REPLY_CATEGORIES.flatMap((c) => c.questions)
+const PANEL_QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
+  {
+    label: '🛠️ Painel',
+    questions: [
+      'Como editar meu canal digital?',
+      'Onde cadastro produtos?',
+      'Como ajustar categorias?',
+    ],
+  },
+  {
+    label: '📲 Operação',
+    questions: ['Como abrir meu link?', 'Como gerar QR Code?', 'Onde vejo os pedidos?'],
+  },
+  {
+    label: '⚙️ Configurações',
+    questions: [
+      'Como trocar logo e banner?',
+      'Como ativar a IA do meu delivery?',
+      'Onde altero horário e entrega?',
+    ],
+  },
+]
+
+type ChatRuntimeConfig = {
+  greeting: Message
+  endpoint: string
+  quickQuestions: string[]
+  quickReplyCategories: QuickReplyCategory[]
+  title: string
+  subtitle: string
+  Icon: typeof Bot
+  pageType: 'marketing' | 'panel'
+}
 
 const ESCALATION_KEYWORDS = [
   'falar com humano',
@@ -67,31 +108,68 @@ const ESCALATION_KEYWORDS = [
 const ESCALATION_THRESHOLD = 6
 const WHATSAPP_NUMBER = '5512996887993'
 
-const CHAT_CONFIG = {
-  greeting: GREETING,
-  endpoint: '/api/chat',
-  quickQuestions: ALL_QUICK_QUESTIONS,
-  title: 'Cadu — Zairyx',
-  subtitle: 'Online agora',
-  Icon: Bot,
+function getChatConfig(pathname: string | null): ChatRuntimeConfig {
+  if (pathname?.startsWith('/painel')) {
+    return {
+      greeting: PANEL_GREETING,
+      endpoint: '/api/chat',
+      quickQuestions: PANEL_QUICK_REPLY_CATEGORIES.flatMap((category) => category.questions),
+      quickReplyCategories: PANEL_QUICK_REPLY_CATEGORIES,
+      title: 'Assistente do Painel',
+      subtitle: 'Ajuda rápida',
+      Icon: Bot,
+      pageType: 'panel',
+    }
+  }
+
+  return {
+    greeting: MARKETING_GREETING,
+    endpoint: '/api/chat',
+    quickQuestions: MARKETING_QUICK_REPLY_CATEGORIES.flatMap((category) => category.questions),
+    quickReplyCategories: MARKETING_QUICK_REPLY_CATEGORIES,
+    title: 'Cadu — Zairyx',
+    subtitle: 'Online agora',
+    Icon: Bot,
+    pageType: 'marketing',
+  }
 }
 
-function buildClientRecoveryMessage() {
-  return 'Opa, voltei! Me conta sobre o seu negócio que te ajudo com preço, template ideal, como funciona o painel... o que você precisar 😊'
+function buildClientRecoveryMessage(pageType: 'marketing' | 'panel') {
+  return pageType === 'panel'
+    ? 'Opa, voltei! Me diga em qual parte do painel você travou que eu te explico o próximo passo sem enrolação.'
+    : 'Opa, voltei! Me conta sobre o seu negócio que te ajudo com preço, template ideal, como funciona o painel... o que você precisar 😊'
 }
 
-function getChatRequestContext(): ChatRequestContext | null {
-  if (typeof window === 'undefined') return null
+function getChatRequestContext(pathname: string | null): ChatRequestContext | null {
+  if (!pathname) return null
 
-  const match = window.location.pathname.match(/^\/r\/([^/]+)/i)
-  if (!match?.[1]) return null
+  const match = pathname.match(/^\/r\/([^/]+)/i)
+  if (match?.[1]) {
+    return {
+      restaurantSlug: decodeURIComponent(match[1]),
+      pathname,
+    }
+  }
 
-  return { restaurantSlug: decodeURIComponent(match[1]) }
+  if (pathname.startsWith('/painel')) {
+    return {
+      pageType: 'panel',
+      pathname,
+    }
+  }
+
+  return {
+    pageType: 'marketing',
+    pathname,
+  }
 }
 
 export function ChatWidget() {
+  const pathname = usePathname()
+  const chatConfig = useMemo(() => getChatConfig(pathname), [pathname])
+  const ChatIcon = chatConfig.Icon
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([CHAT_CONFIG.greeting])
+  const [messages, setMessages] = useState<Message[]>([chatConfig.greeting])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [unread, setUnread] = useState(1)
@@ -103,11 +181,13 @@ export function ChatWidget() {
   const userMessageCount = useRef(0)
 
   useEffect(() => {
-    setMessages([CHAT_CONFIG.greeting])
+    setMessages([chatConfig.greeting])
     setInput('')
     setLoading(false)
     setUnread(1)
-  }, [])
+    setShowEscalation(false)
+    userMessageCount.current = 0
+  }, [chatConfig])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -151,14 +231,16 @@ export function ChatWidget() {
     }
 
     try {
-      const res = await fetch(CHAT_CONFIG.endpoint, {
+      const chatContext = getChatRequestContext(pathname)
+
+      const res = await fetch(chatConfig.endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: nextMessages.filter((message, index) => {
             return message.role !== 'assistant' || index > 0
           }),
-          context: getChatRequestContext(),
+          context: chatContext,
         }),
       })
 
@@ -172,7 +254,7 @@ export function ChatWidget() {
 
       const reply: Message = {
         role: 'assistant',
-        content: data.reply?.trim() || buildClientRecoveryMessage(),
+        content: data.reply?.trim() || buildClientRecoveryMessage(chatConfig.pageType),
       }
 
       setMessages((prev) => [...prev, reply])
@@ -181,7 +263,10 @@ export function ChatWidget() {
         setUnread((current) => current + 1)
       }
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: buildClientRecoveryMessage() }])
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: buildClientRecoveryMessage(chatConfig.pageType) },
+      ])
     } finally {
       setLoading(false)
     }
@@ -222,7 +307,9 @@ export function ChatWidget() {
       .join(' | ')
 
     const contextText = encodeURIComponent(
-      `Oi! Vim do chat da Zairyx e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
+      chatConfig.pageType === 'panel'
+        ? `Oi! Vim do assistente do painel e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
+        : `Oi! Vim do chat da Zairyx e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
     )
 
     window.open(
@@ -236,11 +323,16 @@ export function ChatWidget() {
       {
         role: 'assistant',
         content:
-          '✅ Abrindo conversa com nossa equipe no WhatsApp! Um humano vai continuar te ajudando por lá. 😊',
+          chatConfig.pageType === 'panel'
+            ? '✅ Abrindo conversa com nossa equipe no WhatsApp para continuar a ajuda no painel.'
+            : '✅ Abrindo conversa com nossa equipe no WhatsApp! Um humano vai continuar te ajudando por lá. 😊',
       },
     ])
     setShowEscalation(false)
-  }, [messages])
+  }, [chatConfig.pageType, messages])
+
+  // Não exibir o chat de vendas da Zairyx nos cardápios dos deliverys (/r/[slug])
+  if (pathname?.startsWith('/r/')) return null
 
   return (
     <>
@@ -249,13 +341,13 @@ export function ChatWidget() {
           <div className="flex items-center justify-between bg-linear-to-r from-orange-500 to-orange-600 px-4 py-3">
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
-                <CHAT_CONFIG.Icon className="h-5 w-5 text-white" />
+                <ChatIcon className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">{CHAT_CONFIG.title}</p>
+                <p className="text-sm font-bold text-white">{chatConfig.title}</p>
                 <p className="flex items-center gap-1 text-xs text-orange-100">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-300" />
-                  {CHAT_CONFIG.subtitle}
+                  {chatConfig.subtitle}
                 </p>
               </div>
             </div>
@@ -300,7 +392,7 @@ export function ChatWidget() {
               >
                 {msg.role === 'assistant' && (
                   <div className="mt-1 mr-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-500">
-                    <CHAT_CONFIG.Icon className="h-4 w-4 text-white" />
+                    <ChatIcon className="h-4 w-4 text-white" />
                   </div>
                 )}
                 <div
@@ -337,7 +429,7 @@ export function ChatWidget() {
             {loading && (
               <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500">
-                  <CHAT_CONFIG.Icon className="h-4 w-4 text-white" />
+                  <ChatIcon className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex gap-1 rounded-2xl rounded-bl-sm border border-zinc-100 bg-white px-4 py-3 shadow-sm">
                   <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-400 [animation-delay:0ms]" />
@@ -357,7 +449,7 @@ export function ChatWidget() {
           <div className="flex flex-col gap-1.5 border-t border-zinc-100 bg-white px-3 py-2">
             {messages.length <= 1 && (
               <div className="flex flex-wrap gap-1">
-                {QUICK_REPLY_CATEGORIES.map((cat) => (
+                {chatConfig.quickReplyCategories.map((cat) => (
                   <span key={cat.label} className="text-[10px] font-semibold text-zinc-400">
                     {cat.label}
                   </span>
@@ -366,8 +458,8 @@ export function ChatWidget() {
             )}
             <div className="flex gap-2 overflow-x-auto">
               {(messages.length <= 1
-                ? QUICK_REPLY_CATEGORIES.flatMap((c) => c.questions).slice(0, 6)
-                : CHAT_CONFIG.quickQuestions.slice(0, 4)
+                ? chatConfig.quickReplyCategories.flatMap((c) => c.questions).slice(0, 6)
+                : chatConfig.quickQuestions.slice(0, 4)
               ).map((question) => (
                 <button
                   key={question}
