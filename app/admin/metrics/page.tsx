@@ -120,9 +120,9 @@ export default function AdminMetricsPage() {
       let avgResolutionTimeHours: number | null = null
       const resolved = resolvedEscalationsData ?? []
       if (resolved.length > 0) {
-        const totalMs = resolved.reduce((sum, e) => {
-          const created = new Date((e as { created_at: string }).created_at).getTime()
-          const resolvedAt = new Date((e as { resolved_at: string }).resolved_at).getTime()
+        const totalMs = resolved.reduce((sum: number, e: { created_at: string; resolved_at: string }) => {
+          const created = new Date(e.created_at).getTime()
+          const resolvedAt = new Date(e.resolved_at).getTime()
           return sum + (resolvedAt - created)
         }, 0)
         avgResolutionTimeHours = Math.round((totalMs / resolved.length / 3_600_000) * 10) / 10
