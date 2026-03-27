@@ -38,7 +38,7 @@ export default function AdminMetricsPage() {
       }
 
       // Proteção por email do administrador
-      if (session.user.email !== 'globenarket7@gmail.com') {
+      if (session.user.email !== 'globemarket7@gmail.com') {
         setLoading(false)
         return
       }
