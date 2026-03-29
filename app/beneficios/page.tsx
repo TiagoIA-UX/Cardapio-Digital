@@ -1,0 +1,474 @@
+import Link from 'next/link'
+import {
+  ArrowRight,
+  BadgeCheck,
+  CheckCircle,
+  CreditCard,
+  MessageCircle,
+  QrCode,
+  Shield,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+  Store,
+  TrendingDown,
+  TrendingUp,
+  Zap,
+  X,
+} from 'lucide-react'
+
+export const metadata = {
+  title: 'Benefícios | Zairyx — Delivery sem comissão, com IA e pagamento online',
+  description:
+    'Pare de pagar comissão para o iFood. Com a Zairyx você tem canal de delivery próprio, IA 24h, pagamento online via Mercado Pago e 100% do lucro no seu bolso.',
+}
+
+export default function BeneficiosPage() {
+  return (
+    <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
+      {/* Header */}
+      <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <Link href="/" className="flex items-center gap-2">
+            <Store className="text-primary h-6 w-6" />
+            <span className="text-foreground text-xl font-bold">Zairyx</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/precos"
+              className="text-foreground/70 hover:text-foreground text-sm font-medium transition-colors"
+            >
+              Preços
+            </Link>
+            <Link
+              href="/templates"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-4 py-2 text-sm font-semibold transition-colors"
+            >
+              Ver modelos
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-4 py-12">
+        {/* Hero */}
+        <div className="mb-16 text-center">
+          <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
+            <BadgeCheck className="h-4 w-4" />
+            Seu delivery, suas regras
+          </div>
+          <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
+            Você está pagando{' '}
+            <span className="text-primary">até 30% de comissão</span>
+            {' '}por pedido.<br />
+            Isso precisa parar.
+          </h1>
+          <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
+            Dono de delivery que usa iFood, Rappi ou Uber Eats financia o app, não o próprio
+            negócio. A Zairyx devolve o controle para você: canal próprio, IA 24h, pagamento
+            online e zero comissão — por uma mensalidade fixa menor que um dia de comissão.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/templates"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
+            >
+              Começar agora — teste grátis 30 dias
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/precos"
+              className="border-border text-foreground hover:bg-secondary inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-colors"
+            >
+              Ver planos
+            </Link>
+          </div>
+        </div>
+
+        {/* Comparação iFood vs Zairyx */}
+        <div className="mb-16">
+          <h2 className="mb-8 text-center text-2xl font-bold">
+            O que muda quando você para de depender do iFood
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* iFood */}
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-red-700">
+                <X className="h-5 w-5" />
+                Marketplace (iFood, Rappi...)
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  'Comissão de 12% a 30% por pedido — para sempre',
+                  'Seu cliente é do app, não seu',
+                  'Você some quando o app sai do ar',
+                  'Promoções obrigatórias para aparecer',
+                  'Suporte que demora dias para responder',
+                  'Você compete com dezenas de concorrentes na mesma tela',
+                  'Nunca sabe quem são seus clientes fiéis',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-red-800">
+                    <X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Zairyx */}
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-green-700">
+                <CheckCircle className="h-5 w-5" />
+                Zairyx — canal próprio
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  'Mensalidade fixa — sem taxa sobre cada venda',
+                  'Seu cliente, seus dados, seu relacionamento',
+                  'Seu canal funciona 24h no dia, 7 dias na semana',
+                  'Você controla os preços e promoções',
+                  'IA responde clientes em segundos — mesmo de madrugada',
+                  'Você é a única opção no seu próprio cardápio',
+                  'Histórico completo de pedidos e preferências',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-green-800">
+                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefícios detalhados */}
+        <div className="mb-16">
+          <h2 className="mb-2 text-center text-2xl font-bold">
+            Tudo que você ganha com a Zairyx
+          </h2>
+          <p className="text-muted-foreground mb-8 text-center">
+            Cada benefício foi construído para resolver um problema real de quem vive de delivery.
+          </p>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Benefício 1 */}
+            <div className="rounded-2xl border border-orange-200 bg-orange-50/60 p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500 text-white">
+                <TrendingDown className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Zero comissão por pedido — agora e sempre</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Um restaurante que fatura R$ 20.000/mês no iFood paga até R$ 6.000 em comissão.
+                Na Zairyx você paga mensalidade fixa a partir de R$ 147 e fica com{' '}
+                <strong>100% de cada venda</strong>. Em 1 mês você recupera o investimento inteiro.
+              </p>
+            </div>
+
+            {/* Benefício 2 */}
+            <div className="rounded-2xl border border-orange-200 bg-orange-50/60 p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500 text-white">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">IA que atende 24h — sem custo extra</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                O Cadu, nosso assistente de IA, está dentro do seu cardápio o tempo todo. Responde
+                dúvidas sobre cardápio, horário, entrega e ingredientes. Ajuda o cliente a montar
+                o pedido e só chama você no WhatsApp quando é realmente necessário. Tudo incluso
+                no plano — sem cobrar por mensagem.
+              </p>
+            </div>
+
+            {/* Benefício 3 */}
+            <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500 text-white">
+                <CreditCard className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Pagamento online direto no pedido</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Seu cliente pode pagar com <strong>cartão de crédito, débito, PIX ou parcelado</strong>{' '}
+                direto no cardápio, antes de enviar o pedido. A confirmação do pagamento é
+                automática — o pedido já entra como &quot;pago&quot; no seu painel sem você precisar
+                verificar nada. Integração nativa com Mercado Pago.
+              </p>
+            </div>
+
+            {/* Benefício 4 */}
+            <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500 text-white">
+                <MessageCircle className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Pedidos organizados no WhatsApp</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                O cliente monta o pedido no cardápio e envia tudo organizado — itens, quantidade,
+                endereço e observações — direto no seu WhatsApp. Chega como uma mensagem estruturada,
+                sem confusão. Sem app de terceiro no meio, sem taxa por pedido.
+              </p>
+            </div>
+
+            {/* Benefício 5 */}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-700 text-white">
+                <Smartphone className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Painel simples — funciona no celular</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Mude preço, adicione produto ou tire foto em 5 segundos pelo celular. O painel foi
+                feito para donos de negócio, não para programadores. Se você manda áudio no
+                WhatsApp, você usa o painel — sem precisar de nenhum treinamento.
+              </p>
+            </div>
+
+            {/* Benefício 6 */}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-700 text-white">
+                <QrCode className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">QR Code + Link + Instagram — tudo pronto</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Imprima o QR Code na mesa, cole no balcão, compartilhe no story, coloque na bio do
+                Instagram. Seus clientes acessam o cardápio em 1 toque, sem baixar nenhum
+                aplicativo. Funciona no celular de qualquer pessoa.
+              </p>
+            </div>
+
+            {/* Benefício 7 */}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-700 text-white">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Alta temporada sem perder pedido</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                No verão ou feriado prolongado, o volume pode dobrar de um dia pro outro. O cardápio
+                digital organiza tudo — sem perder pedido, sem confusão de anotação, sem cliente
+                sem resposta. Quanto mais você vende, mais você lucra — sem pagar mais por isso.
+              </p>
+            </div>
+
+            {/* Benefício 8 */}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-700 text-white">
+                <Zap className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-bold">Pronto em menos de 30 minutos</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Escolha o template do seu nicho (pizzaria, hamburgueria, açaíteria, mercadinho e
+                mais 11 opções), troque os produtos e preços, publique o link. Tudo em menos de
+                meia hora — sem precisar de programador, designer ou agência.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Garantia */}
+        <div className="mb-16 rounded-2xl border-2 border-green-300 bg-green-50 p-8 text-center">
+          <ShieldCheck className="mx-auto mb-4 h-12 w-12 text-green-600" />
+          <h2 className="mb-3 text-2xl font-bold text-green-800">
+            30 dias de garantia total — sem perguntas
+          </h2>
+          <p className="mx-auto mb-2 max-w-2xl text-base text-green-700">
+            Teste a Zairyx por 30 dias completos. Se por qualquer motivo não funcionar para o
+            seu negócio, devolvemos cada centavo que você pagou.
+          </p>
+          <p className="text-sm font-medium text-green-600">
+            A maioria dos concorrentes dá 7 dias. A gente dá 30 — porque confia no produto.
+          </p>
+        </div>
+
+        {/* Pagamento digital — detalhamento técnico simplificado */}
+        <div className="mb-16 rounded-2xl border border-zinc-200 bg-white p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <CreditCard className="text-primary h-8 w-8" />
+            <h2 className="text-2xl font-bold">Como funciona o pagamento online</h2>
+          </div>
+          <p className="text-muted-foreground mb-6 text-base">
+            Não é complicado. É assim que funciona quando seu cliente paga pelo cardápio:
+          </p>
+
+          <div className="mb-8 grid gap-4 md:grid-cols-4">
+            {[
+              {
+                step: '1',
+                title: 'Cliente faz o pedido',
+                desc: 'Escolhe os itens e vai para o checkout no cardápio',
+              },
+              {
+                step: '2',
+                title: 'Escolhe como pagar',
+                desc: 'Cartão, PIX, débito ou parcelado — tudo disponível',
+              },
+              {
+                step: '3',
+                title: 'Pagamento processado',
+                desc: 'Mercado Pago processa com segurança — você não precisa fazer nada',
+              },
+              {
+                step: '4',
+                title: 'Pedido confirmado',
+                desc: 'Chega no painel como "pago" automaticamente',
+              },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="rounded-xl bg-zinc-50 p-4 text-center">
+                <div className="bg-primary text-primary-foreground mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold">
+                  {step}
+                </div>
+                <h4 className="mb-1 text-sm font-bold">{title}</h4>
+                <p className="text-muted-foreground text-xs">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5">
+            <h4 className="mb-3 font-semibold">Formas de pagamento aceitas</h4>
+            <div className="grid gap-2 md:grid-cols-2">
+              {[
+                { label: 'Cartão de crédito', detail: 'Visa, Mastercard, Elo, Amex e outras' },
+                { label: 'Cartão de débito', detail: 'Principais bandeiras aceitas' },
+                { label: 'PIX', detail: 'Confirmação em segundos, disponível 24h' },
+                { label: 'Parcelado', detail: 'Até 12x — seu cliente decide' },
+              ].map(({ label, detail }) => (
+                <div key={label} className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
+                  <span className="text-sm">
+                    <strong>{label}</strong> — {detail}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabela comparativa */}
+        <div className="mb-16">
+          <h2 className="mb-6 text-center text-2xl font-bold">Zairyx vs. concorrentes</h2>
+          <div className="overflow-x-auto rounded-2xl border border-zinc-200">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-zinc-50 text-left">
+                  <th className="p-4 font-semibold">Recurso</th>
+                  <th className="p-4 text-center font-semibold text-orange-600">Zairyx</th>
+                  <th className="p-4 text-center font-semibold text-zinc-500">iFood / Rappi</th>
+                  <th className="p-4 text-center font-semibold text-zinc-500">Outros SaaS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    feature: 'Comissão por pedido',
+                    zairyx: '0%',
+                    ifood: '12–30%',
+                    outros: '0% (mensalidade fixa)',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'IA de atendimento 24h',
+                    zairyx: '✓ inclusa',
+                    ifood: '✗',
+                    outros: 'Raramente inclusa',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'Pagamento online no cardápio',
+                    zairyx: '✓ Mercado Pago nativo',
+                    ifood: '✓ (mas eles ficam com %))',
+                    outros: 'Alguns têm',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'QR Code para mesa/balcão',
+                    zairyx: '✓ incluso',
+                    ifood: '✗',
+                    outros: 'Alguns têm',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'Garantia de devolução',
+                    zairyx: '30 dias',
+                    ifood: 'Sem garantia',
+                    outros: '7 dias (maioria)',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'Marca própria do cliente',
+                    zairyx: '✓ sua logo e cores',
+                    ifood: '✗ marca do app',
+                    outros: 'Varia',
+                    zairyxGood: true,
+                  },
+                  {
+                    feature: 'Templates por nicho',
+                    zairyx: '15 templates prontos',
+                    ifood: '✗',
+                    outros: 'Raramente',
+                    zairyxGood: true,
+                  },
+                ].map(({ feature, zairyx, ifood, outros, zairyxGood }) => (
+                  <tr key={feature} className="border-t border-zinc-100">
+                    <td className="p-4 font-medium">{feature}</td>
+                    <td
+                      className={`p-4 text-center font-semibold ${zairyxGood ? 'text-green-600' : 'text-zinc-700'}`}
+                    >
+                      {zairyx}
+                    </td>
+                    <td className="p-4 text-center text-zinc-500">{ifood}</td>
+                    <td className="p-4 text-center text-zinc-500">{outros}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* CTA final */}
+        <div className="rounded-2xl bg-zinc-900 p-10 text-center text-white">
+          <Shield className="mx-auto mb-4 h-12 w-12 text-orange-400" />
+          <h2 className="mb-3 text-3xl font-bold">
+            Pare de financiar o iFood. Comece a construir o seu.
+          </h2>
+          <p className="mx-auto mb-6 max-w-xl text-zinc-300">
+            Menos de 30 minutos para ter seu delivery próprio no ar. Sem programador, sem agência,
+            sem comissão. E com 30 dias de garantia para testar sem risco.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/templates"
+              className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+            >
+              Escolher meu template agora
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/precos"
+              className="inline-flex items-center gap-2 rounded-full border border-zinc-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-zinc-800"
+            >
+              Ver preços
+            </Link>
+          </div>
+          <p className="mt-4 text-xs text-zinc-500">
+            30 dias de garantia total. Se não funcionar, devolvemos tudo — sem burocracia.
+          </p>
+        </div>
+      </main>
+
+      {/* Footer simples */}
+      <footer className="border-border mt-12 border-t py-8">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-sm md:flex-row">
+          <Link href="/" className="flex items-center gap-2">
+            <Store className="text-primary h-5 w-5" />
+            <span className="font-bold">Zairyx</span>
+          </Link>
+          <p className="text-muted-foreground">
+            © {new Date().getFullYear()} Zairyx. Todos os direitos reservados.
+          </p>
+          <div className="flex gap-4">
+            <Link href="/termos" className="text-muted-foreground hover:text-foreground transition-colors">
+              Termos
+            </Link>
+            <Link href="/privacidade" className="text-muted-foreground hover:text-foreground transition-colors">
+              Privacidade
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
