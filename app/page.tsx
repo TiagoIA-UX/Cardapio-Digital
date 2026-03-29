@@ -8,6 +8,7 @@ import {
   BadgePercent,
   CheckCircle,
   ChevronRight,
+  CreditCard,
   Eye,
   Flame,
   MessageCircle,
@@ -401,6 +402,7 @@ export default function Home() {
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
           <section
+            id="como-funciona"
             data-testid="how-it-works-section"
             className="border-t border-zinc-100 bg-zinc-50 py-20 md:py-28"
           >
@@ -457,50 +459,65 @@ export default function Home() {
             BENEFÍCIOS — Grid de resultado + features novas
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
-          <section data-testid="benefits-section" className="py-20 md:py-28">
+          <section id="beneficios" data-testid="benefits-section" className="py-20 md:py-28">
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Tudo que seu delivery precisa pra crescer
+                  Por que seu delivery precisa da Zairyx
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                  Ferramentas que botam{' '}
-                  <span className="text-orange-500">dinheiro no seu caixa</span>
+                  Cada real que você paga ao iFood{' '}
+                  <span className="text-orange-500">sai do seu lucro</span>
                 </h2>
+                <p className="mt-4 text-base leading-relaxed text-zinc-600">
+                  Com a Zairyx, você para de trabalhar pra engordar o bolso dos outros — e começa a
+                  construir o seu próprio negócio. Veja o que você ganha ao trocar.
+                </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <BenefitCard
                   icon={<Shield className="h-5 w-5" />}
-                  title="Zero comissão por pedido"
-                  text="R$ 97/mês, sem taxa sobre vendas. Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. A diferença vai pro SEU bolso, não pro app."
+                  title="Zero comissão — nunca"
+                  text="R$ 97/mês, ponto final. Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. Enquanto o iFood leva até 30% de cada pedido, 100% das suas vendas ficam no SEU caixa."
+                  accent
+                />
+                <BenefitCard
+                  icon={<CreditCard className="h-5 w-5" />}
+                  title="Receba por Pix, cartão ou dinheiro"
+                  text="Seu cliente paga como quiser: Pix na hora, cartão de crédito em até 12x ou presencialmente. Integração com Mercado Pago — dinheiro na sua conta sem burocracia. Você aceita mais, vende mais."
                   accent
                 />
                 <BenefitCard
                   icon={<Sparkles className="h-5 w-5" />}
-                  title="IA que atende seus clientes 24h"
-                  text="Assistente inteligente dentro do cardápio. Responde dúvidas, sugere produtos e ajuda seu cliente a fechar o pedido — mesmo de madrugada."
+                  title="IA que vende por você 24h por dia"
+                  text="Assistente inteligente dentro do cardápio. Responde dúvidas, sugere itens, ajuda o cliente fechar o pedido — mesmo de madrugada, mesmo quando você está descansando."
                   accent
                 />
                 <BenefitCard
                   icon={<MessageCircle className="h-5 w-5" />}
-                  title="Pedidos direto no WhatsApp"
-                  text="Cliente monta o pedido no cardápio e envia organizado no seu WhatsApp. Sem precisar de app de terceiro roubando sua margem."
+                  title="Pedidos organizados no WhatsApp"
+                  text="O cliente monta o pedido no cardápio e você recebe tudo arrumado no WhatsApp. Sem erro de anotação, sem retrabalho, sem perder venda por confusão."
+                />
+                <BenefitCard
+                  icon={<ShieldCheck className="h-5 w-5" />}
+                  title="Independência total do sistema"
+                  text="Se o iFood cai, você continua vendendo. Se o WhatsApp tem instabilidade, os pedidos chegam pelo cardápio. Sua operação não para por causa de plataforma de terceiro."
                 />
                 <BenefitCard
                   icon={<Smartphone className="h-5 w-5" />}
-                  title="Painel que até seu avô usa"
-                  text="Mude preço, foto e categoria em 5 segundos pelo celular. Se você manda áudio no WhatsApp, você usa nosso painel."
+                  title="Painel que qualquer pessoa usa"
+                  text="Mude preço, foto e categoria em 5 segundos pelo celular. Feito pra quem não é de TI — se você manda áudio no WhatsApp, você usa o nosso painel sem dificuldade."
                 />
                 <BenefitCard
                   icon={<TrendingUp className="h-5 w-5" />}
-                  title="Alta temporada = lucro, não caos"
-                  text="Volume dobrou? Seu terminal organiza tudo. Sem perder pedido, sem confusão. Quanto mais vende, mais lucra."
+                  title="Alta temporada = lucro, não estresse"
+                  text="Volume dobrou no feriado? Seu terminal organiza tudo. Sem perder pedido, sem confusão. Quanto mais você vende, mais lucra — a mensalidade é fixa, não cresce com as vendas."
                 />
                 <BenefitCard
                   icon={<Zap className="h-5 w-5" />}
                   title="QR Code + Link + Instagram"
-                  text="Imprima na mesa, compartilhe no status, coloque na bio. Seus clientes acessam em 1 toque — sem baixar nada."
+                  text="Imprima na mesa, compartilhe no status, coloque na bio. Seus clientes acessam em 1 toque, sem baixar nada. Seu negócio está disponível 24h onde quer que eles estejam."
                 />
               </div>
             </div>
