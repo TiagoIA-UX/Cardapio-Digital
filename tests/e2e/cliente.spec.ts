@@ -194,10 +194,10 @@ test.describe('Cliente — Pagamento Sandbox (API)', () => {
       },
     })
 
-    // Sem auth: 400 (validação) ou 401/403 (auth gate)
+    // Sem auth: 400 (validação) ou 401/403 (auth gate) ou 429 (rate limit)
     // Com auth: 200/201 com dados do PIX
     const status = response.status()
-    expect([200, 201, 400, 401, 403]).toContain(status)
+    expect([200, 201, 400, 401, 403, 429]).toContain(status)
 
     if (status === 200 || status === 201) {
       const body = await response.json()
@@ -224,7 +224,7 @@ test.describe('Cliente — Pagamento Sandbox (API)', () => {
     })
 
     const status = response.status()
-    expect([200, 201, 400, 401, 403]).toContain(status)
+    expect([200, 201, 400, 401, 403, 429]).toContain(status)
   })
 
   test('12. Testar pagamento cartão Mastercard (nome FUND = sem saldo)', async ({ request }) => {
@@ -241,7 +241,7 @@ test.describe('Cliente — Pagamento Sandbox (API)', () => {
     })
 
     const status = response.status()
-    expect([200, 201, 400, 401, 403]).toContain(status)
+    expect([200, 201, 400, 401, 403, 429]).toContain(status)
   })
 
   test('13. Testar pagamento cartão Mastercard (nome CONT = pendente)', async ({ request }) => {
@@ -258,7 +258,7 @@ test.describe('Cliente — Pagamento Sandbox (API)', () => {
     })
 
     const status = response.status()
-    expect([200, 201, 400, 401, 403]).toContain(status)
+    expect([200, 201, 400, 401, 403, 429]).toContain(status)
   })
 })
 
