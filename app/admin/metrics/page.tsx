@@ -43,111 +43,158 @@ export default function AdminMetricsPage() {
         return
       }
 
-      const { data: restaurantsRes, count: restCount } = await supabase
-        .from('restaurants')
-        .select('id', { count: 'exact', head: true })
+      try {
+        const { count: restCount } = await supabase
+          .from('restaurants')
+          .select('id', { count: 'exact', head: true })
 
-      const { data: subs } = await supabase.from('subscriptions').select('status, plan_id')
+        const { data: subs } = await supabase.from('subscriptions').select('status, plan_id')
 
-      const { data: plans } = await supabase.from('plans').select('id, price_month')
-
-      const { data: activatedRes } = await supabase
-        .from('activation_events')
-        .select('restaurant_id')
-        .eq('event_type', 'received_first_order')
-
-      const totalRestaurants = restCount || 0
-      const activeSubscriptions = (subs || []).filter(
-        (s: { status: string }) => s.status === 'active'
-      ).length
-
-      const planPriceMap = new Map<string, number>()
-      ;(plans || []).forEach((p: { id: string; price_month: number }) =>
-        planPriceMap.set(p.id, Number(p.price_month))
-      )
-
-      let mrr = 0
-      ;(subs || []).forEach((s: { status: string; plan_id?: string }) => {
-        if (s.status === 'active' && s.plan_id && planPriceMap.has(s.plan_id)) {
-          mrr += planPriceMap.get(s.plan_id) || 0
+        // plans table may not exist in all deployments
+        let plans: { id: string; price_month: number }[] = []
+        try {
+          const { data: plansData } = await supabase.from('plans').select('id, price_month')
+          plans = plansData || []
+        } catch {
+          // plans table doesn't exist, use defaults
         }
-      })
 
-      const activatedRestaurants = new Set(
-        (activatedRes || []).map((e: { restaurant_id: string }) => e.restaurant_id)
-      ).size
-      const activationRate =
-        totalRestaurants > 0 ? (activatedRestaurants / totalRestaurants) * 100 : 0
+        // activation_events may not exist
+        let activatedRes: { restaurant_id: string }[] = []
+        try {
+          const { data: activatedData } = await supabase
+            .from('activation_events')
+            .select('restaurant_id')
+            .eq('event_type', 'received_first_order')
+          activatedRes = activatedData || []
+        } catch {
+          // activation_events table doesn't exist
+        }
 
-      const { count: totalEscalations } = await supabase
-        .from('ai_escalations')
-        .select('id', { count: 'exact', head: true })
+        const totalRestaurants = restCount || 0
+        const activeSubscriptions = (subs || []).filter(
+          (s: { status: string }) => s.status === 'active'
+        ).length
 
-      const { count: pendingEscalations } = await supabase
-        .from('ai_escalations')
-        .select('id', { count: 'exact', head: true })
-        .eq('resolved', false)
+        const planPriceMap = new Map<string, number>()
+        plans.forEach((p) => planPriceMap.set(p.id, Number(p.price_month)))
 
-      const { count: resolvedEscalations } = await supabase
-        .from('ai_escalations')
-        .select('id', { count: 'exact', head: true })
-        .eq('resolved', true)
+        let mrr = 0
+        ;(subs || []).forEach((s: { status: string; plan_id?: string }) => {
+          if (s.status === 'active' && s.plan_id && planPriceMap.has(s.plan_id)) {
+            mrr += planPriceMap.get(s.plan_id) || 0
+          }
+        })
 
-      const { count: totalLearningEntries } = await supabase
-        .from('ai_learning_entries')
-        .select('id', { count: 'exact', head: true })
+        const activatedRestaurants = new Set(
+          activatedRes.map((e) => e.restaurant_id)
+        ).size
+        const activationRate =
+          totalRestaurants > 0 ? (activatedRestaurants / totalRestaurants) * 100 : 0
 
-      // Escalation reasons breakdown
-      const { data: escalationReasons } = await supabase.from('ai_escalations').select('reason')
+        // AI tables may not exist - wrap in try/catch
+        let totalEscalations = 0
+        let pendingEscalations = 0
+        let resolvedEscalations = 0
+        let totalLearningEntries = 0
+        let topReasons: { reason: string; count: number }[] = []
+        let avgResolutionTimeHours: number | null = null
 
-      const reasonCounts = new Map<string, number>()
-      for (const e of escalationReasons ?? []) {
-        const reason = (e as { reason?: string }).reason ?? 'unknown'
-        reasonCounts.set(reason, (reasonCounts.get(reason) ?? 0) + 1)
+        try {
+          const { count: escCount } = await supabase
+            .from('ai_escalations')
+            .select('id', { count: 'exact', head: true })
+          totalEscalations = escCount || 0
+
+          const { count: pendCount } = await supabase
+            .from('ai_escalations')
+            .select('id', { count: 'exact', head: true })
+            .eq('resolved', false)
+          pendingEscalations = pendCount || 0
+
+          const { count: resCount } = await supabase
+            .from('ai_escalations')
+            .select('id', { count: 'exact', head: true })
+            .eq('resolved', true)
+          resolvedEscalations = resCount || 0
+
+          const { count: learnCount } = await supabase
+            .from('ai_learning_entries')
+            .select('id', { count: 'exact', head: true })
+          totalLearningEntries = learnCount || 0
+
+          // Escalation reasons breakdown
+          const { data: escalationReasons } = await supabase.from('ai_escalations').select('reason')
+
+          const reasonCounts = new Map<string, number>()
+          for (const e of escalationReasons ?? []) {
+            const reason = (e as { reason?: string }).reason ?? 'unknown'
+            reasonCounts.set(reason, (reasonCounts.get(reason) ?? 0) + 1)
+          }
+          topReasons = [...reasonCounts.entries()]
+            .map(([reason, count]) => ({ reason, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5)
+
+          // Average resolution time
+          const { data: resolvedEscalationsData } = await supabase
+            .from('ai_escalations')
+            .select('created_at, resolved_at')
+            .eq('resolved', true)
+            .not('resolved_at', 'is', null)
+
+          const resolved = resolvedEscalationsData ?? []
+          if (resolved.length > 0) {
+            const totalMs = resolved.reduce((sum: number, e: { created_at: string; resolved_at: string }) => {
+              const created = new Date(e.created_at).getTime()
+              const resolvedAt = new Date(e.resolved_at).getTime()
+              return sum + (resolvedAt - created)
+            }, 0)
+            avgResolutionTimeHours = Math.round((totalMs / resolved.length / 3_600_000) * 10) / 10
+          }
+        } catch {
+          // AI tables don't exist yet - that's OK
+        }
+
+        const resolutionRate =
+          totalEscalations > 0
+            ? (resolvedEscalations / totalEscalations) * 100
+            : 0
+
+        setMetrics({
+          totalRestaurants,
+          activeSubscriptions,
+          mrr,
+          activationRate,
+        })
+        setAiMetrics({
+          totalEscalations,
+          pendingEscalations,
+          resolvedEscalations,
+          resolutionRate,
+          totalLearningEntries,
+          avgResolutionTimeHours,
+          topReasons,
+        })
+      } catch (error) {
+        console.error('Error loading metrics:', error)
+        // Set empty metrics on error
+        setMetrics({
+          totalRestaurants: 0,
+          activeSubscriptions: 0,
+          mrr: 0,
+          activationRate: 0,
+        })
+        setAiMetrics({
+          totalEscalations: 0,
+          pendingEscalations: 0,
+          resolvedEscalations: 0,
+          resolutionRate: 0,
+          totalLearningEntries: 0,
+          avgResolutionTimeHours: null,
+          topReasons: [],
+        })
       }
-      const topReasons = [...reasonCounts.entries()]
-        .map(([reason, count]) => ({ reason, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5)
-
-      // Average resolution time
-      const { data: resolvedEscalationsData } = await supabase
-        .from('ai_escalations')
-        .select('created_at, resolved_at')
-        .eq('resolved', true)
-        .not('resolved_at', 'is', null)
-
-      let avgResolutionTimeHours: number | null = null
-      const resolved = resolvedEscalationsData ?? []
-      if (resolved.length > 0) {
-        const totalMs = resolved.reduce((sum: number, e: { created_at: string; resolved_at: string }) => {
-          const created = new Date(e.created_at).getTime()
-          const resolvedAt = new Date(e.resolved_at).getTime()
-          return sum + (resolvedAt - created)
-        }, 0)
-        avgResolutionTimeHours = Math.round((totalMs / resolved.length / 3_600_000) * 10) / 10
-      }
-
-      const resolutionRate =
-        (totalEscalations || 0) > 0
-          ? ((resolvedEscalations || 0) / (totalEscalations || 0)) * 100
-          : 0
-
-      setMetrics({
-        totalRestaurants,
-        activeSubscriptions,
-        mrr,
-        activationRate,
-      })
-      setAiMetrics({
-        totalEscalations: totalEscalations || 0,
-        pendingEscalations: pendingEscalations || 0,
-        resolvedEscalations: resolvedEscalations || 0,
-        resolutionRate,
-        totalLearningEntries: totalLearningEntries || 0,
-        avgResolutionTimeHours,
-        topReasons,
-      })
       setLoading(false)
     }
 

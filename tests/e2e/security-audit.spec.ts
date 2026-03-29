@@ -78,21 +78,24 @@ test.describe('Security Audit', () => {
     }
   })
 
-  test('open redirect é bloqueado em login', async ({ page }) => {
+  test('open redirect é bloqueado em login', async ({ page, baseURL }) => {
     const maliciousUrls = [
       '/login?redirect=https://evil.com',
       '/login?redirect=//evil.com',
       '/login?redirect=javascript:alert(1)',
     ]
 
+    const expectedHost = baseURL ? new URL(baseURL).hostname : 'localhost'
+
     for (const url of maliciousUrls) {
       await page.goto(url)
       await page.waitForLoadState('networkidle')
       const currentUrl = page.url()
       // Deve permanecer na página de login (não ser redirecionado para fora)
-      expect(currentUrl).toContain('localhost:3000/login')
+      expect(currentUrl).toContain('/login')
       // Não deve ter sido redirecionado para domínio malicioso
-      expect(new URL(currentUrl).hostname).toBe('localhost')
+      const currentHost = new URL(currentUrl).hostname
+      expect(currentHost).toBe(expectedHost)
     }
   })
 
