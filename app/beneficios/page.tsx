@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   CheckCircle,
   CreditCard,
+  Gift,
   Megaphone,
   MessageCircle,
   PackageCheck,
@@ -186,7 +187,7 @@ export default function BeneficiosPage() {
                 icon: TrendingUp,
                 color: 'bg-green-600',
                 title: 'Fidelização no canal próprio',
-                desc: 'Como você não paga comissão na Zairyx, pode oferecer preço levemente menor ou brinde. O cliente percebe a vantagem e passa a pedir direto — você economiza 12–27% por pedido para sempre.',
+                desc: 'Com a comissão economizada, você pode dar brinde (refrigerante, sobremesa, miminho), oferecer desconto — e ainda sobrar dinheiro no bolso. O cliente sente a diferença e fideliza. Você ganha mais por pedido, para sempre.',
               },
             ].map(({ num, icon: Icon, color, title, desc, highlight }) => (
               <div
@@ -205,6 +206,86 @@ export default function BeneficiosPage() {
                 <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
+          </div>
+
+          {/* ─── Brinde + sobra dinheiro ─────────────────────────────── */}
+          <div className="mb-10 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-600 text-white">
+                <Gift className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-green-900">
+                  Você pode dar brinde, dar desconto — e ainda sobrar dinheiro
+                </h3>
+                <p className="text-sm text-green-700">
+                  A matemática que o iFood não quer que você faça
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* Coluna iFood */}
+              <div className="rounded-xl border border-red-200 bg-white/70 p-5">
+                <p className="mb-3 text-sm font-bold text-red-700">❌ Pedido de R$ 50 no iFood</p>
+                <ul className="space-y-1.5 text-sm text-zinc-600">
+                  <li className="flex justify-between">
+                    <span>Valor recebido</span>
+                    <span className="font-medium">R$ 50,00</span>
+                  </li>
+                  <li className="flex justify-between text-red-600">
+                    <span>Comissão 27%</span>
+                    <span className="font-medium">− R$ 13,50</span>
+                  </li>
+                  <li className="flex justify-between border-t border-zinc-200 pt-1.5 font-bold">
+                    <span>Você fica com</span>
+                    <span className="text-red-600">R$ 36,50</span>
+                  </li>
+                </ul>
+                <p className="mt-3 text-xs text-zinc-400">Sem brinde. Sem desconto. Sem fidelização.</p>
+              </div>
+
+              {/* Coluna Zairyx */}
+              <div className="rounded-xl border border-green-300 bg-white/70 p-5">
+                <p className="mb-3 text-sm font-bold text-green-700">✅ Mesmo pedido de R$ 50 na Zairyx</p>
+                <ul className="space-y-1.5 text-sm text-zinc-600">
+                  <li className="flex justify-between">
+                    <span>Valor recebido</span>
+                    <span className="font-medium">R$ 50,00</span>
+                  </li>
+                  <li className="flex justify-between text-green-700">
+                    <span>Comissão Zairyx</span>
+                    <span className="font-medium">R$ 0,00</span>
+                  </li>
+                  <li className="flex justify-between text-orange-600">
+                    <span>Brinde p/ cliente (ex: refri)</span>
+                    <span className="font-medium">− R$ 3,00</span>
+                  </li>
+                  <li className="flex justify-between text-orange-600">
+                    <span>Desconto de 5%</span>
+                    <span className="font-medium">− R$ 2,50</span>
+                  </li>
+                  <li className="flex justify-between border-t border-zinc-200 pt-1.5 font-bold">
+                    <span>Você fica com</span>
+                    <span className="text-green-600">R$ 44,50</span>
+                  </li>
+                </ul>
+                <p className="mt-3 text-xs text-green-600 font-medium">
+                  Cliente recebeu brinde + desconto e ainda ficou R$ 8 a mais no seu bolso.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl bg-green-600 px-6 py-4 text-center text-white">
+              <p className="text-base font-bold">
+                🎁 Você mima o cliente, fideliza — e ainda ganha{' '}
+                <span className="underline decoration-white/60 decoration-2">R$ 8 a mais</span>{' '}
+                por pedido do que ganharia no iFood.
+              </p>
+              <p className="mt-1 text-sm text-green-100">
+                Multiplique isso por 200 pedidos/mês: são R$ 1.600 extras todo mês, mesmo dando brinde pra todo mundo.
+              </p>
+            </div>
           </div>
 
           {/* Pode / Não pode */}
@@ -322,7 +403,9 @@ export default function BeneficiosPage() {
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Um restaurante que fatura R$ 20.000/mês no iFood paga até R$ 6.000 em comissão.
                 Na Zairyx você paga mensalidade fixa a partir de R$ 147 e fica com{' '}
-                <strong>100% de cada venda</strong>. Em 1 mês você recupera o investimento inteiro.
+                <strong>100% de cada venda</strong>. Sobra margem para dar brinde, oferecer
+                desconto e ainda lucrar mais do que antes — em 1 mês você recupera o investimento
+                inteiro.
               </p>
             </div>
 
