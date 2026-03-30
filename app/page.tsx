@@ -187,7 +187,7 @@ export default function Home() {
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
                   O iFood é ótimo para conquistar <strong>clientes novos</strong>. Mas aquele cliente que já te conhece, 
                   que pede toda semana... ele pode ir direto pro seu canal. Quando alguém digita{' '}
-                  <em>"lanche perto de mim"</em> no Google, seu negócio aparece se você estiver no{' '}
+                  <em>&ldquo;lanche perto de mim&rdquo;</em> no Google, seu negócio aparece se você estiver no{' '}
                   <strong>Google Meu Negócio</strong> — e esse cadastro é <strong>gratuito</strong>.
                   Com um cardápio digital próprio, você transforma esse cliente em receita 100% sua.
                 </p>
@@ -300,8 +300,8 @@ export default function Home() {
                     <span className="text-blue-600">Google Meu Negócio</span>?
                   </h2>
                   <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                    Quando alguém digita <strong>"lanche perto de mim"</strong> ou{' '}
-                    <strong>"pizzaria próxima"</strong> no Google ou Google Maps, os resultados 
+                    Quando alguém digita <strong>&ldquo;lanche perto de mim&rdquo;</strong> ou{' '}
+                    <strong>&ldquo;pizzaria próxima&rdquo;</strong> no Google ou Google Maps, os resultados 
                     vêm do <strong>Google Meu Negócio</strong> — e o cadastro é{' '}
                     <span className="font-bold text-green-600">100% gratuito</span>.
                   </p>
@@ -324,7 +324,7 @@ export default function Home() {
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
                       <div>
                         <p className="font-semibold text-zinc-900">Apareça em buscas locais</p>
-                        <p className="text-sm text-zinc-600">"Delivery perto de mim", "restaurante aberto agora"</p>
+                        <p className="text-sm text-zinc-600">&ldquo;Delivery perto de mim&rdquo;, &ldquo;restaurante aberto agora&rdquo;</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -401,6 +401,7 @@ export default function Home() {
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
           <section
+            id="como-funciona"
             data-testid="how-it-works-section"
             className="border-t border-zinc-100 bg-zinc-50 py-20 md:py-28"
           >
@@ -457,50 +458,77 @@ export default function Home() {
             BENEFÍCIOS — Grid de resultado + features novas
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
-          <section data-testid="benefits-section" className="py-20 md:py-28">
+          <section id="beneficios" data-testid="benefits-section" className="py-20 md:py-28">
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Tudo que seu delivery precisa pra crescer
+                  Por que dono de delivery precisa disso
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                  Ferramentas que botam{' '}
-                  <span className="text-orange-500">dinheiro no seu caixa</span>
+                  Enquanto você paga comissão pro iFood,{' '}
+                  <span className="text-orange-500">seus concorrentes ficam com o lucro todo</span>
                 </h2>
+                <p className="mt-4 text-base text-zinc-600">
+                  Com a Zairyx você para de financiar o iFood e começa a construir seu próprio
+                  canal — com IA 24h, pagamento online e 0% de comissão por pedido.
+                </p>
+                <Link
+                  href="/beneficios"
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-orange-600 hover:text-orange-700"
+                >
+                  Ver todos os benefícios
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <BenefitCard
                   icon={<Shield className="h-5 w-5" />}
-                  title="Zero comissão por pedido"
-                  text="R$ 97/mês, sem taxa sobre vendas. Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. A diferença vai pro SEU bolso, não pro app."
+                  title="Zero comissão — para sempre"
+                  text="Mensalidade fixa. Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. Cada centavo de lucro fica no seu bolso — não no bolso do app."
                   accent
                 />
                 <BenefitCard
                   icon={<Sparkles className="h-5 w-5" />}
                   title="IA que atende seus clientes 24h"
-                  text="Assistente inteligente dentro do cardápio. Responde dúvidas, sugere produtos e ajuda seu cliente a fechar o pedido — mesmo de madrugada."
+                  text="Assistente inteligente dentro do cardápio. Responde dúvidas, sugere produtos e ajuda seu cliente a fechar o pedido — mesmo de madrugada, mesmo no feriado."
+                  accent
+                />
+                <BenefitCard
+                  icon={<CheckCircle className="h-5 w-5" />}
+                  title="Pagamento online pelo cardápio"
+                  text="Seu cliente paga com cartão, PIX ou parcelado direto no pedido. Confirmação automática — sem precisar conferir manualmente se o pagamento caiu."
                   accent
                 />
                 <BenefitCard
                   icon={<MessageCircle className="h-5 w-5" />}
-                  title="Pedidos direto no WhatsApp"
-                  text="Cliente monta o pedido no cardápio e envia organizado no seu WhatsApp. Sem precisar de app de terceiro roubando sua margem."
+                  title="Pedidos organizados no WhatsApp"
+                  text="Cliente monta o pedido no cardápio e envia tudo organizado no seu WhatsApp. Sem confusão de mensagem, sem pedido errado."
                 />
                 <BenefitCard
                   icon={<Smartphone className="h-5 w-5" />}
-                  title="Painel que até seu avô usa"
-                  text="Mude preço, foto e categoria em 5 segundos pelo celular. Se você manda áudio no WhatsApp, você usa nosso painel."
+                  title="Painel simples de verdade"
+                  text="Mude preço, foto e categoria em 5 segundos pelo celular. Se você manda áudio no WhatsApp, você usa nosso painel sem nenhum treinamento."
                 />
                 <BenefitCard
                   icon={<TrendingUp className="h-5 w-5" />}
                   title="Alta temporada = lucro, não caos"
-                  text="Volume dobrou? Seu terminal organiza tudo. Sem perder pedido, sem confusão. Quanto mais vende, mais lucra."
+                  text="Volume dobrou no verão? Seu cardápio organiza tudo. Sem perder pedido, sem confusão, sem depender de entregador de app."
+                />
+                <BenefitCard
+                  icon={<ShieldCheck className="h-5 w-5" />}
+                  title="30 dias de garantia — sem perguntas"
+                  text="Teste por 30 dias completos. Se não funcionar para o seu negócio, devolvemos tudo. A maioria dos concorrentes dá 7 dias. A gente dá 30 porque confia no produto."
                 />
                 <BenefitCard
                   icon={<Zap className="h-5 w-5" />}
                   title="QR Code + Link + Instagram"
-                  text="Imprima na mesa, compartilhe no status, coloque na bio. Seus clientes acessam em 1 toque — sem baixar nada."
+                  text="Imprima na mesa, compartilhe no status, coloque na bio. Seus clientes acessam em 1 toque — sem baixar nenhum aplicativo."
+                />
+                <BenefitCard
+                  icon={<BadgePercent className="h-5 w-5" />}
+                  title="Sua marca, não a do app"
+                  text="Cardápio com sua logo, suas cores e seu nome. O cliente lembra de você — não do iFood. É fidelização de verdade."
                 />
               </div>
             </div>
