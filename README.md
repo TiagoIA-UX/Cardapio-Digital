@@ -33,6 +33,7 @@ Cardápio Digital é uma plataforma SaaS B2B que entrega sites prontos de cardá
 | **Suporte com SLA**          | Tickets de suporte com prioridade, SLA cronometrado e painel admin                                                                             |
 | **Penalidades Progressivas** | Sistema de strikes com perda automática de clientes sem suporte                                                                                |
 | **Painel Admin**             | Gestão de vendas, afiliados, suporte, logs e métricas                                                                                          |
+| **Gerador de Imagens IA**    | Geração de imagens com Pollinations/DALL-E/Gemini, validação visual, créditos pré-pagos via Mercado Pago — [docs](docs/GERADOR_DE_IMAGENS.md) · [repo](https://github.com/TiagoIA-UX/Gerador-de-Imagens) |
 | **Chatbot IA**               | Atendimento automatizado com Groq (LLaMA 3.3 70B)                                                                                              |
 | **CDN de Imagens**           | Upload via Cloudflare R2 com cache distribuído                                                                                                 |
 | **Rate Limiting**            | Proteção de APIs com Upstash Redis                                                                                                             |
@@ -134,6 +135,7 @@ O projeto faz deploy automático na Vercel ao fazer merge em `main`:
 | [docs/migrations-guide.md](docs/migrations-guide.md)                                       | Guia de migrations                 |
 | [docs/GUIA_DESENVOLVEDORES_TESTES_MANUAIS.md](docs/GUIA_DESENVOLVEDORES_TESTES_MANUAIS.md) | Testes manuais                     |
 | [docs/OBJETIVO_PRODUTO.md](docs/OBJETIVO_PRODUTO.md)                                       | Objetivo do produto                |
+| [docs/GERADOR_DE_IMAGENS.md](docs/GERADOR_DE_IMAGENS.md)                                   | Módulo Gerador de Imagens IA (API, schema, config) |
 | [docs/](docs/)                                                                             | Documentação técnica e operacional |
 
 ## Segurança
