@@ -14,6 +14,7 @@ import {
   HelpCircle,
   FileText,
   Users,
+  ImageIcon,
 } from 'lucide-react'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -48,6 +49,12 @@ const MEGA_MENU: Record<string, MegaMenuCategory> = {
         icon: CreditCard,
       },
       { href: '/status', label: 'Status', desc: 'Uptime e monitoramento', icon: Activity },
+      {
+        href: '/gerador-imagens',
+        label: 'Gerador de Imagens IA',
+        desc: 'Crie fotos de produtos com IA',
+        icon: ImageIcon,
+      },
     ],
   },
   recursos: {
