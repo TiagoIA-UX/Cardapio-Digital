@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   Sparkles,
   Download,
@@ -18,10 +17,14 @@ import {
   History,
   ShoppingCart,
   LogIn,
+  Layers,
+  AlertTriangle,
+  ExternalLink,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { CREDIT_PACKS, STYLE_LABELS, type ImageStyle, type CreditPack } from '@/lib/ai-image-generator'
+import { PARTNERS } from '@/lib/ai-image-generator-partners'
 import { BRAND_SHORT } from '@/lib/brand'
 import { isPublicSandboxMode } from '@/lib/payment-mode'
 
@@ -40,6 +43,13 @@ interface CreditsData {
     provider: string
     created_at: string
   }[]
+}
+
+interface ValidationInfo {
+  score: number
+  issues: string[]
+  skipped: boolean
+  attempts: number
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -64,6 +74,7 @@ export function GeradorImagensClient() {
   const [style, setStyle] = useState<ImageStyle>('food')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+  const [validationInfo, setValidationInfo] = useState<ValidationInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [credits, setCredits] = useState<CreditsData | null>(null)
   const [loadingCredits, setLoadingCredits] = useState(true)
@@ -108,6 +119,7 @@ export function GeradorImagensClient() {
     setIsGenerating(true)
     setError(null)
     setGeneratedImage(null)
+    setValidationInfo(null)
 
     try {
       const res = await fetch('/api/gerador-imagens/gerar', {
@@ -122,6 +134,7 @@ export function GeradorImagensClient() {
         error?: string
         code?: string
         message?: string
+        validation?: ValidationInfo
       }
 
       if (!res.ok) {
@@ -138,7 +151,7 @@ export function GeradorImagensClient() {
 
       if (data.imageUrl) {
         setGeneratedImage(data.imageUrl)
-        // Atualizar créditos após geração bem-sucedida
+        if (data.validation) setValidationInfo(data.validation)
         void loadCredits()
       }
     } catch {
@@ -344,7 +357,7 @@ export function GeradorImagensClient() {
               {isGenerating ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Gerando imagem...
+                  Gerando e validando imagem...
                 </>
               ) : (
                 <>
@@ -379,11 +392,46 @@ export function GeradorImagensClient() {
             <div className="mt-6">
               <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
                 <div className="p-4 pb-0">
-                  <h3 className="text-foreground font-semibold">Imagem gerada ✨</h3>
-                  <p className="text-muted-foreground text-sm">{prompt}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-foreground font-semibold">Imagem gerada ✨</h3>
+                      <p className="text-muted-foreground text-sm">{prompt}</p>
+                    </div>
+                    {/* Validation score badge */}
+                    {validationInfo && !validationInfo.skipped && (
+                      <div
+                        className={`shrink-0 flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
+                          validationInfo.score >= 70
+                            ? 'bg-green-50 text-green-700'
+                            : validationInfo.score >= 40
+                              ? 'bg-yellow-50 text-yellow-700'
+                              : 'bg-red-50 text-red-700'
+                        }`}
+                      >
+                        {validationInfo.score >= 70 ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <AlertTriangle className="h-3 w-3" />
+                        )}
+                        Score {validationInfo.score}/100
+                        {validationInfo.attempts > 1 && (
+                          <span className="ml-1 opacity-70">({validationInfo.attempts}ª tent.)</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {/* Validation issues */}
+                  {validationInfo && validationInfo.issues.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {validationInfo.issues.map((issue, i) => (
+                        <span key={i} className="rounded-full bg-yellow-50 px-2 py-0.5 text-xs text-yellow-700">
+                          ⚠ {issue}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="relative mx-4 my-4 overflow-hidden rounded-xl">
-                  {/* Use regular img since we don't know the domain for next/image */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={generatedImage}
@@ -570,17 +618,22 @@ export function GeradorImagensClient() {
               Por que usar o Gerador IA da {BRAND_SHORT}?
             </h2>
           </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
             {[
               {
                 icon: <Zap className="text-primary h-6 w-6" />,
                 title: 'Resultado imediato',
-                desc: 'Gere imagens profissionais em menos de 10 segundos. Sem espera, sem fila.',
+                desc: 'Gere imagens profissionais em menos de 10 segundos.',
               },
               {
                 icon: <Star className="text-primary h-6 w-6" />,
-                title: 'Qualidade profissional',
-                desc: 'Estilo de fotografia comercial, ideal para cardápios, redes sociais e e-commerce.',
+                title: 'Qualidade validada',
+                desc: 'IA analisa visualmente o resultado e refaz se vier com texto errado ou watermark.',
+              },
+              {
+                icon: <Layers className="text-primary h-6 w-6" />,
+                title: 'Geração em lote',
+                desc: 'Gere até 877 imagens de uma vez para o seu catálogo completo.',
               },
               {
                 icon: <Crown className="text-primary h-6 w-6" />,
@@ -597,6 +650,66 @@ export function GeradorImagensClient() {
           </div>
         </div>
       </section>
+
+      {/* Partners section */}
+      <section className="border-border border-t px-4 py-12">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-muted-foreground mb-6 text-sm font-medium uppercase tracking-wide">
+            Usado por
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {PARTNERS.map((partner) => (
+              <Link
+                key={partner.slug}
+                href={`/gerador-imagens/p/${partner.slug}`}
+                className="group flex flex-col items-center gap-2"
+              >
+                <div
+                  className={`flex items-center gap-2 rounded-xl border px-5 py-3 text-lg font-bold transition-all group-hover:shadow-md ${
+                    partner.slug === 'blog-da-elisa'
+                      ? 'border-rose-200 text-rose-500 group-hover:border-rose-400'
+                      : 'border-primary/20 text-primary group-hover:border-primary/50'
+                  }`}
+                >
+                  <span className="text-2xl">{partner.logoEmoji}</span>
+                  <span>{partner.logoText}</span>
+                </div>
+                <p className="text-muted-foreground text-xs">{partner.targetAudience.split(',')[0]}</p>
+                <span className="text-primary flex items-center gap-1 text-xs group-hover:underline">
+                  Ver página exclusiva <ExternalLink className="h-3 w-3" />
+                </span>
+              </Link>
+            ))}
+          </div>
+          <p className="text-muted-foreground mt-6 text-xs">
+            Tem um blog ou negócio e quer co-branded page?{' '}
+            <a href={`mailto:zairyx.ai@gmail.com?subject=Parceria Gerador IA`} className="text-primary hover:underline">
+              Fale com a gente
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* Batch mode CTA */}
+      {credits?.authenticated && (
+        <section className="bg-primary/5 border-primary/10 border-t px-4 py-8">
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 text-center md:flex-row md:text-left">
+            <div className="flex-1">
+              <h3 className="text-foreground mb-1 font-bold">
+                <Layers className="mr-2 inline h-5 w-5 text-primary" />
+                Precisa gerar muitas imagens?
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                Use a geração em lote para criar até 877 imagens de uma vez — perfeito para
+                montar o catálogo completo do seu cardápio digital.
+              </p>
+            </div>
+            <Badge variant="secondary" className="shrink-0">
+              {credits.credits_available} créditos disponíveis
+            </Badge>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="from-primary/10 to-background bg-linear-to-b px-4 py-12 text-center">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { generateImage } from '@/lib/ai-image-generator'
+import { generateWithValidation } from '@/lib/ai-image-generator'
 import { checkRateLimit, getRateLimitIdentifier } from '@/lib/rate-limit'
 
 const GenerateSchema = z.object({
@@ -11,8 +11,11 @@ const GenerateSchema = z.object({
     .enum(['food', 'packshot', 'lifestyle', 'abstract', 'product', 'logo'])
     .optional()
     .default('food'),
-  width: z.number().int().min(256).max(1024).optional().default(1024),
-  height: z.number().int().min(256).max(1024).optional().default(1024),
+  width: z.number().int().min(256).max(1024).optional().default(800),
+  height: z.number().int().min(256).max(1024).optional().default(800),
+  provider: z.enum(['pollinations', 'dalle', 'gemini']).optional().default('pollinations'),
+  /** Se true, ativa análise visual com retry (usa GEMINI_API_KEY) */
+  validate: z.boolean().optional().default(true),
 })
 
 export async function POST(request: NextRequest) {
@@ -41,16 +44,14 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { prompt, style, width, height } = parsed.data
+  const { prompt, style, width, height, provider, validate } = parsed.data
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const admin = createAdminClient()
 
   if (user) {
-    // Usuário autenticado: verificar e consumir crédito
-
-    // Garantir registro de créditos existe (dar créditos gratuitos se ainda não recebeu)
+    // Garantir registro de créditos (dar créditos gratuitos se ainda não recebeu)
     const { data: creditsRow } = await admin
       .from('ai_image_credits')
       .select('credits_available')
@@ -58,11 +59,10 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (!creditsRow) {
-      // Primeiro acesso: dar créditos gratuitos via função RPC segura
       await admin.rpc('give_free_ai_image_credits', { p_user_id: user.id })
     }
 
-    // Verificar saldo atualizado
+    // Verificar saldo
     const { data: credits } = await admin
       .from('ai_image_credits')
       .select('credits_available')
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Consumir crédito via função segura no banco
+    // Consumir crédito via RPC atômica
     const { data: consumed, error: consumeError } = await admin.rpc('consume_ai_image_credit', {
       p_user_id: user.id,
       p_amount: 1,
@@ -93,12 +93,14 @@ export async function POST(request: NextRequest) {
       )
     }
   }
-  // Usuários não autenticados não consomem créditos mas têm rate limit mais restrito (10 req/min por IP)
 
-  // Gerar imagem
+  // Gerar imagem com validação visual e retry automático
   let result
   try {
-    result = await generateImage({ prompt, style, width, height })
+    result = await generateWithValidation(
+      { prompt, style, width, height, provider },
+      validate ? 3 : 1   // maxRetries = 3 se validação ativada, 1 se desativada
+    )
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro ao gerar imagem'
     return NextResponse.json({ error: message }, { status: 500 })
@@ -116,6 +118,12 @@ export async function POST(request: NextRequest) {
       width: result.width,
       height: result.height,
       credits_charged: 1,
+      metadata: {
+        validation_score: result.validationScore,
+        validation_issues: result.validationIssues,
+        validation_skipped: result.validationSkipped,
+        attempts: result.attempts,
+      },
     })
   }
 
@@ -126,6 +134,12 @@ export async function POST(request: NextRequest) {
       provider: result.provider,
       width: result.width,
       height: result.height,
+      validation: {
+        score: result.validationScore,
+        issues: result.validationIssues,
+        skipped: result.validationSkipped,
+        attempts: result.attempts,
+      },
     },
     { headers: rateLimit.headers }
   )

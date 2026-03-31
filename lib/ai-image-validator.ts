@@ -76,29 +76,14 @@ async function analyzeWithGemini(
 
   const analysisPrompt = buildAnalysisPrompt(ctx)
 
-  // Gemini 1.5 Flash suporta URLs de imagem diretamente
-  const body = JSON.stringify({
-    contents: [
-      {
-        parts: [
-          { text: analysisPrompt },
-          {
-            inline_data: undefined,
-            // Para URLs externas, usa fileData ou inlineData dependendo do tipo
-          },
-        ],
-      },
-    ],
-  })
-
-  // Monta requisição com URL da imagem como parte inline
+  // Monta requisição com URL da imagem para Gemini Vision
   const requestBody = {
     contents: [
       {
         parts: [
           { text: analysisPrompt },
           {
-            // Para imagens via URL, usa a estrutura de fileData com fetchUrl
+            // Para imagens via URL, usa fileData com fileUri
             fileData: {
               mimeType: 'image/jpeg',
               fileUri: imageUrl,
