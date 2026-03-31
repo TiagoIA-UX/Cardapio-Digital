@@ -80,12 +80,26 @@ export interface BatchProgress {
 
 // ── Limites do sistema ────────────────────────────────────────────────────
 
-/** Máximo de itens por job de lote por request */
-export const MAX_BATCH_SIZE = 50
-/** Máximo de requisições simultâneas por job */
+/**
+ * Tamanho máximo de lote por job, por provider:
+ *
+ * - Pollinations: URLs são geradas instantaneamente (sem chamada de rede por item),
+ *   então suporta o catálogo inteiro de 877 produtos em um único job.
+ *   A imagem é renderizada pelo Pollinations na hora em que o browser carrega a URL.
+ *
+ * - DALL-E / Gemini: exigem chamada de rede por item e têm rate limits de API
+ *   (DALL-E ~4 img/min, Gemini ~60 img/min). Limite conservador de 50 por job
+ *   para evitar timeout de servidor (Vercel: max 60s).
+ */
+export const MAX_BATCH_SIZE_POLLINATIONS = 877  // catálogo completo de templates
+export const MAX_BATCH_SIZE_API = 50             // DALL-E / Gemini (rate limit)
 export const MAX_BATCH_CONCURRENCY = 5
-/** Delay mínimo entre requisições (ms) — evita rate-limit do provider */
 export const BATCH_ITEM_DELAY_MS = 500
+
+/** Retorna o limite máximo de lote para um provider */
+export function getMaxBatchSize(provider: ImageProvider): number {
+  return provider === 'pollinations' ? MAX_BATCH_SIZE_POLLINATIONS : MAX_BATCH_SIZE_API
+}
 
 // ── Style presets ─────────────────────────────────────────────────────────
 
@@ -123,17 +137,22 @@ export function buildFullPrompt(prompt: string, style: ImageStyle = 'food'): str
 
 /**
  * Gera a URL do Pollinations.ai para um prompt.
+ * Usa model=flux (maior qualidade) — alinhado com o script
+ * generate-images-pollinations.js existente no repositório.
  * Exportado para ser testado diretamente.
  */
 export function buildPollinationsUrl(
   prompt: string,
-  width = 1024,
-  height = 1024,
+  width = 800,
+  height = 800,
   seed?: number
 ): string {
   const encoded = encodeURIComponent(prompt)
   const s = seed ?? Math.floor(Math.random() * 999999)
-  return `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&seed=${s}&nologo=true&enhance=true`
+  return (
+    `https://image.pollinations.ai/prompt/${encoded}` +
+    `?width=${width}&height=${height}&seed=${s}&nologo=true&model=flux&enhance=true&safe=true`
+  )
 }
 
 /**
@@ -188,13 +207,15 @@ export function calcBatchPercent(total: number, done: number, errors: number): n
  */
 export function validateBatchInput(
   prompts: unknown[],
-  userCredits: number
+  userCredits: number,
+  provider: ImageProvider = 'pollinations'
 ): string | null {
   if (!Array.isArray(prompts) || prompts.length === 0) {
     return 'A lista de prompts não pode estar vazia.'
   }
-  if (prompts.length > MAX_BATCH_SIZE) {
-    return `Máximo de ${MAX_BATCH_SIZE} imagens por lote. Envie ${prompts.length - MAX_BATCH_SIZE} a menos.`
+  const maxSize = getMaxBatchSize(provider)
+  if (prompts.length > maxSize) {
+    return `Máximo de ${maxSize} imagens por lote para o provider "${provider}". Envie ${prompts.length - maxSize} a menos.`
   }
   if (userCredits < prompts.length) {
     return `Créditos insuficientes: você tem ${userCredits} crédito(s) mas o lote requer ${prompts.length}.`
@@ -207,8 +228,8 @@ export function validateBatchInput(
 async function generateWithPollinations(input: GenerateImageInput): Promise<GenerateImageResult> {
   const style = input.style ?? 'food'
   const fullPrompt = buildFullPrompt(input.prompt, style)
-  const width = input.width ?? 1024
-  const height = input.height ?? 1024
+  const width = input.width ?? 800
+  const height = input.height ?? 800
   const imageUrl = buildPollinationsUrl(fullPrompt, width, height)
 
   return {
@@ -383,3 +404,78 @@ export const FREE_CREDITS = 3
 export function getCreditPack(slug: string): CreditPack | undefined {
   return CREDIT_PACKS.find((p) => p.slug === slug)
 }
+
+// ── Geração com validação visual + retry automático ───────────────────────
+
+export interface GenerateWithValidationResult extends GenerateImageResult {
+  validationScore: number
+  validationIssues: string[]
+  validationSkipped: boolean
+  attempts: number
+}
+
+/**
+ * Gera uma imagem e valida visualmente o resultado.
+ * Se a imagem for rejeitada, tenta novamente com seed diferente.
+ *
+ * - Máximo de MAX_RETRIES tentativas por item
+ * - Em caso de falha persistente, retorna a melhor imagem obtida com as issues documentadas
+ * - A validação usa Gemini Vision — requer GEMINI_API_KEY configurada para funcionar.
+ *   Se não configurada, a geração acontece normalmente sem validação (bypass).
+ */
+export async function generateWithValidation(
+  input: GenerateImageInput,
+  maxRetries = 3
+): Promise<GenerateWithValidationResult> {
+  const { validateImageContent, shouldRetryGeneration } = await import('@/lib/ai-image-validator')
+
+  let bestResult: GenerateImageResult | null = null
+  let bestScore = -1
+  let lastIssues: string[] = []
+  let lastSkipped = false
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const result = await generateImage(input)
+
+    const validation = await validateImageContent(result.imageUrl, {
+      prompt: input.prompt,
+      style: input.style ?? 'food',
+      provider: result.provider,
+    })
+
+    // Mantém a melhor imagem obtida até agora
+    if (validation.score > bestScore || bestResult === null) {
+      bestScore = validation.score
+      bestResult = result
+      lastIssues = validation.issues
+      lastSkipped = validation.skipped
+    }
+
+    // Se aprovada ou bypass, retorna imediatamente
+    if (validation.valid || validation.skipped) {
+      return {
+        ...result,
+        validationScore: validation.score,
+        validationIssues: validation.issues,
+        validationSkipped: validation.skipped,
+        attempts: attempt,
+      }
+    }
+
+    // Verifica se vale a pena tentar de novo
+    if (!shouldRetryGeneration(validation) || attempt === maxRetries) {
+      break
+    }
+
+    // Próxima tentativa — mesmo prompt, novo seed (implícito no buildPollinationsUrl)
+  }
+
+  return {
+    ...bestResult!,
+    validationScore: bestScore,
+    validationIssues: lastIssues,
+    validationSkipped: lastSkipped,
+    attempts: maxRetries,
+  }
+}
+
