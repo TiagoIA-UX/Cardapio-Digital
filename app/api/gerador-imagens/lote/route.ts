@@ -140,11 +140,21 @@ export async function POST(request: NextRequest) {
     // Por agora, processa de forma assíncrona com captura de erro
     processApiBatchAsync(admin, user.id, jobId, items, provider as ImageProvider, validate).catch(
       (err: unknown) => {
-        console.error('[lote] Erro no processamento assíncrono do job', jobId, err)
-        void admin
+        console.error('[lote] Erro no processamento assíncrono do job', {
+          jobId,
+          userId: user.id,
+          provider,
+          error: err instanceof Error ? err.message : String(err),
+        })
+        admin
           .from('ai_image_batch_jobs')
           .update({ status: 'failed' })
           .eq('id', jobId)
+          .then(({ error: dbErr }) => {
+            if (dbErr) {
+              console.error('[lote] Falha ao marcar job como failed no banco', { jobId, dbErr })
+            }
+          })
       }
     )
   }

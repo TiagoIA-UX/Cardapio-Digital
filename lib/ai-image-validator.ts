@@ -76,17 +76,39 @@ async function analyzeWithGemini(
 
   const analysisPrompt = buildAnalysisPrompt(ctx)
 
-  // Monta requisição com URL da imagem para Gemini Vision
+  // Gemini Vision: para URLs HTTP externas (Pollinations, etc.), buscamos
+  // a imagem como buffer e enviamos como inlineData (base64).
+  // fileUri/fileData apenas aceita URIs gs:// do Google Cloud Storage.
+  let imageBase64: string | null = null
+  let imageMime = 'image/jpeg'
+  try {
+    const imgResponse = await fetch(imageUrl, { signal: AbortSignal.timeout(10_000) })
+    if (imgResponse.ok) {
+      const contentType = imgResponse.headers.get('content-type') ?? 'image/jpeg'
+      imageMime = contentType.split(';')[0].trim() || 'image/jpeg'
+      const buffer = await imgResponse.arrayBuffer()
+      imageBase64 = Buffer.from(buffer).toString('base64')
+    }
+  } catch {
+    // Se não conseguir baixar a imagem, faz bypass
+    console.warn('[ai-image-validator] Não foi possível buscar imagem para análise, bypass:', imageUrl)
+    return { valid: true, score: 0, issues: [], skipped: true }
+  }
+
+  if (!imageBase64) {
+    return { valid: true, score: 0, issues: [], skipped: true }
+  }
+
   const requestBody = {
     contents: [
       {
         parts: [
           { text: analysisPrompt },
           {
-            // Para imagens via URL, usa fileData com fileUri
-            fileData: {
-              mimeType: 'image/jpeg',
-              fileUri: imageUrl,
+            // inlineData aceita qualquer URL — imagem codificada em base64
+            inlineData: {
+              mimeType: imageMime,
+              data: imageBase64,
             },
           },
         ],
