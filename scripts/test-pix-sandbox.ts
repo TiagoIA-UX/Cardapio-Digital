@@ -106,9 +106,9 @@ async function createPreference(): Promise<PreferenceResult | null> {
         },
         external_reference: `onboarding:sandbox-test-${Date.now()}`,
         back_urls: {
-          success: 'https://zairyx.com/pagamento/sucesso?checkout=SANDBOX-TEST',
-          failure: 'https://zairyx.com/pagamento/erro?checkout=SANDBOX-TEST',
-          pending: 'https://zairyx.com/pagamento/pendente?checkout=SANDBOX-TEST',
+          success: 'https://zairyx.com.br/pagamento/sucesso?checkout=SANDBOX-TEST',
+          failure: 'https://zairyx.com.br/pagamento/erro?checkout=SANDBOX-TEST',
+          pending: 'https://zairyx.com.br/pagamento/pendente?checkout=SANDBOX-TEST',
         },
         statement_descriptor: 'ZAIRYX',
       }),

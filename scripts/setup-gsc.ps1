@@ -12,7 +12,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 $PROJECT_ID = "cardapio-digital-seo"
 $SA_NAME = "gsc-reader"
 $SA_DISPLAY = "GSC Reader (Cardapio Digital)"
-$SITE_URL = "https://www.zairyx.com"
+$SITE_URL = "https://www.zairyx.com.br"
 
 Write-Host "`n=== ETAPA 1: Verificando autenticacao ===" -ForegroundColor Cyan
 $accounts = gcloud auth list --format="value(account)" 2>&1

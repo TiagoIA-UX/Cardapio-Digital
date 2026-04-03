@@ -6,9 +6,9 @@
 
 [![CI](https://github.com/TiagoIA-UX/Cardapio-Digital/actions/workflows/ci.yml/badge.svg)](https://github.com/TiagoIA-UX/Cardapio-Digital/actions/workflows/ci.yml)
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-blue.svg)](LICENSE)
-[![Deploy](https://img.shields.io/badge/demo-zairyx.com-brightgreen)](https://zairyx.com)
+[![Deploy](https://img.shields.io/badge/demo-zairyx.com.br-brightgreen)](https://zairyx.com.br)
 
-[Demo ao Vivo](https://zairyx.com) · [Documentação](docs/) · [Licença Comercial](mailto:tiago@tiagoia.dev)
+[Demo ao Vivo](https://zairyx.com.br) · [Documentação](docs/) · [Licença Comercial](mailto:tiago@tiagoia.dev)
 
 </div>
 
@@ -18,7 +18,7 @@
 
 Cardápio Digital é uma plataforma SaaS B2B que entrega sites prontos de cardápio digital para restaurantes, pizzarias e outros negócios de alimentação. O operador escolhe um template, personaliza o visual e publica em minutos, com pedidos integrados a WhatsApp e pagamento via Mercado Pago.
 
-**Demo ao vivo:** [https://zairyx.com](https://zairyx.com)
+**Demo ao vivo:** [https://zairyx.com.br](https://zairyx.com.br)
 
 ## Modelo de Acesso ao Código
 
@@ -134,7 +134,7 @@ O projeto faz deploy automático na Vercel ao fazer merge em `main`:
 3. Crie o PR e faça merge em `main`
 4. Vercel faz deploy automático
 
-**Produção:** [https://zairyx.com](https://zairyx.com)
+**Produção:** [https://zairyx.com.br](https://zairyx.com.br)
 
 ## Documentação
 
@@ -168,7 +168,7 @@ Para concessão comercial prática e acesso ao repositório privado, veja [docs/
 ## Contato
 
 - **Email:** tiago@tiagoia.dev
-- **Site:** [https://zairyx.com](https://zairyx.com)
+- **Site:** [https://zairyx.com.br](https://zairyx.com.br)
 
 ---
 

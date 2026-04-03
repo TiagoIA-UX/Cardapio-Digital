@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
     // MercadoPago rejeita http://localhost em back_urls — usar URL pública em dev local
     const isLocal = /localhost|127\.0\.0\.1/.test(siteUrl)
     const backUrlBase = isLocal
-      ? getSiteUrl() // https://zairyx.com (MP exige URL pública)
+      ? getSiteUrl() // https://zairyx.com.br (MP exige URL pública)
       : siteUrl.startsWith('http://')
         ? siteUrl.replace('http://', 'https://')
         : siteUrl

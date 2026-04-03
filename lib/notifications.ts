@@ -94,7 +94,7 @@ async function sendEmailAlert(payload: NotifyPayload) {
   if (!apiKey) return // Email não configurado — apenas loga
 
   try {
-    const fromDomain = process.env.RESEND_FROM_DOMAIN ?? 'zairyx.com'
+    const fromDomain = process.env.RESEND_FROM_DOMAIN ?? 'zairyx.com.br'
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {

@@ -2,6 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { extractClientIpFromHeaders, isAdminRoute } from '@/lib/middleware-security'
 
+const CANONICAL_HOST = 'zairyx.com.br'
+const LEGACY_HOSTS = new Set(['zairyx.com', 'www.zairyx.com', 'www.zairyx.com.br'])
+
 interface RateLimitEntry {
   count: number
   resetTime: number
@@ -116,6 +119,15 @@ export async function proxy(request: NextRequest) {
   const clientIP = extractClientIpFromHeaders(request.headers)
   const isDev = process.env.NODE_ENV === 'development'
   const oauthRecoveryRedirect = getOauthRecoveryRedirect(request)
+  const requestHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
+  const normalizedHost = requestHost.toLowerCase().replace(/:\d+$/, '')
+
+  if (!isDev && LEGACY_HOSTS.has(normalizedHost)) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.protocol = 'https:'
+    redirectUrl.host = CANONICAL_HOST
+    return NextResponse.redirect(redirectUrl, 308)
+  }
 
   if (oauthRecoveryRedirect) {
     return NextResponse.redirect(oauthRecoveryRedirect)

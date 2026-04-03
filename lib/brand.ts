@@ -17,7 +17,7 @@ export const COMPANY_CNPJ = COMPANY_CNPJ_RAW.replace(
 )
 export const COMPANY_PAYMENT_DESCRIPTOR = 'Zairyx Solucoes'
 export const SUPPORT_EMAIL = 'zairyx.ai@gmail.com'
-export const DOMAIN = 'zairyx.com'
+export const DOMAIN = 'zairyx.com.br'
 
 // ── Textos de pagamento ──────────────────────────────────────────
 export const PAYMENT_BRAND_EXPLANATION =

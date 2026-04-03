@@ -32,7 +32,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://zairyx.com"
+          "value": "https://zairyx.com.br"
         },
         {
           "key": "Access-Control-Allow-Methods",

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { getSiteUrl } from '@/lib/site-url'
 
 interface JsonLdProps {
   data: Record<string, unknown> | Record<string, unknown>[]
@@ -19,7 +19,7 @@ export function JsonLd({ data }: JsonLdProps) {
  * Schema.org para a organização (usar no layout)
  */
 export function OrganizationJsonLd() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zairyx.com'
+  const siteUrl = getSiteUrl()
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',

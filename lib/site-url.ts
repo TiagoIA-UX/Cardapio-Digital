@@ -1,3 +1,5 @@
+const DEFAULT_SITE_URL = 'https://zairyx.com.br'
+
 function stripTrailingSlashes(url: string): string {
   return url.replace(/\/+$/, '')
 }
@@ -34,5 +36,5 @@ export function getSiteUrl(): string {
     return stripTrailingSlashes(window.location.origin)
   }
 
-  return 'http://localhost:3000'
+  return DEFAULT_SITE_URL
 }

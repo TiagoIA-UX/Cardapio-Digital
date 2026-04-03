@@ -173,12 +173,12 @@ ${batches.length > 0 ? `📋 Batch mais recente: ${batches[0]?.referencia} — $
 📊 CDI acumulado: ${formatCurrency(summary?.total_rendimento_cdi ?? 0)}
 
 ⏰ Acesse o painel para aprovar e pagar:
-https://zairyx.com/admin/financeiro`
+https://zairyx.com.br/admin/financeiro`
 
   // Self-reminder links (dias 1 e 15)
   const reminderMsg = `⏰ LEMBRETE: Configurar alarme para pagar afiliados nos dias 1 e 15 de cada mês (5h da manhã).
 
-Dashboard financeiro: https://zairyx.com/admin/financeiro
+Dashboard financeiro: https://zairyx.com.br/admin/financeiro
 
 Checklist:
 1. Abrir painel financeiro

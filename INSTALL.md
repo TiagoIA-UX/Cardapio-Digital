@@ -73,8 +73,16 @@ Quando quiser cobrar de verdade:
 
 1. Suba o projeto na Vercel.
 2. Cadastre as mesmas variáveis de ambiente da sua instalação local.
-3. Defina NEXT_PUBLIC_SITE_URL com a URL publica.
+3. Defina `NEXT_PUBLIC_SITE_URL` como [https://zairyx.com.br](https://zairyx.com.br).
 4. Refaça o teste de pedido, checkout e webhook antes de divulgar.
+
+## Dominio de producao
+
+1. Adicione [zairyx.com.br](https://zairyx.com.br) e [www.zairyx.com.br](https://www.zairyx.com.br) ao projeto na Vercel.
+2. No Registro.br, publique exatamente os registros DNS sugeridos pela Vercel.
+3. Se mantiver zairyx.com ativo, preserve o redirecionamento para zairyx.com.br.
+4. Atualize integrações externas para o novo host publico.
+5. Rode npm run doctor e valide robots.txt, sitemap.xml, login e checkout em producao.
 
 ## Primeira operacao apos instalar
 

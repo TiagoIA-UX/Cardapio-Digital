@@ -482,9 +482,9 @@ async function createMPPreference(opts: {
       payer: { email: BUYER_EMAIL },
       external_reference: `e2e-test:${Date.now()}`,
       back_urls: {
-        success: 'https://zairyx.com/pagamento/sucesso?checkout=E2E-TEST',
-        failure: 'https://zairyx.com/pagamento/erro?checkout=E2E-TEST',
-        pending: 'https://zairyx.com/pagamento/pendente?checkout=E2E-TEST',
+        success: 'https://zairyx.com.br/pagamento/sucesso?checkout=E2E-TEST',
+        failure: 'https://zairyx.com.br/pagamento/erro?checkout=E2E-TEST',
+        pending: 'https://zairyx.com.br/pagamento/pendente?checkout=E2E-TEST',
       },
       statement_descriptor: 'ZAIRYX',
     }
@@ -682,9 +682,9 @@ async function testPaymentFlows() {
           payer: { email: BUYER_EMAIL },
           external_reference: `e2e-prod:${Date.now()}`,
           back_urls: {
-            success: 'https://zairyx.com/pagamento/sucesso',
-            failure: 'https://zairyx.com/pagamento/erro',
-            pending: 'https://zairyx.com/pagamento/pendente',
+            success: 'https://zairyx.com.br/pagamento/sucesso',
+            failure: 'https://zairyx.com.br/pagamento/erro',
+            pending: 'https://zairyx.com.br/pagamento/pendente',
           },
         }),
       })
@@ -798,7 +798,7 @@ async function testPaymentFlows() {
           currency_id: 'BRL',
         },
         payer_email: BUYER_EMAIL,
-        back_url: 'https://zairyx.com/pagamento/sucesso',
+        back_url: 'https://zairyx.com.br/pagamento/sucesso',
         external_reference: JSON.stringify({
           restaurant_id: 'e2e-test-sub',
           user_id: 'e2e-test',
