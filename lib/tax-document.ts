@@ -90,3 +90,4 @@ export function normalizeValidatedTaxDocument(value: string | null | undefined) 
   const normalized = normalizeTaxDocument(value)
   return normalized && isValidTaxDocument(normalized) ? normalized : null
 }
+
