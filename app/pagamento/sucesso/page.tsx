@@ -15,7 +15,12 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { COMPANY_NAME, PAYMENT_DESCRIPTOR_NOTE } from '@/lib/brand'
+import {
+  COMPANY_CNPJ,
+  COMPANY_LEGAL_NAME,
+  COMPANY_NAME,
+  PAYMENT_DESCRIPTOR_NOTE,
+} from '@/lib/brand'
 import { POST_PURCHASE_OFFERS } from '@/lib/pricing'
 import { getRestaurantScopedHref, setStoredActiveRestaurantId } from '@/lib/active-restaurant'
 
@@ -272,7 +277,8 @@ function PagamentoSucessoContent() {
             : 'Seu canal digital está pronto para usar'}
         </p>
         <p className="text-muted-foreground mb-6 text-sm">
-          Sua contratação do Canal Digital foi processada por {COMPANY_NAME}.
+          Sua contratação do Canal Digital foi processada por {COMPANY_LEGAL_NAME} (CNPJ{' '}
+          {COMPANY_CNPJ}), sob a marca {COMPANY_NAME}.
         </p>
 
         {/* Card de próximos passos */}

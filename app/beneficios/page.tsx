@@ -20,6 +20,7 @@ import {
   Zap,
   X,
 } from 'lucide-react'
+import { COMPANY_CNPJ, COMPANY_NAME } from '@/lib/brand'
 
 export const metadata = {
   title: 'Benefícios | Zairyx — Delivery sem comissão, com IA e pagamento online',
@@ -29,7 +30,7 @@ export const metadata = {
 
 export default function BeneficiosPage() {
   return (
-    <div className="from-background to-secondary/20 min-h-screen bg-gradient-to-b">
+    <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* Header */}
       <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
@@ -62,15 +63,14 @@ export default function BeneficiosPage() {
             Seu delivery, suas regras
           </div>
           <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
-            Você está pagando{' '}
-            <span className="text-primary">até 30% de comissão</span>
-            {' '}por pedido.<br />
+            Você está pagando <span className="text-primary">até 30% de comissão</span> por pedido.
+            <br />
             Isso precisa parar.
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
             Dono de delivery que usa iFood, Rappi ou Uber Eats financia o app, não o próprio
-            negócio. A Zairyx devolve o controle para você: canal próprio, IA 24h, pagamento
-            online e zero comissão — por uma mensalidade fixa menor que um dia de comissão.
+            negócio. A Zairyx devolve o controle para você: canal próprio, IA 24h, pagamento online
+            e zero comissão — por uma mensalidade fixa menor que um dia de comissão.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -194,7 +194,7 @@ export default function BeneficiosPage() {
                 key={num}
                 className={`relative rounded-2xl border p-6 ${highlight ? 'border-orange-300 bg-orange-50/80 shadow-lg shadow-orange-100' : 'border-zinc-200 bg-white'}`}
               >
-                <span className="absolute right-4 top-4 text-3xl font-black text-zinc-100 select-none">
+                <span className="absolute top-4 right-4 text-3xl font-black text-zinc-100 select-none">
                   {num}
                 </span>
                 <div
@@ -209,7 +209,7 @@ export default function BeneficiosPage() {
           </div>
 
           {/* ─── Brinde + sobra dinheiro ─────────────────────────────── */}
-          <div className="mb-10 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+          <div className="mb-10 rounded-2xl border-2 border-green-300 bg-linear-to-br from-green-50 to-emerald-50 p-8">
             <div className="mb-5 flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-600 text-white">
                 <Gift className="h-5 w-5" />
@@ -242,12 +242,16 @@ export default function BeneficiosPage() {
                     <span className="text-red-600">R$ 36,50</span>
                   </li>
                 </ul>
-                <p className="mt-3 text-xs text-zinc-400">Sem brinde. Sem desconto. Sem fidelização.</p>
+                <p className="mt-3 text-xs text-zinc-400">
+                  Sem brinde. Sem desconto. Sem fidelização.
+                </p>
               </div>
 
               {/* Coluna Zairyx */}
               <div className="rounded-xl border border-green-300 bg-white/70 p-5">
-                <p className="mb-3 text-sm font-bold text-green-700">✅ Mesmo pedido de R$ 50 na Zairyx</p>
+                <p className="mb-3 text-sm font-bold text-green-700">
+                  ✅ Mesmo pedido de R$ 50 na Zairyx
+                </p>
                 <ul className="space-y-1.5 text-sm text-zinc-600">
                   <li className="flex justify-between">
                     <span>Valor recebido</span>
@@ -270,7 +274,7 @@ export default function BeneficiosPage() {
                     <span className="text-green-600">R$ 44,50</span>
                   </li>
                 </ul>
-                <p className="mt-3 text-xs text-green-600 font-medium">
+                <p className="mt-3 text-xs font-medium text-green-600">
                   Cliente recebeu brinde + desconto e ainda ficou R$ 8 a mais no seu bolso.
                 </p>
               </div>
@@ -279,11 +283,12 @@ export default function BeneficiosPage() {
             <div className="mt-5 rounded-xl bg-green-600 px-6 py-4 text-center text-white">
               <p className="text-base font-bold">
                 🎁 Você mima o cliente, fideliza — e ainda ganha{' '}
-                <span className="underline decoration-white/60 decoration-2">R$ 8 a mais</span>{' '}
-                por pedido do que ganharia no iFood.
+                <span className="underline decoration-white/60 decoration-2">R$ 8 a mais</span> por
+                pedido do que ganharia no iFood.
               </p>
               <p className="mt-1 text-sm text-green-100">
-                Multiplique isso por 200 pedidos/mês: são R$ 1.600 extras todo mês, mesmo dando brinde pra todo mundo.
+                Multiplique isso por 200 pedidos/mês: são R$ 1.600 extras todo mês, mesmo dando
+                brinde pra todo mundo.
               </p>
             </div>
           </div>
@@ -292,8 +297,8 @@ export default function BeneficiosPage() {
           <div className="mb-10 grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
               <h3 className="mb-4 flex items-center gap-2 font-bold text-green-800">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-                O que você pode fazer (permitido pelo iFood)
+                <CheckCircle className="h-5 w-5 text-green-600" />O que você pode fazer (permitido
+                pelo iFood)
               </h3>
               <ul className="space-y-3">
                 {[
@@ -313,8 +318,7 @@ export default function BeneficiosPage() {
 
             <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
               <h3 className="mb-4 flex items-center gap-2 font-bold text-red-800">
-                <X className="h-5 w-5 text-red-600" />
-                O que não fazer (viola as regras do iFood)
+                <X className="h-5 w-5 text-red-600" />O que não fazer (viola as regras do iFood)
               </h3>
               <ul className="space-y-3">
                 {[
@@ -375,8 +379,8 @@ export default function BeneficiosPage() {
             </div>
             <div className="mt-6 rounded-xl bg-orange-50 px-5 py-4">
               <p className="text-sm font-medium text-orange-800">
-                💡 <strong>Dica de copy para o cartão:</strong> &quot;Obrigado pelo pedido!
-                Da próxima vez, peça direto pelo nosso site e ganhe{' '}
+                💡 <strong>Dica de copy para o cartão:</strong> &quot;Obrigado pelo pedido! Da
+                próxima vez, peça direto pelo nosso site e ganhe{' '}
                 <span className="font-bold">15% de desconto</span> — sem taxa de entrega do app.
                 Acesse o QR Code acima ou salve: [seu link da Zairyx]&quot;
               </p>
@@ -386,9 +390,7 @@ export default function BeneficiosPage() {
 
         {/* Benefícios detalhados */}
         <div className="mb-16">
-          <h2 className="mb-2 text-center text-2xl font-bold">
-            Tudo que você ganha com a Zairyx
-          </h2>
+          <h2 className="mb-2 text-center text-2xl font-bold">Tudo que você ganha com a Zairyx</h2>
           <p className="text-muted-foreground mb-8 text-center">
             Cada benefício foi construído para resolver um problema real de quem vive de delivery.
           </p>
@@ -401,11 +403,10 @@ export default function BeneficiosPage() {
               </div>
               <h3 className="mb-2 text-lg font-bold">Zero comissão por pedido — agora e sempre</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Um restaurante que fatura R$ 20.000/mês no iFood paga até R$ 6.000 em comissão.
-                Na Zairyx você paga mensalidade fixa a partir de R$ 147 e fica com{' '}
-                <strong>100% de cada venda</strong>. Sobra margem para dar brinde, oferecer
-                desconto e ainda lucrar mais do que antes — em 1 mês você recupera o investimento
-                inteiro.
+                Um restaurante que fatura R$ 20.000/mês no iFood paga até R$ 6.000 em comissão. Na
+                Zairyx você paga mensalidade fixa a partir de R$ 147 e fica com{' '}
+                <strong>100% de cada venda</strong>. Sobra margem para dar brinde, oferecer desconto
+                e ainda lucrar mais do que antes — em 1 mês você recupera o investimento inteiro.
               </p>
             </div>
 
@@ -417,9 +418,9 @@ export default function BeneficiosPage() {
               <h3 className="mb-2 text-lg font-bold">IA que atende 24h — sem custo extra</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 O Cadu, nosso assistente de IA, está dentro do seu cardápio o tempo todo. Responde
-                dúvidas sobre cardápio, horário, entrega e ingredientes. Ajuda o cliente a montar
-                o pedido e só chama você no WhatsApp quando é realmente necessário. Tudo incluso
-                no plano — sem cobrar por mensagem.
+                dúvidas sobre cardápio, horário, entrega e ingredientes. Ajuda o cliente a montar o
+                pedido e só chama você no WhatsApp quando é realmente necessário. Tudo incluso no
+                plano — sem cobrar por mensagem.
               </p>
             </div>
 
@@ -430,10 +431,11 @@ export default function BeneficiosPage() {
               </div>
               <h3 className="mb-2 text-lg font-bold">Pagamento online direto no pedido</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Seu cliente pode pagar com <strong>cartão de crédito, débito, PIX ou parcelado</strong>{' '}
-                direto no cardápio, antes de enviar o pedido. A confirmação do pagamento é
-                automática — o pedido já entra como &quot;pago&quot; no seu painel sem você precisar
-                verificar nada. Integração nativa com Mercado Pago.
+                Seu cliente pode pagar com{' '}
+                <strong>cartão de crédito, débito, PIX ou parcelado</strong> direto no cardápio,
+                antes de enviar o pedido. A confirmação do pagamento é automática — o pedido já
+                entra como &quot;pago&quot; no seu painel sem você precisar verificar nada.
+                Integração nativa com Mercado Pago.
               </p>
             </div>
 
@@ -445,8 +447,8 @@ export default function BeneficiosPage() {
               <h3 className="mb-2 text-lg font-bold">Pedidos organizados no WhatsApp</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 O cliente monta o pedido no cardápio e envia tudo organizado — itens, quantidade,
-                endereço e observações — direto no seu WhatsApp. Chega como uma mensagem estruturada,
-                sem confusão. Sem app de terceiro no meio, sem taxa por pedido.
+                endereço e observações — direto no seu WhatsApp. Chega como uma mensagem
+                estruturada, sem confusão. Sem app de terceiro no meio, sem taxa por pedido.
               </p>
             </div>
 
@@ -484,8 +486,8 @@ export default function BeneficiosPage() {
               <h3 className="mb-2 text-lg font-bold">Alta temporada sem perder pedido</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 No verão ou feriado prolongado, o volume pode dobrar de um dia pro outro. O cardápio
-                digital organiza tudo — sem perder pedido, sem confusão de anotação, sem cliente
-                sem resposta. Quanto mais você vende, mais você lucra — sem pagar mais por isso.
+                digital organiza tudo — sem perder pedido, sem confusão de anotação, sem cliente sem
+                resposta. Quanto mais você vende, mais você lucra — sem pagar mais por isso.
               </p>
             </div>
 
@@ -497,8 +499,8 @@ export default function BeneficiosPage() {
               <h3 className="mb-2 text-lg font-bold">Pronto em menos de 30 minutos</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Escolha o template do seu nicho (pizzaria, hamburgueria, açaíteria, mercadinho e
-                mais 11 opções), troque os produtos e preços, publique o link. Tudo em menos de
-                meia hora — sem precisar de programador, designer ou agência.
+                mais 11 opções), troque os produtos e preços, publique o link. Tudo em menos de meia
+                hora — sem precisar de programador, designer ou agência.
               </p>
             </div>
           </div>
@@ -511,8 +513,8 @@ export default function BeneficiosPage() {
             30 dias de garantia total — sem perguntas
           </h2>
           <p className="mx-auto mb-2 max-w-2xl text-base text-green-700">
-            Teste a Zairyx por 30 dias completos. Se por qualquer motivo não funcionar para o
-            seu negócio, devolvemos cada centavo que você pagou.
+            Teste a Zairyx por 30 dias completos. Se por qualquer motivo não funcionar para o seu
+            negócio, devolvemos cada centavo que você pagou.
           </p>
           <p className="text-sm font-medium text-green-600">
             A maioria dos concorrentes dá 7 dias. A gente dá 30 — porque confia no produto.
@@ -702,13 +704,19 @@ export default function BeneficiosPage() {
             <span className="font-bold">Zairyx</span>
           </Link>
           <p className="text-muted-foreground">
-            © {new Date().getFullYear()} Zairyx. Todos os direitos reservados.
+            © {new Date().getFullYear()} {COMPANY_NAME}. CNPJ {COMPANY_CNPJ}.
           </p>
           <div className="flex gap-4">
-            <Link href="/termos" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/termos"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Termos
             </Link>
-            <Link href="/privacidade" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/privacidade"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Privacidade
             </Link>
           </div>

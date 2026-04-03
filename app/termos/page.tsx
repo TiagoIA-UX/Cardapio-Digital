@@ -2,7 +2,13 @@
 
 import Link from 'next/link'
 import { Store, ArrowLeft } from 'lucide-react'
-import { COMPANY_NAME, PAYMENT_DESCRIPTOR_NOTE, PRODUCT_ENDORSEMENT } from '@/lib/brand'
+import {
+  COMPANY_CNPJ,
+  COMPANY_LEGAL_NAME,
+  COMPANY_NAME,
+  PAYMENT_DESCRIPTOR_NOTE,
+  PRODUCT_ENDORSEMENT,
+} from '@/lib/brand'
 
 export default function TermosPage() {
   return (
@@ -204,10 +210,13 @@ export default function TermosPage() {
           <section>
             <h2 className="mt-8 mb-4 text-xl font-semibold">13. Contato e documentação</h2>
             <p>
-              <strong>Empresa responsável:</strong> {COMPANY_NAME}
+              <strong>Marca comercial:</strong> {COMPANY_NAME}
             </p>
             <p className="mt-2">
-              <strong>CNPJ:</strong> A ser publicado
+              <strong>Razão social:</strong> {COMPANY_LEGAL_NAME}
+            </p>
+            <p className="mt-2">
+              <strong>CNPJ:</strong> {COMPANY_CNPJ}
             </p>
             <p className="mt-2">
               <strong>Email:</strong> zairyx.ai@gmail.com

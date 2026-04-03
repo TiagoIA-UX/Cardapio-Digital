@@ -2,7 +2,13 @@
 
 import Link from 'next/link'
 import { Store, ArrowLeft } from 'lucide-react'
-import { COMPANY_NAME, PAYMENT_OPERATOR_NOTE, PRODUCT_ENDORSEMENT } from '@/lib/brand'
+import {
+  COMPANY_CNPJ,
+  COMPANY_LEGAL_NAME,
+  COMPANY_NAME,
+  PAYMENT_OPERATOR_NOTE,
+  PRODUCT_ENDORSEMENT,
+} from '@/lib/brand'
 
 export default function PrivacidadePage() {
   return (
@@ -178,7 +184,13 @@ export default function PrivacidadePage() {
             <p>Para questões sobre privacidade, entre em contato:</p>
             <p className="mt-2">{PAYMENT_OPERATOR_NOTE}</p>
             <p className="mt-2">
-              <strong>Controladora responsável:</strong> {COMPANY_NAME}
+              <strong>Controladora responsável:</strong> {COMPANY_LEGAL_NAME}
+            </p>
+            <p className="mt-2">
+              <strong>CNPJ:</strong> {COMPANY_CNPJ}
+            </p>
+            <p className="mt-2">
+              <strong>Marca utilizada no serviço:</strong> {COMPANY_NAME}
             </p>
             <p className="mt-2">
               <strong>Email:</strong> zairyx.ai@gmail.com

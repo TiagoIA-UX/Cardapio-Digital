@@ -14,6 +14,7 @@ import {
   Loader2,
   CheckCircle2,
 } from 'lucide-react'
+import { COMPANY_CNPJ, COMPANY_LEGAL_NAME, COMPANY_NAME } from '@/lib/brand'
 
 const NAV = {
   produto: [
@@ -278,7 +279,8 @@ export function Footer() {
       <div className="border-t border-zinc-800">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-6 sm:flex-row sm:px-6 lg:px-8">
           <p className="text-sm text-zinc-400">
-            © {new Date().getFullYear()} Zairyx Soluções Tecnológicas. Todos os direitos reservados.
+            © {new Date().getFullYear()} {COMPANY_NAME}. Operado por {COMPANY_LEGAL_NAME} · CNPJ{' '}
+            {COMPANY_CNPJ}.
           </p>
           <p className="flex items-center gap-1.5 text-xs text-zinc-400">
             <Circle className="h-2 w-2 fill-green-400 text-green-400" />
