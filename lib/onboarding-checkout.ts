@@ -7,6 +7,7 @@ export interface BuildOnboardingOrderMetadataInput {
   customerName: string
   customerEmail: string
   customerPhone: string
+  customerDocument?: string | null
   restaurantName: string
   restaurantSlugBase: string
   ownerUserId: string
@@ -32,6 +33,7 @@ export function buildOnboardingOrderMetadata({
   customerName,
   customerEmail,
   customerPhone,
+  customerDocument = null,
   restaurantName,
   restaurantSlugBase,
   ownerUserId,
@@ -48,6 +50,7 @@ export function buildOnboardingOrderMetadata({
     customer_name: customerName,
     customer_email: customerEmail,
     customer_phone: customerPhone,
+    customer_document: customerDocument,
     restaurant_name: restaurantName,
     restaurant_slug_base: restaurantSlugBase,
     onboarding_status: onboardingStatus,

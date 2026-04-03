@@ -5,6 +5,10 @@ import {
   PRODUCT_NAME,
   SUPPORT_EMAIL,
 } from '@/lib/brand'
+import {
+  detectTaxDocumentType,
+  normalizeTaxDocument,
+} from '@/lib/tax-document'
 
 export const FISCAL_SUPPORTED_PROVIDERS = ['focusnfe', 'enotas', 'plugnotas', 'webmania'] as const
 export const FISCAL_SUPPORTED_DOCUMENT_KINDS = ['nfse', 'nfe'] as const
@@ -23,6 +27,7 @@ export interface FiscalAutomationConfig {
   dryRun: boolean
   provider: FiscalProvider | null
   documentKind: FiscalDocumentKind
+  requireCustomerTaxId: boolean
   municipalRegistration: string | null
   serviceCode: string | null
   serviceCityCode: string | null
@@ -38,6 +43,7 @@ export interface FiscalPreparationInput {
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
+  customerDocument?: string | null
   restaurantName: string | null
   restaurantId?: string | null
   restaurantSlug?: string | null
@@ -66,6 +72,8 @@ export interface FiscalPreparationMetadata {
     name: string | null
     email: string | null
     phone: string | null
+    document: string | null
+    document_type: 'cpf' | 'cnpj' | null
   }
   service: {
     municipal_registration: string | null
@@ -146,6 +154,7 @@ export function resolveFiscalAutomationConfig(
     dryRun: isTruthy(env.FISCAL_AUTOMATION_DRY_RUN, true),
     provider,
     documentKind: resolveDocumentKind(env.FISCAL_DOCUMENT_KIND),
+    requireCustomerTaxId: isTruthy(env.FISCAL_REQUIRE_CUSTOMER_TAX_ID, false),
     municipalRegistration: toNullableString(env.FISCAL_MUNICIPAL_REGISTRATION),
     serviceCode: toNullableString(env.FISCAL_SERVICE_CODE),
     serviceCityCode: toNullableString(env.FISCAL_SERVICE_CITY_CODE),
@@ -168,11 +177,16 @@ export function prepareFiscalInvoiceMetadata(
 ): FiscalPreparationMetadata {
   const config = resolveFiscalAutomationConfig(env)
   const missingFields: string[] = []
+  const normalizedCustomerDocument = toNullableString(normalizeTaxDocument(input.customerDocument))
+  const customerDocumentType = detectTaxDocumentType(normalizedCustomerDocument)
 
   if (!input.customerName) missingFields.push('customer_name')
   if (!input.customerEmail) missingFields.push('customer_email')
   if (!input.paymentAmount || input.paymentAmount <= 0) missingFields.push('payment_amount')
   if (!input.approvedAt) missingFields.push('approved_at')
+  if (config.requireCustomerTaxId && !normalizedCustomerDocument) {
+    missingFields.push('customer_document')
+  }
 
   if (config.documentKind === 'nfse') {
     if (!config.municipalRegistration) missingFields.push('fiscal_municipal_registration')
@@ -223,6 +237,8 @@ export function prepareFiscalInvoiceMetadata(
       name: input.customerName,
       email: input.customerEmail,
       phone: input.customerPhone,
+      document: normalizedCustomerDocument,
+      document_type: customerDocumentType,
     },
     service: {
       municipal_registration: config.municipalRegistration,

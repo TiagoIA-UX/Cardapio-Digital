@@ -28,6 +28,7 @@ test('buildOnboardingOrderMetadata centralizes checkout metadata fields', () => 
     customerName: 'Tiago',
     customerEmail: 'tiago@example.com',
     customerPhone: '5511999999999',
+    customerDocument: '61699939000180',
     restaurantName: 'Delivery Centro',
     restaurantSlugBase: 'delivery-centro',
     ownerUserId: 'user-1',
@@ -41,4 +42,5 @@ test('buildOnboardingOrderMetadata centralizes checkout metadata fields', () => 
   assert.equal(metadata.aff_ref, 'vendedor_01')
   assert.equal(metadata.mp_preference_id, 'pref-123')
   assert.equal(metadata.checkout_session_sync_failed, true)
+  assert.equal(metadata.customer_document, '61699939000180')
 })

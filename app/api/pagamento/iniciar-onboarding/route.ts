@@ -15,6 +15,7 @@ import { validateCoupon } from '@/lib/coupon-validation'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/rate-limit'
 import { COMPANY_NAME, COMPANY_PAYMENT_DESCRIPTOR, PRODUCT_NAME } from '@/lib/brand'
 import { isServerSandboxMode } from '@/lib/payment-mode'
+import { normalizeValidatedTaxDocument } from '@/lib/tax-document'
 import {
   buildOnboardingOrderMetadata,
   createCheckoutNumber,
@@ -28,6 +29,7 @@ const onboardingSchema = z.object({
   restaurantName: z.string().min(3).max(120),
   customerName: z.string().min(3).max(120),
   phone: z.string().min(10).max(20),
+  customerDocument: z.string().max(18).optional(),
   couponCode: z.string().optional(),
 })
 
@@ -158,6 +160,16 @@ export async function POST(request: NextRequest) {
     const normalizedCustomerName = body.customerName.trim()
     const normalizedRestaurantName = body.restaurantName.trim()
     const restaurantSlugBase = slugifyRestaurantName(body.restaurantName)
+    const customerDocument = body.customerDocument
+      ? normalizeValidatedTaxDocument(body.customerDocument)
+      : null
+
+    if (body.customerDocument && !customerDocument) {
+      return NextResponse.json(
+        { error: 'Informe um CPF ou CNPJ válido para continuar.' },
+        { status: 400, headers: rateLimit.headers }
+      )
+    }
 
     const { data: order, error: orderError } = await supabaseAdmin
       .from('template_orders')
@@ -247,6 +259,7 @@ export async function POST(request: NextRequest) {
         customerName: normalizedCustomerName,
         customerEmail: sessionEmail,
         customerPhone: phone,
+        customerDocument,
         restaurantName: normalizedRestaurantName,
         restaurantSlugBase,
         ownerUserId: user.id,
@@ -281,6 +294,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         order_number: order.order_number,
         customer_email: sessionEmail,
+        customer_document: customerDocument,
         restaurant_name: normalizedRestaurantName,
       },
     })
@@ -292,6 +306,7 @@ export async function POST(request: NextRequest) {
       customerName: normalizedCustomerName,
       customerEmail: sessionEmail,
       customerPhone: phone,
+      customerDocument,
       restaurantName: normalizedRestaurantName,
       restaurantSlugBase,
       ownerUserId: user.id,

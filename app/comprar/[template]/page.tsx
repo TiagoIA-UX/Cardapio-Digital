@@ -38,6 +38,7 @@ import { createClient } from '@/lib/supabase/client'
 import { normalizePhone } from '@/lib/restaurant-onboarding'
 import { seoConfig } from '@/lib/seo'
 import { getCheckoutWizardProgress, getCheckoutWizardSteps } from '@/lib/checkout-wizard'
+import { formatTaxDocument, isValidTaxDocument, normalizeTaxDocument } from '@/lib/tax-document'
 
 const TEMPLATES = {
   restaurante: {
@@ -232,6 +233,7 @@ function ComprarContent() {
     restaurantName: '',
     customerName: '',
     phone: '',
+    customerDocument: '',
   })
   const [couponCode, setCouponCode] = useState('')
   const [couponLoading, setCouponLoading] = useState(false)
@@ -384,6 +386,13 @@ function ComprarContent() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    const normalizedCustomerDocument = normalizeTaxDocument(form.customerDocument)
+
+    if (normalizedCustomerDocument && !isValidTaxDocument(normalizedCustomerDocument)) {
+      setError('Informe um CPF ou CNPJ válido para continuar.')
+      return
+    }
+
     if (!isAuthenticated) {
       window.localStorage.setItem(
         purchaseDraftKey,
@@ -413,6 +422,7 @@ function ComprarContent() {
           restaurantName: form.restaurantName.trim(),
           customerName: form.customerName.trim(),
           phone: normalizePhone(form.phone),
+          customerDocument: normalizedCustomerDocument || undefined,
           couponCode: appliedCoupon?.code,
         }),
       })
@@ -816,6 +826,28 @@ function ComprarContent() {
                     required
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="text-foreground mb-1 block text-sm font-medium">
+                  CPF ou CNPJ do comprador
+                </label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.customerDocument}
+                  onChange={(event) =>
+                    setForm({
+                      ...form,
+                      customerDocument: formatTaxDocument(event.target.value),
+                    })
+                  }
+                  className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
+                  placeholder="Opcional, usado para emissão fiscal"
+                />
+                <p className="text-foreground/60 mt-1 text-xs">
+                  Preencha se quiser adiantar a emissão automática de nota fiscal no próximo passo.
+                </p>
               </div>
 
               <details className="border-border bg-background rounded-xl border">

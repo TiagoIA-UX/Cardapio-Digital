@@ -83,6 +83,7 @@ const fiscalRecommended = [
   'FISCAL_DOCUMENT_KIND',
   'FISCAL_MUNICIPAL_REGISTRATION',
   'FISCAL_SERVICE_CODE',
+  'FISCAL_REQUIRE_CUSTOMER_TAX_ID',
 ]
 
 const missing = []
