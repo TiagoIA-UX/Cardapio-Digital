@@ -20,6 +20,18 @@ Cardápio Digital é uma plataforma SaaS B2B que entrega sites prontos de cardá
 
 **Demo ao vivo:** [https://zairyx.com](https://zairyx.com)
 
+## Modelo de Acesso ao Código
+
+Este repositório opera em modo privado para proteger templates e IP comercial.
+
+- Clientes pagantes recebem acesso nominal ao repositório privado.
+- A permissão padrão recomendada é somente leitura.
+- O uso comercial depende de licença e pagamento confirmados.
+
+Fluxo operacional: [docs/ACESSO_PRIVADO_REPOSITORIO_PAGO.md](docs/ACESSO_PRIVADO_REPOSITORIO_PAGO.md)
+Resumo da licença comercial: [docs/LICENCA_COMERCIAL_TEMPLATES.md](docs/LICENCA_COMERCIAL_TEMPLATES.md)
+Arquitetura público/privado: [docs/ARQUITETURA_REPOS_PUBLICO_PRIVADO.md](docs/ARQUITETURA_REPOS_PUBLICO_PRIVADO.md)
+
 ## Funcionalidades Principais
 
 | Módulo                       | Descrição                                                                                                                                      |
@@ -103,6 +115,7 @@ Para checkout com Mercado Pago local: `npm run dev:https`
 
 | Comando               | Descrição                      |
 | --------------------- | ------------------------------ |
+| `npm run access:grant` | Monta ou aplica convite ao repo privado |
 | `npm run dev`         | Servidor de desenvolvimento    |
 | `npm run dev:https`   | Dev com HTTPS (Mercado Pago)   |
 | `npm run dev:checked` | Valida ambiente + dev          |
@@ -149,6 +162,8 @@ Este projeto é licenciado sob a **Business Source License 1.1 (BSL)**.
 - **Conversão**: em 2030-03-19, converte automaticamente para Apache 2.0
 
 Veja [LICENSE](LICENSE) para os termos completos.
+
+Para concessão comercial prática e acesso ao repositório privado, veja [docs/LICENCA_COMERCIAL_TEMPLATES.md](docs/LICENCA_COMERCIAL_TEMPLATES.md).
 
 ## Contato
 

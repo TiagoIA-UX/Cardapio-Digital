@@ -9,6 +9,7 @@
     "npm": "10.x || 11.x"
   },
   "scripts": {
+    "access:grant": "tsx scripts/grant-private-repo-access.ts",
     "build": "next build",
     "check": "node scripts/check.mjs",
     "dev": "next dev",
