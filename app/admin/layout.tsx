@@ -21,6 +21,7 @@ import {
   Bell,
   Globe,
   BarChart3,
+  KeyRound,
 } from 'lucide-react'
 
 interface AdminMenuGroup {
@@ -54,6 +55,7 @@ const menuGroups: AdminMenuGroup[] = [
       { href: '/admin/suporte', icon: ShieldCheck, label: 'Suporte' },
       { href: '/admin/logs', icon: Activity, label: 'Logs' },
       { href: '/admin/seo', icon: Globe, label: 'SEO' },
+      { href: '/admin/repo-access', icon: KeyRound, label: 'Acesso Repo' },
       { href: '/admin/venda-direta', icon: Handshake, label: 'Venda Direta' },
     ],
   },
@@ -144,7 +146,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ShieldCheck className="h-6 w-6 text-orange-500" />
             <span className="text-lg font-bold text-orange-500">Admin</span>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
+          <button title="Fechar menu" onClick={() => setSidebarOpen(false)} className="lg:hidden">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -199,7 +201,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main content */}
       <div className="flex flex-1 flex-col">
         <header className="flex h-16 items-center border-b border-zinc-800 px-4 lg:px-6">
-          <button onClick={() => setSidebarOpen(true)} className="mr-4 lg:hidden">
+          <button
+            title="Abrir menu"
+            onClick={() => setSidebarOpen(true)}
+            className="mr-4 lg:hidden"
+          >
             <Menu className="h-5 w-5" />
           </button>
           <h1 className="text-lg font-semibold">

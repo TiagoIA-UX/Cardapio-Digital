@@ -14,6 +14,7 @@ import {
   Activity,
   Shield,
   Heart,
+  KeyRound,
 } from 'lucide-react'
 
 interface DashboardData {
@@ -314,6 +315,12 @@ export default function AdminOverviewPage() {
           { href: '/admin/usuarios', label: 'Usuários', icon: Users, color: 'text-blue-400' },
           { href: '/admin/trials', label: 'Trials', icon: Clock, color: 'text-yellow-400' },
           { href: '/admin/feedbacks', label: 'Feedbacks', icon: Activity, color: 'text-green-400' },
+          {
+            href: '/admin/repo-access',
+            label: 'Acesso Repo',
+            icon: KeyRound,
+            color: 'text-orange-400',
+          },
           {
             href: '/admin/afiliados',
             label: 'Afiliados',
