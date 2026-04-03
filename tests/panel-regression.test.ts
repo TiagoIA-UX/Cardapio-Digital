@@ -138,8 +138,8 @@ describe('regression: lifecycle → capabilities flow', () => {
 })
 
 describe('regression: admin route registry integrity', () => {
-  it('all 18 admin routes are registered', () => {
-    assert.strictEqual(ADMIN_ROUTE_REGISTRY.length, 18)
+  it('all 19 admin routes are registered', () => {
+    assert.strictEqual(ADMIN_ROUTE_REGISTRY.length, 19)
   })
 
   it('every domain has routes', () => {

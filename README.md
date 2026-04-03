@@ -113,17 +113,17 @@ Para checkout com Mercado Pago local: `npm run dev:https`
 
 ## Scripts
 
-| Comando               | Descrição                      |
-| --------------------- | ------------------------------ |
+| Comando                | Descrição                               |
+| ---------------------- | --------------------------------------- |
 | `npm run access:grant` | Monta ou aplica convite ao repo privado |
-| `npm run dev`         | Servidor de desenvolvimento    |
-| `npm run dev:https`   | Dev com HTTPS (Mercado Pago)   |
-| `npm run dev:checked` | Valida ambiente + dev          |
-| `npm run build`       | Build de produção              |
-| `npm run doctor`      | Verifica variáveis de ambiente |
-| `npm run audit:full`  | Build + lint + testes          |
-| `npm run ship:all`    | Pipeline completo de deploy    |
-| `npm test`            | Executa testes                 |
+| `npm run dev`          | Servidor de desenvolvimento             |
+| `npm run dev:https`    | Dev com HTTPS (Mercado Pago)            |
+| `npm run dev:checked`  | Valida ambiente + dev                   |
+| `npm run build`        | Build de produção                       |
+| `npm run doctor`       | Verifica variáveis de ambiente          |
+| `npm run audit:full`   | Build + lint + testes                   |
+| `npm run ship:all`     | Pipeline completo de deploy             |
+| `npm test`             | Executa testes                          |
 
 ## Deploy
 

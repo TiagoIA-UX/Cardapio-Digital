@@ -1,8 +1,4 @@
-export const PRIVATE_REPO_ACCESS_PLANS = [
-  'starter',
-  'pro',
-  'white-label',
-] as const
+export const PRIVATE_REPO_ACCESS_PLANS = ['starter', 'pro', 'white-label'] as const
 
 export type PrivateRepoAccessPlan = (typeof PRIVATE_REPO_ACCESS_PLANS)[number]
 
@@ -52,7 +48,10 @@ export function isValidGithubUsername(value: string) {
 }
 
 export function normalizeRepositorySlug(value: string) {
-  return value.trim().replace(/^https:\/\/github\.com\//i, '').replace(/\.git$/i, '')
+  return value
+    .trim()
+    .replace(/^https:\/\/github\.com\//i, '')
+    .replace(/\.git$/i, '')
 }
 
 export function isValidRepositorySlug(value: string) {
@@ -60,7 +59,11 @@ export function isValidRepositorySlug(value: string) {
 }
 
 export function normalizeTemplateSlug(value: string) {
-  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
 }
 
 export function buildPrivateRepoAccessGrant(

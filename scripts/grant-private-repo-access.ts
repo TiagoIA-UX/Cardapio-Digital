@@ -58,7 +58,9 @@ function parseArgs(argv: string[]): ParsedArgs {
   }
 
   const repository =
-    getArgValue(argv, '--repository') || process.env.GITHUB_REPOSITORY || 'TiagoIA-UX/Cardapio-Digital'
+    getArgValue(argv, '--repository') ||
+    process.env.GITHUB_REPOSITORY ||
+    'TiagoIA-UX/Cardapio-Digital'
   const githubUsername = getArgValue(argv, '--github') || ''
   const customerName = getArgValue(argv, '--customer') || ''
   const customerEmail = getArgValue(argv, '--email') || ''

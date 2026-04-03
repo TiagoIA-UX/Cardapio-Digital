@@ -115,6 +115,14 @@ export const ADMIN_ROUTE_REGISTRY: readonly AdminRouteDefinition[] = [
     rateLimited: false,
     description: 'Gestão de comissões de afiliados.',
   },
+  {
+    path: 'repo-access',
+    domain: 'commercial',
+    methods: ['GET', 'POST'],
+    minRole: 'admin',
+    rateLimited: false,
+    description: 'Ledger e operação de concessão/revogação de acesso ao repositório privado.',
+  },
 
   // ── team ──
   {

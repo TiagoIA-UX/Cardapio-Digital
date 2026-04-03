@@ -18,8 +18,20 @@
 2. Coletar usuário GitHub do cliente.
 3. Registrar aceite da licença comercial.
 4. Rodar o script de dry-run para validar os dados.
-5. Rodar o script com apply para enviar o convite real.
-6. Registrar data, operador e template liberado.
+5. Registrar o grant no ledger administrativo.
+6. Rodar o script com apply para enviar o convite real.
+7. Confirmar data, operador e template liberado.
+
+## Ledger administrativo
+
+- Migration: supabase/migrations/045_private_repo_access_grants.sql
+- Rota admin protegida: /api/admin/repo-access
+- Finalidade: listar grants, registrar concessão, registrar revogação e manter trilha administrativa.
+
+Payloads suportados na rota:
+
+- action=grant para registrar uma concessão comercial.
+- action=revoke para registrar uma revogação com motivo.
 
 ## Script operacional
 
