@@ -1,14 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import {
-  ArrowLeft,
-  CheckCircle,
-  Eye,
-  MapPin,
-  MessageCircle,
-  Sparkles,
-  Star,
-} from 'lucide-react'
+import { ArrowLeft, CheckCircle, Eye, MapPin, MessageCircle, Sparkles, Star } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Google Meu Negócio | Zairyx Canais Digitais',
@@ -31,10 +23,7 @@ export default function GoogleMeuNegocioPage() {
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Link>
-          <Link
-            href="/"
-            className="text-base font-bold tracking-tight text-zinc-900"
-          >
+          <Link href="/" className="text-base font-bold tracking-tight text-zinc-900">
             Zairyx
           </Link>
         </div>
@@ -48,14 +37,13 @@ export default function GoogleMeuNegocioPage() {
             Dica gratuita para seu negócio
           </div>
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
-            Você já está no{' '}
-            <span className="text-blue-600">Google Meu Negócio</span>?
+            Você já está no <span className="text-blue-600">Google Meu Negócio</span>?
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
-            Quando alguém digita <strong>"lanche perto de mim"</strong> ou{' '}
-            <strong>"pizzaria próxima"</strong> no Google ou Google Maps, os
-            resultados vêm do <strong>Google Meu Negócio</strong> — e o cadastro
-            é <span className="font-bold text-green-600">100% gratuito</span>.
+            Quando alguém digita <strong>&ldquo;lanche perto de mim&rdquo;</strong> ou{' '}
+            <strong>&ldquo;pizzaria próxima&rdquo;</strong> no Google ou Google Maps, os resultados
+            vêm do <strong>Google Meu Negócio</strong> — e o cadastro é{' '}
+            <span className="font-bold text-green-600">100% gratuito</span>.
           </p>
         </div>
 
@@ -67,19 +55,16 @@ export default function GoogleMeuNegocioPage() {
               Por que isso importa para o seu delivery?
             </h2>
             <p className="mb-6 text-base leading-relaxed text-zinc-600">
-              Com seu perfil otimizado, você aparece para quem está buscando
-              exatamente o que você vende, na sua região. E se você adicionar o
-              link do seu cardápio digital no perfil, o cliente vai direto pra
-              você — sem intermediário, sem comissão.
+              Com seu perfil otimizado, você aparece para quem está buscando exatamente o que você
+              vende, na sua região. E se você adicionar o link do seu cardápio digital no perfil, o
+              cliente vai direto pra você — sem intermediário, sem comissão.
             </p>
 
             <div className="space-y-5">
               <div className="flex items-start gap-3">
                 <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
                 <div>
-                  <p className="font-semibold text-zinc-900">
-                    Cadastro gratuito no Google
-                  </p>
+                  <p className="font-semibold text-zinc-900">Cadastro gratuito no Google</p>
                   <p className="text-sm text-zinc-600">
                     Acesse business.google.com e crie seu perfil em minutos
                   </p>
@@ -88,20 +73,16 @@ export default function GoogleMeuNegocioPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
                 <div>
-                  <p className="font-semibold text-zinc-900">
-                    Apareça em buscas locais
-                  </p>
+                  <p className="font-semibold text-zinc-900">Apareça em buscas locais</p>
                   <p className="text-sm text-zinc-600">
-                    "Delivery perto de mim", "restaurante aberto agora"
+                    &ldquo;Delivery perto de mim&rdquo;, &ldquo;restaurante aberto agora&rdquo;
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
                 <div>
-                  <p className="font-semibold text-zinc-900">
-                    Link direto pro seu cardápio
-                  </p>
+                  <p className="font-semibold text-zinc-900">Link direto pro seu cardápio</p>
                   <p className="text-sm text-zinc-600">
                     Cliente encontra no Google e pede direto, sem comissão
                   </p>
@@ -110,21 +91,16 @@ export default function GoogleMeuNegocioPage() {
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-blue-500" />
                 <div>
-                  <p className="font-semibold text-zinc-900">
-                    Google Maps integrado
-                  </p>
+                  <p className="font-semibold text-zinc-900">Google Maps integrado</p>
                   <p className="text-sm text-zinc-600">
-                    Seu endereço, horários e avaliações aparecem pra quem está
-                    perto
+                    Seu endereço, horários e avaliações aparecem pra quem está perto
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Star className="mt-0.5 h-5 w-5 shrink-0 text-yellow-500" />
                 <div>
-                  <p className="font-semibold text-zinc-900">
-                    Avaliações que geram confiança
-                  </p>
+                  <p className="font-semibold text-zinc-900">Avaliações que geram confiança</p>
                   <p className="text-sm text-zinc-600">
                     Clientes deixam avaliações públicas que atraem novos pedidos
                   </p>
@@ -144,7 +120,7 @@ export default function GoogleMeuNegocioPage() {
           </div>
 
           {/* Right — Service offer */}
-          <div className="rounded-3xl border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-white p-8 shadow-xl">
+          <div className="rounded-3xl border-2 border-orange-200 bg-linear-to-br from-orange-50 to-white p-8 shadow-xl">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-orange-100 px-4 py-2 text-sm font-bold text-orange-700">
               <Sparkles className="h-4 w-4" />
               Serviço opcional
@@ -153,9 +129,8 @@ export default function GoogleMeuNegocioPage() {
               Quer que a gente faça o cadastro pra você?
             </h3>
             <p className="mt-3 text-base text-zinc-700">
-              Se você não tem tempo ou conhecimento técnico, nossa equipe
-              configura seu <strong>Google Meu Negócio</strong>{' '}
-              profissionalmente:
+              Se você não tem tempo ou conhecimento técnico, nossa equipe configura seu{' '}
+              <strong>Google Meu Negócio</strong> profissionalmente:
             </p>
             <ul className="mt-6 space-y-3">
               {[
@@ -202,8 +177,8 @@ export default function GoogleMeuNegocioPage() {
             Pronto para ter seu próprio canal de vendas?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-zinc-400">
-            Combine o Google Meu Negócio com um cardápio digital próprio e
-            receba pedidos sem pagar comissão para nenhum intermediário.
+            Combine o Google Meu Negócio com um cardápio digital próprio e receba pedidos sem pagar
+            comissão para nenhum intermediário.
           </p>
           <Link
             href="/"
