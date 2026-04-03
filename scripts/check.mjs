@@ -206,6 +206,8 @@ const fiscalRecommended = [
   ['FISCAL_REQUIRE_CUSTOMER_TAX_ID'],
 ]
 
+const fiscalProductionBridge = [['FISCAL_DISPATCH_WEBHOOK_URL'], ['FISCAL_DISPATCH_WEBHOOK_SECRET']]
+
 for (const key of requiredAlways) {
   if (hasNonEmpty(env, [key])) {
     pass(`Variavel obrigatoria configurada (${key})`)
@@ -277,6 +279,20 @@ if ((env.FISCAL_AUTOMATION_ENABLED || '').toLowerCase() === 'true') {
         `Configuracao fiscal pendente (${label})`,
         'A automacao fiscal foi habilitada, mas ainda faltam dados para operar com seguranca'
       )
+    }
+  }
+
+  if ((env.FISCAL_AUTOMATION_DRY_RUN || '').toLowerCase() === 'false') {
+    for (const keys of fiscalProductionBridge) {
+      const label = keys.join(' ou ')
+      if (hasNonEmpty(env, keys)) {
+        pass(`Bridge fiscal configurado (${label})`)
+      } else {
+        warn(
+          `Bridge fiscal pendente (${label})`,
+          'Defina a URL e o segredo do bridge antes de habilitar envio fiscal real'
+        )
+      }
     }
   }
 }

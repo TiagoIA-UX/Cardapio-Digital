@@ -14,6 +14,7 @@ import {
 import { TEMPLATE_PRESETS, normalizeTemplateSlug } from '@/lib/restaurant-customization'
 import { notifyPaymentRejected, notifyPaymentApproved } from '@/lib/notifications'
 import { prepareFiscalInvoiceMetadata } from '@/lib/fiscal'
+import { dispatchFiscalInvoice } from '@/lib/fiscal-dispatch'
 import {
   maskAffiliateRef,
   resolveKnownTemplateSlug,
@@ -750,6 +751,14 @@ export async function processOnboardingPayment(
       restaurantSlug: String(metadata.provisioned_restaurant_slug || '') || null,
       orderMetadata: metadata,
     })
+    const fiscalDispatch = await dispatchFiscalInvoice({
+      orderId,
+      fiscal: fiscalMetadata,
+    })
+    const persistedFiscalMetadata = {
+      ...fiscalMetadata,
+      dispatch: fiscalDispatch,
+    }
 
     await admin
       .from('template_orders')
@@ -761,7 +770,7 @@ export async function processOnboardingPayment(
         metadata: {
           ...orderMetadata,
           onboarding_status: 'ready',
-          fiscal: fiscalMetadata,
+          fiscal: persistedFiscalMetadata,
         },
         updated_at: new Date().toISOString(),
       })
@@ -780,7 +789,7 @@ export async function processOnboardingPayment(
       metadata: {
         ...withCheckoutSessionSyncState(baseMetadata, null),
         onboarding_status: 'ready',
-        fiscal: fiscalMetadata,
+        fiscal: persistedFiscalMetadata,
       },
     })
 
@@ -791,7 +800,7 @@ export async function processOnboardingPayment(
           metadata: {
             ...withCheckoutSessionSyncState(baseMetadata, readyCheckoutSessionSync.errorMessage),
             onboarding_status: 'ready',
-            fiscal: fiscalMetadata,
+            fiscal: persistedFiscalMetadata,
           },
           updated_at: new Date().toISOString(),
         })
@@ -880,6 +889,14 @@ export async function processOnboardingPayment(
     restaurantSlug: provisioned.restaurantSlug,
     orderMetadata: metadata,
   })
+  const fiscalDispatch = await dispatchFiscalInvoice({
+    orderId,
+    fiscal: fiscalMetadata,
+  })
+  const persistedFiscalMetadata = {
+    ...fiscalMetadata,
+    dispatch: fiscalDispatch,
+  }
 
   // Notificar admin sobre novo pagamento aprovado
   try {
@@ -907,7 +924,7 @@ export async function processOnboardingPayment(
       metadata: {
         ...orderMetadata,
         onboarding_status: 'ready',
-        fiscal: fiscalMetadata,
+        fiscal: persistedFiscalMetadata,
         provisioned_restaurant_id: provisioned.restaurantId,
         provisioned_restaurant_slug: provisioned.restaurantSlug,
         owner_user_id: provisioned.ownerId,
@@ -931,7 +948,7 @@ export async function processOnboardingPayment(
     metadata: {
       ...withCheckoutSessionSyncState(baseMetadata, null),
       onboarding_status: 'ready',
-      fiscal: fiscalMetadata,
+      fiscal: persistedFiscalMetadata,
       provisioned_restaurant_id: provisioned.restaurantId,
       provisioned_restaurant_slug: provisioned.restaurantSlug,
       owner_user_id: provisioned.ownerId,
@@ -946,7 +963,7 @@ export async function processOnboardingPayment(
         metadata: {
           ...withCheckoutSessionSyncState(baseMetadata, finalCheckoutSessionSync.errorMessage),
           onboarding_status: 'ready',
-          fiscal: fiscalMetadata,
+          fiscal: persistedFiscalMetadata,
           provisioned_restaurant_id: provisioned.restaurantId,
           provisioned_restaurant_slug: provisioned.restaurantSlug,
           owner_user_id: provisioned.ownerId,

@@ -86,6 +86,8 @@ const fiscalRecommended = [
   'FISCAL_REQUIRE_CUSTOMER_TAX_ID',
 ]
 
+const fiscalProductionBridge = ['FISCAL_DISPATCH_WEBHOOK_URL', 'FISCAL_DISPATCH_WEBHOOK_SECRET']
+
 const missing = []
 const warnings = []
 
@@ -106,6 +108,12 @@ if (paymentMode === 'production') {
 if ((env.FISCAL_AUTOMATION_ENABLED || '').toLowerCase() === 'true') {
   for (const key of fiscalRecommended) {
     if (!env[key]) warnings.push(key)
+  }
+
+  if ((env.FISCAL_AUTOMATION_DRY_RUN || '').toLowerCase() === 'false') {
+    for (const key of fiscalProductionBridge) {
+      if (!env[key]) warnings.push(key)
+    }
   }
 }
 

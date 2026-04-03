@@ -44,3 +44,5 @@
 - O webhook de onboarding do Mercado Pago agora grava um bloco fiscal no metadata do pedido aprovado, sem emitir nota em produção por padrão.
 - A preparação fiscal nasce em modo seguro: feature flag desligada por padrão e dry-run ligado por padrão.
 - Com isso, o projeto fica pronto para plugar um provedor fiscal depois da validação contábil, sem alterar o fluxo principal de checkout.
+- Há uma camada de despacho em lib/fiscal-dispatch.ts que padroniza o payload, registra o resultado da tentativa e suporta encaminhamento para um bridge HTTP externo.
+- Quando FISCAL_AUTOMATION_DRY_RUN estiver como false, o projeto passa a esperar FISCAL_DISPATCH_WEBHOOK_URL e FISCAL_DISPATCH_WEBHOOK_SECRET para entregar o payload fiscal ao integrador responsável.
