@@ -503,24 +503,24 @@ jobs:
 
           if [ "$SURG_RESULT" = "true" ] && [ -n "$PR_URL" ]; then
             ICON="🔧"
-            STATUS="Correção automática criada"
-            EXTRA="PR: $PR_URL"
+            STATUS="Boa notícia! Encontrei um problema no código e já criei uma correção automática pra você 🚀"
+            EXTRA="🔗 Ver a correção pronta: $PR_URL"
           elif [ "$SCAN_OK" = "true" ]; then
             ICON="⚠️"
-            STATUS="Erros detectados — correção manual necessária"
-            EXTRA="Modo: ${{ github.event.inputs.mode || 'scan' }}"
+            STATUS="Encontrei alguns erros no código que precisam da sua atenção. Dá uma olhada no resumo abaixo 👇"
+            EXTRA="💡 Você precisa corrigir manualmente antes de publicar de novo."
           else
             ICON="✅"
-            STATUS="Scan concluído — sem erros"
+            STATUS="Tudo certo por aqui! Nenhum erro encontrado. Pode continuar 🎉"
             EXTRA=""
           fi
 
           SUMMARY="${{ needs.scanner.outputs.error_summary }}"
           SAFE_SUMMARY=$(echo "$SUMMARY" | sed 's/[<>]//g' | head -c 300)
 
-          MESSAGE=$(printf "<b>%s ZAEA Report</b>\n\n%s\n\n<b>Resumo:</b>\n<code>%s</code>\n\n%s\n\n<i>SHA: %s | %s</i>" \
+          MESSAGE=$(printf "<b>%s Zai — Análise do código</b>\n\n%s\n\n📋 <b>O que foi encontrado:</b>\n<code>%s</code>\n\n%s\n\n<i>%s</i>" \
             "$ICON" "$STATUS" "$SAFE_SUMMARY" "$EXTRA" \
-            "${{ github.sha }}" "$(date -u '+%d/%m/%Y %H:%M UTC')")
+            "$(date -u '+%d/%m/%Y %H:%M UTC')")
 
           curl -s -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
@@ -616,16 +616,16 @@ jobs:
           # Formato real MP: TEST-{digits}-{alphanum}-{hex32}-{digits}
           # Tokens sandbox expiram — validar apenas presença e formato
           if echo "$MP_TEST_ACCESS_TOKEN" | grep -qE "^TEST-[0-9]+-[a-zA-Z0-9]+-[a-fA-F0-9]+-[0-9]+$"; then
-            MP_STATUS="✅ Token sandbox presente e formato válido"
+            MP_STATUS="✅ Pagamentos de teste prontos pra usar"
             echo "mp_valid=true" >> "$GITHUB_OUTPUT"
           elif echo "$MP_TEST_ACCESS_TOKEN" | grep -qE "^APP_USR-"; then
-            MP_STATUS="✅ Token produção presente"
+            MP_STATUS="✅ Pagamentos reais configurados"
             echo "mp_valid=true" >> "$GITHUB_OUTPUT"
           elif [ -z "$MP_TEST_ACCESS_TOKEN" ]; then
-            MP_STATUS="❌ Token ausente — secret MP_TEST_ACCESS_TOKEN não configurado"
+            MP_STATUS="❌ Chave do Mercado Pago não encontrada — adicione ela nas configurações do GitHub"
             echo "mp_valid=false" >> "$GITHUB_OUTPUT"
           else
-            MP_STATUS="⚠️ Token presente mas formato não reconhecido"
+            MP_STATUS="⚠️ A chave existe, mas está com um formato diferente do esperado"
             echo "mp_valid=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -704,25 +704,27 @@ jobs:
           if [ "$MP_VALID" = "true" ] && [ "$SB_OK" = "true" ] && [ "${ROUTE_FAILURES:-0}" = "0" ]; then
             if [ "$DNS_PENDING" = "true" ]; then
               HEALTH_ICON="⏳"
-              HEALTH_MSG="Aguardando propagação DNS — plataforma OK"
+              HEALTH_MSG="O domínio ainda está sendo ativado — isso é normal e pode levar até 24h. A plataforma está funcionando normalmente!"
             else
               HEALTH_ICON="✅"
-              HEALTH_MSG="Plataforma saudável"
+              HEALTH_MSG="Tudo funcionando! Pode ficar tranquilo 😊"
             fi
           else
             HEALTH_ICON="⚠️"
-            HEALTH_MSG="Degradação detectada"
+            HEALTH_MSG="Atenção! Alguma coisa parou de funcionar. Veja os detalhes abaixo 👇"
           fi
 
           # Linha de rotas
           if [ "$DNS_PENDING" = "true" ]; then
-            ROUTES_LINE="⏳ DNS pendente — rotas não testadas"
+            ROUTES_LINE="⏳ Domínio ainda sendo ativado — páginas não verificadas por ora"
+          elif [ "${ROUTE_FAILURES:-0}" = "0" ]; then
+            ROUTES_LINE="✅ Todas as páginas respondendo"
           else
-            ROUTES_LINE="${ROUTE_FAILURES:-0} rotas com falha"
+            ROUTES_LINE="❌ ${ROUTE_FAILURES:-0} página(s) com problema"
           fi
 
-          SB_LABEL="$([ "$SB_OK" = 'true' ] && echo '✅ OK' || echo '❌ OFFLINE')"
-          MESSAGE=$(printf "<b>%s ZAEA Validator</b>\n\n<b>Status:</b> %s\n\n<b>Mercado Pago:</b>\n<code>%s</code>\n\n<b>Supabase:</b> %s\n<b>Rotas:</b> %s\n\n<i>Modo: %s | %s UTC</i>" \
+          SB_LABEL="$([ "$SB_OK" = 'true' ] && echo '✅ Banco de dados online' || echo '❌ Banco de dados fora do ar')"
+          MESSAGE=$(printf "<b>%s Zai — Verificação do sistema</b>\n\n%s\n\n💳 <b>Mercado Pago:</b> %s\n🗄 <b>Banco de dados:</b> %s\n🌐 <b>Páginas:</b> %s\n\n<i>%s • %s UTC</i>" \
             "$HEALTH_ICON" "$HEALTH_MSG" \
             "$MP_STATUS" \
             "$SB_LABEL" \
