@@ -71,7 +71,17 @@ export async function notify(payload: NotifyPayload) {
     await sendEmailAlert(payload)
   }
 
-  // 3. Log estruturado (sempre aparece nos logs da Vercel)
+  // 3. Telegram direto (funciona no Vercel — sem servidor externo)
+  if (payload.severity !== 'info') {
+    void sendTelegramAlert(payload)
+  }
+
+  // 4. Disparar para o Zairyx Dev Agent (Python) se configurado localmente
+  if (payload.severity !== 'info') {
+    void sendToPythonAgent(payload)
+  }
+
+  // 5. Log estruturado (sempre aparece nos logs da Vercel)
   const logLevel =
     payload.severity === 'critical' ? 'error' : payload.severity === 'warning' ? 'warn' : 'info'
   const logFn =
@@ -86,6 +96,62 @@ export async function notify(payload: NotifyPayload) {
       ts: now,
     })
   )
+}
+
+// ── Telegram direto (sem servidor externo — roda no Vercel) ─────────────────
+async function sendTelegramAlert(payload: NotifyPayload) {
+  const token = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+  if (!token || !chatId) return
+
+  const icon = payload.severity === 'critical' ? '🔴' : payload.severity === 'warning' ? '🟡' : 'ℹ️'
+  const ts = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+  const text = `${icon} <b>[${payload.severity.toUpperCase()}] ${payload.title}</b>\n\n${payload.body}\n\n<i>🕐 ${ts} · Zairyx</i>`
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+      signal: AbortSignal.timeout(5000),
+    })
+  } catch (err) {
+    console.warn('[notify] Telegram indisponível:', (err as Error).message)
+  }
+}
+
+// ── Zairyx Dev Agent (Python) ────────────────────────────────────────────────
+async function sendToPythonAgent(payload: NotifyPayload) {
+  const agentUrl = process.env.ALERT_WEBHOOK_URL
+  if (!agentUrl) return // Agente não configurado — ignora silenciosamente
+
+  const secret = process.env.INTERNAL_API_SECRET ?? ''
+
+  try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 3000)
+
+    await fetch(`${agentUrl}/api/webhook/alert`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        source: payload.channel,
+        error: payload.body,
+        title: payload.title,
+        severity: payload.severity,
+        context: payload.metadata,
+      }),
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeout)
+  } catch (err) {
+    // Timeout ou agente offline — não quebra o fluxo principal
+    console.warn('[notify] Dev Agent indisponível:', (err as Error).message)
+  }
 }
 
 // ── Email via Resend ─────────────────────────────────────────────────────────
