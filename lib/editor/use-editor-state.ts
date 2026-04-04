@@ -532,6 +532,94 @@ export function useEditorState() {
     setProducts((data || []) as CardapioProduct[])
   }, [restaurant, supabase])
 
+  // ── Product CRUD handlers ───────────────────────────────────────────
+
+  const handleAddProduct = useCallback(
+    async (categoria: string) => {
+      if (!restaurant) return
+      const { data: inserted, error } = await supabase
+        .from('products')
+        .insert({
+          restaurant_id: restaurant.id,
+          nome: 'Novo produto',
+          descricao: '',
+          preco: 0,
+          categoria: categoria || 'Geral',
+          ativo: true,
+          ordem: 999,
+        })
+        .select('id')
+        .single()
+      if (error || !inserted) {
+        toast({ title: 'Erro ao adicionar produto', variant: 'destructive' })
+        return
+      }
+      await loadProducts()
+      toast({ title: 'Produto adicionado', description: `em ${categoria}` })
+      setSelectedProductId(inserted.id)
+      setProductDrafts((prev) => ({
+        ...prev,
+        [inserted.id]: {
+          nome: 'Novo produto',
+          descricao: '',
+          preco: '0,00',
+          categoria,
+        },
+      }))
+    },
+    [restaurant, supabase, loadProducts, toast]
+  )
+
+  const handleDeleteProduct = useCallback(
+    async (productId: string) => {
+      if (!restaurant) return
+      if (productId.startsWith('preview-')) {
+        toast({ title: 'Produto modelo não pode ser excluído', variant: 'destructive' })
+        return
+      }
+      const { error } = await supabase.from('products').delete().eq('id', productId)
+      if (error) {
+        toast({ title: 'Erro ao excluir produto', variant: 'destructive' })
+        return
+      }
+      setProducts((prev) => prev.filter((p) => p.id !== productId))
+      setProductDrafts((prev) => {
+        const next = { ...prev }
+        delete next[productId]
+        return next
+      })
+      setSelectedProductId(null)
+      toast({ title: 'Produto excluído' })
+    },
+    [restaurant, supabase, toast]
+  )
+
+  const handleCloneProduct = useCallback(
+    async (productId: string) => {
+      if (!restaurant) return
+      const source =
+        products.find((p) => p.id === productId) ?? mergedProducts.find((p) => p.id === productId)
+      if (!source) return
+      const { error } = await supabase.from('products').insert({
+        restaurant_id: restaurant.id,
+        nome: `${source.nome} (cópia)`,
+        descricao: source.descricao || null,
+        preco: source.preco,
+        categoria: source.categoria || 'Geral',
+        imagem_url: source.imagem_url || null,
+        ativo: true,
+        ordem: (source.ordem ?? 0) + 1,
+      })
+      if (error) {
+        toast({ title: 'Erro ao duplicar produto', variant: 'destructive' })
+        return
+      }
+      await loadProducts()
+      toast({ title: 'Produto duplicado' })
+    },
+    [restaurant, products, mergedProducts, supabase, loadProducts, toast]
+  )
+
   // ── Category handlers ─────────────────────────────────────────────────
 
   const handleAddCategory = useCallback(() => {
@@ -685,6 +773,9 @@ export function useEditorState() {
     handleInlineProductChange,
     handleInlineProductSave,
     handleInlineProductCancel,
+    handleAddProduct,
+    handleDeleteProduct,
+    handleCloneProduct,
     handleInlineTextChange,
     handleInlineTextSave,
     handleInlineTextCancel,

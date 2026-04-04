@@ -114,6 +114,9 @@ export default function EditorVisualPage() {
                 onInlineProductChange={editor.handleInlineProductChange}
                 onInlineProductSave={editor.handleInlineProductSave}
                 onInlineProductCancel={editor.handleInlineProductCancel}
+                onAddProduct={editor.handleAddProduct}
+                onDeleteProduct={editor.handleDeleteProduct}
+                onCloneProduct={editor.handleCloneProduct}
               />
             </div>
           )}

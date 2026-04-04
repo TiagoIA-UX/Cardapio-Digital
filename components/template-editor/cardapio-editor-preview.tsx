@@ -2,7 +2,7 @@
 
 import { useMemo, type MouseEvent } from 'react'
 import Image from 'next/image'
-import { Check, ExternalLink, Globe, Loader2, MapPin, Phone, Plus, Store } from 'lucide-react'
+import { Check, Copy, ExternalLink, Globe, Loader2, MapPin, Phone, Plus, Store, Trash2 } from 'lucide-react'
 import {
   buildCardapioViewModel,
   resolveCardapioProductsForPreview,
@@ -201,6 +201,9 @@ interface CardapioEditorPreviewProps {
   onInlineProductChange: (productId: string, field: keyof InlineProductDraft, value: string) => void
   onInlineProductSave: (productId: string) => void
   onInlineProductCancel: (productId: string) => void
+  onAddProduct?: (categoria: string) => void
+  onDeleteProduct?: (productId: string) => void
+  onCloneProduct?: (productId: string) => void
 }
 
 function parseInlineDraftPrice(value: string): number | null {
@@ -244,6 +247,9 @@ export function CardapioEditorPreview({
   onInlineProductChange,
   onInlineProductSave,
   onInlineProductCancel,
+  onAddProduct,
+  onDeleteProduct,
+  onCloneProduct,
 }: CardapioEditorPreviewProps) {
   const previewProducts = useMemo(
     () => resolveCardapioProductsForPreview(restaurant, products),
@@ -612,9 +618,22 @@ export function CardapioEditorPreview({
                         onInlineProductChange={onInlineProductChange}
                         onInlineProductSave={onInlineProductSave}
                         onInlineProductCancel={onInlineProductCancel}
+                        onDeleteProduct={onDeleteProduct}
+                        onCloneProduct={onCloneProduct}
                       />
                     ))}
                   </div>
+
+                  {onAddProduct && (
+                    <button
+                      type="button"
+                      onClick={() => onAddProduct(category)}
+                      className="border-border text-muted-foreground hover:border-primary hover:text-primary mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed py-3 text-sm font-medium transition-colors"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Adicionar produto em {category}
+                    </button>
+                  )}
                 </section>
               )
             })
@@ -736,6 +755,8 @@ function EditorProductCard({
   onInlineProductChange,
   onInlineProductSave,
   onInlineProductCancel,
+  onDeleteProduct,
+  onCloneProduct,
 }: {
   product: CardapioProduct
   productDrafts: Record<string, InlineProductDraft>
@@ -747,6 +768,8 @@ function EditorProductCard({
   onInlineProductChange: (productId: string, field: keyof InlineProductDraft, value: string) => void
   onInlineProductSave: (productId: string) => void
   onInlineProductCancel: (productId: string) => void
+  onDeleteProduct?: (productId: string) => void
+  onCloneProduct?: (productId: string) => void
 }) {
   const draft = productDrafts[product.id]
   const displayProduct = draft
@@ -839,6 +862,31 @@ function EditorProductCard({
               </button>
             </div>
           </div>
+          {/* Clone / Delete actions */}
+          {!isTemplateProduct && (onCloneProduct || onDeleteProduct) && (
+            <div className="flex items-center gap-2 border-t border-border pt-2">
+              {onCloneProduct && (
+                <button
+                  type="button"
+                  onClick={() => onCloneProduct(product.id)}
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  Duplicar
+                </button>
+              )}
+              {onDeleteProduct && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteProduct(product.id)}
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors ml-auto"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Excluir
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     )
