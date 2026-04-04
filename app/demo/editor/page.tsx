@@ -17,7 +17,9 @@ import {
   Globe,
   ImageIcon,
   MapPin,
+  MessageCircle,
   Pencil,
+  Phone,
   Plus,
   Rocket,
   Store,
@@ -571,7 +573,7 @@ function MapsBlock({
 
   return (
     <div
-      className="mx-4 my-6 overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/20"
+      className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
       style={{ background: '#111827' }}
     >
       {/* Cabeçalho escuro */}
@@ -765,24 +767,26 @@ function EditorCanvas({
 
   return (
     <div>
-      {/* Capa */}
-      <div className="group relative h-44 overflow-hidden sm:h-56">
+      {/* Hero — capa profissional */}
+      <div className="group relative min-h-56 overflow-hidden sm:min-h-72 md:min-h-80">
         {restaurant.banner_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={restaurant.banner_url} alt="Capa" className="h-full w-full object-cover" />
+          <img src={restaurant.banner_url} alt="Capa" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <div
-            className="h-full w-full"
+            className="absolute inset-0"
             style={{
               background: `linear-gradient(135deg, ${restaurant.cor_primaria}, ${restaurant.cor_secundaria})`,
             }}
           />
         )}
+        {/* Gradiente escuro sobre a capa */}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.7))]" />
 
         {/* Overlay trocar foto */}
         <button
           onClick={() => bannerInputRef.current?.click()}
-          className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100"
+          className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100"
         >
           <span className="flex items-center gap-2 rounded-xl bg-white/90 px-4 py-2.5 text-sm font-semibold text-gray-800 shadow-lg">
             <Camera className="h-4 w-4" />
@@ -799,10 +803,67 @@ function EditorCanvas({
           onChange={(e) => e.target.files?.[0] && onBannerImage(e.target.files[0])}
         />
 
-        {/* Nome + slogan sobre a capa */}
-        <div className="absolute right-0 bottom-0 left-0 bg-linear-to-t from-black/70 to-transparent p-4">
-          <h1 className="text-xl font-bold text-white drop-shadow-sm">{restaurant.nome}</h1>
-          {restaurant.slogan && <p className="text-sm text-white/80">{restaurant.slogan}</p>}
+        {/* Conteúdo do hero */}
+        <div className="relative z-5 flex h-full min-h-56 flex-col justify-end px-4 py-6 sm:min-h-72 sm:px-6 sm:py-10 md:min-h-80">
+          <div className="max-w-3xl">
+            {/* Badge */}
+            <span className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm">
+              ⭐ Peça agora pelo cardápio digital
+            </span>
+            {/* Nome */}
+            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+              {restaurant.nome}
+            </h1>
+            {/* Slogan */}
+            {restaurant.slogan && (
+              <p className="mt-4 max-w-2xl text-base leading-7 text-white/90 sm:text-lg">
+                {restaurant.slogan}
+              </p>
+            )}
+            {/* CTAs */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <span className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-black">
+                Ver Cardápio
+              </span>
+              {restaurant.telefone && (
+                <span className="rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white">
+                  Falar no WhatsApp
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Card flutuante — cabeçalho do delivery */}
+      <div className="relative z-10 mx-auto -mt-12 max-w-5xl px-4 sm:px-6">
+        <div className="border-border bg-card flex w-full items-start gap-4 rounded-3xl border p-5 shadow-lg sm:p-6">
+          {/* Logo */}
+          <div className="bg-primary flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl shadow-md sm:h-24 sm:w-24">
+            <Store className="h-10 w-10 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-foreground truncate text-xl font-bold sm:text-2xl">
+              {restaurant.nome}
+            </h2>
+            {restaurant.slogan && (
+              <p className="text-muted-foreground mt-1 text-sm">{restaurant.slogan}</p>
+            )}
+            <div className="text-muted-foreground mt-4 flex flex-wrap gap-3 text-sm">
+              {restaurant.telefone && (
+                <span className="bg-secondary/60 inline-flex items-center gap-2 rounded-full px-3 py-2">
+                  <Phone className="h-4 w-4" />
+                  {restaurant.telefone}
+                </span>
+              )}
+              {restaurant.endereco_texto && (
+                <span className="bg-secondary/60 inline-flex items-center gap-2 rounded-full px-3 py-2">
+                  <MapPin className="h-4 w-4" />
+                  {restaurant.endereco_texto}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -848,14 +909,57 @@ function EditorCanvas({
         })}
       </div>
 
-      {/* Rodapé — Localização */}
-      <MapsBlock
-        endereco={restaurant.endereco_texto}
-        mapsUrl={restaurant.google_maps_url}
-        onEnderecoChange={(v) => {
-          /* readonly no canvas — edita no painel */ void v
-        }}
-      />
+      {/* Rodapé — Localização e contato */}
+      <footer className="border-border from-muted/30 to-muted/60 mx-auto max-w-5xl border-t bg-linear-to-b px-4 py-12 pb-12 sm:px-6 lg:py-16">
+        <div className="mb-8 text-center sm:text-left">
+          <h2 className="text-foreground text-xl font-bold sm:text-2xl">Localização e contato</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Venha nos visitar ou finalize seu pedido para falar conosco
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[1fr_320px]">
+          {/* Card mapa */}
+          <MapsBlock
+            endereco={restaurant.endereco_texto}
+            mapsUrl={restaurant.google_maps_url}
+            onEnderecoChange={(v) => {
+              void v
+            }}
+          />
+
+          {/* Card contato */}
+          {restaurant.telefone && (
+            <div
+              className="flex flex-col justify-between overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
+              style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}
+            >
+              <div
+                className="flex items-center gap-2 border-b border-white/10 px-4 py-3"
+                style={{ background: '#0f172a' }}
+              >
+                <Phone className="h-4 w-4 text-emerald-400" />
+                <span className="text-sm font-semibold text-white">Contato</span>
+              </div>
+              <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-8">
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl" />
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/30">
+                    <Phone className="h-8 w-8 text-emerald-400" />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Fale conosco</p>
+                  <p className="mt-2 text-xl font-bold text-white">{restaurant.telefone}</p>
+                </div>
+                <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-4 py-2 text-sm font-medium text-emerald-300 ring-1 ring-emerald-400/20">
+                  <MessageCircle className="h-4 w-4" />
+                  Atendimento com a Zai
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </footer>
 
       {/* Espaço final */}
       <div className="h-8" />
