@@ -24,6 +24,7 @@ env:
   SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+  VERCEL_AI_GATEWAY_TOKEN: ${{ secrets.VERCEL_AI_GATEWAY_TOKEN }}
   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
   INTERNAL_API_SECRET: ${{ secrets.INTERNAL_API_SECRET }}
@@ -119,29 +120,56 @@ jobs:
             SUMMARY="${SUMMARY}Build: falhou. "
           fi
 
-          if [ "$HAS_ERRORS" = "true" ] && [ -n "$GROQ_API_KEY" ]; then
-            GROQ_PAYLOAD=$(jq -n \
-              --arg tsc "$TSC_OUT" \
-              --arg lint "$LINT_OUT" \
-              --arg build "$BUILD_OUT" \
-              '{
-                model: "llama-3.3-70b-versatile",
-                messages: [{
-                  role: "user",
-                  content: ("Analise os erros de build do projeto Next.js abaixo. Identifique as causas raiz e sugira correções específicas. Seja conciso (máx 800 chars).\n\nTypeScript:\n" + $tsc + "\n\nESLint:\n" + $lint + "\n\nBuild:\n" + $build)
-                }],
-                max_tokens: 600,
-                temperature: 0.2
-              }')
+          if [ "$HAS_ERRORS" = "true" ]; then
+            # Escolhe backend: AI Gateway (primário) → Groq direto (fallback)
+            AI_TEXT=""
 
-            GROQ_RESPONSE=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
-              -H "Authorization: Bearer $GROQ_API_KEY" \
-              -H "Content-Type: application/json" \
-              -d "$GROQ_PAYLOAD" --max-time 30 2>/dev/null || echo "{}")
+            if [ -n "$VERCEL_AI_GATEWAY_TOKEN" ]; then
+              GATEWAY_PAYLOAD=$(jq -n \
+                --arg tsc "$TSC_OUT" \
+                --arg lint "$LINT_OUT" \
+                --arg build "$BUILD_OUT" \
+                '{
+                  model: "llama-3.3-70b-versatile",
+                  messages: [{
+                    role: "user",
+                    content: ("Analise os erros de build do projeto Next.js abaixo. Identifique as causas raiz e sugira correções específicas. Seja conciso (máx 800 chars).\n\nTypeScript:\n" + $tsc + "\n\nESLint:\n" + $lint + "\n\nBuild:\n" + $build)
+                  }],
+                  max_tokens: 600,
+                  temperature: 0.2
+                }')
+              GATEWAY_RESPONSE=$(curl -s -X POST "https://ai-gateway.vercel.sh/v1/groq/chat/completions" \
+                -H "Authorization: Bearer $VERCEL_AI_GATEWAY_TOKEN" \
+                -H "Content-Type: application/json" \
+                -H "X-Vercel-AI-Gateway-Provider: groq" \
+                -d "$GATEWAY_PAYLOAD" --max-time 30 2>/dev/null || echo "{}")
+              AI_TEXT=$(echo "$GATEWAY_RESPONSE" | jq -r '.choices[0].message.content // ""' 2>/dev/null | head -c 800)
+            fi
 
-            GROQ_TEXT=$(echo "$GROQ_RESPONSE" | jq -r '.choices[0].message.content // ""' 2>/dev/null | head -c 800)
-            if [ -n "$GROQ_TEXT" ]; then
-              SUMMARY="${SUMMARY}| Análise IA: ${GROQ_TEXT}"
+            # Fallback para Groq direto se gateway falhou ou vazio
+            if [ -z "$AI_TEXT" ] && [ -n "$GROQ_API_KEY" ]; then
+              GROQ_PAYLOAD=$(jq -n \
+                --arg tsc "$TSC_OUT" \
+                --arg lint "$LINT_OUT" \
+                --arg build "$BUILD_OUT" \
+                '{
+                  model: "llama-3.3-70b-versatile",
+                  messages: [{
+                    role: "user",
+                    content: ("Analise os erros de build do projeto Next.js abaixo. Identifique as causas raiz e sugira correções específicas. Seja conciso (máx 800 chars).\n\nTypeScript:\n" + $tsc + "\n\nESLint:\n" + $lint + "\n\nBuild:\n" + $build)
+                  }],
+                  max_tokens: 600,
+                  temperature: 0.2
+                }')
+              GROQ_RESPONSE=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
+                -H "Authorization: Bearer $GROQ_API_KEY" \
+                -H "Content-Type: application/json" \
+                -d "$GROQ_PAYLOAD" --max-time 30 2>/dev/null || echo "{}")
+              AI_TEXT=$(echo "$GROQ_RESPONSE" | jq -r '.choices[0].message.content // ""' 2>/dev/null | head -c 800)
+            fi
+
+            if [ -n "$AI_TEXT" ]; then
+              SUMMARY="${SUMMARY}| Análise IA: ${AI_TEXT}"
             fi
           fi
 
@@ -262,36 +290,49 @@ jobs:
         env:
           KEYWORDS: ${{ steps.collect_errors.outputs.files_with_errors }}
 
-      - name: Gerar patch com Groq
+      - name: Gerar patch com AI Gateway → Groq (fallback)
         id: groq_fix
         shell: bash
         run: |
           TSC_ERR=$(cat /tmp/tsc_full.txt 2>/dev/null | head -c 5000)
           KNOWN="${{ steps.knowledge.outputs.known }}"
 
-          RESPONSE=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
-            -H "Authorization: Bearer $GROQ_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg tsc "$TSC_ERR" \
-              --arg known "$KNOWN" \
-              '{
-                model: "llama-3.3-70b-versatile",
-                messages: [
-                  {
-                    role: "system",
-                    content: "Você é o ZAEA Surgeon — especialista em corrigir erros TypeScript em projetos Next.js 15. Retorne APENAS um JSON com: {\"can_fix\": bool, \"risk\": \"safe|moderate|risky\", \"changes\": [{\"file\": \"path\", \"search\": \"texto exato a substituir (5+ linhas contexto)\", \"replace\": \"texto novo\", \"reason\": \"motivo\"}], \"explanation\": \"resumo\"}. Máx 3 mudanças. NUNCA modifique: arquivos de pagamento, migrations SQL, tests, supabase/. Conhecimento anterior: " + $known
-                  },
-                  {
-                    role: "user",
-                    content: "Erros TypeScript:\n" + $tsc
-                  }
-                ],
-                max_tokens: 2000,
-                temperature: 0.1,
-                response_format: { type: "json_object" }
-              }')" \
-            --max-time 60 2>/dev/null || echo '{"choices":[{"message":{"content":"{\"can_fix\":false}"}}]}')
+          SYSTEM_PROMPT="Você é o ZAEA Surgeon — especialista em corrigir erros TypeScript em projetos Next.js 15. Retorne APENAS um JSON com: {\"can_fix\": bool, \"risk\": \"safe|moderate|risky\", \"changes\": [{\"file\": \"path\", \"search\": \"texto exato a substituir (5+ linhas contexto)\", \"replace\": \"texto novo\", \"reason\": \"motivo\"}], \"explanation\": \"resumo\"}. Máx 3 mudanças. NUNCA modifique: arquivos de pagamento, migrations SQL, tests, supabase/. Conhecimento anterior: $KNOWN"
+
+          PAYLOAD=$(jq -n \
+            --arg sys "$SYSTEM_PROMPT" \
+            --arg tsc "$TSC_ERR" \
+            '{
+              model: "llama-3.3-70b-versatile",
+              messages: [
+                { role: "system", content: $sys },
+                { role: "user", content: ("Erros TypeScript:\n" + $tsc) }
+              ],
+              max_tokens: 2000,
+              temperature: 0.1,
+              response_format: { type: "json_object" }
+            }')
+
+          RESPONSE=""
+
+          # Tentativa 1: Vercel AI Gateway
+          if [ -n "$VERCEL_AI_GATEWAY_TOKEN" ]; then
+            RESPONSE=$(curl -s -X POST "https://ai-gateway.vercel.sh/v1/groq/chat/completions" \
+              -H "Authorization: Bearer $VERCEL_AI_GATEWAY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -H "X-Vercel-AI-Gateway-Provider: groq" \
+              -d "$PAYLOAD" --max-time 60 2>/dev/null || echo "")
+            CHECK=$(echo "$RESPONSE" | jq -r '.choices[0].message.content' 2>/dev/null)
+            if [ -z "$CHECK" ] || [ "$CHECK" = "null" ]; then RESPONSE=""; fi
+          fi
+
+          # Fallback: Groq direto
+          if [ -z "$RESPONSE" ] && [ -n "$GROQ_API_KEY" ]; then
+            RESPONSE=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
+              -H "Authorization: Bearer $GROQ_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD" --max-time 60 2>/dev/null || echo '{"choices":[{"message":{"content":"{\"can_fix\":false}"}}]}')
+          fi
 
           FIX_JSON=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "{\"can_fix\":false}"' 2>/dev/null)
           CAN_FIX=$(echo "$FIX_JSON" | jq -r '.can_fix // false' 2>/dev/null)

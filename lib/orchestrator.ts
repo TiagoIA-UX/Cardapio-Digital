@@ -14,6 +14,15 @@
  * │  Arquivo: lib/orchestrator.ts (ESTE ARQUIVO)            │
  * └─────────────────────────────────────────────────────────┘
  *
+ * ROTEAMENTO DE IA (callForgeAI):
+ * ┌──────────────────────────────────────────────────────────┐
+ * │  [1] Vercel AI Gateway (vck_... — conta ZAEA)           │
+ * │      → cache, logging, rate-limit, multi-provider        │
+ * │      → https://ai-gateway.vercel.sh/v1/groq             │
+ * │  [2] Groq direto (fallback automático)                   │
+ * │      → https://api.groq.com/openai/v1                   │
+ * └──────────────────────────────────────────────────────────┘
+ *
  * Forge roda em: Vercel serverless, GitHub Actions (cron 10min), Python backend.
  */
 
@@ -82,6 +91,81 @@ export interface RecordOutcomeParams {
     confidence?: number
     outcome: KnowledgeOutcome
   }
+}
+
+// ── AI Gateway (FORGE) ────────────────────────────────────────────────────────
+
+/**
+ * Motor de IA do FORGE com roteamento inteligente:
+ *  1. Tenta o Vercel AI Gateway (cache + logging + rate-limit)
+ *  2. Faz fallback automático para Groq direto se o gateway falhar
+ *
+ * Usar em: Surgeon (geração de patches), Scanner (análise), Validator
+ */
+export async function callForgeAI(messages: { role: string; content: string }[], options?: {
+  model?: string
+  maxTokens?: number
+  temperature?: number
+  jsonMode?: boolean
+}): Promise<string> {
+  const model = options?.model ?? 'llama-3.3-70b-versatile'
+  const maxTokens = options?.maxTokens ?? 1024
+  const temperature = options?.temperature ?? 0.2
+
+  const body = JSON.stringify({
+    model,
+    messages,
+    max_tokens: maxTokens,
+    temperature,
+    ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+  })
+
+  // ── Tentativa 1: Vercel AI Gateway ────────────────────────────────────────
+  const gatewayToken = process.env.VERCEL_AI_GATEWAY_TOKEN
+  if (gatewayToken) {
+    try {
+      const res = await fetch('https://ai-gateway.vercel.sh/v1/groq/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${gatewayToken}`,
+          'Content-Type': 'application/json',
+          'X-Vercel-AI-Gateway-Provider': 'groq',
+        },
+        body,
+        signal: AbortSignal.timeout(45_000),
+      })
+
+      if (res.ok) {
+        const data = await res.json() as { choices: { message: { content: string } }[] }
+        const text = data?.choices?.[0]?.message?.content
+        if (text) return text
+      }
+    } catch {
+      // Gateway indisponível — cai no fallback
+    }
+  }
+
+  // ── Fallback: Groq direto ─────────────────────────────────────────────────
+  const groqKey = process.env.GROQ_API_KEY
+  if (!groqKey) throw new Error('[Forge] Nenhuma chave de IA disponível (VERCEL_AI_GATEWAY_TOKEN e GROQ_API_KEY ausentes)')
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqKey}`,
+      'Content-Type': 'application/json',
+    },
+    body,
+    signal: AbortSignal.timeout(45_000),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`[Forge] Groq fallback falhou (${res.status}): ${err.slice(0, 200)}`)
+  }
+
+  const data = await res.json() as { choices: { message: { content: string } }[] }
+  return data?.choices?.[0]?.message?.content ?? ''
 }
 
 // ── Core functions ────────────────────────────────────────────────────────────
