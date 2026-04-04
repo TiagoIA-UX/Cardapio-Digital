@@ -117,6 +117,9 @@ export default function EditorVisualPage() {
                 onAddProduct={editor.handleAddProduct}
                 onDeleteProduct={editor.handleDeleteProduct}
                 onCloneProduct={editor.handleCloneProduct}
+                onRenameCategory={editor.handleEditCategory}
+                onCloneCategory={editor.handleCloneCategory}
+                onDeleteCategory={editor.handleDeleteCategory}
               />
             </div>
           )}

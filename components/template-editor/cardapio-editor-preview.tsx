@@ -1,8 +1,20 @@
 'use client'
 
-import { useMemo, type MouseEvent } from 'react'
+import { useCallback, useMemo, useState, type MouseEvent } from 'react'
 import Image from 'next/image'
-import { Check, Copy, ExternalLink, Globe, Loader2, MapPin, Phone, Plus, Store, Trash2 } from 'lucide-react'
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  Globe,
+  Loader2,
+  MapPin,
+  Pencil,
+  Phone,
+  Plus,
+  Store,
+  Trash2,
+} from 'lucide-react'
 import {
   buildCardapioViewModel,
   resolveCardapioProductsForPreview,
@@ -204,6 +216,9 @@ interface CardapioEditorPreviewProps {
   onAddProduct?: (categoria: string) => void
   onDeleteProduct?: (productId: string) => void
   onCloneProduct?: (productId: string) => void
+  onRenameCategory?: (oldName: string, newName: string) => void
+  onCloneCategory?: (name: string) => void
+  onDeleteCategory?: (name: string) => void
 }
 
 function parseInlineDraftPrice(value: string): number | null {
@@ -250,6 +265,9 @@ export function CardapioEditorPreview({
   onAddProduct,
   onDeleteProduct,
   onCloneProduct,
+  onRenameCategory,
+  onCloneCategory,
+  onDeleteCategory,
 }: CardapioEditorPreviewProps) {
   const previewProducts = useMemo(
     () => resolveCardapioProductsForPreview(restaurant, products),
@@ -597,12 +615,13 @@ export function CardapioEditorPreview({
 
               return (
                 <section key={category} id={`category-${category}`} className="mb-10 scroll-mt-24">
-                  <div className="mb-4 flex items-center gap-3">
-                    <h4 className="text-foreground text-lg font-bold sm:text-xl">{category}</h4>
-                    <span className="text-muted-foreground text-sm">
-                      ({categoryProducts.length})
-                    </span>
-                  </div>
+                  <EditorCategoryHeader
+                    name={category}
+                    count={categoryProducts.length}
+                    onRename={onRenameCategory}
+                    onClone={onCloneCategory}
+                    onDelete={onDeleteCategory}
+                  />
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {categoryProducts.map((product) => (
@@ -744,6 +763,104 @@ export function CardapioEditorPreview({
   )
 }
 
+function EditorCategoryHeader({
+  name,
+  count,
+  onRename,
+  onClone,
+  onDelete,
+}: {
+  name: string
+  count: number
+  onRename?: (oldName: string, newName: string) => void
+  onClone?: (name: string) => void
+  onDelete?: (name: string) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [editValue, setEditValue] = useState(name)
+
+  const handleStartEdit = useCallback(() => {
+    setEditValue(name)
+    setEditing(true)
+  }, [name])
+
+  const handleConfirmEdit = useCallback(() => {
+    const trimmed = editValue.trim()
+    if (trimmed && trimmed !== name && onRename) {
+      onRename(name, trimmed)
+    }
+    setEditing(false)
+  }, [editValue, name, onRename])
+
+  return (
+    <div className="group/cat mb-4 flex items-center gap-3">
+      {editing ? (
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleConfirmEdit()
+              if (e.key === 'Escape') setEditing(false)
+            }}
+            autoFocus
+            placeholder="Nome da categoria"
+            className="border-primary bg-background text-foreground w-48 rounded-lg border-2 px-3 py-1.5 text-lg font-bold focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={handleConfirmEdit}
+            className="text-primary hover:bg-primary/10 rounded-lg p-1.5 transition-colors"
+            title="Confirmar renomeação"
+          >
+            <Check className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <>
+          <h4 className="text-foreground text-lg font-bold sm:text-xl">{name}</h4>
+          <span className="text-muted-foreground text-sm">({count})</span>
+          {(onRename || onClone || onDelete) && (
+            <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/cat:opacity-100">
+              {onRename && (
+                <button
+                  type="button"
+                  onClick={handleStartEdit}
+                  className="text-muted-foreground hover:text-primary rounded-lg p-1.5 transition-colors"
+                  title="Renomear categoria"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {onClone && (
+                <button
+                  type="button"
+                  onClick={() => onClone(name)}
+                  className="text-muted-foreground hover:text-primary rounded-lg p-1.5 transition-colors"
+                  title="Duplicar categoria"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(name)}
+                  className="text-muted-foreground hover:text-destructive rounded-lg p-1.5 transition-colors"
+                  title="Excluir categoria"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 function EditorProductCard({
   product,
   productDrafts,
@@ -864,12 +981,12 @@ function EditorProductCard({
           </div>
           {/* Clone / Delete actions */}
           {!isTemplateProduct && (onCloneProduct || onDeleteProduct) && (
-            <div className="flex items-center gap-2 border-t border-border pt-2">
+            <div className="border-border flex items-center gap-2 border-t pt-2">
               {onCloneProduct && (
                 <button
                   type="button"
                   onClick={() => onCloneProduct(product.id)}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:bg-secondary hover:text-foreground inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
                 >
                   <Copy className="h-3.5 w-3.5" />
                   Duplicar
@@ -879,7 +996,7 @@ function EditorProductCard({
                 <button
                   type="button"
                   onClick={() => onDeleteProduct(product.id)}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors ml-auto"
+                  className="text-destructive hover:bg-destructive/10 ml-auto inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Excluir
@@ -892,51 +1009,80 @@ function EditorProductCard({
     )
   }
 
+  const isPersistedProduct = persistedProductIds.has(product.id)
+
   return (
-    <button
-      type="button"
-      data-block="product-card"
-      data-product-id={product.id}
-      onClick={onSelect}
-      className={cn(
-        'group bg-card border-border hover:border-primary/30 flex w-full min-w-0 cursor-pointer gap-3 rounded-xl border p-3 text-left transition-all duration-300 hover:shadow-md sm:gap-4 sm:p-4',
-        selectedProductId === product.id && 'ring-primary ring-2 ring-inset'
-      )}
-    >
-      <div className="bg-muted relative h-24 w-24 shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-28">
-        {displayProduct.imagem_url ? (
-          <Image
-            src={displayProduct.imagem_url}
-            alt={displayProduct.nome}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-xs">
-            + Foto
-          </div>
+    <div className="group relative">
+      <button
+        type="button"
+        data-block="product-card"
+        data-product-id={product.id}
+        onClick={onSelect}
+        className={cn(
+          'bg-card border-border hover:border-primary/30 flex w-full min-w-0 cursor-pointer gap-3 rounded-xl border p-3 text-left transition-all duration-300 hover:shadow-md sm:gap-4 sm:p-4',
+          selectedProductId === product.id && 'ring-primary ring-2 ring-inset'
         )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <h3 className="text-foreground group-hover:text-primary font-semibold transition-colors">
-          {displayProduct.nome}
-        </h3>
-        {displayProduct.descricao && (
-          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
-            {displayProduct.descricao}
-          </p>
-        )}
-        <div className="mt-auto flex items-end justify-between pt-3">
-          <span className="text-primary text-lg font-bold">
-            {formatCurrency(displayProduct.preco)}
-          </span>
-          <span className="bg-primary/10 text-primary flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium">
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Adicionar</span>
-          </span>
+      >
+        <div className="bg-muted relative h-24 w-24 shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-28">
+          {displayProduct.imagem_url ? (
+            <Image
+              src={displayProduct.imagem_url}
+              alt={displayProduct.nome}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-xs">
+              + Foto
+            </div>
+          )}
         </div>
-      </div>
-    </button>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <h3 className="text-foreground group-hover:text-primary font-semibold transition-colors">
+            {displayProduct.nome}
+          </h3>
+          {displayProduct.descricao && (
+            <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+              {displayProduct.descricao}
+            </p>
+          )}
+          <div className="mt-auto flex items-end justify-between pt-3">
+            <span className="text-primary text-lg font-bold">
+              {formatCurrency(displayProduct.preco)}
+            </span>
+            <span className="bg-primary/10 text-primary flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Adicionar</span>
+            </span>
+          </div>
+        </div>
+      </button>
+      {/* Hover actions — clone + delete */}
+      {(onCloneProduct || (onDeleteProduct && isPersistedProduct)) && (
+        <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          {onCloneProduct && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onCloneProduct(product.id) }}
+              className="bg-card/90 text-muted-foreground hover:text-primary rounded-lg p-1.5 shadow-sm ring-1 ring-black/5 backdrop-blur transition-colors"
+              title="Duplicar produto"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
+          )}
+          {onDeleteProduct && isPersistedProduct && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onDeleteProduct(product.id) }}
+              className="bg-card/90 text-muted-foreground hover:text-destructive rounded-lg p-1.5 shadow-sm ring-1 ring-black/5 backdrop-blur transition-colors"
+              title="Excluir produto"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
