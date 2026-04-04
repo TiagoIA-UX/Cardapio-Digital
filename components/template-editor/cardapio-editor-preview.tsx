@@ -630,8 +630,8 @@ export function CardapioEditorPreview({
         </section>
       )}
 
-      {(restaurant.endereco_texto || restaurant.google_maps_url || restaurant.telefone) && (
-        <footer className="border-border from-muted/30 to-muted/60 mx-auto max-w-5xl border-t bg-linear-to-b px-4 py-12 pb-12 sm:px-6 lg:py-16">
+      {/* Footer sempre visível no editor — mapa + contato */}
+      <footer className="border-border from-muted/30 to-muted/60 mx-auto max-w-5xl border-t bg-linear-to-b px-4 py-12 pb-12 sm:px-6 lg:py-16">
           <div className="mb-8 text-center sm:text-left">
             <h2 className="text-foreground text-xl font-bold sm:text-2xl">Localização e contato</h2>
             <p className="text-muted-foreground mt-1 text-sm">
@@ -639,8 +639,8 @@ export function CardapioEditorPreview({
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[1fr_320px]">
-            {(restaurant.endereco_texto || restaurant.google_maps_url) && (
-              <div
+            {/* Card mapa — sempre visível no editor */}
+            <div
                 className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
                 style={{ background: '#111827' }}
               >
@@ -719,17 +719,14 @@ export function CardapioEditorPreview({
                 </a>
 
                 {/* Rodapé com endereço */}
-                {restaurant.endereco_texto && (
-                  <div
+                <div
                     className="flex items-center gap-2 border-t border-white/10 px-4 py-3"
                     style={{ background: '#0f172a' }}
                   >
                     <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
-                    <p className="text-sm text-slate-300">{restaurant.endereco_texto}</p>
+                    <p className="text-sm text-slate-300">{restaurant.endereco_texto || 'Endereço não informado — preencha no painel'}</p>
                   </div>
-                )}
               </div>
-            )}
             {restaurant.telefone && (
               <div
                 className="flex flex-col justify-between overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
@@ -774,7 +771,6 @@ export function CardapioEditorPreview({
             )}
           </div>
         </footer>
-      )}
     </div>
   )
 }
