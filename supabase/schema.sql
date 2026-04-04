@@ -58,7 +58,7 @@ CREATE TABLE orders (
   numero_pedido INTEGER NOT NULL,
   cliente_nome VARCHAR(255),
   cliente_telefone VARCHAR(20),
-  tipo_entrega VARCHAR(20) DEFAULT 'retirada' CHECK (tipo_entrega IN ('entrega', 'retirada')),
+  tipo_entrega VARCHAR(20) DEFAULT 'retirada' CHECK (tipo_entrega IN ('delivery', 'retirada')),
   origem_pedido VARCHAR(20) DEFAULT 'online' CHECK (origem_pedido IN ('online', 'mesa')),
   mesa_numero VARCHAR(20),
   endereco_rua VARCHAR(255),

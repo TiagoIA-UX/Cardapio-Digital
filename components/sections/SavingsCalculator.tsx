@@ -4,12 +4,6 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Calculator, TrendingDown, TrendingUp, Eye, MessageCircle } from 'lucide-react'
 
-const WHATSAPP_NUMBER = '5512996887993'
-const WHATSAPP_MSG = encodeURIComponent(
-  'Olá! Vi o calculador de economia e quero saber mais sobre o canal digital.'
-)
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`
-
 const ZAIRYX_MONTHLY = 147
 const PRESETS = [5000, 10000, 15000, 20000, 30000, 50000]
 
@@ -73,6 +67,7 @@ export default function SavingsCalculator() {
                   step={1000}
                   value={revenue}
                   onChange={(e) => setRevenue(Number(e.target.value))}
+                  aria-label="Faturamento mensal"
                   data-testid="revenue-slider"
                   className="calc-slider mb-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-700"
                 />
@@ -111,6 +106,7 @@ export default function SavingsCalculator() {
                   step={1}
                   value={commissionPct}
                   onChange={(e) => setCommissionPct(Number(e.target.value))}
+                  aria-label="Comissão do app atual"
                   data-testid="commission-slider"
                   className="calc-slider-red mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-700"
                 />
@@ -194,16 +190,14 @@ export default function SavingsCalculator() {
                   <Eye className="h-5 w-5" />
                   Parar de perder dinheiro
                 </Link>
-                <a
-                  href={WHATSAPP_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/templates"
                   data-testid="calc-cta-whatsapp"
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                 >
                   <MessageCircle className="h-5 w-5 text-green-400" />
-                  Quero uma demonstração
-                </a>
+                  Quero falar primeiro com a Zai
+                </Link>
               </div>
             </div>
           </div>

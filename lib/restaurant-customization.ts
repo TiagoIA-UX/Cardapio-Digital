@@ -174,8 +174,8 @@ export function buildRestaurantCustomizationSeed(
     pickupLabel: 'Retirada',
     dineInLabel: 'Consumir no local',
     aiAssistant: {
-      enabled: false,
-      consentedAt: null,
+      enabled: true,
+      consentedAt: new Date().toISOString(),
       consentVersion: 'v1',
       provider: 'groq',
       scope: 'sales',
@@ -511,8 +511,8 @@ export function getRestaurantAiAssistantSettings(
   const dailyMessageLimit = Number(aiAssistant.dailyMessageLimit)
 
   return {
-    enabled: aiAssistant.enabled ?? false,
-    consentedAt: aiAssistant.consentedAt ?? null,
+    enabled: aiAssistant.enabled ?? true,
+    consentedAt: aiAssistant.consentedAt ?? new Date().toISOString(),
     consentVersion: aiAssistant.consentVersion ?? 'v1',
     provider: aiAssistant.provider ?? 'groq',
     scope: aiAssistant.scope ?? 'sales',

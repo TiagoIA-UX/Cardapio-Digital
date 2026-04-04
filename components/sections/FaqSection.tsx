@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
   {
     question: 'O que é a IA assistente? Preciso pagar a mais?',
     answer:
-      'É o Cadu, assistente de IA que fica direto no seu cardápio digital — sem precisar integrar o WhatsApp do seu negócio. Responde dúvidas, sugere produtos e ajuda a fechar pedidos 24 horas por dia. Perfeito para cidades turísticas: turistas que chegam de madrugada ou no feriado são atendidos na hora. Já está incluso na assinatura, sem custo extra.',
+      'É a Zai, agente de IA que vai de brinde no seu canal digital. Ela responde dúvidas, organiza o pedido e faz sugestões leves para vender melhor, sem forçar a compra. Se perceber que uma bebida ficou para trás, por exemplo, ela pode sugerir isso com inteligência para ajudar o delivery a faturar mais.',
   },
   {
     question: 'Quanto custa? Tem taxa por pedido?',
@@ -47,7 +47,7 @@ const FAQ_ITEMS = [
   {
     question: 'E se eu já uso iFood, Rappi ou outro app?',
     answer:
-      'Não precisa sair! Use o iFood pra atrair cliente NOVO. Mas quando ele já te conhece e pede sempre, mande o link do SEU cardápio por WhatsApp. Cada pedido que migra é comissão que fica no seu bolso. Com 100 pedidos/mês de clientes fiéis a R$ 50, você economiza R$ 750/mês só de comissão. Na Zairyx: R$ 147 fixo, IA assistente 24h, editor visual e 0% de comissão.',
+      'Não precisa sair. Use o iFood para atrair cliente novo e traga o cliente fiel para o seu canal digital. Em um exemplo conservador, 100 pedidos por mês de clientes fiéis com ticket de R$ 50 representam algo perto de R$ 750 em comissão recuperada. Tirando a assinatura de R$ 147, ainda sobra ganho real no caixa, fora o faturamento extra que a Zai pode gerar com upsell leve, como sugerir uma bebida quando percebe uma oportunidade natural no pedido.',
   },
 ] as const
 
@@ -83,7 +83,7 @@ export default function FaqSection() {
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                     data-testid={`faq-toggle-${index}`}
-                    aria-expanded={isOpen}
+                    aria-expanded={isOpen ? 'true' : 'false'}
                   >
                     <span className="text-base font-semibold text-zinc-900">{item.question}</span>
                     <ChevronDown

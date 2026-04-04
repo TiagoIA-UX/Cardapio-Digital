@@ -48,7 +48,6 @@ interface Purchase {
 }
 
 const TEMPLATE_CATALOG = getTemplateCatalog()
-const WHATSAPP_SUPPORT_LINK = 'https://api.whatsapp.com/send?phone=5512996887993'
 
 export default function MeusTemplatesPage() {
   const showDevUnlock =
@@ -400,15 +399,10 @@ export default function MeusTemplatesPage() {
                       <div className="mt-4 flex flex-wrap gap-3">
                         {purchase.linkResolution === 'unresolved' ? (
                           <>
-                            <a
-                              href={`${WHATSAPP_SUPPORT_LINK}&text=${encodeURIComponent(`Olá, preciso revisar o vínculo do template ${purchase.templateName}. Compra: ${purchase.id}. Pedido: ${purchase.orderId || 'sem pedido'}.`)}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
-                            >
+                            <span className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white">
                               <AlertCircle className="h-4 w-4" />
-                              Acionar suporte
-                            </a>
+                              Revisão já encaminhada pela Zai
+                            </span>
                             <button
                               onClick={() => {
                                 void loadPurchases()

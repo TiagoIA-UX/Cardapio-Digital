@@ -4,19 +4,10 @@ import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import {
-  Store,
-  Loader2,
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  MessageCircle,
-  Circle,
-} from 'lucide-react'
+import { Store, Loader2, ArrowRight, CheckCircle2, Sparkles, Circle } from 'lucide-react'
 import { buildRestaurantInstallation } from '@/lib/restaurant-onboarding'
 import { normalizeTemplateSlug } from '@/lib/restaurant-customization'
 import { resolveRestaurantCreationEntitlements } from '@/lib/commercial-entitlements'
-import { seoConfig } from '@/lib/seo'
 import { getCreateDeliveryWizardProgress, getCreateDeliveryWizardSteps } from '@/lib/setup-wizard'
 import { trackEvent } from '@/lib/analytics'
 
@@ -47,15 +38,6 @@ export default function CriarRestaurantePage() {
     [form, remainingCredits]
   )
   const completedSteps = useMemo(() => getCreateDeliveryWizardProgress(setupSteps), [setupSteps])
-  const supportHref = useMemo(() => {
-    const message =
-      `Olá, preciso de ajuda para configurar meu canal digital.` +
-      ` Nome: ${form.nome || 'não informado'}.` +
-      ` Link: /r/${form.slug || 'pendente'}.` +
-      ` Template: ${templateSlug || 'restaurante'}.`
-
-    return `https://api.whatsapp.com/send?phone=${seoConfig.supportWhatsApp}&text=${encodeURIComponent(message)}`
-  }, [form.nome, form.slug, templateSlug])
 
   useEffect(() => {
     const checkExistingRestaurant = async () => {
@@ -402,22 +384,6 @@ export default function CriarRestaurantePage() {
                     <span className="text-foreground font-semibold">{networkExtraUnits}</span>
                   </p>
                 ) : null}
-              </div>
-
-              <div className="border-border rounded-lg border p-3 text-sm">
-                <p className="text-foreground font-medium">Travou em alguma etapa?</p>
-                <p className="text-muted-foreground mt-1">
-                  Fale com suporte humano no WhatsApp para terminar a configuração sem perder tempo.
-                </p>
-                <Link
-                  href={supportHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-primary mt-3 inline-flex items-center gap-2 font-medium hover:underline"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Pedir ajuda no WhatsApp
-                </Link>
               </div>
 
               <button

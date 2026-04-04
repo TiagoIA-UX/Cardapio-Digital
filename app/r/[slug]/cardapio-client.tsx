@@ -74,6 +74,24 @@ function formatPhoneMask(phone: string): string {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
+async function reportAiDevAlert(input: {
+  restaurantId?: string
+  restaurantSlug?: string
+  source: string
+  error: string
+  context?: Record<string, unknown>
+}) {
+  try {
+    await fetch('/api/ai/dev-alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    })
+  } catch {
+    // Falha de alerta nunca deve quebrar a experiência do cliente.
+  }
+}
+
 function createInitialOrderForm(isTableOrder: boolean): OrderFormState {
   return {
     customerName: '',
@@ -101,12 +119,21 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
     [restaurant, products]
   )
   const { categories, productsByCategory, presentation, sectionVisibility } = viewModel
+  const whatsappPhone = useMemo(() => {
+    if (!restaurant.telefone) {
+      return null
+    }
+
+    const parsed = formatarTelefoneWhatsApp(restaurant.telefone)
+    return parsed.length >= 12 && parsed.length <= 13 ? parsed : null
+  }, [restaurant.telefone])
 
   const [cart, setCart] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [isGeneratingAiNotes, setIsGeneratingAiNotes] = useState(false)
   const [receiptUploading, setReceiptUploading] = useState(false)
   const [receiptUploadError, setReceiptUploadError] = useState<string | null>(null)
   const [sessionAccessToken, setSessionAccessToken] = useState<string | null>(null)
@@ -211,7 +238,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
 
   const canSubmit =
     cart.length > 0 &&
-    !!restaurant.telefone &&
+    !!whatsappPhone &&
     (!!orderForm.customerName.trim() || isTableOrder) &&
     (!orderForm.customerPhone.trim() || isValidBrazilPhone(orderForm.customerPhone)) &&
     (orderForm.fulfillment !== 'entrega' ||
@@ -293,13 +320,12 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
   }
 
   const openWhatsApp = (message: string) => {
-    if (!restaurant.telefone?.replace(/\D/g, '')) {
+    if (!whatsappPhone) {
       throw new Error('Este restaurante não configurou o WhatsApp.')
     }
 
-    const whatsappNumber = formatarTelefoneWhatsApp(restaurant.telefone)
     const encodedMessage = encodeURIComponent(message)
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodedMessage}`
     window.location.href = whatsappUrl
   }
 
@@ -349,8 +375,89 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
     }
   }
 
+  const generateAiNotesSuggestion = async () => {
+    if (!restaurant?.id) {
+      return
+    }
+
+    setIsGeneratingAiNotes(true)
+
+    try {
+      const itemsSummary = cart.map((item) => `${item.quantity}x ${item.product.nome}`).join(', ')
+      const orderContext = [
+        `Tipo de atendimento: ${orderForm.fulfillment}`,
+        `Itens: ${itemsSummary || 'não informado'}`,
+        orderForm.notes.trim() ? `Observação bruta do cliente: ${orderForm.notes.trim()}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          context: {
+            restaurantId: restaurant.id,
+            restaurantSlug: restaurant.slug,
+            pageType: 'marketing',
+            pathname: `/r/${restaurant.slug}`,
+          },
+          messages: [
+            {
+              role: 'user',
+              content:
+                `Você é a Zai, atendente virtual do pedido. ` +
+                `Escreva somente o texto final para o campo de observações do pedido no WhatsApp. ` +
+                `Protocolo ético obrigatório: não adicionar item, não aumentar valor, não presumir compra extra, ` +
+                `não incentivar gasto maior e não prometer algo que não esteja no pedido. ` +
+                `Seu foco é organizar o que já foi pedido e, quando útil, sugerir apenas remoção/ajuste de preferência. ` +
+                `Se perceber que faltou uma bebida ou um complemento natural para acompanhar o pedido, ` +
+                `primeiro pergunte permissão em 1 frase curta (ex: "Posso sugerir uma bebida para acompanhar?") ` +
+                `sem incluir bebida no pedido e sem pressionar a compra. ` +
+                `Resposta em pt-BR, no máximo 4 linhas, sem markdown, sem saudação longa.\n\n${orderContext}`,
+            },
+          ],
+        }),
+      })
+
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok || typeof data?.reply !== 'string' || !data.reply.trim()) {
+        throw new Error(data?.error || 'IA indisponível para observações neste momento.')
+      }
+
+      updateOrderForm('notes', data.reply.trim())
+      toast({
+        title: 'Zai preparou sua observação',
+        description: 'Revise e edite antes de enviar o pedido.',
+      })
+    } catch (aiError) {
+      await reportAiDevAlert({
+        restaurantId: restaurant.id,
+        restaurantSlug: restaurant.slug,
+        source: 'public-cart-ai-notes',
+        error: aiError instanceof Error ? aiError.message : 'Falha desconhecida na Zai',
+        context: {
+          cartSize: cart.length,
+          fulfillment: orderForm.fulfillment,
+        },
+      })
+
+      toast({
+        title: 'Zai está indisponível agora',
+        description:
+          'Já avisamos o desenvolvedor Tiago para normalizar o sistema. Se preferir, escreva sua observação manualmente e continue o pedido.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsGeneratingAiNotes(false)
+    }
+  }
+
   const submitOrder = async () => {
-    if (!restaurant?.id || !restaurant?.telefone?.trim()) {
+    if (!restaurant?.id || !whatsappPhone) {
       setError(
         'Este cardápio não foi encontrado ou não está disponível no momento. Atualize a página e tente novamente.'
       )
@@ -379,7 +486,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
         })),
         cliente_nome: orderForm.customerName.trim() || null,
         cliente_telefone: orderForm.customerPhone.trim() || null,
-        tipo_entrega: orderForm.fulfillment === 'entrega' ? 'entrega' : 'retirada',
+        tipo_entrega: orderForm.fulfillment === 'entrega' ? 'delivery' : 'retirada',
         endereco_rua: orderForm.fulfillment === 'entrega' ? orderForm.addressStreet.trim() : null,
         endereco_bairro:
           orderForm.fulfillment === 'entrega' ? orderForm.addressDistrict.trim() : null,
@@ -735,20 +842,15 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
                       Finalize o pedido para entrar em contato
                     </p>
                     <a
-                      href={`tel:+55${restaurant.telefone.replace(/\D/g, '')}`}
+                      href={whatsappPhone ? `tel:+${whatsappPhone}` : '#'}
                       className="text-foreground hover:text-primary mt-2 block text-lg font-bold transition-colors"
                     >
                       {formatPhone(restaurant.telefone)}
                     </a>
-                    <a
-                      href={`https://api.whatsapp.com/send?phone=${formatarTelefoneWhatsApp(restaurant.telefone)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80 mt-2 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
-                    >
+                    <span className="text-primary mt-2 inline-flex items-center gap-1.5 text-sm font-medium">
                       <MessageCircle className="h-4 w-4" />
-                      Falar no WhatsApp
-                    </a>
+                      Atendimento inicial com a Zai
+                    </span>
                   </div>
                 </div>
               </div>
@@ -796,6 +898,8 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
           cart={cart}
           totalItems={totalItems}
           totalPrice={totalPrice}
+          hasWhatsappPhone={Boolean(whatsappPhone)}
+          isGeneratingAiNotes={isGeneratingAiNotes}
           restaurant={restaurant}
           error={error}
           isSubmitting={isSubmitting}
@@ -813,6 +917,9 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
           onOrderFormChange={updateOrderForm}
           onUploadPixReceipt={(file) => {
             void uploadPixReceipt(file)
+          }}
+          onGenerateAiNotes={() => {
+            void generateAiNotesSuggestion()
           }}
           onSubmit={submitOrder}
           canSubmit={canSubmit}
@@ -884,6 +991,8 @@ interface CartDrawerProps {
   cart: CartItem[]
   totalItems: number
   totalPrice: number
+  hasWhatsappPhone: boolean
+  isGeneratingAiNotes: boolean
   restaurant: CardapioRestaurant
   error: string | null
   isSubmitting: boolean
@@ -903,6 +1012,7 @@ interface CartDrawerProps {
     value: OrderFormState[Key]
   ) => void
   onUploadPixReceipt: (file: File) => void
+  onGenerateAiNotes: () => void
   onSubmit: () => void
   canSubmit: boolean
 }
@@ -911,6 +1021,8 @@ function CartDrawer({
   cart,
   totalItems,
   totalPrice,
+  hasWhatsappPhone,
+  isGeneratingAiNotes,
   restaurant,
   error,
   isSubmitting,
@@ -927,6 +1039,7 @@ function CartDrawer({
   onRemove,
   onOrderFormChange,
   onUploadPixReceipt,
+  onGenerateAiNotes,
   onSubmit,
   canSubmit,
 }: CartDrawerProps) {
@@ -1126,10 +1239,23 @@ function CartDrawer({
                 </div>
               )}
 
-              <div className="border-border bg-muted/30 rounded-2xl border p-4">
+              <div className="border-primary/30 from-primary/8 via-background to-primary/3 ring-primary/10 rounded-2xl border bg-linear-to-br p-4 shadow-sm ring-1">
                 <label className="text-foreground mb-2 block text-sm font-semibold">
                   Observações do pedido
                 </label>
+                <div className="mb-3 rounded-xl border border-emerald-500/20 bg-emerald-500/8 p-3">
+                  <div className="flex items-start gap-2">
+                    <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                    <div>
+                      <p className="text-foreground text-sm font-semibold">Atendimento com a Zai</p>
+                      <p className="text-muted-foreground mt-1 text-xs leading-5">
+                        A Zai cuida do seu pedido aqui no carrinho, organiza cada detalhe com mais
+                        carinho e ajuda você a deixar tudo do seu jeito, sem precisar sair da sua
+                        experiência.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <textarea
                   rows={4}
                   value={orderForm.notes}
@@ -1137,6 +1263,26 @@ function CartDrawer({
                   placeholder="Ex: sem cebola, ponto da carne, retirar embalagem, tocar campainha, ponto de referência para entrega..."
                   className="border-border bg-background text-foreground focus:ring-primary w-full rounded-xl border px-4 py-3 focus:border-transparent focus:ring-2"
                 />
+
+                <button
+                  type="button"
+                  onClick={onGenerateAiNotes}
+                  disabled={isGeneratingAiNotes || cart.length === 0}
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isGeneratingAiNotes ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <MessageCircle className="h-4 w-4" />
+                  )}
+                  {isGeneratingAiNotes
+                    ? 'Zai está escrevendo...'
+                    : 'Precisa de algo? Converse com a Zai'}
+                </button>
+                <p className="text-muted-foreground mt-2 text-xs">
+                  A Zai organiza sua observação com ética: sem adicionar item, sem aumentar gasto e
+                  sem te mandar para atendimento humano no WhatsApp durante o pedido.
+                </p>
 
                 <div className="space-y-2">
                   <p className="text-foreground text-sm font-medium">
@@ -1298,7 +1444,7 @@ function CartDrawer({
             <button
               data-testid="btn-submit-order"
               onClick={onSubmit}
-              disabled={isSubmitting || !restaurant.telefone || !canSubmit}
+              disabled={isSubmitting || !hasWhatsappPhone || !canSubmit}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-4 font-semibold text-white transition-all hover:bg-[#20bd5a] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (
@@ -1333,19 +1479,21 @@ function InputField({
   onBlur?: () => void
 }) {
   const displayValue = type === 'tel' ? formatPhoneMask(value) : value
+  const inputName = label.toLowerCase().trim().replace(/\s+/g, '-')
 
   return (
     <div>
       <label className="text-foreground mb-1 block text-sm font-medium">{label}</label>
       <input
         type={type}
+        name={inputName}
         inputMode={type === 'tel' ? 'tel' : undefined}
         data-testid={`input-${label.toLowerCase().replace(/\s+/g, '-')}`}
         value={displayValue}
         onChange={(event) =>
           onChange(type === 'tel' ? normalizePhoneDigits(event.target.value) : event.target.value)
         }
-        autoComplete={type === 'tel' ? 'tel' : undefined}
+        autoComplete="off"
         onBlur={onBlur}
         title={label}
         aria-label={label}

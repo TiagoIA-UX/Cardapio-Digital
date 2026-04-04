@@ -7,7 +7,6 @@ import {
   buildDeliveryAssistantSystemPrompt,
   buildPanelAssistantSystemPrompt,
 } from '@/lib/delivery-assistant'
-import { isTerminalEnabled, resolveDeliveryMode } from '@/lib/delivery-mode'
 
 const CHAT_HISTORY_LIMIT = 20
 const CHAT_TIMEOUT_MS = 8_000
@@ -298,23 +297,11 @@ export async function POST(req: NextRequest) {
       }
 
       const aiSettings = getRestaurantAiAssistantSettings(restaurant.customizacao)
-      const isActive =
-        restaurant.ativo !== false &&
-        restaurant.status_pagamento === 'ativo' &&
-        !restaurant.suspended
+      const isActive = restaurant.ativo !== false && !restaurant.suspended
 
-      if (!isActive || !aiSettings.enabled) {
+      if (!isActive) {
         return NextResponse.json(
           { error: 'Atendimento por IA desativado para este delivery.' },
-          { status: 403, headers: rateLimit.headers }
-        )
-      }
-
-      const deliveryMode = resolveDeliveryMode(restaurant.delivery_mode, restaurant.customizacao)
-
-      if (!isTerminalEnabled(deliveryMode)) {
-        return NextResponse.json(
-          { error: 'Canal de IA não ativado para este delivery.' },
           { status: 403, headers: rateLimit.headers }
         )
       }

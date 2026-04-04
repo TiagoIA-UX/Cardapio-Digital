@@ -10,7 +10,6 @@ import {
   Copy,
   Loader2,
   MessageCircle,
-  Phone,
   Send,
   X,
 } from 'lucide-react'
@@ -29,7 +28,7 @@ interface ChatRequestContext {
 const MARKETING_GREETING: Message = {
   role: 'assistant',
   content:
-    '👋 Oi! Sou o Cadu, assistente IA da Zairyx. Posso te ajudar a:\n\n• Encontrar o plano ideal para seu negócio\n• Mostrar como funciona na prática\n• Tirar dúvidas técnicas ou de preço\n\nMe conta: qual é o seu tipo de negócio? 😊',
+    '👋 Oi! Sou a Zai, assistente IA da Zairyx. Posso te ajudar a:\n\n• Encontrar o plano ideal para seu negócio\n• Mostrar como funciona na prática\n• Tirar dúvidas técnicas ou de preço\n\nMe conta: qual é o seu tipo de negócio? 😊',
 }
 
 const PANEL_GREETING: Message = {
@@ -127,7 +126,7 @@ function getChatConfig(pathname: string | null): ChatRuntimeConfig {
     endpoint: '/api/chat',
     quickQuestions: MARKETING_QUICK_REPLY_CATEGORIES.flatMap((category) => category.questions),
     quickReplyCategories: MARKETING_QUICK_REPLY_CATEGORIES,
-    title: 'Cadu — Zairyx',
+    title: 'Zai — Zairyx',
     subtitle: 'Online agora',
     Icon: Bot,
     pageType: 'marketing',
@@ -308,8 +307,8 @@ export function ChatWidget() {
 
     const contextText = encodeURIComponent(
       chatConfig.pageType === 'panel'
-        ? `Oi! Vim do assistente do painel e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
-        : `Oi! Vim do chat da Zairyx e preciso de ajuda humana.\n\nÚltimas dúvidas: ${lastUserMessages}`
+        ? `Oi! A Zai não conseguiu concluir meu atendimento no painel e preciso de suporte humano.\n\nÚltimas dúvidas: ${lastUserMessages}`
+        : `Oi! A Zai não conseguiu concluir meu atendimento e preciso de suporte humano.\n\nÚltimas dúvidas: ${lastUserMessages}`
     )
 
     window.open(
@@ -324,8 +323,8 @@ export function ChatWidget() {
         role: 'assistant',
         content:
           chatConfig.pageType === 'panel'
-            ? '✅ Abrindo conversa com nossa equipe no WhatsApp para continuar a ajuda no painel.'
-            : '✅ Abrindo conversa com nossa equipe no WhatsApp! Um humano vai continuar te ajudando por lá. 😊',
+            ? '✅ Abrindo o canal de suporte humano para continuar a ajuda no painel.'
+            : '✅ Abrindo o canal de suporte humano para você continuar o atendimento com a equipe. 😊',
       },
     ])
     setShowEscalation(false)
@@ -372,14 +371,16 @@ export function ChatWidget() {
 
           {showEscalation && (
             <div className="flex items-center justify-between border-b border-blue-100 bg-blue-50 px-3 py-2">
-              <p className="text-xs text-blue-700">Prefere falar com um humano?</p>
+              <p className="text-xs text-blue-700">
+                Se a Zai não resolver, posso abrir suporte humano.
+              </p>
               <button
                 type="button"
                 onClick={handleEscalateToHuman}
                 className="inline-flex items-center gap-1 rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-green-600"
               >
-                <Phone className="h-3 w-3" />
-                WhatsApp
+                <Bot className="h-3 w-3" />
+                Solicitar suporte humano
               </button>
             </div>
           )}
@@ -443,7 +444,8 @@ export function ChatWidget() {
           </div>
 
           <p className="border-t border-zinc-100 bg-zinc-50 px-3 py-1 text-center text-[9px] text-zinc-500">
-            Respostas geradas por IA — em caso de dúvida, fale com nossa equipe.
+            Respostas geradas por IA — o suporte humano entra só quando a Zai não conseguir
+            concluir.
           </p>
 
           <div className="flex flex-col gap-1.5 border-t border-zinc-100 bg-white px-3 py-2">

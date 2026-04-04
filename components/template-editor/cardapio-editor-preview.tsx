@@ -706,7 +706,7 @@ export function CardapioEditorPreview({
                     </p>
                     <span className="text-muted-foreground mt-2 inline-flex items-center gap-1.5 text-sm">
                       <MessageCircle className="h-4 w-4" />
-                      Falar no WhatsApp
+                      Atendimento inicial com a Zai
                     </span>
                   </div>
                 </div>

@@ -19,7 +19,6 @@ import {
   Settings,
   QrCode,
   FlaskConical,
-  MessageCircle,
 } from 'lucide-react'
 import Link from 'next/link'
 import { getPaymentModeBadgeLabel, isPublicSandboxMode } from '@/lib/payment-mode'
@@ -55,8 +54,6 @@ interface DashboardRestaurantContext {
   headquartersRestaurant: Restaurant | null
   isNetwork: boolean
 }
-
-const WHATSAPP_SUPPORT_LINK = 'https://api.whatsapp.com/send?phone=5512996887993'
 
 export default function DashboardPage() {
   useTrackSignup()
@@ -216,15 +213,13 @@ export default function DashboardPage() {
             Mercado Pago. Isso pode levar alguns minutos, mas pode demorar mais quando o pagamento
             entra em análise.
           </p>
-          <a
-            href={WHATSAPP_SUPPORT_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={getRestaurantScopedHref('/painel/pedidos', restaurant?.id)}
             className="border-border bg-secondary hover:bg-secondary/80 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium transition-colors"
           >
-            <MessageCircle className="h-4 w-4" />
-            Falar com suporte no WhatsApp
-          </a>
+            <ClipboardList className="h-4 w-4" />
+            Acompanhar ativação pelo painel
+          </Link>
         </div>
       </div>
     )
@@ -343,14 +338,6 @@ export default function DashboardPage() {
               >
                 Abrir etapa atual
               </Link>
-              <a
-                href={`${WHATSAPP_SUPPORT_LINK}&text=${encodeURIComponent(`Olá, preciso de ajuda para concluir a etapa "${nextStep.label}" no meu painel.`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-border bg-background hover:bg-secondary rounded-lg border px-4 py-2 text-sm font-medium"
-              >
-                Pedir ajuda no WhatsApp
-              </a>
             </div>
           </div>
         ) : (

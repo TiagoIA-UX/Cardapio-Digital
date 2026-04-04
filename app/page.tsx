@@ -24,19 +24,13 @@ import {
 import { HomeHeader } from '@/components/home-header'
 import { RESTAURANT_TEMPLATES } from '@/lib/templates-config'
 import { ScrollReveal } from '@/components/scroll-reveal'
-import { TrackedLink, TrackedAnchor } from '@/components/tracked-link'
+import { TrackedLink } from '@/components/tracked-link'
 import { HeroBadge, HeroHeading } from '@/components/hero-ab'
 
 const Footer = dynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })))
 const FaqSection = dynamic(() => import('@/components/sections/FaqSection'))
 const SavingsCalculator = dynamic(() => import('@/components/sections/SavingsCalculator'))
 const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'))
-
-const WHATSAPP_NUMBER = '5512996887993'
-const WHATSAPP_MESSAGE = encodeURIComponent(
-  'Quero montar meu cardápio digital AGORA. Me ajuda a começar!'
-)
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
 
 const TOP_TEMPLATES = RESTAURANT_TEMPLATES.slice(0, 6)
 
@@ -91,18 +85,16 @@ export default function Home() {
                     <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
                     Quero parar de perder dinheiro
                   </TrackedLink>
-                  <TrackedAnchor
-                    href={WHATSAPP_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    trackCta="hero_whatsapp"
+                  <TrackedLink
+                    href="/templates"
+                    trackCta="hero_assistant"
                     trackPage="landing"
                     data-testid="hero-cta-whatsapp"
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                   >
                     <MessageCircle className="h-5 w-5 text-green-400" />
-                    Montar meu cardápio agora
-                  </TrackedAnchor>
+                    Começar com a Zai
+                  </TrackedLink>
                 </div>
 
                 {/* Micro proof — trust builders */}
@@ -185,11 +177,12 @@ export default function Home() {
                   <span className="text-orange-500">Construa seu próprio canal de vendas.</span>
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                  O iFood é ótimo para conquistar <strong>clientes novos</strong>. Mas aquele cliente que já te conhece, 
-                  que pede toda semana... ele pode ir direto pro seu canal. Quando alguém digita{' '}
-                  <em>&ldquo;lanche perto de mim&rdquo;</em> no Google, seu negócio aparece se você estiver no{' '}
-                  <strong>Google Meu Negócio</strong> — e esse cadastro é <strong>gratuito</strong>.
-                  Com um cardápio digital próprio, você transforma esse cliente em receita 100% sua.
+                  O iFood é ótimo para conquistar <strong>clientes novos</strong>. Mas aquele
+                  cliente que já te conhece, que pede toda semana... ele pode ir direto pro seu
+                  canal. Quando alguém digita <em>&ldquo;lanche perto de mim&rdquo;</em> no Google,
+                  seu negócio aparece se você estiver no <strong>Google Meu Negócio</strong> — e
+                  esse cadastro é <strong>gratuito</strong>. Com um cardápio digital próprio, você
+                  transforma esse cliente em receita 100% sua.
                 </p>
                 <p className="mt-2 text-xs text-zinc-400">
                   *Plano Básico iFood: 12% comissão + 3,2% pgto online + R$110/mês (entrega
@@ -261,9 +254,7 @@ export default function Home() {
                     <p className="text-sm font-bold text-green-700">
                       R$ 147/mês fixo, sem comissão
                     </p>
-                    <p className="mt-1 text-xs text-green-600">
-                      Quanto mais vende, mais lucra
-                    </p>
+                    <p className="mt-1 text-xs text-green-600">Quanto mais vende, mais lucra</p>
                   </div>
                 </div>
               </div>
@@ -299,7 +290,8 @@ export default function Home() {
                       Já está no <span className="text-blue-600">Google Meu Negócio</span>?
                     </p>
                     <p className="text-sm text-zinc-600">
-                      Apareça nas buscas locais gratuitamente e direcione clientes direto ao seu cardápio.
+                      Apareça nas buscas locais gratuitamente e direcione clientes direto ao seu
+                      cardápio.
                     </p>
                   </div>
                 </div>
@@ -395,8 +387,8 @@ export default function Home() {
                   <span className="text-orange-500">seus concorrentes ficam com o lucro todo</span>
                 </h2>
                 <p className="mt-4 text-base text-zinc-600">
-                  Com a Zairyx você para de financiar o iFood e começa a construir seu próprio
-                  canal — com IA 24h, pagamento online e 0% de comissão por pedido.
+                  Com a Zairyx você para de financiar o iFood e começa a construir seu próprio canal
+                  — com IA 24h, pagamento online e 0% de comissão por pedido.
                 </p>
                 <Link
                   href="/beneficios"
@@ -900,6 +892,50 @@ export default function Home() {
                 </div>
               </div>
 
+              <div className="mt-6 rounded-3xl border border-orange-200 bg-orange-50 p-6 md:p-8">
+                <p className="text-sm font-bold tracking-[0.18em] text-orange-700 uppercase">
+                  Exemplo conservador de ganho real
+                </p>
+                <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">
+                  O delivery ganha em 3 frentes: taxa cortada, pedido recuperado e upsell leve.
+                </h3>
+                <div className="mt-5 grid gap-4 md:grid-cols-3">
+                  <div className="rounded-2xl bg-white p-5 shadow-sm">
+                    <p className="text-sm font-semibold text-zinc-800">
+                      1. Comissão que deixa de ir pro app
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-600">
+                      Se 100 pedidos fiéis de R$ 50 migram para o seu canal, são cerca de R$ 5.000
+                      passando pelo cardápio próprio. Em uma taxa próxima de 15%, isso representa
+                      cerca de R$ 750 a R$ 760 por mês que voltam para o seu caixa.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-5 shadow-sm">
+                    <p className="text-sm font-semibold text-zinc-800">
+                      2. Mensalidade fixa e previsível
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-600">
+                      Tirando a assinatura de R$ 147, esse mesmo cenário ainda deixa algo perto de
+                      R$ 600 por mês em recuperação líquida de comissão, sem contar pedidos extras.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-5 shadow-sm">
+                    <p className="text-sm font-semibold text-zinc-800">3. Zai vendendo de brinde</p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-600">
+                      Se a Zai elevar em apenas 5% o ticket desses R$ 5.000 com sugestões leves,
+                      como lembrar uma bebida quando percebe uma oportunidade natural no pedido,
+                      isso adiciona cerca de R$ 250 em faturamento bruto no mês. O agente vai de
+                      brinde no canal digital.
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-4 text-xs text-zinc-500">
+                  Exemplo ilustrativo com base em pedido médio de R$ 50 e taxa próxima de 15%.
+                  Economia operacional com atendente varia por operação, então o site trata isso
+                  como ganho potencial de produtividade, não como média garantida.
+                </p>
+              </div>
+
               {/* CTA */}
               <div className="mt-10 text-center">
                 <TrackedLink
@@ -942,8 +978,8 @@ export default function Home() {
                   WhatsApp
                 </p>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Ideal para delivery no Litoral Norte de SP — turistas pedem em qualquer horário,
-                  a IA não dorme.
+                  Ideal para delivery no Litoral Norte de SP — turistas pedem em qualquer horário, a
+                  IA não dorme.
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-3 text-sm text-zinc-600">
                   <span className="flex items-center gap-1.5">
@@ -1020,7 +1056,7 @@ export default function Home() {
                       </span>
                       <span className="flex items-center gap-1.5">
                         <CheckCircle className="h-4 w-4 text-green-400" />
-                        Suporte por WhatsApp
+                        Atendimento inicial por IA
                       </span>
                     </div>
                   </div>
@@ -1035,18 +1071,16 @@ export default function Home() {
                       <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
                       Quero parar de perder dinheiro
                     </TrackedLink>
-                    <TrackedAnchor
-                      href={WHATSAPP_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      trackCta="final_whatsapp"
+                    <TrackedLink
+                      href="/templates"
+                      trackCta="final_assistant"
                       trackPage="landing"
                       data-testid="final-cta-whatsapp"
                       className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                     >
                       <MessageCircle className="h-5 w-5 text-green-400" />
-                      Montar meu cardápio agora
-                    </TrackedAnchor>
+                      Falar primeiro com a Zai
+                    </TrackedLink>
                     <p className="mt-1 text-center text-xs text-zinc-400">
                       Risco zero. Garantia total de 30 dias.
                     </p>

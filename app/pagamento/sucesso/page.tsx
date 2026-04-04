@@ -8,7 +8,6 @@ import {
   ArrowRight,
   CheckCircle,
   Loader2,
-  MessageCircle,
   PartyPopper,
   Sparkles,
   Store,
@@ -24,11 +23,6 @@ import {
 import { POST_PURCHASE_OFFERS } from '@/lib/pricing'
 import { getRestaurantScopedHref, setStoredActiveRestaurantId } from '@/lib/active-restaurant'
 
-const WHATSAPP_NUMBER = '5512996887993'
-const WHATSAPP_MESSAGE = encodeURIComponent(
-  'Acabei de concluir meu pagamento e quero ativar a Oferta de Aceleração de Vendas (implantação guiada + revisão estratégica).'
-)
-const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${WHATSAPP_MESSAGE}`
 const ACELERACAO_VENDAS_OFFER = POST_PURCHASE_OFFERS.aceleracaoVendas7Dias
 // Oferta pós-compra desativada por padrão para evitar exposição não planejada.
 // Reativar somente com alinhamento comercial/operacional explícito.
@@ -354,20 +348,18 @@ function PagamentoSucessoContent() {
               Disponível apenas nos primeiros 7 dias após a compra
             </p>
             <p className="text-muted-foreground mb-3 text-xs">
-              Ao clicar, você será redirecionado para o WhatsApp da equipe para confirmar os
-              detalhes. Não existe cobrança automática nesta etapa.
+              Se quiser avaliar a oferta depois, siga pelo painel. A ativação continua manual e sem
+              cobrança automática nesta etapa.
             </p>
-            <a
-              href={WHATSAPP_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={painelHref}
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors"
             >
-              Falar no WhatsApp para ativar a oferta
-              <MessageCircle className="h-4 w-4" />
-            </a>
+              Seguir com a Zai no painel
+              <ArrowRight className="h-4 w-4" />
+            </Link>
             <p className="text-muted-foreground mt-2 text-[11px]">
-              A ativação da oferta acontece somente após sua confirmação no atendimento.
+              A ativação da oferta acontece somente após revisão operacional da equipe.
             </p>
           </div>
         ) : null}

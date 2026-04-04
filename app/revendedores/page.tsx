@@ -13,8 +13,7 @@ import {
   Users,
 } from 'lucide-react'
 
-const WA_REVENDEDOR =
-  'https://api.whatsapp.com/send?phone=5512996887993&text=Ol%C3%A1%2C+quero+ser+revendedor+do+Card%C3%A1pio+Digital'
+const WA_REVENDEDOR = 'mailto:zairyx.ai@gmail.com?subject=Parceria%20comercial%20Zairyx'
 
 const DIFERENCAS = [
   {
@@ -68,7 +67,7 @@ const BENEFICIOS = [
   {
     icon: MessageCircle,
     title: 'Canal exclusivo',
-    desc: 'Acesso direto ao time de parceiros Zairyx via WhatsApp para negociações e suporte prioritário.',
+    desc: 'Acesso direto ao time de parceiros Zairyx para negociações e suporte prioritário.',
   },
 ]
 
@@ -90,11 +89,9 @@ export default function Revendedores() {
             </span>
             <a
               href={WA_REVENDEDOR}
-              target="_blank"
-              rel="noopener noreferrer"
               className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
-              Falar com a equipe
+              Solicitar análise comercial
             </a>
           </div>
         </div>
@@ -123,20 +120,16 @@ export default function Revendedores() {
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
                 href={WA_REVENDEDOR}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-xl px-7 py-4 text-base font-semibold shadow-lg transition-colors"
               >
-                Quero ser revendedor
+                Quero apresentar meu negócio
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href={WA_REVENDEDOR}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="border-border text-foreground hover:bg-secondary inline-flex items-center gap-2 rounded-xl border px-7 py-4 text-base font-medium transition-colors"
               >
-                Tirar dúvidas comerciais
+                Receber proposta por e-mail
               </a>
             </div>
           </div>
@@ -189,13 +182,8 @@ export default function Revendedores() {
 
             <p className="text-foreground/50 mt-4 text-center text-xs">
               Não sabe qual escolher?{' '}
-              <a
-                href={WA_REVENDEDOR}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Fale com a gente
+              <a href={WA_REVENDEDOR} className="text-primary hover:underline">
+                Peça uma análise comercial
               </a>{' '}
               e te orientamos.
             </p>
@@ -268,11 +256,9 @@ export default function Revendedores() {
               </p>
               <a
                 href={WA_REVENDEDOR}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-primary inline-flex items-center gap-2 rounded-xl bg-white px-7 py-4 text-base font-semibold shadow transition-colors hover:bg-white/90"
               >
-                Falar via WhatsApp
+                Solicitar contato comercial
                 <ArrowRight className="h-4 w-4" />
               </a>
               <p className="mt-6 text-sm text-white/50">

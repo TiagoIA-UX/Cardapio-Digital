@@ -194,8 +194,8 @@ function createEmptyForm(): FormState {
     deliveryLabel: seed.deliveryLabel || 'Entrega',
     pickupLabel: seed.pickupLabel || 'Retirada',
     dineInLabel: seed.dineInLabel || 'Consumir no local',
-    aiAssistantEnabled: seed.aiAssistant?.enabled ?? false,
-    aiAssistantConsentAt: seed.aiAssistant?.consentedAt ?? '',
+    aiAssistantEnabled: seed.aiAssistant?.enabled ?? true,
+    aiAssistantConsentAt: seed.aiAssistant?.consentedAt ?? new Date().toISOString(),
     aiAssistantScope: seed.aiAssistant?.scope ?? 'sales',
     aiAssistantDailyLimit: String(seed.aiAssistant?.dailyMessageLimit ?? 20),
   }
@@ -257,10 +257,8 @@ export default function ConfiguracoesPage() {
       pickupLabel: currentForm.pickupLabel,
       dineInLabel: currentForm.dineInLabel,
       aiAssistant: {
-        enabled: currentForm.aiAssistantEnabled,
-        consentedAt: currentForm.aiAssistantEnabled
-          ? currentForm.aiAssistantConsentAt || new Date().toISOString()
-          : currentForm.aiAssistantConsentAt || null,
+        enabled: true,
+        consentedAt: currentForm.aiAssistantConsentAt || new Date().toISOString(),
         consentVersion: 'v1',
         provider: 'groq',
         scope: currentForm.aiAssistantScope,
@@ -335,8 +333,8 @@ export default function ConfiguracoesPage() {
         deliveryLabel: presentation.deliveryLabel,
         pickupLabel: presentation.pickupLabel,
         dineInLabel: presentation.dineInLabel,
-        aiAssistantEnabled: aiAssistant.enabled,
-        aiAssistantConsentAt: aiAssistant.consentedAt || '',
+        aiAssistantEnabled: true,
+        aiAssistantConsentAt: aiAssistant.consentedAt || new Date().toISOString(),
         aiAssistantScope: aiAssistant.scope,
         aiAssistantDailyLimit: String(aiAssistant.dailyMessageLimit),
       } satisfies FormState
@@ -734,8 +732,8 @@ export default function ConfiguracoesPage() {
       deliveryLabel: seed.deliveryLabel || current.deliveryLabel,
       pickupLabel: seed.pickupLabel || current.pickupLabel,
       dineInLabel: seed.dineInLabel || current.dineInLabel,
-      aiAssistantEnabled: current.aiAssistantEnabled,
-      aiAssistantConsentAt: current.aiAssistantConsentAt,
+      aiAssistantEnabled: true,
+      aiAssistantConsentAt: current.aiAssistantConsentAt || new Date().toISOString(),
       aiAssistantScope: current.aiAssistantScope,
       aiAssistantDailyLimit: current.aiAssistantDailyLimit,
     }))
@@ -1223,30 +1221,13 @@ export default function ConfiguracoesPage() {
                         <p className="text-foreground text-sm font-semibold">IA no atendimento</p>
                       </div>
                       <p className="text-muted-foreground text-xs">
-                        Ative o assistente de IA para este delivery só depois de confirmar o
-                        consentimento explícito do cliente e do responsável pela conta.
+                        A Zai fica ativa por padrão em delivery normal, rede e mesa. Aqui você só
+                        ajusta o comportamento dela para o atendimento do seu canal.
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setForm((current) => ({
-                          ...current,
-                          aiAssistantEnabled: !current.aiAssistantEnabled,
-                          aiAssistantConsentAt:
-                            !current.aiAssistantEnabled && !current.aiAssistantConsentAt
-                              ? new Date().toISOString()
-                              : current.aiAssistantConsentAt,
-                        }))
-                      }
-                      className={`inline-flex min-w-20 justify-center rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                        form.aiAssistantEnabled
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-secondary text-muted-foreground'
-                      }`}
-                    >
-                      {form.aiAssistantEnabled ? 'Ativa' : 'Desativada'}
-                    </button>
+                    <span className="bg-primary text-primary-foreground inline-flex min-w-20 justify-center rounded-full px-3 py-1 text-xs font-semibold">
+                      Ativa em todos
+                    </span>
                   </div>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     <NumberInput
@@ -1288,23 +1269,17 @@ export default function ConfiguracoesPage() {
                     </div>
                   </div>
                   <div className="border-border mt-3 rounded-lg border bg-white/60 p-3 text-xs text-zinc-600">
-                    {form.aiAssistantEnabled ? (
-                      <div className="flex items-start gap-2">
-                        <ShieldCheck className="text-primary mt-0.5 h-4 w-4 shrink-0" />
-                        <p>
-                          Consentimento registrado
-                          {form.aiAssistantConsentAt
-                            ? ` em ${new Date(form.aiAssistantConsentAt).toLocaleString('pt-BR')}`
-                            : ''}
-                          . A IA só responde quando este delivery estiver com a chave ligada.
-                        </p>
-                      </div>
-                    ) : (
+                    <div className="flex items-start gap-2">
+                      <ShieldCheck className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                       <p>
-                        Mantenha desativado até validar o fluxo com seu delivery. Quando ligar, o
-                        consentimento fica registrado para auditoria.
+                        Zai habilitada por padrão
+                        {form.aiAssistantConsentAt
+                          ? ` desde ${new Date(form.aiAssistantConsentAt).toLocaleString('pt-BR')}`
+                          : ''}
+                        . O delivery segue com atendimento por IA no cardápio e só escala suporte
+                        humano quando necessário.
                       </p>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>

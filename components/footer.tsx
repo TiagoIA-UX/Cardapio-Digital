@@ -7,7 +7,6 @@ import {
   Circle,
   Instagram,
   MapPin,
-  MessageCircle,
   Shield,
   Sparkles,
   Youtube,
@@ -28,7 +27,7 @@ const NAV = {
   parceiros: [{ label: 'Meu painel', href: '/painel' }],
   contato: [
     { label: 'zairyx.ai@gmail.com', href: 'mailto:zairyx.ai@gmail.com' },
-    { label: 'WhatsApp', href: 'https://wa.me/5512996887993' },
+    { label: 'Atendimento inicial com a Zai', href: '/templates' },
   ],
   legal: [
     { label: 'Termos de uso', href: '/termos' },
@@ -142,15 +141,6 @@ export function Footer() {
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5" />
-              </Link>
-              <Link
-                href="https://wa.me/5512996887993"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-zinc-300 transition-colors hover:text-white"
-                aria-label="WhatsApp"
-              >
-                <MessageCircle className="h-5 w-5" />
               </Link>
             </div>
           </div>

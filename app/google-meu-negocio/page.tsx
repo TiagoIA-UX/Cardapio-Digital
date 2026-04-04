@@ -1,14 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle, Eye, MapPin, MessageCircle, Sparkles, Star } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Eye, MapPin, Sparkles, Star } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Google Meu Negócio | Zairyx Canais Digitais',
   description:
     'Apareça nas buscas locais do Google gratuitamente. Configure seu Google Meu Negócio e receba clientes pelo Google Maps direto no seu cardápio digital — sem intermediário, sem comissão.',
 }
-
-const WHATSAPP_NUMBER = '5512996887993'
 
 export default function GoogleMeuNegocioPage() {
   return (
@@ -154,13 +152,11 @@ export default function GoogleMeuNegocioPage() {
               <p className="mt-1 text-sm text-zinc-600">Pagamento via PIX ou cartão</p>
             </div>
             <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Olá! Quero o serviço de cadastro no Google Meu Negócio por R$350.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="mailto:zairyx.ai@gmail.com?subject=Quero%20avaliar%20o%20servi%C3%A7o%20de%20Google%20Meu%20Neg%C3%B3cio"
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600"
             >
-              <MessageCircle className="h-5 w-5" />
-              Quero esse serviço
+              <Sparkles className="h-5 w-5" />
+              Solicitar análise do serviço
             </a>
             <p className="mt-4 text-center text-xs text-zinc-500">
               Ou faça você mesmo gratuitamente em business.google.com

@@ -14,9 +14,27 @@ import {
   Plus,
   Minus,
   ShoppingCart,
+  Loader2,
+  MessageCircle,
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/format-currency'
 import { cn } from '@/lib/utils'
+
+async function reportAiDevAlert(input: {
+  source: string
+  error: string
+  context?: Record<string, unknown>
+}) {
+  try {
+    await fetch('/api/ai/dev-alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    })
+  } catch {
+    // Falha de alerta nunca deve quebrar a experiência do cliente.
+  }
+}
 
 // =====================================================
 // Types
@@ -121,8 +139,79 @@ export function PizzaBuilder({
   const [selectedCrust, setSelectedCrust] = useState<PizzaCrust | null>(null)
   const [selectedAddons, setSelectedAddons] = useState<PizzaAddOn[]>([])
   const [notes, setNotes] = useState('')
+  const [isGeneratingAiNotes, setIsGeneratingAiNotes] = useState(false)
+  const [aiStatusMessage, setAiStatusMessage] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [flavorSearch, setFlavorSearch] = useState('')
+
+  const generateAiNotesSuggestion = useCallback(async () => {
+    setIsGeneratingAiNotes(true)
+
+    try {
+      const context = [
+        selectedSize ? `Tamanho: ${selectedSize.nome}` : null,
+        selectedFlavors.length > 0
+          ? `Sabores: ${selectedFlavors.map((flavor) => flavor.nome).join(', ')}`
+          : null,
+        selectedCrust ? `Borda: ${selectedCrust.nome}` : null,
+        selectedAddons.length > 0
+          ? `Adicionais: ${selectedAddons.map((addon) => addon.nome).join(', ')}`
+          : null,
+        notes.trim() ? `Observação bruta: ${notes.trim()}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content:
+                `Você é a Zai, atendente virtual do pedido. ` +
+                `Escreva somente o texto final para observações do pedido. ` +
+                `Regra ética obrigatória: não adicionar item, não aumentar gasto, ` +
+                `não presumir compra extra e não fechar upsell automático. ` +
+                `Se perceber que faltou uma bebida ou complemento natural para acompanhar o pedido, ` +
+                `pergunte antes se pode sugerir e nunca adicione isso automaticamente. ` +
+                `Foco em organizar o que já foi escolhido e permitir remoções/ajustes. ` +
+                `Resposta em pt-BR com no máximo 4 linhas, sem markdown.\n\n${context}`,
+            },
+          ],
+        }),
+      })
+
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok || typeof data?.reply !== 'string' || !data.reply.trim()) {
+        throw new Error(data?.error || 'IA indisponível no momento')
+      }
+
+      setNotes(data.reply.trim())
+      setAiStatusMessage(null)
+    } catch (error) {
+      await reportAiDevAlert({
+        source: 'pizza-builder-ai-notes',
+        error: error instanceof Error ? error.message : 'Falha desconhecida na Zai',
+        context: {
+          productId: product.id,
+          selectedFlavors: selectedFlavors.map((flavor) => flavor.nome),
+          hasCrust: Boolean(selectedCrust),
+          hasAddons: selectedAddons.length > 0,
+        },
+      })
+
+      setAiStatusMessage(
+        'A Zai encontrou uma instabilidade e já avisou o desenvolvedor Tiago. Você pode continuar o pedido normalmente enquanto normalizamos.'
+      )
+    } finally {
+      setIsGeneratingAiNotes(false)
+    }
+  }, [selectedSize, selectedFlavors, selectedCrust, selectedAddons, notes])
 
   // Sorted sizes
   const sortedSizes = useMemo(() => [...sizes].sort((a, b) => a.ordem - b.ordem), [sizes])
@@ -472,6 +561,18 @@ export function PizzaBuilder({
             {/* Notes */}
             <div className="border-border space-y-2 border-t pt-4">
               <label className="text-foreground text-sm font-medium">Observações (opcional)</label>
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/8 p-3">
+                <div className="flex items-start gap-2">
+                  <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <div>
+                    <p className="text-foreground text-sm font-semibold">Atendimento com a Zai</p>
+                    <p className="text-muted-foreground mt-1 text-xs leading-5">
+                      A Zai acompanha sua escolha aqui no carrinho, organiza cada detalhe com mais
+                      cuidado e ajuda você a personalizar seu pedido do jeitinho que preferir.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
@@ -479,6 +580,32 @@ export function PizzaBuilder({
                 className="border-border bg-background focus:ring-primary/20 focus:border-primary w-full resize-none rounded-lg border px-4 py-3 transition-all focus:ring-2 focus:outline-none"
                 rows={2}
               />
+              <button
+                type="button"
+                onClick={() => {
+                  void generateAiNotesSuggestion()
+                }}
+                disabled={isGeneratingAiNotes || !selectedSize || selectedFlavors.length === 0}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isGeneratingAiNotes ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="h-4 w-4" />
+                )}
+                {isGeneratingAiNotes
+                  ? 'Zai está escrevendo...'
+                  : 'Precisa de algo? Converse com a Zai'}
+              </button>
+              <p className="text-muted-foreground text-xs">
+                A Zai organiza com ética: sem adicionar item, sem aumentar gasto e, quando fizer
+                sentido, pode sugerir uma bebida de forma leve para melhorar a experiência.
+              </p>
+              {aiStatusMessage ? (
+                <p className="rounded-lg border border-amber-300/50 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  {aiStatusMessage}
+                </p>
+              ) : null}
             </div>
           </div>
         )

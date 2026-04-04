@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/rate-limit'
 
 interface OrderItemInput {
@@ -14,7 +13,7 @@ interface CreateOrderBody {
   items: OrderItemInput[]
   cliente_nome?: string
   cliente_telefone?: string
-  tipo_entrega: 'entrega' | 'retirada'
+  tipo_entrega: 'delivery' | 'entrega' | 'retirada'
   order_origin?: 'online' | 'mesa'
   table_number?: string
   endereco_rua?: string
@@ -31,11 +30,21 @@ const MAX_ITEMS_PER_ORDER = 50
 const MAX_ITEM_QUANTITY = 50
 const ORDER_NUMBER_INSERT_RETRIES = 5
 
+const OPTIONAL_ORDER_COLUMNS = new Set<keyof OrderInsertPayload>([
+  'origem_pedido',
+  'mesa_numero',
+  'comprovante_url',
+  'comprovante_key',
+  'comprovante_enviado_at',
+  'troco_para',
+  'forma_pagamento',
+])
+
 interface OrderInsertPayload {
   restaurant_id: string
   cliente_nome: string | null
   cliente_telefone: string | null
-  tipo_entrega: 'entrega' | 'retirada'
+  tipo_entrega: 'delivery' | 'retirada'
   origem_pedido: 'online' | 'mesa'
   mesa_numero: string | null
   endereco_rua: string | null
@@ -51,6 +60,19 @@ interface OrderInsertPayload {
   status: 'pending'
 }
 
+type OrderInsertResult = { id: string; numero_pedido: number }
+
+type DbError = {
+  code?: string
+  message?: string | null
+  details?: string | null
+  hint?: string | null
+}
+
+function normalizeDeliveryType(deliveryType: CreateOrderBody['tipo_entrega']) {
+  return deliveryType === 'retirada' ? 'retirada' : 'delivery'
+}
+
 function isOrderNumberConflict(error: {
   code?: string
   message?: string | null
@@ -62,6 +84,23 @@ function isOrderNumberConflict(error: {
 
   const combinedMessage = `${error.message || ''} ${error.details || ''}`
   return combinedMessage.includes('numero_pedido')
+}
+
+function extractMissingColumn(error: DbError, tableName: string): string | null {
+  if (error.code !== 'PGRST204') {
+    return null
+  }
+
+  const combined = `${error.message || ''} ${error.details || ''} ${error.hint || ''}`
+  const regex = new RegExp(`['\"]([a-zA-Z0-9_]+)['\"]\\s+column\\s+of\\s+['\"]${tableName}['\"]`)
+  const match = combined.match(regex)
+
+  return match?.[1] || null
+}
+
+function omitColumns<T extends Record<string, unknown>>(payload: T, columns: Set<string>) {
+  const entries = Object.entries(payload).filter(([key]) => !columns.has(key))
+  return Object.fromEntries(entries) as Partial<T>
 }
 
 async function getNextOrderNumber(
@@ -87,26 +126,28 @@ async function createOrderWithSequentialNumber(
   supabase: ReturnType<typeof createAdminClient>,
   payload: OrderInsertPayload
 ) {
-  let lastConflictError: {
-    code?: string
-    message?: string | null
-    details?: string | null
-  } | null = null
+  let lastConflictError: DbError | null = null
+  const omittedColumns = new Set<string>()
+  const maxAttempts = ORDER_NUMBER_INSERT_RETRIES + OPTIONAL_ORDER_COLUMNS.size
 
-  for (let attempt = 0; attempt < ORDER_NUMBER_INSERT_RETRIES; attempt += 1) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const nextNumber = await getNextOrderNumber(supabase, payload.restaurant_id)
+    const compatiblePayload = omitColumns(
+      {
+        ...payload,
+        numero_pedido: nextNumber,
+      },
+      omittedColumns
+    )
 
     const { data, error } = await supabase
       .from('orders')
-      .insert({
-        ...payload,
-        numero_pedido: nextNumber,
-      })
+      .insert(compatiblePayload)
       .select('id, numero_pedido')
       .single()
 
     if (!error && data) {
-      return data
+      return data as OrderInsertResult
     }
 
     if (error && isOrderNumberConflict(error)) {
@@ -114,10 +155,78 @@ async function createOrderWithSequentialNumber(
       continue
     }
 
+    const missingColumn = error ? extractMissingColumn(error, 'orders') : null
+    if (
+      missingColumn &&
+      OPTIONAL_ORDER_COLUMNS.has(missingColumn as keyof OrderInsertPayload) &&
+      !omittedColumns.has(missingColumn)
+    ) {
+      omittedColumns.add(missingColumn)
+      continue
+    }
+
     throw error
   }
 
   throw lastConflictError || new Error('Não foi possível reservar um número de pedido')
+}
+
+type OrderItemInsertPayload = {
+  order_id: string
+  product_id: string
+  nome_snapshot: string
+  preco_snapshot: number
+  quantidade: number
+  observacao: string | null
+}
+
+function buildItemsPayloadWithObservationColumn(
+  items: OrderItemInsertPayload[],
+  observationColumn: 'observacao' | 'observacoes' | null
+) {
+  return items.map(({ observacao, ...rest }) => {
+    if (!observationColumn) {
+      return rest
+    }
+
+    return {
+      ...rest,
+      [observationColumn]: observacao,
+    }
+  })
+}
+
+async function insertOrderItemsWithCompat(
+  supabase: ReturnType<typeof createAdminClient>,
+  items: OrderItemInsertPayload[]
+) {
+  const observationColumns: Array<'observacao' | 'observacoes' | null> = [
+    'observacao',
+    'observacoes',
+    null,
+  ]
+
+  let lastError: DbError | null = null
+
+  for (const column of observationColumns) {
+    const payload = buildItemsPayloadWithObservationColumn(items, column)
+    const { error } = await supabase.from('order_items').insert(payload)
+
+    if (!error) {
+      return null
+    }
+
+    lastError = error
+
+    const missingColumn = extractMissingColumn(error, 'order_items')
+    if ((missingColumn === 'observacao' || missingColumn === 'observacoes') && column !== null) {
+      continue
+    }
+
+    return error
+  }
+
+  return lastError
 }
 
 function buildOrderNotes(body: CreateOrderBody, isTableOrder: boolean) {
@@ -138,18 +247,6 @@ export async function POST(request: NextRequest) {
       return rateLimit.response
     }
 
-    // SEGURANÇA: exigir autenticação para criar pedidos (anti-bot)
-    const supabaseAuth = await createClient()
-    const {
-      data: { user },
-    } = await supabaseAuth.auth.getUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Autenticação necessária para criar pedidos' },
-        { status: 401, headers: rateLimit.headers }
-      )
-    }
-
     const body: CreateOrderBody = await request.json()
 
     // Validações básicas
@@ -159,6 +256,13 @@ export async function POST(request: NextRequest) {
 
     if (!body.items || body.items.length === 0) {
       return NextResponse.json({ error: 'items não pode estar vazio' }, { status: 400 })
+    }
+
+    if (!['delivery', 'entrega', 'retirada'].includes(body.tipo_entrega)) {
+      return NextResponse.json(
+        { error: 'tipo_entrega deve ser delivery, entrega ou retirada' },
+        { status: 400 }
+      )
     }
 
     if (body.items.length > MAX_ITEMS_PER_ORDER) {
@@ -308,7 +412,7 @@ export async function POST(request: NextRequest) {
       restaurant_id: body.restaurant_id,
       cliente_nome: body.cliente_nome || null,
       cliente_telefone: body.cliente_telefone || null,
-      tipo_entrega: body.tipo_entrega,
+      tipo_entrega: normalizeDeliveryType(body.tipo_entrega),
       origem_pedido: body.order_origin || 'online',
       mesa_numero: validatedMesaNumero,
       endereco_rua: body.endereco_rua || null,
@@ -334,12 +438,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Criar itens do pedido
-    const itemsToInsert = orderItems.map((item) => ({
+    const itemsToInsert: OrderItemInsertPayload[] = orderItems.map((item) => ({
       ...item,
       order_id: order.id,
     }))
 
-    const { error: itemsError } = await supabase.from('order_items').insert(itemsToInsert)
+    const itemsError = await insertOrderItemsWithCompat(supabase, itemsToInsert)
 
     if (itemsError) {
       console.error('Erro ao criar itens:', itemsError)

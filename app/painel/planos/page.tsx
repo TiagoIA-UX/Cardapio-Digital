@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { createClient, type Restaurant } from '@/lib/supabase/client'
-import { CheckCircle2, ArrowLeft, Loader2, GitBranchPlus, MessageCircle } from 'lucide-react'
+import { CheckCircle2, ArrowLeft, Loader2, GitBranchPlus } from 'lucide-react'
 import Link from 'next/link'
 
 import {
@@ -27,8 +27,6 @@ interface UiPlan {
   description: string
   highlights: string[]
 }
-
-const WHATSAPP_SUPPORT_LINK = 'https://api.whatsapp.com/send?phone=5512996887993'
 
 const PLANS: UiPlan[] = [
   {
@@ -102,14 +100,6 @@ export default function PlanosPage() {
   }, [supabase])
 
   const currentPlanSlug: PlanSlug = (restaurant?.plan_slug as PlanSlug) || 'basico'
-  const networkRequestMessage = useMemo(() => {
-    const unitLabel = formatNetworkExpansionLabel(extraUnits)
-    const restaurantName = restaurant?.nome || 'meu delivery'
-    return `${WHATSAPP_SUPPORT_LINK}&text=${encodeURIComponent(
-      `Olá, quero avaliar o plano de rede para ${restaurantName}. Preciso de matriz + ${unitLabel}.`
-    )}`
-  }, [extraUnits, restaurant?.nome])
-
   const planMonthlyPrice =
     PUBLIC_SUBSCRIPTION_PRICES[currentPlanSlug as keyof typeof PUBLIC_SUBSCRIPTION_PRICES]
       ?.monthly ?? PUBLIC_SUBSCRIPTION_PRICES.premium.monthly
@@ -404,18 +394,10 @@ export default function PlanosPage() {
                   {checkoutLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <MessageCircle className="h-4 w-4" />
+                    <GitBranchPlus className="h-4 w-4" />
                   )}
                   {checkoutLoading ? 'Criando checkout...' : 'Solicitar expansão de rede'}
                 </button>
-                <a
-                  href={networkRequestMessage}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-300 bg-white px-4 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-100"
-                >
-                  Falar com consultor no WhatsApp
-                </a>
               </div>
             </div>
           </div>

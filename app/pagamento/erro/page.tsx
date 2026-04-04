@@ -1,14 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { XCircle, ArrowLeft, RefreshCw, MessageCircle } from 'lucide-react'
+import { XCircle, ArrowLeft, RefreshCw } from 'lucide-react'
 import { PAYMENT_OPERATOR_NOTE } from '@/lib/brand'
-
-const WHATSAPP_NUMBER = '5512996887993'
-const WHATSAPP_MESSAGE = encodeURIComponent(
-  'Olá! Tive um problema no pagamento do Canal Digital. Pode me ajudar?'
-)
-const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${WHATSAPP_MESSAGE}`
 
 export default function PagamentoErroPage() {
   return (
@@ -50,16 +44,6 @@ export default function PagamentoErroPage() {
             <RefreshCw className="h-5 w-5" />
             Escolher template novamente
           </Link>
-
-          <a
-            href={WHATSAPP_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border-border bg-card text-foreground hover:bg-secondary inline-flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-4 font-semibold transition-all"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Falar com suporte
-          </a>
 
           <Link
             href="/"

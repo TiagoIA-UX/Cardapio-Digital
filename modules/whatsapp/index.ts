@@ -30,12 +30,25 @@ export function formatarTelefoneWhatsApp(telefone: string): string {
   // Remove tudo que não é número
   let numero = telefone.replace(/\D/g, '')
 
-  // Se não começar com 55, adiciona
-  if (!numero.startsWith('55')) {
-    numero = '55' + numero
+  // Normaliza prefixos internacionais/tronco para evitar duplicidade
+  if (numero.startsWith('00')) {
+    numero = numero.slice(2)
   }
 
-  return numero
+  if (numero.startsWith('55')) {
+    numero = numero.slice(2)
+  }
+
+  if (numero.startsWith('0')) {
+    numero = numero.slice(1)
+  }
+
+  // Mantém apenas formato nacional BR (DDD + número)
+  if (numero.length > 11) {
+    numero = numero.slice(-11)
+  }
+
+  return `55${numero}`
 }
 
 /**
