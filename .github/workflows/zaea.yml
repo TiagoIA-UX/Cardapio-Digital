@@ -3,14 +3,12 @@ name: ZAEA — Autonomous Engineering Agent
 on:
   schedule:
     # ── Cadência de rotina (horário de Brasília = UTC-3) ───────────────────
-    # Scanner passivo: a cada 30min em horário de pico (9h–22h BRT)
-    - cron: '*/30 12-01 * * *'   # 09:00–22:00 BRT → 12:00–01:00 UTC
-    # Scanner noturno: a cada 2h fora do pico (01h–09h BRT)
-    - cron: '0 4,6,8,10,12 * * *' # 01:00–09:00 BRT → 04:00–12:00 UTC
+    # Scanner a cada 2h — ~12 runs/dia, orçamento ~1080 min/mês (free tier ok)
+    - cron: '0 */2 * * *'
     # Health Check completo (MP sandbox + rotas críticas): diário 07h BRT
-    - cron: '0 10 * * *'          # 07:00 BRT = 10:00 UTC
+    - cron: '0 10 * * *' # 07:00 BRT = 10:00 UTC
     # Relatório semanal de saúde (segunda, 08h BRT)
-    - cron: '0 11 * * 1'          # Segunda 08:00 BRT = 11:00 UTC
+    - cron: '0 11 * * 1' # Segunda 08:00 BRT = 11:00 UTC
   workflow_dispatch:
     inputs:
       mode:
@@ -19,11 +17,11 @@ on:
         default: 'scan'
         type: choice
         options:
-          - scan       # Apenas analisa e reporta
-          - fix        # Analisa e tenta corrigir automaticamente
-          - full       # Análise + correção + PR automático
-          - health     # Health check de pagamentos e rotas críticas
-          - report     # Relatório completo de saúde semanal
+          - scan # Apenas analisa e reporta
+          - fix # Analisa e tenta corrigir automaticamente
+          - full # Análise + correção + PR automático
+          - health # Health check de pagamentos e rotas críticas
+          - report # Relatório completo de saúde semanal
 
 concurrency:
   group: zaea-${{ github.ref }}
