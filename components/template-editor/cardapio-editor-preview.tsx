@@ -1059,11 +1059,14 @@ function EditorProductCard({
       </button>
       {/* Hover actions — clone + delete */}
       {(onCloneProduct || (onDeleteProduct && isPersistedProduct)) && (
-        <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           {onCloneProduct && (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onCloneProduct(product.id) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onCloneProduct(product.id)
+              }}
               className="bg-card/90 text-muted-foreground hover:text-primary rounded-lg p-1.5 shadow-sm ring-1 ring-black/5 backdrop-blur transition-colors"
               title="Duplicar produto"
             >
@@ -1073,7 +1076,10 @@ function EditorProductCard({
           {onDeleteProduct && isPersistedProduct && (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onDeleteProduct(product.id) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onDeleteProduct(product.id)
+              }}
               className="bg-card/90 text-muted-foreground hover:text-destructive rounded-lg p-1.5 shadow-sm ring-1 ring-black/5 backdrop-blur transition-colors"
               title="Excluir produto"
             >
