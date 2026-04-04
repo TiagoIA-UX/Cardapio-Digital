@@ -15,6 +15,7 @@ import {
   FileText,
   Users,
   BadgeCheck,
+  Calculator,
 } from 'lucide-react'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -53,6 +54,12 @@ const MEGA_MENU: Record<string, MegaMenuCategory> = {
         label: 'Preços & Planos',
         desc: 'Encontre o plano ideal',
         icon: CreditCard,
+      },
+      {
+        href: '/quanto-posso-lucrar',
+        label: 'Quanto posso lucrar?',
+        desc: 'Calcule sua economia vs iFood',
+        icon: Calculator,
       },
       {
         href: '/funcionalidades',
