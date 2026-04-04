@@ -113,7 +113,11 @@ export default function DemoEditorPage() {
   }
 
   function cloneProduct(product: EditProduct) {
-    const clone: EditProduct = { ...product, id: `clone-${Date.now()}`, nome: `${product.nome} (cópia)` }
+    const clone: EditProduct = {
+      ...product,
+      id: `clone-${Date.now()}`,
+      nome: `${product.nome} (cópia)`,
+    }
     setProducts((prev) => {
       const idx = prev.findIndex((p) => p.id === product.id)
       const next = [...prev]
@@ -127,7 +131,9 @@ export default function DemoEditorPage() {
   }
 
   function addProduct(categoria: string) {
-    const maxOrdem = products.filter((p) => p.categoria === categoria).reduce((m, p) => Math.max(m, p.ordem), 0)
+    const maxOrdem = products
+      .filter((p) => p.categoria === categoria)
+      .reduce((m, p) => Math.max(m, p.ordem), 0)
     setProducts((prev) => [
       ...prev,
       {
@@ -153,7 +159,9 @@ export default function DemoEditorPage() {
 
   function renameCategory(oldName: string, newName: string) {
     if (!newName.trim() || newName === oldName) return
-    setProducts((prev) => prev.map((p) => p.categoria === oldName ? { ...p, categoria: newName.trim() } : p))
+    setProducts((prev) =>
+      prev.map((p) => (p.categoria === oldName ? { ...p, categoria: newName.trim() } : p))
+    )
   }
 
   function cloneCategory(catName: string) {
@@ -197,7 +205,10 @@ export default function DemoEditorPage() {
 
       {/* Barra superior */}
       <div className="border-border bg-muted/30 flex items-center justify-between border-b px-4 py-2">
-        <Link href="/demo" className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm">
+        <Link
+          href="/demo"
+          className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm"
+        >
           <ChevronLeft className="h-4 w-4" />
           Voltar
         </Link>
@@ -212,7 +223,9 @@ export default function DemoEditorPage() {
           <Store className="text-primary h-5 w-5" />
           <div>
             <p className="text-foreground text-sm font-semibold">Editor Visual</p>
-            <p className="text-muted-foreground text-xs">📷 foto · ✏️ nome · 💲 preço · 🗑️ apagar · 📋 clonar</p>
+            <p className="text-muted-foreground text-xs">
+              📷 foto · ✏️ nome · 💲 preço · 🗑️ apagar · 📋 clonar
+            </p>
           </div>
         </div>
         <Link
@@ -221,9 +234,16 @@ export default function DemoEditorPage() {
           className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all active:scale-95"
         >
           {published ? (
-            <><Check className="h-4 w-4" /><span>Perfeito!</span></>
+            <>
+              <Check className="h-4 w-4" />
+              <span>Perfeito!</span>
+            </>
           ) : (
-            <><Rocket className="h-4 w-4" /><span className="hidden sm:inline">Publicar meu canal agora</span><span className="sm:hidden">Publicar</span></>
+            <>
+              <Rocket className="h-4 w-4" />
+              <span className="hidden sm:inline">Publicar meu canal agora</span>
+              <span className="sm:hidden">Publicar</span>
+            </>
           )}
         </Link>
       </header>
@@ -293,9 +313,21 @@ function LeftPanel({
       <section>
         <h3 className="text-foreground mb-3 text-sm font-semibold">Negócio</h3>
         <div className="space-y-2">
-          <InlineField label="Nome" value={restaurant.nome} onChange={(v) => onChange({ nome: v })} />
-          <InlineField label="WhatsApp" value={restaurant.telefone} onChange={(v) => onChange({ telefone: v })} />
-          <InlineField label="Slogan" value={restaurant.slogan} onChange={(v) => onChange({ slogan: v })} />
+          <InlineField
+            label="Nome"
+            value={restaurant.nome}
+            onChange={(v) => onChange({ nome: v })}
+          />
+          <InlineField
+            label="WhatsApp"
+            value={restaurant.telefone}
+            onChange={(v) => onChange({ telefone: v })}
+          />
+          <InlineField
+            label="Slogan"
+            value={restaurant.slogan}
+            onChange={(v) => onChange({ slogan: v })}
+          />
         </div>
       </section>
 
@@ -320,7 +352,10 @@ function LeftPanel({
           <div>
             <label className="text-muted-foreground mb-1 block text-xs">Secundária</label>
             <label className="relative block h-9 w-16 cursor-pointer overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
-              <div className="h-full w-full" style={{ backgroundColor: restaurant.cor_secundaria }} />
+              <div
+                className="h-full w-full"
+                style={{ backgroundColor: restaurant.cor_secundaria }}
+              />
               <input
                 type="color"
                 aria-label="Cor secundária"
@@ -416,7 +451,10 @@ function CategoryRow({
         />
       ) : (
         <button
-          onClick={() => { setDraft(name); setEditing(true) }}
+          onClick={() => {
+            setDraft(name)
+            setEditing(true)
+          }}
           className="min-w-0 flex-1 text-left"
           title="Renomear categoria"
         >
@@ -484,7 +522,10 @@ function CategoryHeader({
         />
       ) : (
         <button
-          onClick={() => { setDraft(name); setEditing(true) }}
+          onClick={() => {
+            setDraft(name)
+            setEditing(true)
+          }}
           className="text-foreground text-lg font-bold hover:underline"
           title="Renomear categoria"
         >
@@ -529,18 +570,18 @@ function MapsBlock({
   const linkUrl = mapsUrl || `https://www.google.com/maps/search/?api=1&query=${query}`
 
   return (
-    <div className="border-border mx-4 my-6 overflow-hidden rounded-2xl border shadow-sm">
-      {/* Cabeçalho */}
-      <div className="bg-muted/40 flex items-center justify-between border-b px-4 py-3">
+    <div className="mx-4 my-6 overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/20" style={{ background: '#111827' }}>
+      {/* Cabeçalho escuro */}
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3" style={{ background: '#0f172a' }}>
         <div className="flex items-center gap-2">
-          <MapPin className="text-primary h-4 w-4" />
-          <span className="text-foreground text-sm font-semibold">Localização</span>
+          <MapPin className="h-4 w-4 text-blue-400" />
+          <span className="text-sm font-semibold text-white">Localização</span>
         </div>
         <a
           href={linkUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary flex items-center gap-1 text-xs font-medium hover:underline"
+          className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:underline"
         >
           <ExternalLink className="h-3 w-3" />
           Abrir no Maps
@@ -555,64 +596,64 @@ function MapsBlock({
         className="group relative flex h-48 w-full flex-col items-center justify-center gap-3 overflow-hidden transition-all hover:brightness-95"
         aria-label="Ver localização no Google Maps"
       >
-        {/* Fundo estilo mapa */}
+        {/* Fundo escuro estilo mapa noturno */}
         <div
           className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(135deg, #e8f4ea 0%, #d4ecd4 20%, #c8e6c9 35%, #b2dfdb 55%, #a5d6d9 70%, #90caf9 100%)',
-          }}
+          style={{ background: 'linear-gradient(135deg, #1a2230 0%, #1e2d3d 35%, #162130 65%, #1a2840 100%)' }}
         />
 
-        {/* Grade sutil estilo mapa */}
+        {/* Grade sutil clara */}
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-15"
           style={{
-            backgroundImage:
-              'linear-gradient(#4a9e60 1px, transparent 1px), linear-gradient(90deg, #4a9e60 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(99,179,237,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.4) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
           }}
         />
 
-        {/* Estrada / linhas decorativas */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-1/3 left-0 right-0 h-0.5 bg-white/60" />
-          <div className="absolute top-2/3 left-0 right-0 h-px bg-white/40" />
-          <div className="absolute top-0 bottom-0 left-1/3 w-0.5 bg-white/60" />
-          <div className="absolute top-0 bottom-0 left-2/3 w-px bg-white/40" />
+        {/* Linhas decorativas */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-1/3 right-0 left-0 h-0.5 bg-blue-300/50" />
+          <div className="absolute top-2/3 right-0 left-0 h-px bg-blue-300/30" />
+          <div className="absolute top-0 bottom-0 left-1/3 w-0.5 bg-blue-300/50" />
+          <div className="absolute top-0 bottom-0 left-2/3 w-px bg-blue-300/30" />
         </div>
 
         {/* Conteúdo central */}
         <div className="relative z-10 flex flex-col items-center gap-2">
           {/* Ícone globo com pulso */}
           <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-red-500/30" />
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg ring-4 ring-white/60 ring-offset-0">
-              <Globe className="h-7 w-7 text-blue-600" />
+            <div className="absolute inset-0 animate-ping rounded-full bg-red-500/40" />
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 shadow-lg ring-4 ring-slate-700/60 ring-offset-0">
+              <Globe className="h-7 w-7 text-blue-400" />
             </div>
           </div>
 
           {/* Pino de localização sobreposto */}
           <div className="-mt-4 translate-x-5 -translate-y-2">
-            <MapPin className="h-5 w-5 fill-red-500 text-red-600 drop-shadow" />
+            <MapPin className="h-5 w-5 fill-red-500 text-red-400 drop-shadow" />
           </div>
 
           {/* CTA */}
-          <div className="mt-1 flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md transition-shadow group-hover:shadow-lg">
-            <ExternalLink className="h-4 w-4 text-blue-600" />
-            <span className="text-sm font-semibold text-gray-800">Ver localização no Google Maps</span>
+          <div className="mt-1 flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 shadow-md ring-1 ring-white/10 transition-shadow group-hover:shadow-lg">
+            <ExternalLink className="h-4 w-4 text-blue-400" />
+            <span className="text-sm font-semibold text-white">
+              Ver localização no Google Maps
+            </span>
           </div>
 
-          <p className="text-xs font-medium text-gray-600 drop-shadow-sm">
+          <p className="text-xs font-medium text-slate-400">
             Clique para abrir no mapa
           </p>
         </div>
       </a>
 
       {/* Endereço */}
-      <div className="flex items-center gap-2 px-4 py-3">
-        <MapPin className="text-muted-foreground h-4 w-4 shrink-0" />
-        <span className="text-muted-foreground text-sm">{endereco || 'Endereço não informado'}</span>
+      <div className="flex items-center gap-2 border-t border-white/10 px-4 py-3" style={{ background: '#0f172a' }}>
+        <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
+        <span className="text-sm text-slate-300">
+          {endereco || 'Endereço não informado'}
+        </span>
       </div>
     </div>
   )
@@ -725,7 +766,9 @@ function EditorCanvas({
         ) : (
           <div
             className="h-full w-full"
-            style={{ background: `linear-gradient(135deg, ${restaurant.cor_primaria}, ${restaurant.cor_secundaria})` }}
+            style={{
+              background: `linear-gradient(135deg, ${restaurant.cor_primaria}, ${restaurant.cor_secundaria})`,
+            }}
           />
         )}
 
@@ -750,7 +793,7 @@ function EditorCanvas({
         />
 
         {/* Nome + slogan sobre a capa */}
-        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-4">
+        <div className="absolute right-0 bottom-0 left-0 bg-linear-to-t from-black/70 to-transparent p-4">
           <h1 className="text-xl font-bold text-white drop-shadow-sm">{restaurant.nome}</h1>
           {restaurant.slogan && <p className="text-sm text-white/80">{restaurant.slogan}</p>}
         </div>
@@ -802,7 +845,9 @@ function EditorCanvas({
       <MapsBlock
         endereco={restaurant.endereco_texto}
         mapsUrl={restaurant.google_maps_url}
-        onEnderecoChange={(v) => { /* readonly no canvas — edita no painel */ void v }}
+        onEnderecoChange={(v) => {
+          /* readonly no canvas — edita no painel */ void v
+        }}
       />
 
       {/* Espaço final */}
@@ -884,8 +929,10 @@ function ProductCard({
         {/* Nome */}
         {editingField === 'nome' ? (
           <input
-            autoFocus            aria-label="Nome do produto"
-            placeholder="Nome do produto"            className="mb-1 w-full rounded border border-blue-400 px-1 py-0.5 text-sm font-semibold focus:outline-none"
+            autoFocus
+            aria-label="Nome do produto"
+            placeholder="Nome do produto"
+            className="mb-1 w-full rounded border border-blue-400 px-1 py-0.5 text-sm font-semibold focus:outline-none"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onBlur={commit}
@@ -897,7 +944,9 @@ function ProductCard({
             className="mb-1 flex items-start gap-1 text-left"
             title="Editar nome"
           >
-            <span className="text-foreground text-sm font-semibold leading-snug">{product.nome}</span>
+            <span className="text-foreground text-sm leading-snug font-semibold">
+              {product.nome}
+            </span>
             <Pencil className="mt-0.5 h-3 w-3 shrink-0 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100" />
           </button>
         )}
@@ -905,8 +954,10 @@ function ProductCard({
         {/* Descrição */}
         {editingField === 'descricao' ? (
           <textarea
-            autoFocus            aria-label="Descrição do produto"
-            placeholder="Descrição do produto"            className="w-full rounded border border-blue-400 px-1 py-0.5 text-xs text-gray-500 focus:outline-none"
+            autoFocus
+            aria-label="Descrição do produto"
+            placeholder="Descrição do produto"
+            className="w-full rounded border border-blue-400 px-1 py-0.5 text-xs text-gray-500 focus:outline-none"
             rows={2}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -935,8 +986,10 @@ function ProductCard({
                 autoFocus
                 type="number"
                 step="0.01"
-                min="0"                aria-label="Preço"
-                placeholder="0.00"                className="w-20 rounded border border-blue-400 px-1 py-0.5 text-sm font-bold focus:outline-none"
+                min="0"
+                aria-label="Preço"
+                placeholder="0.00"
+                className="w-20 rounded border border-blue-400 px-1 py-0.5 text-sm font-bold focus:outline-none"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onBlur={commit}
@@ -944,7 +997,11 @@ function ProductCard({
               />
             </div>
           ) : (
-            <button onClick={() => startEdit('preco')} className="flex items-center gap-1" title="Editar preço">
+            <button
+              onClick={() => startEdit('preco')}
+              className="flex items-center gap-1"
+              title="Editar preço"
+            >
               <span className="text-sm font-bold" style={{ color: primaryColor }}>
                 {product.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </span>
