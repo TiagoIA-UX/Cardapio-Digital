@@ -160,10 +160,8 @@ export default function AdminAgentesPage() {
     params.set('hours', String(hoursBack))
     params.set('knowledge', 'typescript error')
 
-    const res = await fetch(`/api/agents/dispatch?${params}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_INTERNAL_SECRET ?? ''}`,
-      },
+    const res = await fetch(`/api/admin/agents?${params}`, {
+      credentials: 'include',
     })
     if (!res.ok) {
       setLoading(false)

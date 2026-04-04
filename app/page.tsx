@@ -163,6 +163,30 @@ export default function Home() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════
+            URGÊNCIA — Âncora de perda (Loss Aversion)
+        ═══════════════════════════════════════════════════════════════ */}
+        <div className="bg-zinc-950 border-b border-orange-500/20 py-4">
+          <div className="container-premium flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-sm font-semibold text-zinc-300 text-center sm:text-left">
+              <span className="text-orange-400 font-bold">⚡ Enquanto você lê isso:</span>{' '}
+              um delivery que fatura R$<strong className="text-white">8.000/mês</strong> no iFood{' '}
+              está pagando{' '}
+              <span className="text-orange-400 font-bold">R$1.302 este mês</span>{' '}
+              em comissão + taxa + mensalidade — dinheiro que poderia estar no caixa dele.
+            </p>
+            <TrackedLink
+              href="/quanto-posso-lucrar"
+              trackCta="urgency_strip_calcular"
+              trackPage="landing"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-xs font-bold text-white hover:bg-orange-600 transition-colors"
+            >
+              Calcular o meu
+              <ArrowRight className="h-3.5 w-3.5" />
+            </TrackedLink>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════════
             DOR → SOLUÇÃO — Comparação educativa: estratégia inteligente
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
@@ -452,6 +476,48 @@ export default function Home() {
             </div>
           </section>
         </ScrollReveal>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            CTA MID-PAGE — Ancoragem de preço + FOMO
+        ═══════════════════════════════════════════════════════════════ */}
+        <section className="bg-linear-to-r from-orange-600 to-orange-500 py-14">
+          <div className="container-premium flex flex-col items-center gap-6 text-center">
+            <p className="text-sm font-bold tracking-[0.15em] text-orange-100 uppercase">
+              Cada mês que você espera = dinheiro que não volta
+            </p>
+            <h2 className="text-3xl font-bold text-white md:text-4xl">
+              R$ 147/mês fixo.{' '}
+              <span className="text-orange-200">Zero comissão por pedido — para sempre.</span>
+            </h2>
+            <p className="max-w-xl text-base text-orange-100">
+              Quanto seu delivery paga de comissão agora? Descubra em 30 segundos quanto você
+              recupera por mês ao migrar clientes fiéis para o seu canal próprio.
+            </p>
+            <div className="flex flex-col items-center gap-3 sm:flex-row">
+              <TrackedLink
+                href="/quanto-posso-lucrar"
+                trackCta="mid_page_calcular"
+                trackPage="landing"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-base font-bold text-orange-600 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              >
+                <BadgePercent className="h-5 w-5" />
+                Calcular minha economia agora
+              </TrackedLink>
+              <TrackedLink
+                href="/templates"
+                trackCta="mid_page_comecar"
+                trackPage="landing"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 px-7 py-4 text-base font-bold text-white transition-all hover:bg-white/10"
+              >
+                Começar grátis →
+              </TrackedLink>
+            </div>
+            <p className="text-xs text-orange-200">
+              <ShieldCheck className="mr-1 inline h-3.5 w-3.5" />
+              Garantia de 30 dias ou dinheiro de volta. Sem contrato anual.
+            </p>
+          </div>
+        </section>
 
         {/* ═══════════════════════════════════════════════════════════════
             DEPOIMENTOS — Prova social real
