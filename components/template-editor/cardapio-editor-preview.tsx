@@ -2,7 +2,17 @@
 
 import { useMemo, type MouseEvent } from 'react'
 import Image from 'next/image'
-import { Check, ExternalLink, Globe, Loader2, MapPin, MessageCircle, Phone, Plus, Store } from 'lucide-react'
+import {
+  Check,
+  ExternalLink,
+  Globe,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Plus,
+  Store,
+} from 'lucide-react'
 import {
   buildCardapioViewModel,
   resolveCardapioProductsForPreview,
@@ -630,9 +640,15 @@ export function CardapioEditorPreview({
           </div>
           <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[1fr_320px]">
             {(restaurant.endereco_texto || restaurant.google_maps_url) && (
-              <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20" style={{ background: '#111827' }}>
+              <div
+                className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
+                style={{ background: '#111827' }}
+              >
                 {/* Cabeçalho escuro */}
-                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3" style={{ background: '#0f172a' }}>
+                <div
+                  className="flex items-center justify-between border-b border-white/10 px-4 py-3"
+                  style={{ background: '#0f172a' }}
+                >
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-blue-400" />
                     <span className="text-sm font-semibold text-white">Localização</span>
@@ -652,7 +668,10 @@ export function CardapioEditorPreview({
 
                 {/* Card animado escuro */}
                 <a
-                  href={mapLinks.openUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.endereco_texto || '')}`}
+                  href={
+                    mapLinks.openUrl ||
+                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.endereco_texto || '')}`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative flex h-48 w-full flex-col items-center justify-center gap-3 overflow-hidden transition-all hover:brightness-110"
@@ -660,12 +679,16 @@ export function CardapioEditorPreview({
                 >
                   <div
                     className="absolute inset-0"
-                    style={{ background: 'linear-gradient(135deg, #1a2230 0%, #1e2d3d 35%, #162130 65%, #1a2840 100%)' }}
+                    style={{
+                      background:
+                        'linear-gradient(135deg, #1a2230 0%, #1e2d3d 35%, #162130 65%, #1a2840 100%)',
+                    }}
                   />
                   <div
                     className="absolute inset-0 opacity-15"
                     style={{
-                      backgroundImage: 'linear-gradient(rgba(99,179,237,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.4) 1px, transparent 1px)',
+                      backgroundImage:
+                        'linear-gradient(rgba(99,179,237,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.4) 1px, transparent 1px)',
                       backgroundSize: '40px 40px',
                     }}
                   />
@@ -697,7 +720,10 @@ export function CardapioEditorPreview({
 
                 {/* Rodapé com endereço */}
                 {restaurant.endereco_texto && (
-                  <div className="flex items-center gap-2 border-t border-white/10 px-4 py-3" style={{ background: '#0f172a' }}>
+                  <div
+                    className="flex items-center gap-2 border-t border-white/10 px-4 py-3"
+                    style={{ background: '#0f172a' }}
+                  >
                     <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
                     <p className="text-sm text-slate-300">{restaurant.endereco_texto}</p>
                   </div>
@@ -705,23 +731,44 @@ export function CardapioEditorPreview({
               </div>
             )}
             {restaurant.telefone && (
-              <div className="border-border bg-card flex flex-col justify-center rounded-2xl border p-6 shadow-lg ring-1 ring-black/5 sm:p-8">
-                <div className="flex items-start gap-4">
-                  <div className="bg-primary/15 text-primary flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl">
-                    <Phone className="h-7 w-7" />
+              <div
+                className="flex flex-col justify-between overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
+                style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}
+              >
+                {/* Cabeçalho */}
+                <div
+                  className="flex items-center gap-2 border-b border-white/10 px-4 py-3"
+                  style={{ background: '#0f172a' }}
+                >
+                  <Phone className="h-4 w-4 text-emerald-400" />
+                  <span className="text-sm font-semibold text-white">Contato</span>
+                </div>
+
+                {/* Corpo */}
+                <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-8">
+                  {/* Ícone com glow */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl" />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/30">
+                      <Phone className="h-8 w-8 text-emerald-400" />
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                      Finalize o pedido para entrar em contato
+
+                  {/* Texto */}
+                  <div className="text-center">
+                    <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
+                      Fale conosco
                     </p>
-                    <p className="text-foreground mt-2 text-lg font-bold">
+                    <p className="mt-2 text-xl font-bold text-white">
                       {formatPhone(restaurant.telefone)}
                     </p>
-                    <span className="text-muted-foreground mt-2 inline-flex items-center gap-1.5 text-sm">
-                      <MessageCircle className="h-4 w-4" />
-                      Atendimento inicial com a Zai
-                    </span>
                   </div>
+
+                  {/* CTA WhatsApp */}
+                  <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-4 py-2 text-sm font-medium text-emerald-300 ring-1 ring-emerald-400/20">
+                    <MessageCircle className="h-4 w-4" />
+                    Atendimento com a Zai
+                  </span>
                 </div>
               </div>
             )}
