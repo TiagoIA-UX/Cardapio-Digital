@@ -41,7 +41,7 @@ Arquitetura público/privado: [docs/ARQUITETURA_REPOS_PUBLICO_PRIVADO.md](docs/A
 | **Pedidos WhatsApp**         | Pedido online com envio estruturado direto para o WhatsApp do restaurante                                                                      |
 | **QR Code por Mesa**         | Geração de QR Code para atendimento local                                                                                                      |
 | **Checkout Mercado Pago**    | Integração completa com modo sandbox e produção                                                                                                |
-| **Sistema de Afiliados**     | 6 tiers progressivos (Bronze → Diamante), comissões automáticas, PIX obrigatório                                                               |
+| **Sistema de Afiliados**     | 6 tiers progressivos (Trainee → Sócio), comissões automáticas, PIX obrigatório                                                                 |
 | **Suporte com SLA**          | Tickets de suporte com prioridade, SLA cronometrado e painel admin                                                                             |
 | **Penalidades Progressivas** | Sistema de strikes com perda automática de clientes sem suporte                                                                                |
 | **Painel Admin**             | Gestão de vendas, afiliados, suporte, logs e métricas                                                                                          |

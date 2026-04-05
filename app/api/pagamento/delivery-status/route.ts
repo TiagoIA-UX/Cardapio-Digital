@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const { data: payment, error } = await admin
       .from('delivery_payments')
       .select(
-        'id, status, amount, payment_method_used, paid_at, whatsapp_sent, whatsapp_link, checkout_url, sandbox_checkout_url, created_at'
+        'id, status, amount, payment_method_used, paid_at, whatsapp_sent, whatsapp_link, checkout_url, created_at'
       )
       .eq('order_id', validation.data.orderId)
       .maybeSingle()
@@ -71,7 +71,6 @@ export async function GET(request: NextRequest) {
           whatsappSent: payment.whatsapp_sent,
           whatsappLink: payment.whatsapp_link,
           checkoutUrl: payment.checkout_url,
-          sandboxCheckoutUrl: payment.sandbox_checkout_url,
           createdAt: payment.created_at,
         },
         order: order

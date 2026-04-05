@@ -65,16 +65,16 @@ const syne = Syne({
 
 ## 3. Hierarquia de Afiliados
 
-Fonte de verdade em código: [`lib/affiliate-tiers.ts`](lib/affiliate-tiers.ts)
+Fonte de verdade em código: [`lib/domains/affiliate/affiliate-tiers.ts`](lib/domains/affiliate/affiliate-tiers.ts)
 
 | Nível       | Slug          | Canais Digitais | Bônus único | Extra comissão | Comissão total |
 | ----------- | ------------- | :-------------: | :---------: | :------------: | :------------: |
 | Trainee     | `trainee`     |      0 – 2      |      —      |       —        |      30%       |
-| Analista    | `analista`    |      3 – 9      |    R$ 50    |       —        |      30%       |
-| Coordenador | `coordenador` |     10 – 24     |   R$ 150    |       —        |      30%       |
-| Gerente     | `gerente`     |     25 – 49     |   R$ 300    |       —        |      30%       |
-| Diretor     | `diretor`     |     50 – 99     |   R$ 600    |      +2%       |    **32%**     |
-| Sócio       | `socio`       |      100+       |  R$ 1.500   |      +5%       |    **35%**     |
+| Analista    | `analista`    |      3 – 9      |      —      |       —        |      30%       |
+| Coordenador | `coordenador` |     10 – 24     |    R$ 10    |       —        |      30%       |
+| Gerente     | `gerente`     |     25 – 49     |    R$ 25    |       —        |      30%       |
+| Diretor     | `diretor`     |     50 – 99     |    R$ 50    |      +2%       |    **32%**     |
+| Sócio       | `socio`       |      100+       |   R$ 100    |      +5%       |    **35%**     |
 
 ### Regras de negócio
 
@@ -131,7 +131,7 @@ Padrão para indicar o tipo/nível do afiliado em qualquer listagem:
 
 // Badge bônus disponível
 <span className="rounded-full border border-zinc-600 px-2 py-0.5 text-[11px] text-zinc-300">
-  Bônus R$ 300
+  Bônus R$ 25
 </span>
 
 // Badge nível concluído

@@ -119,10 +119,10 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Atualizar banco local
+      // Atualizar banco local — MP foi atualizado com sucesso
       await admin
         .from('subscriptions')
-        .update({ updated_at: new Date().toISOString() })
+        .update({ updated_at: new Date().toISOString(), plan_id: newPlan })
         .eq('id', subscription.id)
 
       await admin.from('restaurants').update({ plan_slug: newPlan }).eq('id', restaurant.id)
@@ -194,8 +194,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Atualizar plano local imediatamente (webhook confirmará o pagamento)
-    await admin.from('restaurants').update({ plan_slug: newPlan }).eq('id', restaurant.id)
+    // NÃO atualizar plan_slug agora — webhook confirmará o pagamento.
+    // Apenas criar/atualizar registro de subscription com status pending.
 
     // Criar/atualizar registro de subscription
     await admin.from('subscriptions').upsert(

@@ -88,19 +88,24 @@ async function getNextOrderNumber(
   supabase: ReturnType<typeof createAdminClient>,
   restaurantId: string
 ) {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('numero_pedido')
-    .eq('restaurant_id', restaurantId)
-    .order('numero_pedido', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  // Usar RPC atômica para evitar números duplicados sob concorrência
+  const { data, error } = await supabase.rpc('get_next_order_number', {
+    p_restaurant_id: restaurantId,
+  })
 
-  if (error) {
-    throw error
+  if (error || data == null) {
+    // Fallback: MAX+1 (menos seguro, mas funciona se a RPC não existir ainda)
+    const { data: fallback } = await supabase
+      .from('orders')
+      .select('numero_pedido')
+      .eq('restaurant_id', restaurantId)
+      .order('numero_pedido', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    return (fallback?.numero_pedido ?? 0) + 1
   }
 
-  return (data?.numero_pedido ?? 0) + 1
+  return data as number
 }
 
 async function createOrderWithSequentialNumber(
@@ -241,7 +246,7 @@ export async function POST(request: NextRequest) {
     // Buscar restaurante
     const { data: restaurant, error: restaurantError } = await supabase
       .from('restaurants')
-      .select('id, nome, slug, telefone, ativo, customizacao, status_pagamento, suspended')
+      .select('id, nome, slug, telefone, ativo, customizacao, status_pagamento, suspended, delivery_mode, pedido_minimo, taxa_entrega')
       .eq('id', body.restaurant_id)
       .single()
 
@@ -254,6 +259,24 @@ export async function POST(request: NextRequest) {
         { error: 'Este delivery não está aceitando pedidos' },
         { status: 400 }
       )
+    }
+
+    // Validar delivery_mode: se terminal_only ou whatsapp_only, verificar compatibilidade
+    if (restaurant.delivery_mode === 'whatsapp_only') {
+      return NextResponse.json(
+        { error: 'Este delivery aceita pedidos apenas via WhatsApp' },
+        { status: 400 }
+      )
+    }
+
+    // Validar endereço obrigatório para delivery
+    if (body.tipo_entrega === 'delivery' || body.tipo_entrega === 'entrega') {
+      if (!body.endereco_rua?.trim() || !body.endereco_bairro?.trim()) {
+        return NextResponse.json(
+          { error: 'Endereço é obrigatório para entregas' },
+          { status: 400 }
+        )
+      }
     }
 
     // Buscar produtos e calcular total NO SERVIDOR (nunca confiar no frontend)
@@ -301,8 +324,22 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Adicionar taxa de entrega se for delivery
+    const isDelivery = body.tipo_entrega === 'delivery' || body.tipo_entrega === 'entrega'
+    const taxaEntrega = isDelivery ? Number(restaurant.taxa_entrega || 0) : 0
+    total += taxaEntrega
+
     if (!Number.isFinite(total) || total <= 0) {
       return NextResponse.json({ error: 'Total do pedido inválido' }, { status: 400 })
+    }
+
+    // Validar pedido mínimo
+    const pedidoMinimo = Number(restaurant.pedido_minimo || 0)
+    if (pedidoMinimo > 0 && (total - taxaEntrega) < pedidoMinimo) {
+      return NextResponse.json(
+        { error: `Pedido mínimo é R$ ${pedidoMinimo.toFixed(2).replace('.', ',')}` },
+        { status: 400 }
+      )
     }
 
     const isTableOrder = body.order_origin === 'mesa'
