@@ -85,9 +85,6 @@ export async function GET(request: NextRequest) {
     )
   } catch (error) {
     console.error('Erro ao consultar status delivery payment:', error)
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

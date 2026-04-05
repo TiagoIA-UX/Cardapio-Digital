@@ -93,7 +93,6 @@ Fonte de verdade em código: [`lib/domains/affiliate/affiliate-tiers.ts`](lib/do
 
 ```tsx
 import { HierarquiaWidget } from '@/components/afiliados/hierarquia-widget'
-
 ;<HierarquiaWidget
   totalCanais={stats.total_indicados} // número de canais ativos
   totalBonusRecebido={totalBonusRecebido} // soma de bônus já pagos

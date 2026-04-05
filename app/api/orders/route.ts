@@ -246,7 +246,9 @@ export async function POST(request: NextRequest) {
     // Buscar restaurante
     const { data: restaurant, error: restaurantError } = await supabase
       .from('restaurants')
-      .select('id, nome, slug, telefone, ativo, customizacao, status_pagamento, suspended, delivery_mode, pedido_minimo, taxa_entrega')
+      .select(
+        'id, nome, slug, telefone, ativo, customizacao, status_pagamento, suspended, delivery_mode, pedido_minimo, taxa_entrega'
+      )
       .eq('id', body.restaurant_id)
       .single()
 
@@ -272,10 +274,7 @@ export async function POST(request: NextRequest) {
     // Validar endereço obrigatório para delivery
     if (body.tipo_entrega === 'delivery' || body.tipo_entrega === 'entrega') {
       if (!body.endereco_rua?.trim() || !body.endereco_bairro?.trim()) {
-        return NextResponse.json(
-          { error: 'Endereço é obrigatório para entregas' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Endereço é obrigatório para entregas' }, { status: 400 })
       }
     }
 
@@ -335,7 +334,7 @@ export async function POST(request: NextRequest) {
 
     // Validar pedido mínimo
     const pedidoMinimo = Number(restaurant.pedido_minimo || 0)
-    if (pedidoMinimo > 0 && (total - taxaEntrega) < pedidoMinimo) {
+    if (pedidoMinimo > 0 && total - taxaEntrega < pedidoMinimo) {
       return NextResponse.json(
         { error: `Pedido mínimo é R$ ${pedidoMinimo.toFixed(2).replace('.', ',')}` },
         { status: 400 }
