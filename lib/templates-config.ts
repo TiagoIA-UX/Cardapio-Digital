@@ -6,6 +6,7 @@ import {
 } from '@/lib/restaurant-customization'
 import type { Template } from '@/types/template'
 import { TEMPLATE_PRODUCT_IMAGE_URLS } from '@/lib/generated-template-product-images'
+import { MINIMERCADO_CATALOG } from '@/lib/minimercado-catalog'
 
 export interface TemplateSampleProduct {
   nome: string
@@ -7498,6 +7499,61 @@ export const RESTAURANT_TEMPLATE_CONFIGS: Record<RestaurantTemplateSlug, Restaur
           ordem: 44,
         },
       ],
+    },
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // MINIMERCADO DIGITAL / DARK STORE
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    minimercado: {
+      slug: 'minimercado',
+      iconKey: 'cart',
+      name: 'Minimercado Digital / Dark Store',
+      shortDescription: 'Para minimercados, conveniências e dark stores com delivery rápido',
+      description:
+        'Catálogo digital completo com 1200+ SKUs pré-cadastrados. Ideal para minimercados, lojas de conveniência, ' +
+        'mercearias e dark stores que operam via delivery. Inclui categorias como bebidas, mercearia, ' +
+        'laticínios, higiene, limpeza, congelados, hortifruti, pet e kits estratégicos para aumentar ticket médio.',
+      category: 'minimercado',
+      imageUrl: '/images/templates/minimercado-hero.webp',
+      previewUrl: '/templates/minimercado',
+      priceMonthly: 199,
+      priceAnnual: 1990,
+      price: 497,
+      originalPrice: 597,
+      isFeatured: true,
+      isNew: true,
+      isBestseller: false,
+      salesCount: 0,
+      ratingAvg: 5.0,
+      ratingCount: 0,
+      eyebrow: '1200+ produtos pré-cadastrados',
+      accent: 'emerald',
+      chip: 'Dark Store',
+      highlights: [
+        'Catálogo com 1200+ produtos editáveis',
+        'Kits & combos estratégicos para ticket médio',
+        'Bebidas, mercearia, frios, higiene, pet e mais',
+        'IA vendedora com curva ABC e upsell inteligente',
+        'Pedido via WhatsApp com link direto',
+        'Pronto para operar em minutos',
+      ],
+      features: [
+        'Cardápio digital responsivo com busca rápida',
+        'Carrinho multi-categoria com cálculo automático',
+        'Integração WhatsApp com resumo do pedido',
+        'IA assistente com conhecimento de 1200 produtos',
+        'Hortifruti com preço por kg ou unidade',
+        'Congelados, frios e laticínios bem categorizados',
+        'Seção de Kits & Combos temáticos',
+        'Categorias Pet, Bebê & Infantil completas',
+        'Gestão de estoque por status ativo/inativo',
+        'Painel admin com métricas de venda',
+      ],
+      slogan: 'Seu mercadinho digital: 1200 produtos na palma da mão 🏪',
+      cor_primaria: '#059669',
+      cor_secundaria: '#65a30d',
+      preset: TEMPLATE_PRESETS.minimercado,
+      sampleProducts: MINIMERCADO_CATALOG,
     },
   }
 

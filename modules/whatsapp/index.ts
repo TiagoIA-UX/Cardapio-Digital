@@ -164,6 +164,7 @@ export const TEMPLATE_EMOJIS: Record<string, string> = {
   sushi: '🍣',
   adega: '🍷',
   mercadinho: '🛒',
+  minimercado: '🏪',
   padaria: '🥖',
   sorveteria: '🍦',
   acougue: '🥩',

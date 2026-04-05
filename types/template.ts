@@ -37,6 +37,7 @@ export type TemplateCategory =
   | 'sushi'
   | 'adega'
   | 'mercadinho'
+  | 'minimercado'
   | 'padaria'
   | 'sorveteria'
   | 'acougue'

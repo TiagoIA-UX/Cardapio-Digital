@@ -239,6 +239,19 @@ export const TEMPLATE_PRICING: Record<RestaurantTemplateSlug, TemplatePricing> =
       feitoPraVoce: createPlanPricing(897, 1077, sub.fpvcMonthly, sub.fpvcAnnual),
     }
   })(),
+  minimercado: (() => {
+    const sub = getSubscriptionPrices('minimercado')
+    return {
+      template: 'minimercado' as const,
+      complexidade: 3 as const,
+      mediaProdutos: '400 a 1200',
+      faixaLabel: 'Mega catálogo (dark store)',
+      maxSetupProducts: 100,
+      nomeCanal: 'Catálogo digital',
+      selfService: createPlanPricing(497, 597, sub.diyMonthly, sub.diyAnnual),
+      feitoPraVoce: createPlanPricing(1297, 1557, sub.fpvcMonthly, sub.fpvcAnnual),
+    }
+  })(),
   padaria: (() => {
     const sub = getSubscriptionPrices('padaria')
     return {

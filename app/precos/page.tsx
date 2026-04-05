@@ -13,6 +13,7 @@ const TEMPLATE_ORDER: RestaurantTemplateSlug[] = [
   'sushi',
   'adega',
   'mercadinho',
+  'minimercado',
   'padaria',
   'sorveteria',
   'acougue',

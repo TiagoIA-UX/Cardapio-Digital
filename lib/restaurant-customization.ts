@@ -8,6 +8,7 @@ export type RestaurantTemplateSlug =
   | 'sushi'
   | 'adega'
   | 'mercadinho'
+  | 'minimercado'
   | 'padaria'
   | 'sorveteria'
   | 'acougue'
@@ -194,6 +195,7 @@ const TEMPLATE_CHANNEL_NAMES: Record<RestaurantTemplateSlug, string> = {
   sushi: 'Canal digital',
   adega: 'Catálogo digital',
   mercadinho: 'Catálogo digital',
+  minimercado: 'Catálogo digital',
   padaria: 'Catálogo digital',
   sorveteria: 'Catálogo digital',
   acougue: 'Catálogo digital',
@@ -351,6 +353,23 @@ export const TEMPLATE_PRESETS: Record<RestaurantTemplateSlug, TemplatePreset> = 
     emptyStateTitle: 'Seu mercadinho digital ainda está vazio',
     emptyStateDescription: 'Cadastre os produtos para começar a receber pedidos por delivery.',
     accentClassName: 'from-green-600 via-emerald-500 to-teal-600',
+  },
+  minimercado: {
+    slug: 'minimercado',
+    label: 'Minimercado Digital / Dark Store',
+    nomeCanal: getChannelName('minimercado'),
+    badge: 'Catálogo com 1200+ SKUs para delivery',
+    heroTitle: 'Seu minimercado completo, direto na tela do cliente.',
+    heroDescription:
+      'De 400 a 1200 produtos prontos para delivery. Bebidas, mercearia, higiene, frios, congelados e muito mais.',
+    sectionTitle: 'Tudo que você precisa, sem sair de casa',
+    sectionDescription: 'Navegue por 20+ categorias e monte seu pedido com poucos cliques.',
+    aboutTitle: 'Minimercado 100% digital com picking otimizado',
+    aboutDescription:
+      'Catálogo integrado em tempo real. Curva ABC digital, kits estratégicos e entrega rápida.',
+    emptyStateTitle: 'Seu minimercado digital está quase pronto',
+    emptyStateDescription: 'Ative o catálogo com 1200+ produtos e comece a vender hoje.',
+    accentClassName: 'from-emerald-700 via-green-600 to-lime-600',
   },
   padaria: {
     slug: 'padaria',

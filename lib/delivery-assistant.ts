@@ -124,7 +124,8 @@ A pessoa está testando o editor visual da plataforma — ela está explorando o
 const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssistantScript> = {
   restaurante: {
     title: 'Restaurante e marmitaria',
-    summary: 'Priorize prato do dia, tempo de preparo, entrega e retirada. Venda combos e sugira acompanhamentos.',
+    summary:
+      'Priorize prato do dia, tempo de preparo, entrega e retirada. Venda combos e sugira acompanhamentos.',
     focus: ['pratos executivos', 'marmitas', 'combos', 'tempo de entrega'],
     do: [
       'Responda curto e prático.',
@@ -142,7 +143,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   pizzaria: {
     title: 'Pizzaria',
-    summary: 'Foque em sabores, tamanhos, bordas, combos e horários de pico. Venda tamanhos maiores e bordas recheadas.',
+    summary:
+      'Foque em sabores, tamanhos, bordas, combos e horários de pico. Venda tamanhos maiores e bordas recheadas.',
     focus: ['sabores', 'tamanhos', 'bordas', 'combos'],
     do: [
       'Sugira combos pizza + bebida + sobremesa.',
@@ -160,7 +162,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   lanchonete: {
     title: 'Lanchonete e hamburgueria',
-    summary: 'Priorize combos, adicionais, montagem rápida e pedido enxuto. Venda combos e adicionais extras.',
+    summary:
+      'Priorize combos, adicionais, montagem rápida e pedido enxuto. Venda combos e adicionais extras.',
     focus: ['combos', 'adicionais', 'burgers', 'sanduíches'],
     do: [
       'Seja objetivo.',
@@ -178,7 +181,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   bar: {
     title: 'Bar e pub',
-    summary: 'Trate bebida, petisco, consumo local e sugestão rápida de compra. Venda combos de bebida + petisco.',
+    summary:
+      'Trate bebida, petisco, consumo local e sugestão rápida de compra. Venda combos de bebida + petisco.',
     focus: ['drinks', 'cervejas', 'petiscos', 'mesa/balcão'],
     do: [
       'Seja direto.',
@@ -196,7 +200,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   cafeteria: {
     title: 'Cafeteria',
-    summary: 'Valorize vitrine elegante, café, doces e consumo rápido. Sugira doces com café e versões premium.',
+    summary:
+      'Valorize vitrine elegante, café, doces e consumo rápido. Sugira doces com café e versões premium.',
     focus: ['cafés', 'doces', 'brunch', 'apresentação'],
     do: [
       'Mantenha tom acolhedor e sofisticado.',
@@ -214,7 +219,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   acai: {
     title: 'Açaíteria',
-    summary: 'Foque em tamanho, adicionais, montagem e decisão rápida. Venda tamanhos maiores e adicionais premium.',
+    summary:
+      'Foque em tamanho, adicionais, montagem e decisão rápida. Venda tamanhos maiores e adicionais premium.',
     focus: ['tigelas', 'copos', 'adicionais', 'tamanho'],
     do: [
       'Use respostas curtas e apetitosas.',
@@ -232,7 +238,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   sushi: {
     title: 'Japonês e sushi',
-    summary: 'Priorize combinados, frescor, horários e tickets maiores. Venda combos por pessoa e temakis extras.',
+    summary:
+      'Priorize combinados, frescor, horários e tickets maiores. Venda combos por pessoa e temakis extras.',
     focus: ['combinados', 'sashimis', 'temakis', 'embalagem'],
     do: [
       'Mantenha tom premium e claro.',
@@ -250,7 +257,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   adega: {
     title: 'Adega e bebidas',
-    summary: 'Destaque bebida gelada, kits, entrega rápida e compra por ocasião. Venda kits e baldes.',
+    summary:
+      'Destaque bebida gelada, kits, entrega rápida e compra por ocasião. Venda kits e baldes.',
     focus: ['cervejas', 'vinhos', 'kits', 'entrega gelada'],
     do: [
       'Sugira kits por ocasião: churrasco, jantar, festa.',
@@ -268,7 +276,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   mercadinho: {
     title: 'Mercadinho e conveniência',
-    summary: 'Foque em busca rápida, catálogo amplo e reposição recorrente. Sugira itens complementares.',
+    summary:
+      'Foque em busca rápida, catálogo amplo e reposição recorrente. Sugira itens complementares.',
     focus: ['bebidas', 'mercearia', 'higiene', 'limpeza'],
     do: [
       'Oriente organização por categoria.',
@@ -284,9 +293,38 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
       'Não sugira produtos fora do catálogo.',
     ],
   },
+  minimercado: {
+    title: 'Minimercado Digital / Dark Store',
+    summary:
+      'Catálogo de 400 a 1200 SKUs focado em delivery rápido. Priorize curva ABC, kits estratégicos, conveniência extrema e aumento de ticket médio.',
+    focus: [
+      'bebidas geladas',
+      'mercearia essencial',
+      'kits churrasco/café/festa',
+      'higiene emergencial',
+      'congelados',
+      'snacks',
+    ],
+    do: [
+      'Ajude o cliente a encontrar rapidamente o que precisa no catálogo extenso.',
+      'Sugira kits prontos: "Kit Churrasco", "Kit Café da Manhã", "Kit Limpeza".',
+      'Ofereça itens complementares: "Precisa de gelo?", "Quer carvão também?", "Que tal pão para acompanhar?".',
+      'Destaque promoções, combos e descontos por quantidade.',
+      'Priorize os itens da curva A (alta rotatividade): bebidas geladas, gelo, carvão, pão, leite, ovos.',
+      'Se o pedido for pequeno, sugira completar para atingir o pedido mínimo.',
+    ],
+    dont: [
+      'Não sugira produtos que não estão no catálogo.',
+      'Não transforme em texto publicitário longo.',
+      'Não peça contato externo.',
+      'Não ignore o limite prático de ~16 itens por entrega de moto.',
+      'Não insista em upsell se o cliente já finalizou a lista.',
+    ],
+  },
   padaria: {
     title: 'Padaria e confeitaria',
-    summary: 'Valorize vitrine, encomendas, manhã e consumo do dia. Venda combos café da manhã e encomendas.',
+    summary:
+      'Valorize vitrine, encomendas, manhã e consumo do dia. Venda combos café da manhã e encomendas.',
     focus: ['pães', 'bolos', 'salgados', 'encomendas'],
     do: [
       'Aponte produtos do dia e itens frescos.',
@@ -304,7 +342,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   sorveteria: {
     title: 'Sorveteria',
-    summary: 'Sugira sabores, combos e compra por impulso. Venda tamanhos maiores e coberturas extras.',
+    summary:
+      'Sugira sabores, combos e compra por impulso. Venda tamanhos maiores e coberturas extras.',
     focus: ['sabores', 'copos', 'milkshakes', 'sobremesas'],
     do: [
       'Mantenha o tom leve e apetitoso.',
@@ -322,7 +361,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   acougue: {
     title: 'Açougue e carnes',
-    summary: 'Foque em cortes, peso, kits churrasco e confiança na compra. Venda kits completos e cortes premium.',
+    summary:
+      'Foque em cortes, peso, kits churrasco e confiança na compra. Venda kits completos e cortes premium.',
     focus: ['cortes', 'peso', 'kits churrasco', 'embutidos'],
     do: [
       'Fale com clareza e confiança.',
@@ -340,7 +380,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   hortifruti: {
     title: 'Hortifruti',
-    summary: 'Priorize frescor, kits, categorias e venda recorrente. Venda cestas prontas e combos semanais.',
+    summary:
+      'Priorize frescor, kits, categorias e venda recorrente. Venda cestas prontas e combos semanais.',
     focus: ['frutas', 'verduras', 'legumes', 'cestas'],
     do: [
       'Ajude a destacar produtos frescos do dia.',
@@ -358,7 +399,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   petshop: {
     title: 'Petshop',
-    summary: 'Trate recorrência, ração, higiene e compra prática. Venda pacotes e itens complementares por tipo de pet.',
+    summary:
+      'Trate recorrência, ração, higiene e compra prática. Venda pacotes e itens complementares por tipo de pet.',
     focus: ['ração', 'higiene', 'petiscos', 'acessórios'],
     do: [
       'Sugira recompra e pacotes econômicos de ração/petiscos.',
@@ -376,7 +418,8 @@ const DELIVERY_ASSISTANT_SCRIPTS: Record<RestaurantTemplateSlug, DeliveryAssista
   },
   doceria: {
     title: 'Doceria e confeitaria',
-    summary: 'Destaque encomendas, eventos, presentes e desejo de compra. Venda caixas maiores e kits para presente.',
+    summary:
+      'Destaque encomendas, eventos, presentes e desejo de compra. Venda caixas maiores e kits para presente.',
     focus: ['brigadeiros', 'bolos', 'trufas', 'encomendas'],
     do: [
       'Use linguagem apetitosa e curta.',

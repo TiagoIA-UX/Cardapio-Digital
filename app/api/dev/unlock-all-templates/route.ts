@@ -167,6 +167,24 @@ const TEMPLATES_SEED = [
     status: 'active',
   },
   {
+    slug: 'minimercado',
+    name: 'Minimercado Digital / Dark Store',
+    description:
+      'Mega catálogo com 1200+ SKUs para minimercados focados em delivery. Bebidas, mercearia, frios, higiene, limpeza, congelados, kits e muito mais.',
+    price: 497,
+    original_price: 597,
+    category: 'minimercado',
+    image_url:
+      'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&auto=format&fit=crop&q=80',
+    is_featured: true,
+    is_new: true,
+    is_bestseller: false,
+    sales_count: 0,
+    rating_avg: 0,
+    rating_count: 0,
+    status: 'active',
+  },
+  {
     slug: 'padaria',
     name: 'Padaria / Confeitaria',
     description:

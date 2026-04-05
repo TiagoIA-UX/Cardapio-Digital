@@ -151,6 +151,21 @@ VALUES (
     0
   ),
   (
+    'minimercado',
+    'Minimercado Digital / Dark Store',
+    'Mega catálogo com 1200+ SKUs para minimercados focados em delivery. Bebidas, mercearia, frios, higiene, limpeza, congelados, kits e muito mais.',
+    497,
+    597,
+    'minimercado',
+    'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&auto=format&fit=crop&q=80',
+    true,
+    true,
+    false,
+    0,
+    0,
+    0
+  ),
+  (
     'padaria',
     'Padaria / Confeitaria',
     'Vitrine para padarias e confeitarias. Pães artesanais, bolos, salgados, cafés e lanches.',
