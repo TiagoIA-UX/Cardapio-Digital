@@ -9,10 +9,7 @@ interface DomainHealth {
   error?: string
 }
 
-async function checkDomain(
-  name: string,
-  fn: () => Promise<void>
-): Promise<[string, DomainHealth]> {
+async function checkDomain(name: string, fn: () => Promise<void>): Promise<[string, DomainHealth]> {
   const start = Date.now()
   try {
     await fn()
@@ -35,46 +32,31 @@ export async function GET() {
   const results = await Promise.allSettled([
     // Core: verifica tabela restaurants (pilar do sistema)
     checkDomain('core', async () => {
-      const { error } = await supabase
-        .from('restaurants')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('restaurants').select('id').limit(1)
       if (error) throw new Error(error.message)
     }),
 
     // Auth: verifica tabela admin_users
     checkDomain('auth', async () => {
-      const { error } = await supabase
-        .from('admin_users')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('admin_users').select('id').limit(1)
       if (error) throw new Error(error.message)
     }),
 
     // ZAEA: verifica tabela agent_tasks
     checkDomain('zaea', async () => {
-      const { error } = await supabase
-        .from('agent_tasks')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('agent_tasks').select('id').limit(1)
       if (error) throw new Error(error.message)
     }),
 
     // Marketing: verifica tabela template_orders
     checkDomain('marketing', async () => {
-      const { error } = await supabase
-        .from('template_orders')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('template_orders').select('id').limit(1)
       if (error) throw new Error(error.message)
     }),
 
     // Affiliate: verifica tabela affiliates (pode não existir se desativado)
     checkDomain('affiliate', async () => {
-      const { error } = await supabase
-        .from('affiliates')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('affiliates').select('id').limit(1)
       if (error) throw new Error(error.message)
     }),
   ])
@@ -89,9 +71,12 @@ export async function GET() {
 
   const overall = Object.values(domains).every((d) => d.healthy)
 
-  return NextResponse.json({
-    overall,
-    domains,
-    timestamp: new Date().toISOString(),
-  }, { status: overall ? 200 : 503 })
+  return NextResponse.json(
+    {
+      overall,
+      domains,
+      timestamp: new Date().toISOString(),
+    },
+    { status: overall ? 200 : 503 }
+  )
 }

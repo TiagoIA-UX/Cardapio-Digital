@@ -106,10 +106,7 @@ export type OnboardingPlanSlug = 'self-service' | 'feito-pra-voce'
 export type OnboardingPaymentMethod = 'pix' | 'card'
 
 /** Decisão de provisionamento */
-export type OnboardingProvisioningDecision =
-  | 'fresh-claim'
-  | 'stale-recovery'
-  | 'already-ready'
+export type OnboardingProvisioningDecision = 'fresh-claim' | 'stale-recovery' | 'already-ready'
 
 /** Step do wizard de checkout */
 export interface CheckoutWizardStep {

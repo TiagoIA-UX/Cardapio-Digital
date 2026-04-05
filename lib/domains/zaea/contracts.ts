@@ -3,13 +3,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 /** Agentes disponíveis no sistema */
-export type AgentName =
-  | 'orchestrator'
-  | 'scanner'
-  | 'surgeon'
-  | 'validator'
-  | 'zai'
-  | 'sentinel'
+export type AgentName = 'orchestrator' | 'scanner' | 'surgeon' | 'validator' | 'zai' | 'sentinel'
 
 /** Prioridade de tarefa */
 export type TaskPriority = 'p0' | 'p1' | 'p2'

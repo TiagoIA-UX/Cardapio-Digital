@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { createClient, type Restaurant } from '@/lib/shared/supabase/client'
-import { CheckCircle2, ArrowLeft, Loader2, GitBranchPlus } from 'lucide-react'
+import { CheckCircle2, ArrowLeft, Loader2, GitBranchPlus, ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
 import Link from 'next/link'
 
 import {
@@ -77,6 +77,7 @@ export default function PlanosPage() {
   const [extraUnits, setExtraUnits] = useState<number>(NETWORK_EXPANSION_UNIT_OPTIONS[0])
   const [branchEmailsInput, setBranchEmailsInput] = useState('')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [upgradeLoading, setUpgradeLoading] = useState<PlanSlug | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -107,6 +108,44 @@ export default function PlanosPage() {
     () => calculateNetworkPrice(extraUnits, planMonthlyPrice),
     [extraUnits, planMonthlyPrice]
   )
+
+  const PLAN_ORDER: Record<PlanSlug, number> = { basico: 0, pro: 1, premium: 2 }
+
+  const handlePlanChange = async (targetPlan: PlanSlug) => {
+    if (!restaurant || upgradeLoading) return
+    setUpgradeLoading(targetPlan)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/pagamento/upgrade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_slug: targetPlan }),
+      })
+
+      const payload = await response.json()
+
+      if (!response.ok) {
+        setMessage(payload?.error || 'Erro ao mudar de plano.')
+        return
+      }
+
+      // Se retornou link de pagamento (nova assinatura), redirecionar
+      const initPoint = payload?.init_point || payload?.sandbox_init_point
+      if (initPoint) {
+        window.location.href = initPoint
+        return
+      }
+
+      // Atualização inline (assinatura existente foi atualizada no MP)
+      setMessage(payload.message || 'Plano atualizado com sucesso!')
+      setRestaurant({ ...restaurant, plan_slug: targetPlan } as any)
+    } catch {
+      setMessage('Falha ao processar mudança de plano. Tente novamente.')
+    } finally {
+      setUpgradeLoading(null)
+    }
+  }
 
   const handleNetworkCheckout = async () => {
     if (!restaurant?.id || checkoutLoading) return
@@ -189,10 +228,9 @@ export default function PlanosPage() {
         )}
       </div>
 
-      <div className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-800">
-        A contratação pública começa pela implantação do template. Depois da ativação, o canal
-        digital segue no plano mensal correspondente; upgrades self-service nesta tela ainda
-        permanecem indisponíveis.
+      <div className="mb-4 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-800">
+        Você pode trocar de plano a qualquer momento. A alteração do valor será aplicada no
+        próximo ciclo de cobrança.
       </div>
 
       {message && (
@@ -231,12 +269,55 @@ export default function PlanosPage() {
                 ))}
               </ul>
 
-              <button
-                disabled
-                className={`mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ${'bg-secondary text-muted-foreground cursor-not-allowed'}`}
-              >
-                {isCurrent ? 'Plano atual' : 'Indisponível no modelo atual'}
-              </button>
+              {(() => {
+                const isUpgrade = PLAN_ORDER[plan.slug] > PLAN_ORDER[currentPlanSlug]
+                const isDowngrade = PLAN_ORDER[plan.slug] < PLAN_ORDER[currentPlanSlug]
+                const isLoading = upgradeLoading === plan.slug
+
+                if (isCurrent) {
+                  return (
+                    <button
+                      disabled
+                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-secondary text-muted-foreground cursor-not-allowed px-4 py-2 text-sm font-medium"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      Plano atual
+                    </button>
+                  )
+                }
+
+                if (isUpgrade) {
+                  return (
+                    <button
+                      onClick={() => void handlePlanChange(plan.slug)}
+                      disabled={!!upgradeLoading || !restaurant}
+                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowUpCircle className="h-4 w-4" />
+                      )}
+                      {isLoading ? 'Processando...' : 'Fazer upgrade'}
+                    </button>
+                  )
+                }
+
+                return (
+                  <button
+                    onClick={() => void handlePlanChange(plan.slug)}
+                    disabled={!!upgradeLoading || !restaurant}
+                    className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-60 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <ArrowDownCircle className="h-4 w-4" />
+                    )}
+                    {isLoading ? 'Processando...' : 'Fazer downgrade'}
+                  </button>
+                )
+              })()}
             </div>
           )
         })}

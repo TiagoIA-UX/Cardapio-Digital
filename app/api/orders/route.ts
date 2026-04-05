@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/shared/rate-limit'
-import { CreateOrderSchema, zodErrorResponse, type CreateOrderInput } from '@/lib/domains/core/schemas'
+import {
+  CreateOrderSchema,
+  zodErrorResponse,
+  type CreateOrderInput,
+} from '@/lib/domains/core/schemas'
 
 const MAX_ITEMS_PER_ORDER = 50
 const MAX_ITEM_QUANTITY = 50
