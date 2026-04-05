@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
     // Buscar restaurante
     const { data: restaurant, error: restaurantError } = await supabase
       .from('restaurants')
-      .select('id, nome, slug, telefone, ativo, customizacao')
+      .select('id, nome, slug, telefone, ativo, customizacao, status_pagamento, suspended')
       .eq('id', body.restaurant_id)
       .single()
 
@@ -249,7 +249,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Delivery não encontrado' }, { status: 404 })
     }
 
-    if (!restaurant.ativo) {
+    if (!restaurant.ativo || restaurant.suspended || restaurant.status_pagamento !== 'ativo') {
       return NextResponse.json(
         { error: 'Este delivery não está aceitando pedidos' },
         { status: 400 }

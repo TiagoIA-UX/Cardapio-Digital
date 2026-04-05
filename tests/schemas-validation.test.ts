@@ -37,7 +37,11 @@ test('CreateOrderSchema aceita pedido completo com todos os campos opcionais', (
     troco_para: 50,
     observacoes: 'Sem cebola',
     items: [
-      { product_id: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', quantidade: 1, observacao: 'Bem passado' },
+      {
+        product_id: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
+        quantidade: 1,
+        observacao: 'Bem passado',
+      },
       { product_id: 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33', quantidade: 3 },
     ],
   })
@@ -277,10 +281,18 @@ test('FeedbackSchema rejeita rating 0', () => {
   assert.equal(result.success, false)
 })
 
-test('FeedbackSchema rejeita rating 5', () => {
+test('FeedbackSchema aceita rating 5 (máximo)', () => {
   const result = FeedbackSchema.safeParse({
     order_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     rating: 5,
+  })
+  assert.equal(result.success, true)
+})
+
+test('FeedbackSchema rejeita rating 6', () => {
+  const result = FeedbackSchema.safeParse({
+    order_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    rating: 6,
   })
   assert.equal(result.success, false)
 })
@@ -330,7 +342,11 @@ test('CreateOrderSchema aceita payload real de pedido delivery', () => {
   const result = CreateOrderSchema.safeParse({
     restaurant_id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     items: [
-      { product_id: '550e8400-e29b-41d4-a716-446655440000', quantidade: 1, observacao: 'Sem cebola' },
+      {
+        product_id: '550e8400-e29b-41d4-a716-446655440000',
+        quantidade: 1,
+        observacao: 'Sem cebola',
+      },
       { product_id: '6ba7b810-9dad-11d1-80b4-00c04fd430c8', quantidade: 2 },
     ],
     cliente_nome: 'Maria',
@@ -348,9 +364,7 @@ test('CreateOrderSchema aceita payload real de pedido delivery', () => {
 test('CreateOrderSchema aceita payload real de pedido mesa', () => {
   const result = CreateOrderSchema.safeParse({
     restaurant_id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    items: [
-      { product_id: '550e8400-e29b-41d4-a716-446655440000', quantidade: 1 },
-    ],
+    items: [{ product_id: '550e8400-e29b-41d4-a716-446655440000', quantidade: 1 }],
     tipo_entrega: 'retirada',
     order_origin: 'mesa',
     table_number: '7',
@@ -361,9 +375,7 @@ test('CreateOrderSchema aceita payload real de pedido mesa', () => {
 
 test('ChatRequestSchema aceita payload real do widget de chat', () => {
   const result = ChatRequestSchema.safeParse({
-    messages: [
-      { role: 'user', content: 'Vocês entregam na praia?' },
-    ],
+    messages: [{ role: 'user', content: 'Vocês entregam na praia?' }],
     cart: [],
     context: {
       restaurantId: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',

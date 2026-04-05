@@ -32,7 +32,10 @@ test('Chat protege créditos Groq com limite baixo', () => {
 test('Todos os limits são inteiros positivos', () => {
   for (const [, cfg] of Object.entries(RATE_LIMITS)) {
     assert.ok(Number.isInteger(cfg.limit) && cfg.limit > 0, `limit deve ser inteiro positivo`)
-    assert.ok(Number.isInteger(cfg.windowMs) && cfg.windowMs > 0, `windowMs deve ser inteiro positivo`)
+    assert.ok(
+      Number.isInteger(cfg.windowMs) && cfg.windowMs > 0,
+      `windowMs deve ser inteiro positivo`
+    )
   }
 })
 

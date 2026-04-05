@@ -199,6 +199,9 @@ export async function GET(request: NextRequest) {
           .update({ status: 'expired' })
           .eq('restaurant_id', restaurant.id)
           .eq('status', 'trial')
+
+        // Suspend restaurant to block new orders
+        await supabase.from('restaurants').update({ suspended: true }).eq('id', restaurant.id)
       }
 
       await supabase

@@ -85,7 +85,8 @@ export type SubscriptionPlanSlug = keyof typeof PLAN_LIMITS
 
 export function getMaxProducts(planSlug: string): number | null {
   const plan = PLAN_LIMITS[planSlug as SubscriptionPlanSlug]
-  return plan?.maxProducts ?? 60
+  if (!plan) return 60 // slug desconhecido → fallback restritivo
+  return plan.maxProducts // null = ilimitado (Premium)
 }
 
 export const POST_PURCHASE_OFFERS = {

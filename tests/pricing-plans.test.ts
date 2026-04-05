@@ -78,9 +78,9 @@ test('getMaxProducts("basico") → 60', () => {
   assert.equal(getMaxProducts('basico'), 60)
 })
 
-test('getMaxProducts("premium") → 60 (null ?? 60 = fallback seguro)', () => {
-  // PLAN_LIMITS.premium.maxProducts = null, mas getMaxProducts usa ?? 60
-  assert.equal(getMaxProducts('premium'), 60)
+test('getMaxProducts("premium") → null (ilimitado)', () => {
+  // PLAN_LIMITS.premium.maxProducts = null → sem limite
+  assert.equal(getMaxProducts('premium'), null)
 })
 
 test('getMaxProducts(slug desconhecido) → 60 (fallback seguro)', () => {

@@ -110,8 +110,8 @@ export default function AdminOverviewPage() {
     const fList = (feedbacks || []) as { rating: number }[]
     const avgRating = fList.length > 0 ? fList.reduce((s, f) => s + f.rating, 0) / fList.length : 0
 
-    // NPS: 4 = promoter, 3 = passive, 1-2 = detractor
-    const promoters = fList.filter((f) => f.rating === 4).length
+    // NPS: 4-5 = promoter, 3 = passive, 1-2 = detractor
+    const promoters = fList.filter((f) => f.rating >= 4).length
     const detractors = fList.filter((f) => f.rating <= 2).length
     const nps = fList.length > 0 ? Math.round(((promoters - detractors) / fList.length) * 100) : 0
 

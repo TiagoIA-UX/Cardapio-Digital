@@ -14,7 +14,8 @@ function getGroq() {
 
 // ── Classificar feedback via IA ──────────────────────
 async function classificarFeedback(rating: number, comment: string) {
-  const ratingLabel = ['', 'Péssimo', 'Ruim', 'Bom', 'Excelente'][rating] || 'Desconhecido'
+  const ratingLabel =
+    ['', 'Péssimo', 'Ruim', 'Regular', 'Bom', 'Excelente'][rating] || 'Desconhecido'
 
   try {
     const completion = await getGroq().chat.completions.create({
@@ -34,13 +35,14 @@ Analise o feedback abaixo e retorne APENAS um JSON válido (sem markdown, sem te
 Regras:
 - Rating 1-2 com comentário sobre qualidade = produto, prioridade alta/critica
 - Rating 1-2 com comentário sobre demora = entrega, prioridade alta
-- Rating 3-4 sem comentário = elogio, prioridade baixa
-- Rating 3-4 com elogio = elogio, prioridade baixa
+- Rating 3 sem comentário = neutro, prioridade baixa
+- Rating 4-5 sem comentário = elogio, prioridade baixa
+- Rating 4-5 com elogio = elogio, prioridade baixa
 - Sem comentário: baseie-se apenas no rating`,
         },
         {
           role: 'user',
-          content: `Rating: ${rating}/4 (${ratingLabel})\nComentário: ${comment || '(sem comentário)'}`,
+          content: `Rating: ${rating}/5 (${ratingLabel})\nComentário: ${comment || '(sem comentário)'}`,
         },
       ],
       max_tokens: 200,
@@ -63,7 +65,13 @@ Regras:
     const prioridadeValida = ['baixa', 'media', 'alta', 'critica'].includes(json.prioridade)
 
     return {
-      sentimento: sentimentoValido ? json.sentimento : rating >= 3 ? 'positivo' : 'negativo',
+      sentimento: sentimentoValido
+        ? json.sentimento
+        : rating >= 4
+          ? 'positivo'
+          : rating === 3
+            ? 'neutro'
+            : 'negativo',
       categoria: categoriaValida ? json.categoria : 'geral',
       prioridade: prioridadeValida ? json.prioridade : rating <= 2 ? 'alta' : 'baixa',
       resumo: typeof json.resumo === 'string' ? json.resumo.slice(0, 100) : '',
@@ -72,12 +80,21 @@ Regras:
   } catch {
     // Fallback sem IA
     return {
-      sentimento: rating >= 3 ? 'positivo' : 'negativo',
+      sentimento: rating >= 4 ? 'positivo' : rating === 3 ? 'neutro' : 'negativo',
       categoria: 'geral',
       prioridade: rating <= 1 ? 'critica' : rating <= 2 ? 'alta' : 'baixa',
-      resumo: rating >= 3 ? 'Avaliação positiva' : 'Avaliação negativa - requer atenção',
+      resumo:
+        rating >= 4
+          ? 'Avaliação positiva'
+          : rating === 3
+            ? 'Avaliação neutra'
+            : 'Avaliação negativa - requer atenção',
       acao_sugerida:
-        rating >= 3 ? 'Enviar link de compartilhamento' : 'Entrar em contato com o cliente',
+        rating >= 4
+          ? 'Enviar link de compartilhamento'
+          : rating === 3
+            ? 'Analisar comentário'
+            : 'Entrar em contato com o cliente',
     }
   }
 }

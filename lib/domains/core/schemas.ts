@@ -99,7 +99,11 @@ export type ChatRequestInput = z.infer<typeof ChatRequestSchema>
 
 export const FeedbackSchema = z.object({
   order_id: z.string().uuid('order_id deve ser UUID válido'),
-  rating: z.number().int().min(1, 'rating deve ser entre 1 e 4').max(4, 'rating deve ser entre 1 e 4'),
+  rating: z
+    .number()
+    .int()
+    .min(1, 'rating deve ser entre 1 e 5')
+    .max(5, 'rating deve ser entre 1 e 5'),
   comment: z.string().max(2000).optional().default(''),
 })
 

@@ -1,9 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {
-  IMAGE_LIMITS,
-  validateImageUrl,
-} from '@/lib/domains/image/image-validation'
+import { IMAGE_LIMITS, validateImageUrl } from '@/lib/domains/image/image-validation'
 
 // ═══════════════════════════════════════════════════════════════
 // IMAGE_LIMITS — constantes

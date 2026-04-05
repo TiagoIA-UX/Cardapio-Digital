@@ -28,11 +28,11 @@ interface Nivel {
 
 const NIVEIS: Nivel[] = [
   { nome: 'Trainee', minRest: 0, maxRest: 3, bonus: 0 },
-  { nome: 'Analista', minRest: 3, maxRest: 10, bonus: 50 },
-  { nome: 'Coordenador', minRest: 10, maxRest: 25, bonus: 150 },
-  { nome: 'Gerente', minRest: 25, maxRest: 50, bonus: 300 },
-  { nome: 'Diretor', minRest: 50, maxRest: 100, bonus: 600, extraComissao: '+2% comissão' },
-  { nome: 'Sócio', minRest: 100, maxRest: Infinity, bonus: 1500, extraComissao: '+5% comissão' },
+  { nome: 'Analista', minRest: 3, maxRest: 10, bonus: 0 },
+  { nome: 'Coordenador', minRest: 10, maxRest: 25, bonus: 10 },
+  { nome: 'Gerente', minRest: 25, maxRest: 50, bonus: 25 },
+  { nome: 'Diretor', minRest: 50, maxRest: 100, bonus: 50, extraComissao: '+2% comissão' },
+  { nome: 'Sócio', minRest: 100, maxRest: Infinity, bonus: 100, extraComissao: '+5% comissão' },
 ]
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
