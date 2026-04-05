@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-  AlertTriangle,
   ArrowRight,
   BadgePercent,
   CheckCircle,
@@ -17,7 +16,6 @@ import {
   ShieldCheck,
   Smartphone,
   Sparkles,
-  TrendingUp,
   X,
   Zap,
 } from 'lucide-react'
@@ -66,12 +64,11 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-5 max-w-lg text-lg leading-relaxed text-zinc-200">
-                  Seu cardápio digital pronto em 30 minutos.{' '}
+                  Já vem com produtos, categorias e tudo configurado.{' '}
                   <strong className="text-white">
-                    Zero comissão por pedido — nunca cobramos % sobre suas vendas.
+                    Edite nome, preço e fotos com poucos cliques — sem precisar de programador.
                   </strong>{' '}
-                  Pedidos direto no WhatsApp. IA que atende 24h. O iFood traz gente nova — o SEU
-                  cardápio fideliza.
+                  Pedidos direto no WhatsApp. Comece a vender hoje.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -83,7 +80,7 @@ export default function Home() {
                     className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-7 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/40"
                   >
                     <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
-                    Quero parar de perder dinheiro
+                    Começar agora
                   </TrackedLink>
                   <TrackedLink
                     href="/templates"
@@ -92,24 +89,24 @@ export default function Home() {
                     data-testid="hero-cta-whatsapp"
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                   >
-                    <MessageCircle className="h-5 w-5 text-green-400" />
-                    Começar com a Zai
+                    <Eye className="h-5 w-5 text-zinc-300" />
+                    Ver modelos prontos
                   </TrackedLink>
                 </div>
 
                 {/* Micro proof — trust builders */}
                 <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-zinc-300">
                   <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-green-400" />
-                    Garantia 30 dias ou dinheiro de volta
-                  </span>
-                  <span className="flex items-center gap-1.5">
                     <Zap className="h-4 w-4 text-orange-400" />
-                    No ar em 30 minutos
+                    Pronto para vender em minutos
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <BadgePercent className="h-4 w-4 text-green-400" />
-                    0% de comissão por pedido
+                    <Pencil className="h-4 w-4 text-green-400" />
+                    Edite sem programador
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="h-4 w-4 text-green-400" />
+                    Garantia 30 dias
                   </span>
                 </div>
               </div>
@@ -154,8 +151,8 @@ export default function Home() {
         <section data-testid="proof-section" className="border-b border-zinc-100 bg-zinc-50 py-8">
           <div className="container-premium">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              <ProofStat value="0%" label="de comissão por pedido" highlight />
-              <ProofStat value="15" label="nichos com modelo pronto" />
+              <ProofStat value="0%" label="de taxa por pedido" highlight />
+              <ProofStat value="16" label="nichos com modelo pronto" />
               <ProofStat value="30 min" label="e seu cardápio está no ar" />
               <ProofStat value="100%" label="do dinheiro vai pro seu caixa" highlight />
             </div>
@@ -163,133 +160,103 @@ export default function Home() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════
-            URGÊNCIA — Âncora de perda (Loss Aversion)
+            VELOCIDADE — Tempo de ativação
         ═══════════════════════════════════════════════════════════════ */}
-        <div className="border-b border-orange-500/20 bg-zinc-950 py-4">
+        <div className="border-b border-green-500/20 bg-zinc-950 py-4">
           <div className="container-premium flex flex-col items-center justify-between gap-3 sm:flex-row">
             <p className="text-center text-sm font-semibold text-zinc-300 sm:text-left">
-              <span className="font-bold text-orange-400">⚡ Enquanto você lê isso:</span> um
-              delivery que fatura R$<strong className="text-white">8.000/mês</strong> no iFood está
-              pagando <span className="font-bold text-orange-400">R$1.302 este mês</span> em
-              comissão + taxa + mensalidade — dinheiro que poderia estar no caixa dele.
+              <span className="font-bold text-green-400">⚡ Comece hoje mesmo:</span> escolha seu
+              modelo, edite os produtos e <strong className="text-white">saia vendendo em minutos</strong> — 
+              sem esperar configuração, sem cadastrar nada do zero.
             </p>
             <TrackedLink
-              href="/quanto-posso-lucrar"
-              trackCta="urgency_strip_calcular"
+              href="/templates"
+              trackCta="urgency_strip_comecar"
               trackPage="landing"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-orange-600"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-green-500 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-green-600"
             >
-              Calcular o meu
+              Começar agora
               <ArrowRight className="h-3.5 w-3.5" />
             </TrackedLink>
           </div>
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════
-            DOR → SOLUÇÃO — Comparação educativa: estratégia inteligente
+            DIFERENCIAIS — 4 pilares que vendem
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
           <section data-testid="pain-solution-section" className="py-20 md:py-28">
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Estratégia inteligente para seu delivery
+                  Por que funciona
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                  Você não precisa depender só do iFood.{' '}
-                  <span className="text-orange-500">Construa seu próprio canal de vendas.</span>
+                  Seu delivery pronto.{' '}
+                  <span className="text-orange-500">Você só edita e vende.</span>
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                  O iFood é ótimo para conquistar <strong>clientes novos</strong>. Mas aquele
-                  cliente que já te conhece, que pede toda semana... ele pode ir direto pro seu
-                  canal. Quando alguém digita <em>&ldquo;lanche perto de mim&rdquo;</em> no Google,
-                  seu negócio aparece se você estiver no <strong>Google Meu Negócio</strong> — e
-                  esse cadastro é <strong>gratuito</strong>. Com um cardápio digital próprio, você
-                  transforma esse cliente em receita 100% sua.
-                </p>
-                <p className="mt-2 text-xs text-zinc-400">
-                  *Plano Básico iFood: 12% comissão + 3,2% pgto online + R$110/mês (entrega
-                  própria). Fonte: blog-parceiros.ifood.com.br (consultado Mar/2026)
+                  Nada de começar do zero. Seu catálogo já vem com produtos reais, categorias
+                  organizadas e estrutura pensada para vender. É só trocar o que quiser e publicar.
                 </p>
               </div>
 
-              {/* Comparison Cards */}
+              {/* 4 Differentials */}
               <div className="grid gap-6 md:grid-cols-2">
-                {/* STRATEGY 1: iFood */}
-                <div className="rounded-3xl border-2 border-zinc-200 bg-zinc-50/50 p-8">
-                  <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2 text-sm font-bold text-zinc-700">
-                    <TrendingUp className="h-4 w-4" />
-                    iFood — Ideal para conquistar clientes novos
+                <div className="rounded-3xl border-2 border-orange-200 bg-orange-50/50 p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500 text-white">
+                    <Sparkles className="h-6 w-6" />
                   </div>
-                  <ul className="space-y-4">
-                    {[
-                      'Ótima visibilidade para quem ainda não te conhece',
-                      'Investimento em marketing já incluso na comissão',
-                      'Logística de entrega disponível (Plano Entrega)',
-                      'Base de milhões de usuários ativos',
-                      'Ideal para testar novos mercados',
-                      'Funciona bem para clientes eventuais',
-                    ].map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-3 text-sm font-medium text-zinc-700"
-                      >
-                        <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-6 rounded-xl bg-zinc-100/80 p-4 text-center">
-                    <p className="text-sm font-bold text-zinc-700">
-                      Use para atrair clientes novos
-                    </p>
-                    <p className="mt-1 text-xs text-zinc-600">
-                      Depois, migre os fiéis pro seu canal próprio
-                    </p>
-                  </div>
+                  <h3 className="text-xl font-bold text-zinc-900">Já vem pronto</h3>
+                  <p className="mt-3 text-base leading-relaxed text-zinc-700">
+                    Nada de cadastrar produto por produto. Seu catálogo já vem completo com
+                    produtos, descrições, preços e categorias do seu nicho. Só trocar o que quiser.
+                  </p>
                 </div>
 
-                {/* STRATEGY 2: Own Channel */}
-                <div className="rounded-3xl border-2 border-green-300 bg-green-50/50 p-8 shadow-lg shadow-green-100/50">
-                  <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-700">
-                    <CheckCircle className="h-4 w-4" />
-                    Seu canal próprio — Lucro 100% seu
+                <div className="rounded-3xl border-2 border-green-200 bg-green-50/50 p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500 text-white">
+                    <Pencil className="h-6 w-6" />
                   </div>
-                  <ul className="space-y-4">
-                    {[
-                      '0% de comissão — venda R$ 1.000 ou R$ 100.000',
-                      'Sua marca, seus clientes, sua lista de contatos',
-                      'IA assistente no cardápio — atende turistas 24h, sem integrar WhatsApp',
-                      'Editor visual — troque preço em 5 segundos pelo celular',
-                      'Use junto com iFood: novo pelo app, fiel pelo SEU cardápio',
-                      'Google Meu Negócio gratuito + seu link = visibilidade local',
-                    ].map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-3 text-base font-semibold text-zinc-800"
-                      >
-                        <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-6 rounded-xl bg-green-100/80 p-4 text-center">
-                    <p className="text-sm font-bold text-green-700">
-                      R$ 147/mês fixo, sem comissão
-                    </p>
-                    <p className="mt-1 text-xs text-green-600">Quanto mais vende, mais lucra</p>
+                  <h3 className="text-xl font-bold text-zinc-900">Edite tudo com poucos cliques</h3>
+                  <p className="mt-3 text-base leading-relaxed text-zinc-700">
+                    Altere nome, preço, imagens e categorias sem precisar de programador. Se você
+                    usa WhatsApp, você usa nosso editor. Funciona no celular.
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border-2 border-green-200 bg-green-50/50 p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-600 text-white">
+                    <MessageCircle className="h-6 w-6" />
                   </div>
+                  <h3 className="text-xl font-bold text-zinc-900">Venda direto no WhatsApp</h3>
+                  <p className="mt-3 text-base leading-relaxed text-zinc-700">
+                    Receba pedidos organizados automaticamente no seu WhatsApp. Sem confusão, sem
+                    erro. O cliente monta o pedido e você recebe tudo certinho.
+                  </p>
+                </div>
+
+                <div className="rounded-3xl border-2 border-zinc-200 bg-zinc-50/50 p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-800 text-white">
+                    <Shield className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-zinc-900">Economize com desenvolvimento</h3>
+                  <p className="mt-3 text-base leading-relaxed text-zinc-700">
+                    Nada de gastar com criação de site ou sistema do zero. Tudo já está pronto,
+                    testado e funcionando. Mensalidade fixa, sem surpresas.
+                  </p>
                 </div>
               </div>
 
-              {/* Educational strip */}
+              {/* Catálogo estratégico callout */}
               <div className="mt-10 rounded-2xl border border-blue-200 bg-blue-50 p-6 text-center">
                 <p className="text-lg font-bold text-zinc-900">
                   <Sparkles className="mr-2 inline h-5 w-5 text-blue-500" />
-                  Estratégia inteligente: iFood para pescar, seu cardápio para fidelizar.
+                  Não é só um catálogo
                 </p>
                 <p className="mt-2 text-sm text-zinc-600">
-                  Cliente novo pelo iFood → vira fiel → migra pro seu canal → lucro 100% seu.
+                  Seu sistema já vem organizado com produtos estratégicos para aumentar suas vendas.
+                  Categorias pensadas, sugestões inteligentes e uma IA que ajuda a vender mais.
                 </p>
               </div>
             </div>
@@ -403,15 +370,15 @@ export default function Home() {
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Por que dono de delivery precisa disso
+                  Tudo que você precisa para vender mais
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                  Enquanto você paga comissão pro iFood,{' '}
-                  <span className="text-orange-500">seus concorrentes ficam com o lucro todo</span>
+                  Seu diferencial:{' '}
+                  <span className="text-orange-500">tirar o trabalho do cliente</span>
                 </h2>
                 <p className="mt-4 text-base text-zinc-600">
-                  Com a Zairyx você para de financiar o iFood e começa a construir seu próprio canal
-                  — com IA 24h, pagamento online e 0% de comissão por pedido.
+                  Produto pronto, editor simples e pedidos organizados. Você foca no que importa:
+                  fazer comida boa e atender bem.
                 </p>
                 <Link
                   href="/beneficios"
@@ -424,21 +391,21 @@ export default function Home() {
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <BenefitCard
-                  icon={<Shield className="h-5 w-5" />}
-                  title="Zero comissão — para sempre"
-                  text="Mensalidade fixa. Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. Cada centavo de lucro fica no seu bolso — não no bolso do app."
-                  accent
-                />
-                <BenefitCard
                   icon={<Sparkles className="h-5 w-5" />}
-                  title="IA que atende 24h — sem integração com WhatsApp"
-                  text="Assistente inteligente direto no cardápio digital. Responde dúvidas, sugere combos e fecha pedidos — inclusive de madrugada, para turistas que chegam depois das 22h. Sem precisar integrar WhatsApp. Brinde para assinantes."
+                  title="Catálogo completo do seu nicho"
+                  text="Seu cardápio já vem com produtos reais, descrições e categorias — pronto para editar e publicar. Zero trabalho de cadastro."
                   accent
                 />
                 <BenefitCard
-                  icon={<CheckCircle className="h-5 w-5" />}
-                  title="Pagamento online pelo cardápio"
-                  text="Seu cliente paga com cartão, PIX ou parcelado direto no pedido. Confirmação automática — sem precisar conferir manualmente se o pagamento caiu."
+                  icon={<Pencil className="h-5 w-5" />}
+                  title="Editor simples como WhatsApp"
+                  text="Mude preço, foto e categoria em poucos cliques pelo celular. Se você manda áudio no WhatsApp, você usa nosso painel."
+                  accent
+                />
+                <BenefitCard
+                  icon={<Zap className="h-5 w-5" />}
+                  title="Venda no mesmo dia"
+                  text="Escolha o modelo, edite o que quiser e publique. Pedidos chegam organizados no WhatsApp. Velocidade é dinheiro."
                   accent
                 />
                 <BenefitCard
@@ -447,29 +414,29 @@ export default function Home() {
                   text="Cliente monta o pedido no cardápio e envia tudo organizado no seu WhatsApp. Sem confusão de mensagem, sem pedido errado."
                 />
                 <BenefitCard
-                  icon={<Smartphone className="h-5 w-5" />}
-                  title="Painel simples de verdade"
-                  text="Mude preço, foto e categoria em 5 segundos pelo celular. Se você manda áudio no WhatsApp, você usa nosso painel sem nenhum treinamento."
+                  icon={<Sparkles className="h-5 w-5" />}
+                  title="IA que atende 24h"
+                  text="Assistente inteligente direto no cardápio. Responde dúvidas, sugere combos e fecha pedidos — inclusive de madrugada. Vai de brinde."
                 />
                 <BenefitCard
-                  icon={<TrendingUp className="h-5 w-5" />}
-                  title="Alta temporada = lucro, não caos"
-                  text="Volume dobrou no verão? Seu cardápio organiza tudo. Sem perder pedido, sem confusão, sem depender de entregador de app."
+                  icon={<CheckCircle className="h-5 w-5" />}
+                  title="Pagamento online integrado"
+                  text="Seu cliente paga com cartão, PIX ou parcelado direto no pedido. Confirmação automática — sem conferir manualmente."
+                />
+                <BenefitCard
+                  icon={<Shield className="h-5 w-5" />}
+                  title="Mensalidade fixa, sem taxa por pedido"
+                  text="Vendeu R$ 1.000 ou R$ 100.000? Paga o mesmo. Cada centavo de lucro fica no seu bolso."
                 />
                 <BenefitCard
                   icon={<ShieldCheck className="h-5 w-5" />}
-                  title="30 dias de garantia — sem perguntas"
-                  text="Teste por 30 dias completos. Se não funcionar para o seu negócio, devolvemos tudo. A maioria dos concorrentes dá 7 dias. A gente dá 30 porque confia no produto."
-                />
-                <BenefitCard
-                  icon={<Zap className="h-5 w-5" />}
-                  title="QR Code + Link + Instagram"
-                  text="Imprima na mesa, compartilhe no status, coloque na bio. Seus clientes acessam em 1 toque — sem baixar nenhum aplicativo."
+                  title="30 dias de garantia total"
+                  text="Teste por 30 dias completos. Se não funcionar para o seu negócio, devolvemos tudo — sem perguntas e sem burocracia."
                 />
                 <BenefitCard
                   icon={<BadgePercent className="h-5 w-5" />}
-                  title="Sua marca, não a do app"
-                  text="Cardápio com sua logo, suas cores e seu nome. O cliente lembra de você — não do iFood. É fidelização de verdade."
+                  title="Sua marca, não a de terceiros"
+                  text="Cardápio com sua logo, suas cores e seu nome. O cliente lembra de você. É fidelização de verdade."
                 />
               </div>
             </div>
@@ -482,38 +449,38 @@ export default function Home() {
         <section className="bg-linear-to-r from-orange-600 to-orange-500 py-14">
           <div className="container-premium flex flex-col items-center gap-6 text-center">
             <p className="text-sm font-bold tracking-[0.15em] text-orange-100 uppercase">
-              Cada mês que você espera = dinheiro que não volta
+              Simples, direto e pronto para usar
             </p>
             <h2 className="text-3xl font-bold text-white md:text-4xl">
               R$ 147/mês fixo.{' '}
-              <span className="text-orange-200">Zero comissão por pedido — para sempre.</span>
+              <span className="text-orange-200">Catálogo pronto. Sem taxa por pedido.</span>
             </h2>
             <p className="max-w-xl text-base text-orange-100">
-              Quanto seu delivery paga de comissão agora? Descubra em 30 segundos quanto você
-              recupera por mês ao migrar clientes fiéis para o seu canal próprio.
+              Você não precisa começar do zero. Escolha o modelo do seu nicho, edite o que quiser
+              e comece a receber pedidos hoje mesmo.
             </p>
             <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <TrackedLink
-                href="/quanto-posso-lucrar"
-                trackCta="mid_page_calcular"
-                trackPage="landing"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-base font-bold text-orange-600 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
-              >
-                <BadgePercent className="h-5 w-5" />
-                Calcular minha economia agora
-              </TrackedLink>
               <TrackedLink
                 href="/templates"
                 trackCta="mid_page_comecar"
                 trackPage="landing"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-base font-bold text-orange-600 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              >
+                <Sparkles className="h-5 w-5" />
+                Ver modelos prontos
+              </TrackedLink>
+              <TrackedLink
+                href="/precos"
+                trackCta="mid_page_precos"
+                trackPage="landing"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 px-7 py-4 text-base font-bold text-white transition-all hover:bg-white/10"
               >
-                Começar grátis →
+                Ver preços e planos
               </TrackedLink>
             </div>
             <p className="text-xs text-orange-200">
               <ShieldCheck className="mr-1 inline h-3.5 w-3.5" />
-              Garantia de 30 dias ou dinheiro de volta. Sem contrato anual.
+              Garantia de 30 dias ou dinheiro de volta. Sem contrato.
             </p>
           </div>
         </section>
@@ -618,7 +585,7 @@ export default function Home() {
               <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                    15 nichos prontos — escolha o seu
+                    16 nichos prontos — escolha o seu
                   </p>
                   <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                     Seu concorrente já tem um. <span className="text-orange-500">E você?</span>
@@ -629,7 +596,7 @@ export default function Home() {
                   data-testid="templates-view-all"
                   className="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-700"
                 >
-                  Ver todos os 15 modelos
+                  Ver todos os 16 modelos
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -712,45 +679,42 @@ export default function Home() {
             <div className="container-premium">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Estratégia inteligente pra quem já tem entrega
+                  Para quem é a Zairyx
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                  iFood pra pescar.{' '}
-                  <span className="text-orange-500">Seu cardápio pra fidelizar.</span>
+                  Seu canal próprio.{' '}
+                  <span className="text-orange-500">Suas regras.</span>
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-zinc-700">
-                  Não precisa sair do iFood. Use ele como vitrine pra{' '}
-                  <strong>atrair gente nova</strong>. Mas quando o cliente já te conhece, manda pro
-                  seu cardápio digital. Assim você para de pagar 15% em quem{' '}
-                  <strong>já ia pedir de qualquer jeito</strong>.
+                  Ideal para quem já tem entrega própria e quer um canal digital profissional —
+                  com sua marca, seus preços e seus clientes. Sem depender de terceiros.
                 </p>
                 <div className="mt-8 grid gap-4 sm:grid-cols-3">
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
-                    <p className="mt-2 text-sm font-bold text-zinc-900">Tem motoboy próprio</p>
+                    <p className="mt-2 text-sm font-bold text-zinc-900">Tem entrega própria</p>
                     <p className="mt-1 text-xs text-zinc-500">
-                      Já faz entrega — não precisa pagar 15% por isso
+                      Já resolve a logística — só precisa do canal digital
                     </p>
                   </div>
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
-                    <p className="mt-2 text-sm font-bold text-zinc-900">Tem clientes fiéis</p>
+                    <p className="mt-2 text-sm font-bold text-zinc-900">Quer praticidade</p>
                     <p className="mt-1 text-xs text-zinc-500">
-                      Gente que já pede sempre — mande pro SEU canal
+                      Catálogo pronto, editor simples, tudo pelo celular
                     </p>
                   </div>
                   <div className="rounded-xl border border-green-200 bg-white p-5">
                     <p className="text-2xl font-bold text-green-600">✓</p>
-                    <p className="mt-2 text-sm font-bold text-zinc-900">Quer canal próprio + IA</p>
+                    <p className="mt-2 text-sm font-bold text-zinc-900">Quer sua própria marca</p>
                     <p className="mt-1 text-xs text-zinc-500">
-                      Cardápio com sua marca, IA assistente, link e QR Code
+                      Cardápio com sua identidade, IA assistente e QR Code
                     </p>
                   </div>
                 </div>
                 <p className="mt-6 text-xs text-zinc-400">
-                  Se você depende do motoboy do iFood para entregas, o Plano Entrega (27%) pode
-                  fazer sentido — mas custa muito mais. A Zairyx é ideal pra quem já resolveu a
-                  logística e quer parar de pagar comissão nos clientes que já são seus.
+                  A Zairyx é ideal para deliverys, mini mercados, bares, cafeterias e qualquer
+                  negócio que queira vender online com praticidade e autonomia.
                 </p>
               </div>
             </div>
@@ -767,15 +731,16 @@ export default function Home() {
           >
             <div className="container-premium">
               <div className="mb-14 max-w-2xl">
-                <p className="text-sm font-bold tracking-[0.2em] text-red-600 uppercase">
-                  Compare e decida com números reais
+                <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
+                  Compare e escolha com clareza
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                  iFood, Rappi ou <span className="text-orange-500">os dois + canal próprio?</span>
+                  O que está incluso{' '}
+                  <span className="text-orange-500">no seu canal próprio</span>
                 </h2>
                 <p className="mt-4 text-lg leading-relaxed text-zinc-700">
-                  Use o iFood como vitrine. Mas veja quanto do seu dinheiro fica lá — e quanto
-                  voltaria pro seu bolso com canal próprio.
+                  Veja o que você ganha com a Zairyx comparado a outras opções do mercado.
+                  Transparência total — sem letras miúdas.
                 </p>
               </div>
 
@@ -894,7 +859,7 @@ export default function Home() {
                         <X className="mx-auto h-4 w-4" />
                       </td>
                       <td className="bg-green-50/50 px-6 py-4 text-center font-bold text-green-700">
-                        15 modelos de nicho
+                        16 modelos de nicho
                       </td>
                     </tr>
                     <tr className="bg-zinc-50/50">
@@ -938,67 +903,61 @@ export default function Home() {
                 (consultado Mar/2026).
               </p>
 
-              {/* Savings highlight */}
+              {/* Value highlights */}
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-6 text-center">
-                  <p className="text-sm font-bold text-green-800">Faturamento R$ 10k/mês</p>
-                  <p className="mt-2 text-3xl font-bold text-green-700">R$ 1.533</p>
-                  <p className="mt-1 text-sm text-green-600">de economia mensal vs. iFood Básico</p>
+                  <p className="text-sm font-bold text-green-800">Catálogo pronto</p>
+                  <p className="mt-2 text-3xl font-bold text-green-700">16 nichos</p>
+                  <p className="mt-1 text-sm text-green-600">com produtos reais — só editar</p>
                 </div>
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-6 text-center">
-                  <p className="text-sm font-bold text-green-800">Faturamento R$ 20k/mês</p>
-                  <p className="mt-2 text-3xl font-bold text-green-700">R$ 3.053</p>
-                  <p className="mt-1 text-sm text-green-600">de economia mensal vs. iFood Básico</p>
+                  <p className="text-sm font-bold text-green-800">Tempo de ativação</p>
+                  <p className="mt-2 text-3xl font-bold text-green-700">30 min</p>
+                  <p className="mt-1 text-sm text-green-600">e seu delivery está no ar</p>
                 </div>
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-6 text-center">
-                  <p className="text-sm font-bold text-green-800">Faturamento R$ 30k/mês</p>
-                  <p className="mt-2 text-3xl font-bold text-green-700">R$ 4.573</p>
-                  <p className="mt-1 text-sm text-green-600">de economia mensal vs. iFood Básico</p>
+                  <p className="text-sm font-bold text-green-800">IA assistente</p>
+                  <p className="mt-2 text-3xl font-bold text-green-700">24h</p>
+                  <p className="mt-1 text-sm text-green-600">atendendo no seu cardápio — de brinde</p>
                 </div>
               </div>
 
               <div className="mt-6 rounded-3xl border border-orange-200 bg-orange-50 p-6 md:p-8">
                 <p className="text-sm font-bold tracking-[0.18em] text-orange-700 uppercase">
-                  Exemplo conservador de ganho real
+                  Por que donos de delivery escolhem a Zairyx
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">
-                  O delivery ganha em 3 frentes: taxa cortada, pedido recuperado e upsell leve.
+                  Produto pronto + editor simples + WhatsApp = vendas desde o primeiro dia.
                 </h3>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
                     <p className="text-sm font-semibold text-zinc-800">
-                      1. Comissão que deixa de ir pro app
+                      1. Sem trabalho de cadastro
                     </p>
                     <p className="mt-2 text-sm leading-6 text-zinc-600">
-                      Se 100 pedidos fiéis de R$ 50 migram para o seu canal, são cerca de R$ 5.000
-                      passando pelo cardápio próprio. Em uma taxa próxima de 15%, isso representa
-                      cerca de R$ 750 a R$ 760 por mês que voltam para o seu caixa.
+                      Outros sistemas pedem que você cadastre cada produto do zero. Aqui, o
+                      catálogo do seu nicho já vem pronto — com nomes, descrições e categorias.
+                      Você só ajusta o que quiser.
                     </p>
                   </div>
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
                     <p className="text-sm font-semibold text-zinc-800">
-                      2. Mensalidade fixa e previsível
+                      2. Sem custo de programador
                     </p>
                     <p className="mt-2 text-sm leading-6 text-zinc-600">
-                      Tirando a assinatura de R$ 147, esse mesmo cenário ainda deixa algo perto de
-                      R$ 600 por mês em recuperação líquida de comissão, sem contar pedidos extras.
+                      O editor visual funciona no celular. Troque preço, foto e descrição com
+                      poucos cliques. Se precisar de ajuda, nossa equipe implanta pra você.
                     </p>
                   </div>
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-zinc-800">3. Zai vendendo de brinde</p>
+                    <p className="text-sm font-semibold text-zinc-800">3. IA que vende por você</p>
                     <p className="mt-2 text-sm leading-6 text-zinc-600">
-                      Se a Zai elevar em apenas 5% o ticket desses R$ 5.000 com sugestões leves,
-                      como lembrar uma bebida quando percebe uma oportunidade natural no pedido,
-                      isso adiciona cerca de R$ 250 em faturamento bruto no mês. O agente vai de
-                      brinde no canal digital.
+                      A Zai é uma IA que fica no seu cardápio digital. Ela responde dúvidas,
+                      sugere combos e ajuda o cliente a fechar o pedido — 24 horas por dia, sem
+                      custo extra.
                     </p>
                   </div>
                 </div>
-                <p className="mt-4 text-xs text-zinc-500">
-                  Exemplo ilustrativo com base em pedido médio de R$ 50 e taxa próxima de 15%.
-                  Economia operacional com atendente varia por operação, então o site trata isso
-                  como ganho potencial de produtividade, não como média garantida.
-                </p>
               </div>
 
               {/* CTA */}
@@ -1011,7 +970,7 @@ export default function Home() {
                   className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-xl"
                 >
                   <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
-                  Quero meu cardápio por R$ 147/mês
+                  Começar com meu modelo
                 </TrackedLink>
               </div>
             </div>
@@ -1036,19 +995,17 @@ export default function Home() {
                   <span className="text-lg font-medium text-zinc-500">/mês</span>
                 </div>
                 <p className="mt-3 text-lg font-semibold text-zinc-700">
-                  0% de comissão por pedido. Você paga apenas a mensalidade.
+                  Catálogo pronto + editor visual + IA assistente + pedidos por WhatsApp.
                 </p>
                 <p className="mt-2 text-base font-semibold text-orange-600">
-                  ✦ IA assistente 24h inclusa — atende seus clientes direto no cardápio, sem
-                  WhatsApp
+                  ✦ Mensalidade fixa. Sem taxa por pedido. Sem surpresas.
                 </p>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Ideal para delivery no Litoral Norte de SP — turistas pedem em qualquer horário, a
-                  IA não dorme.
+                  Tudo incluído: 16 modelos de nicho, IA 24h, editor mobile, QR Code e suporte.
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-3 text-sm text-zinc-600">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-green-500" /> 15 modelos profissionais
+                    <CheckCircle className="h-4 w-4 text-green-500" /> 16 modelos profissionais
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle className="h-4 w-4 text-green-500" /> Editor visual completo
@@ -1066,17 +1023,12 @@ export default function Home() {
                     <CheckCircle className="h-4 w-4 text-green-500" /> Garantia 30 dias
                   </span>
                 </div>
-                <div className="mt-8 rounded-xl bg-red-50 p-4">
-                  <p className="text-sm font-bold text-red-700">
-                    No iFood, cada cliente fiel que pede gera ~15% de comissão pra eles.{' '}
-                    <span className="text-green-700">
-                      Na Zairyx, esse pedido gera R$ 0 de comissão. Você paga apenas a mensalidade,
-                      sem % sobre vendas.
+                <div className="mt-8 rounded-xl bg-green-50 p-4">
+                  <p className="text-sm font-bold text-green-700">
+                    Sem taxa por pedido. Vendeu R$ 1.000 ou R$ 100.000 no mês?{' '}
+                    <span className="text-green-800">
+                      Paga o mesmo. O lucro é todo seu.
                     </span>
-                  </p>
-                  <p className="mt-1 text-xs text-red-400">
-                    *12% comissão + 3,2% pgto online + R$110 mensalidade (entrega própria). Fonte:
-                    blog-parceiros.ifood.com.br (consultado Mar/2026)
                   </p>
                 </div>
               </div>
@@ -1095,17 +1047,17 @@ export default function Home() {
                 <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-red-500/10 blur-3xl" />
                 <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
                   <div>
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-300">
-                      <AlertTriangle className="h-4 w-4" />
-                      Cada pedido de cliente fiel no iFood = comissão desnecessária
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-300">
+                      <Zap className="h-4 w-4" />
+                      Pronto para começar — é só escolher seu modelo
                     </div>
                     <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-                      iFood traz gente nova.{' '}
-                      <span className="text-orange-400">Seu cardápio fideliza e lucra 100%.</span>
+                      Seu delivery pronto em minutos.{' '}
+                      <span className="text-orange-400">Você só edita e começa a vender.</span>
                     </h2>
                     <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-200">
-                      Cardápio digital com IA assistente 24h, editor visual, 15 modelos de nicho,
-                      pedidos pelo WhatsApp e zero comissão. Monte em 30 minutos.{' '}
+                      Catálogo completo, editor visual, IA assistente 24h, pedidos pelo WhatsApp
+                      e 16 modelos de nicho. Tudo pronto.{' '}
                       <strong className="text-white">
                         Se não gostar em 30 dias, devolvemos cada centavo.
                       </strong>
@@ -1134,7 +1086,7 @@ export default function Home() {
                       className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-xl"
                     >
                       <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
-                      Quero parar de perder dinheiro
+                      Começar agora
                     </TrackedLink>
                     <TrackedLink
                       href="/templates"
@@ -1143,8 +1095,8 @@ export default function Home() {
                       data-testid="final-cta-whatsapp"
                       className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                     >
-                      <MessageCircle className="h-5 w-5 text-green-400" />
-                      Falar primeiro com a Zai
+                      <Eye className="h-5 w-5 text-zinc-300" />
+                      Ver modelos prontos
                     </TrackedLink>
                     <p className="mt-1 text-center text-xs text-zinc-400">
                       Risco zero. Garantia total de 30 dias.

@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import {
   CheckCircle,
-  Clock,
   MessageCircle,
   PiggyBank,
   Shield,
@@ -18,66 +17,66 @@ import {
 // ─── Bloco 2 — Tabela comparativa ─────────────────────────────────────────────
 const COMPARISON_ROWS = [
   {
-    outros: 'Cobram percentual sobre cada pedido',
-    nos: 'Zero taxa por pedido no seu canal digital',
+    antes: 'Cadastrar produtos um por um do zero',
+    depois: 'Catálogo pronto do seu nicho — só editar',
   },
   {
-    outros: 'Mantêm o delivery dependente de plataformas terceiras',
-    nos: 'Canal próprio para vender com mais independência',
+    antes: 'Depender de programador para qualquer ajuste',
+    depois: 'Editor visual que funciona no celular',
   },
   {
-    outros: 'Dificultam o controle do canal de venda',
-    nos: 'Controle direto do atendimento e da operação',
+    antes: 'Pedidos desorganizados por mensagem',
+    depois: 'Pedidos estruturados direto no WhatsApp',
   },
   {
-    outros: 'Nem sempre permitem editar o catálogo com liberdade',
-    nos: 'Editor visual para atualizar o catálogo com autonomia',
+    antes: 'Catálogo genérico sem identidade',
+    depois: 'Sua marca, suas cores, seus preços',
   },
   {
-    outros: 'Misturam taxas por pedido com cobranças pouco previsíveis',
-    nos: 'Implantação inicial e plano mensal correspondente, sem taxa por pedido',
+    antes: 'Sem atendimento fora do horário comercial',
+    depois: 'IA assistente 24h dentro do cardápio',
   },
   {
-    outros: 'Exigem desenvolvedor para ajustes simples',
-    nos: 'O dono adiciona produtos, edita preços e troca fotos no painel',
+    antes: 'Semanas para colocar no ar',
+    depois: 'Pronto para vender em minutos',
   },
 ] as const
 
 // ─── Bloco 3 — Cards de benefício ─────────────────────────────────────────────
 const BENEFIT_CARDS = [
   {
-    icon: PiggyBank,
-    title: 'Zero Taxa por Pedido — o Lucro É Todo Seu',
-    text: 'Plataformas de delivery cobram percentual sobre cada pedido. Aqui você contrata a implantação inicial e mantém o plano mensal correspondente, sem repassar taxa por venda.',
-    footer: 'Implantação inicial + plano mensal, sem taxa por pedido',
-  },
-  {
-    icon: Clock,
-    title: 'Preparado para Alta Temporada e Picos de Demanda',
-    text: 'Férias, feriados, verão no litoral — quando o volume de pedidos dispara, o canal digital organiza o fluxo para sua equipe atender com agilidade.',
-    footer: 'Mais Pedidos sem Perder Organização',
+    icon: Sparkles,
+    title: 'Catálogo Pronto do Seu Nicho',
+    text: 'Nada de cadastrar produto por produto. Seu cardápio já vem com itens reais, descrições e categorias organizadas. Só trocar o que quiser e publicar.',
+    footer: 'Saia vendendo desde o primeiro dia',
   },
   {
     icon: Smartphone,
-    title: 'WhatsApp Organizado Mesmo nos Dias de Pico',
-    text: 'Os pedidos chegam estruturados com itens, quantidade e observações. Sua equipe processa tudo rápido, mesmo quando o WhatsApp não para de apitar.',
-    footer: 'Atendimento Ágil Quando Mais Importa',
+    title: 'Editor Simples Como WhatsApp',
+    text: 'Troque preço, foto e descrição pelo celular em poucos cliques. Se você manda áudio no WhatsApp, você usa o painel da Zairyx sem treinamento.',
+    footer: 'Sem precisar de programador',
   },
   {
     icon: MessageCircle,
-    title: 'Aumente o Volume de Vendas por Mês',
-    text: 'Catálogo fácil de navegar, fotos atrativas e pedido direto no WhatsApp. O cliente decide rápido e você converte mais — sem depender de plataforma terceira.',
-    footer: 'Mais Conversão com Canal Próprio',
+    title: 'Pedidos Organizados no WhatsApp',
+    text: 'Os pedidos chegam estruturados com itens, quantidade e observações. Sua equipe processa tudo rápido, mesmo nos dias de pico.',
+    footer: 'Atendimento ágil quando mais importa',
+  },
+  {
+    icon: PiggyBank,
+    title: 'Mensalidade Fixa, Sem Taxa por Pedido',
+    text: 'Vendeu R$ 1.000 ou R$ 100.000 no mês? Paga o mesmo. Sem surpresa no fim do mês e sem percentual sobre cada venda.',
+    footer: 'O lucro é todo seu',
   },
 ] as const
 
 const DIFFERENTIALS = [
-  'Atendimento de IA dentro do próprio cardápio digital',
-  'Scripts por tipo de delivery: restaurante, pizzaria, bar, cafeteria, adega e mais',
-  'Sem depender do WhatsApp do comerciante para atender o cliente',
-  'Fluxo simples para vender sem complicar a operação',
-  'Painel visual para editar tudo pelo celular',
-  'Canal próprio com zero comissão por pedido',
+  'IA assistente dentro do próprio cardápio digital — atende 24h',
+  'Scripts personalizados por nicho: pizzaria, bar, cafeteria, mercado e mais',
+  'Cliente resolve dúvidas sem precisar ligar ou mandar mensagem',
+  'Fluxo simples: escolheu, montou, pediu — sem complicação',
+  'Painel visual para editar tudo pelo celular, de qualquer lugar',
+  'Catálogo estratégico com produtos organizados para vender mais',
 ] as const
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -95,24 +94,24 @@ export default function SecaoConversao() {
         ═══════════════════════════════════════════════════════════════════ */}
         <div className="mb-12 text-center md:mb-16">
           <span className="border-primary/20 bg-primary/10 text-primary mb-4 inline-flex rounded-full border px-4 py-1.5 text-sm font-medium">
-            Canal Próprio · Zero Taxa por Pedido · Alta Temporada sem Caos
+            Produto Pronto · Editor Simples · Venda no Mesmo Dia
           </span>
           <h2
             id="conversao-heading"
             className="text-foreground mx-auto mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl"
           >
-            Venda Mais, Zero Taxa por Pedido.
+            Seu canal de vendas pronto.
             <br />
-            <span className="text-primary">Seu Canal Digital Zairyx com Controle Total.</span>
+            <span className="text-primary">Você só edita e começa a vender.</span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-            Tenha seu próprio canal de vendas, com zero taxa por pedido e com painel visual que
-            qualquer pessoa da equipe consegue usar.{' '}
+            Catálogo completo do seu nicho, editor visual pelo celular e pedidos organizados no
+            WhatsApp.{' '}
             <span className="text-foreground font-semibold">
-              Preparado para alta temporada, feriados e picos de demanda.
+              Tudo pronto para funcionar desde o primeiro dia.
             </span>{' '}
             <span className="text-foreground font-medium">
-              Se preferir, nossa equipe também pode conduzir a implantação inicial para você.
+              Se preferir, nossa equipe conduz a implantação inicial para você.
             </span>
           </p>
         </div>
@@ -123,18 +122,18 @@ export default function SecaoConversao() {
         <div className="mb-12 overflow-hidden rounded-xl border md:mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Coluna esquerda — Os outros */}
-            <div className="border-border bg-destructive/5 border-b p-5 md:border-r md:border-b-0">
+            <div className="border-border bg-muted/30 border-b p-5 md:border-r md:border-b-0">
               <p className="text-muted-foreground mb-4 text-center text-sm font-semibold tracking-wider uppercase">
-                ❌ Aplicativos e Soluções Genéricas
+                ❌ Começar do zero
               </p>
               <ul className="space-y-3">
                 {COMPARISON_ROWS.map((row, i) => (
                   <li
-                    key={row.outros}
+                    key={row.antes}
                     className="text-muted-foreground flex items-start gap-2 text-sm line-through"
                   >
                     <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                    {row.outros}
+                    {row.antes}
                   </li>
                 ))}
               </ul>
@@ -143,16 +142,16 @@ export default function SecaoConversao() {
             {/* Coluna direita — Canal Digital */}
             <div className="border-primary/30 bg-primary/5 p-5">
               <p className="text-primary mb-4 text-center text-sm font-bold tracking-wider uppercase">
-                ✅ Canal Digital Zairyx
+                ✅ Com a Zairyx
               </p>
               <ul className="space-y-3">
                 {COMPARISON_ROWS.map((row, i) => (
                   <li
-                    key={row.nos}
+                    key={row.depois}
                     className="text-foreground flex items-start gap-2 text-sm font-medium"
                   >
                     <CheckCircle className="text-primary mt-0.5 h-5 w-5 shrink-0" aria-hidden />
-                    <span>{row.nos}</span>
+                    <span>{row.depois}</span>
                   </li>
                 ))}
               </ul>
