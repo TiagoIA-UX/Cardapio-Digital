@@ -59,6 +59,8 @@ export {
   CreateOrderSchema,
   ProvisionarSchema,
   SubscriptionWebhookSchema,
+  ChatRequestSchema,
+  FeedbackSchema,
   zodErrorResponse,
 } from './schemas'
-export type { CreateOrderInput } from './schemas'
+export type { CreateOrderInput, ChatRequestInput, FeedbackInput } from './schemas'

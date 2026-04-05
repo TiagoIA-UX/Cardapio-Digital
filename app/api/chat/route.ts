@@ -9,6 +9,7 @@ import {
   buildPanelAssistantSystemPrompt,
   type ChatCartItem,
 } from '@/lib/domains/core/delivery-assistant'
+import { ChatRequestSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 
 const CHAT_HISTORY_LIMIT = 20
 const CHAT_TIMEOUT_MS = 8_000
@@ -229,7 +230,11 @@ export async function POST(req: NextRequest) {
     const startedAt = Date.now()
 
     const body = (await req.json()) as ChatRequestBody
-    const { messages, context, cart } = body
+    const parsed = ChatRequestSchema.safeParse(body)
+    if (!parsed.success) {
+      return zodErrorResponse(parsed.error)
+    }
+    const { messages: rawMessages, context, cart } = parsed.data
 
     console.log(
       '[CHAT_START]',
@@ -237,42 +242,16 @@ export async function POST(req: NextRequest) {
         requestId,
         restaurantId: context?.restaurantId ?? null,
         restaurantSlug: context?.restaurantSlug ?? null,
-        messageCount: Array.isArray(messages) ? messages.length : 0,
+        messageCount: rawMessages.length,
       })
     )
 
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json(
-        { error: 'messages inválido' },
-        { status: 400, headers: rateLimit.headers }
-      )
-    }
-
-    if (messages.length > CHAT_HISTORY_LIMIT) {
-      return NextResponse.json(
-        { error: `Limite de ${CHAT_HISTORY_LIMIT} mensagens por conversa.` },
-        { status: 400, headers: rateLimit.headers }
-      )
-    }
-
     // Valida que cada mensagem tem role e content string (evita injeção)
-    const safeMessages = (messages as unknown[])
-      .filter((message): message is ChatMessage => {
-        if (!message || typeof message !== 'object') {
-          return false
-        }
+    const safeMessages = rawMessages
+      .slice(-CHAT_HISTORY_LIMIT)
+      .map((m) => ({ role: m.role, content: m.content.slice(0, 1000) }))
 
-        const candidate = message as Record<string, unknown>
-        return (
-          (candidate.role === 'user' || candidate.role === 'assistant') &&
-          typeof candidate.content === 'string' &&
-          candidate.content.trim().length > 0
-        )
-      })
-      .slice(-CHAT_HISTORY_LIMIT) // limita histórico para não exceder tokens
-      .map((m) => ({ role: m.role, content: m.content.slice(0, 1000) })) // limita tamanho por mensagem
-
-    if (safeMessages.length === 0 || !safeMessages.some((message) => message.role === 'user')) {
+    if (!safeMessages.some((message) => message.role === 'user')) {
       return NextResponse.json(
         { error: 'Envie pelo menos uma mensagem do cliente.' },
         { status: 400, headers: rateLimit.headers }

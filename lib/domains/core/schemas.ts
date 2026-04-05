@@ -66,6 +66,45 @@ export const SubscriptionWebhookSchema = z.object({
 
 export type SubscriptionWebhookInput = z.infer<typeof SubscriptionWebhookSchema>
 
+// ─── Chat ────────────────────────────────────────────────────
+
+const ChatMessageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string().min(1).max(1000),
+})
+
+const ChatCartItemSchema = z.object({
+  name: z.string(),
+  price: z.number(),
+  qty: z.number().int().positive(),
+  obs: z.string().max(500).optional(),
+})
+
+export const ChatRequestSchema = z.object({
+  messages: z.array(ChatMessageSchema).min(1, 'Envie pelo menos uma mensagem.').max(20),
+  cart: z.array(ChatCartItemSchema).max(100).optional(),
+  context: z
+    .object({
+      restaurantId: z.string().optional(),
+      restaurantSlug: z.string().optional(),
+      pageType: z.enum(['marketing', 'panel', 'demo']).optional(),
+      pathname: z.string().max(500).optional(),
+    })
+    .optional(),
+})
+
+export type ChatRequestInput = z.infer<typeof ChatRequestSchema>
+
+// ─── Feedback ────────────────────────────────────────────────
+
+export const FeedbackSchema = z.object({
+  order_id: z.string().uuid('order_id deve ser UUID válido'),
+  rating: z.number().int().min(1, 'rating deve ser entre 1 e 4').max(4, 'rating deve ser entre 1 e 4'),
+  comment: z.string().max(2000).optional().default(''),
+})
+
+export type FeedbackInput = z.infer<typeof FeedbackSchema>
+
 // ─── Helpers ─────────────────────────────────────────────────
 
 /** Gera resposta 400 estruturada a partir de um ZodError */

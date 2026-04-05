@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/shared/rate-limit'
+import { FeedbackSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 
 // ── Groq (mesma pattern do chat) ─────────────────────
 function getGroq() {
@@ -90,16 +91,12 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { order_id, rating, comment } = body
-
-    // Validação
-    if (!order_id || typeof order_id !== 'string') {
-      return NextResponse.json({ error: 'order_id é obrigatório' }, { status: 400 })
+    const parsed = FeedbackSchema.safeParse(body)
+    if (!parsed.success) {
+      return zodErrorResponse(parsed.error)
     }
-    if (!rating || typeof rating !== 'number' || rating < 1 || rating > 4) {
-      return NextResponse.json({ error: 'rating deve ser entre 1 e 4' }, { status: 400 })
-    }
-    const safeComment = typeof comment === 'string' ? comment.slice(0, 2000) : ''
+    const { order_id, rating, comment } = parsed.data
+    const safeComment = comment?.slice(0, 2000) ?? ''
 
     const supabase = createAdminClient()
 
