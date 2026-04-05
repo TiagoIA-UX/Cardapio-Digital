@@ -584,7 +584,7 @@ jobs:
               echo "  ⏳ $label — DNS pendente (000) — ignorado"
             else
               echo "  ❌ $label — esperado $expected_status, obteve $HTTP_STATUS"
-              FAILURES="${FAILURES}|${label} (${HTTP_STATUS})"
+              FAILURES="${FAILURES}|${label}→${HTTP_STATUS} (esperado ${expected_status})"
             fi
           }
 
@@ -647,9 +647,20 @@ jobs:
           if echo "$SB_RESPONSE" | jq -e '. | type == "array"' 2>/dev/null; then
             echo "  ✅ Supabase conectado — tabela agent_tasks acessível"
             echo "supabase_ok=true" >> "$GITHUB_OUTPUT"
+            echo "supabase_detail=conectado" >> "$GITHUB_OUTPUT"
           else
             echo "  ❌ Supabase inacessível: $SB_RESPONSE"
             echo "supabase_ok=false" >> "$GITHUB_OUTPUT"
+            # Captura motivo legível
+            SB_REASON="sem resposta"
+            if echo "$SB_RESPONSE" | grep -qi "timeout"; then
+              SB_REASON="timeout (>10s)"
+            elif echo "$SB_RESPONSE" | grep -qi "ERROR"; then
+              SB_REASON="conexão recusada"
+            elif echo "$SB_RESPONSE" | jq -e '.message' 2>/dev/null; then
+              SB_REASON=$(echo "$SB_RESPONSE" | jq -r '.message' 2>/dev/null)
+            fi
+            echo "supabase_detail=$SB_REASON" >> "$GITHUB_OUTPUT"
           fi
 
       - name: ④ Registrar resultado no Supabase (agent_knowledge)
@@ -697,7 +708,9 @@ jobs:
           MP_VALID="${{ steps.mp_check.outputs.mp_valid }}"
           MP_STATUS="${{ steps.mp_check.outputs.mp_status }}"
           SB_OK="${{ steps.supabase_check.outputs.supabase_ok }}"
+          SB_DETAIL="${{ steps.supabase_check.outputs.supabase_detail }}"
           ROUTE_FAILURES="${{ steps.routes.outputs.route_failures }}"
+          ROUTE_DETAIL="${{ steps.routes.outputs.route_failures_detail }}"
           DNS_PENDING="${{ steps.routes.outputs.dns_pending }}"
           MODE="${{ github.event.inputs.mode || 'health (agendado)' }}"
 
@@ -720,10 +733,18 @@ jobs:
           elif [ "${ROUTE_FAILURES:-0}" = "0" ]; then
             ROUTES_LINE="✅ Todas as páginas respondendo"
           else
-            ROUTES_LINE="❌ ${ROUTE_FAILURES:-0} página(s) com problema"
+            # Monta lista detalhada usando route_failures_detail do step routes
+            FAIL_DETAIL=""
+            IFS='|' read -ra ITEMS <<< "$ROUTE_DETAIL"
+            for item in "${ITEMS[@]}"; do
+              [ -z "$item" ] && continue
+              FAIL_DETAIL="${FAIL_DETAIL}
+   • ${item}"
+            done
+            ROUTES_LINE="❌ ${ROUTE_FAILURES:-0} página(s) com problema:${FAIL_DETAIL}"
           fi
 
-          SB_LABEL="$([ "$SB_OK" = 'true' ] && echo '✅ Banco de dados online' || echo '❌ Banco de dados fora do ar')"
+          SB_LABEL="$([ "$SB_OK" = 'true' ] && echo '✅ Banco de dados online' || echo "❌ Banco de dados fora do ar — ${SB_DETAIL:-motivo desconhecido}")"
           MESSAGE=$(printf "<b>%s Zai — Verificação do sistema</b>\n\n%s\n\n💳 <b>Mercado Pago:</b> %s\n🗄 <b>Banco de dados:</b> %s\n🌐 <b>Páginas:</b> %s\n\n<i>%s • %s UTC</i>" \
             "$HEALTH_ICON" "$HEALTH_MSG" \
             "$MP_STATUS" \
