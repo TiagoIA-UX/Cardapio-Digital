@@ -27,10 +27,7 @@ export async function POST(request: NextRequest) {
   } = await authSupabase.auth.getUser()
 
   if (!user) {
-    return NextResponse.json(
-      { error: 'Faça login' },
-      { status: 401, headers: rateLimit.headers }
-    )
+    return NextResponse.json({ error: 'Faça login' }, { status: 401, headers: rateLimit.headers })
   }
 
   const body = await request.json()
@@ -128,10 +125,7 @@ export async function POST(request: NextRequest) {
         .update({ updated_at: new Date().toISOString() })
         .eq('id', subscription.id)
 
-      await admin
-        .from('restaurants')
-        .update({ plan_slug: newPlan })
-        .eq('id', restaurant.id)
+      await admin.from('restaurants').update({ plan_slug: newPlan }).eq('id', restaurant.id)
 
       // Log de mudança de plano
       await admin.from('admin_actions').insert({
@@ -148,15 +142,17 @@ export async function POST(request: NextRequest) {
         },
       })
 
-      return NextResponse.json({
-        success: true,
-        plan_slug: newPlan,
-        direction: isUpgrade ? 'upgrade' : 'downgrade',
-        message: isUpgrade
-          ? `Upgrade para ${newPlan} realizado! O novo valor será cobrado no próximo ciclo.`
-          : `Downgrade para ${newPlan} realizado. O novo valor será cobrado no próximo ciclo.`,
-      }, { headers: rateLimit.headers })
-
+      return NextResponse.json(
+        {
+          success: true,
+          plan_slug: newPlan,
+          direction: isUpgrade ? 'upgrade' : 'downgrade',
+          message: isUpgrade
+            ? `Upgrade para ${newPlan} realizado! O novo valor será cobrado no próximo ciclo.`
+            : `Downgrade para ${newPlan} realizado. O novo valor será cobrado no próximo ciclo.`,
+        },
+        { headers: rateLimit.headers }
+      )
     } catch (err) {
       console.error('Plan change error:', err)
       return NextResponse.json(
@@ -199,10 +195,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Atualizar plano local imediatamente (webhook confirmará o pagamento)
-    await admin
-      .from('restaurants')
-      .update({ plan_slug: newPlan })
-      .eq('id', restaurant.id)
+    await admin.from('restaurants').update({ plan_slug: newPlan }).eq('id', restaurant.id)
 
     // Criar/atualizar registro de subscription
     await admin.from('subscriptions').upsert(
@@ -229,15 +222,17 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({
-      success: true,
-      plan_slug: newPlan,
-      direction: isUpgrade ? 'upgrade' : 'downgrade',
-      init_point: preapproval.init_point,
-      sandbox_init_point: (preapproval as any).sandbox_init_point,
-      message: 'Redirecionando para pagamento da nova assinatura...',
-    }, { headers: rateLimit.headers })
-
+    return NextResponse.json(
+      {
+        success: true,
+        plan_slug: newPlan,
+        direction: isUpgrade ? 'upgrade' : 'downgrade',
+        init_point: preapproval.init_point,
+        sandbox_init_point: (preapproval as any).sandbox_init_point,
+        message: 'Redirecionando para pagamento da nova assinatura...',
+      },
+      { headers: rateLimit.headers }
+    )
   } catch (err) {
     console.error('New subscription creation error:', err)
     return NextResponse.json(

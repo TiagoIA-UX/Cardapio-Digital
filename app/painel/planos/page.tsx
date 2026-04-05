@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { createClient, type Restaurant } from '@/lib/shared/supabase/client'
-import { CheckCircle2, ArrowLeft, Loader2, GitBranchPlus, ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
+import {
+  CheckCircle2,
+  ArrowLeft,
+  Loader2,
+  GitBranchPlus,
+  ArrowUpCircle,
+  ArrowDownCircle,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import {
@@ -11,7 +18,10 @@ import {
   NETWORK_EXPANSION_UNIT_OPTIONS,
   formatNetworkExpansionLabel,
 } from '@/lib/domains/marketing/pricing'
-import { getActiveRestaurantForUser, getRestaurantScopedHref } from '@/lib/domains/core/active-restaurant'
+import {
+  getActiveRestaurantForUser,
+  getRestaurantScopedHref,
+} from '@/lib/domains/core/active-restaurant'
 import {
   calculateNetworkPrice,
   getDiscountTierLabel,
@@ -229,8 +239,8 @@ export default function PlanosPage() {
       </div>
 
       <div className="mb-4 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-800">
-        Você pode trocar de plano a qualquer momento. A alteração do valor será aplicada no
-        próximo ciclo de cobrança.
+        Você pode trocar de plano a qualquer momento. A alteração do valor será aplicada no próximo
+        ciclo de cobrança.
       </div>
 
       {message && (
@@ -278,7 +288,7 @@ export default function PlanosPage() {
                   return (
                     <button
                       disabled
-                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-secondary text-muted-foreground cursor-not-allowed px-4 py-2 text-sm font-medium"
+                      className="bg-secondary text-muted-foreground mt-2 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium"
                     >
                       <CheckCircle2 className="h-4 w-4" />
                       Plano atual
@@ -291,7 +301,7 @@ export default function PlanosPage() {
                     <button
                       onClick={() => void handlePlanChange(plan.slug)}
                       disabled={!!upgradeLoading || !restaurant}
-                      className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium transition-colors"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isLoading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -307,7 +317,7 @@ export default function PlanosPage() {
                   <button
                     onClick={() => void handlePlanChange(plan.slug)}
                     disabled={!!upgradeLoading || !restaurant}
-                    className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background text-foreground hover:bg-secondary disabled:opacity-60 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium transition-colors"
+                    className="border-border bg-background text-foreground hover:bg-secondary mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
