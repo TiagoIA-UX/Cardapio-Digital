@@ -43,6 +43,12 @@ const PANEL_GREETING: Message = {
     '👋 Oi! Sou o assistente do painel. Posso te ajudar a editar seu canal digital, cadastrar produtos, ajustar categorias, QR Code, pedidos e configurações. Me diga onde você travou que eu te passo o caminho mais curto.',
 }
 
+const DELIVERY_GREETING: Message = {
+  role: 'assistant',
+  content:
+    '👋 Olá! Sou a Zai, assistente deste delivery. Posso te ajudar a:\n\n• Encontrar produtos no cardápio\n• Tirar dúvidas sobre preços e entrega\n• Sugerir combos e promoções\n\nO que você gostaria de pedir? 😊',
+}
+
 interface QuickReplyCategory {
   label: string
   questions: string[]
@@ -105,6 +111,21 @@ const PANEL_QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
   },
 ]
 
+const DELIVERY_QUICK_REPLY_CATEGORIES: QuickReplyCategory[] = [
+  {
+    label: '🍽️ Cardápio',
+    questions: ['O que tem no cardápio?', 'Qual o mais pedido?', 'Tem promoção?'],
+  },
+  {
+    label: '🛵 Entrega',
+    questions: ['Qual o tempo de entrega?', 'Tem pedido mínimo?', 'Vocês estão abertos?'],
+  },
+  {
+    label: '💡 Sugestões',
+    questions: ['Me sugira um combo', 'Quero algo diferente', 'O que combina com...'],
+  },
+]
+
 type ChatRuntimeConfig = {
   greeting: Message
   endpoint: string
@@ -113,7 +134,7 @@ type ChatRuntimeConfig = {
   title: string
   subtitle: string
   Icon: typeof Bot
-  pageType: 'marketing' | 'panel' | 'demo'
+  pageType: 'marketing' | 'panel' | 'demo' | 'delivery'
 }
 
 const ESCALATION_KEYWORDS = [
@@ -133,6 +154,19 @@ const ESCALATION_THRESHOLD = 6
 const WHATSAPP_NUMBER = '5512996887993'
 
 function getChatConfig(pathname: string | null): ChatRuntimeConfig {
+  if (pathname?.startsWith('/r/')) {
+    return {
+      greeting: DELIVERY_GREETING,
+      endpoint: '/api/chat',
+      quickQuestions: DELIVERY_QUICK_REPLY_CATEGORIES.flatMap((category) => category.questions),
+      quickReplyCategories: DELIVERY_QUICK_REPLY_CATEGORIES,
+      title: 'Zai — Atendente IA',
+      subtitle: 'Online agora',
+      Icon: Bot,
+      pageType: 'delivery',
+    }
+  }
+
   if (pathname?.startsWith('/demo')) {
     return {
       greeting: DEMO_GREETING,
@@ -171,12 +205,14 @@ function getChatConfig(pathname: string | null): ChatRuntimeConfig {
   }
 }
 
-function buildClientRecoveryMessage(pageType: 'marketing' | 'panel' | 'demo') {
+function buildClientRecoveryMessage(pageType: 'marketing' | 'panel' | 'demo' | 'delivery') {
   return pageType === 'panel'
     ? 'Opa, voltei! Me diga em qual parte do painel você travou que eu te explico o próximo passo sem enrolação.'
     : pageType === 'demo'
       ? 'Opa, voltei! Me pergunte sobre o editor — como editar produtos, categorias, cores ou como publicar de verdade. 😊'
-      : 'Opa, voltei! Me conta sobre o seu negócio que te ajudo com preço, template ideal, como funciona o painel... o que você precisar 😊'
+      : pageType === 'delivery'
+        ? 'Opa, voltei! Me diga o que você gostaria de pedir ou pergunte sobre o cardápio. 😊'
+        : 'Opa, voltei! Me conta sobre o seu negócio que te ajudo com preço, template ideal, como funciona o painel... o que você precisar 😊'
 }
 
 function getChatRequestContext(pathname: string | null): ChatRequestContext | null {
@@ -376,9 +412,6 @@ export function ChatWidget() {
     ])
     setShowEscalation(false)
   }, [chatConfig.pageType, messages])
-
-  // Não exibir o chat de vendas da Zairyx nos cardápios dos deliverys (/r/[slug])
-  if (pathname?.startsWith('/r/')) return null
 
   return (
     <>

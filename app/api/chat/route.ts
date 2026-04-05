@@ -188,11 +188,11 @@ async function loadRestaurantContext(
 
       return (left.ordem ?? 0) - (right.ordem ?? 0)
     })
-    .slice(0, 6)
     .map((product) => ({
       name: product.nome,
       category: product.categoria,
       price: toFiniteNumber(product.preco),
+      description: product.descricao || null,
     }))
 
   return {
