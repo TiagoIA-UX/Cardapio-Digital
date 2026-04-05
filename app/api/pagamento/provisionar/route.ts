@@ -8,6 +8,7 @@ import {
   resolveManualProvisioningResultStatus,
   resolveOnboardingProvisioningDecision,
 } from '@/lib/domains/core/onboarding-provisioning'
+import { ProvisionarSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 
 // Rota de provisionamento manual — usada SOMENTE em sandbox quando o webhook
 // do Mercado Pago não dispara (localhost não recebe webhooks).
@@ -44,15 +45,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Faça login' }, { status: 401, headers: rateLimit.headers })
   }
 
-  const body = await request.json()
-  const checkout = String(body.checkout || '').trim()
-
-  if (!checkout) {
-    return NextResponse.json(
-      { error: 'checkout obrigatório' },
-      { status: 400, headers: rateLimit.headers }
-    )
+  const raw = await request.json()
+  const parsed = ProvisionarSchema.safeParse(raw)
+  if (!parsed.success) {
+    return zodErrorResponse(parsed.error)
   }
+  const { checkout } = parsed.data
 
   const admin = createAdminClient()
   const { data: order, error: orderError } = await admin

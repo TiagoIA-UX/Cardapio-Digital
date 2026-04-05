@@ -1,30 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { getRateLimitIdentifier, RATE_LIMITS, withRateLimit } from '@/lib/shared/rate-limit'
-
-interface OrderItemInput {
-  product_id: string
-  quantidade: number
-  observacao?: string
-}
-
-interface CreateOrderBody {
-  restaurant_id: string
-  items: OrderItemInput[]
-  cliente_nome?: string
-  cliente_telefone?: string
-  tipo_entrega: 'delivery' | 'entrega' | 'retirada'
-  order_origin?: 'online' | 'mesa'
-  table_number?: string
-  endereco_rua?: string
-  endereco_bairro?: string
-  endereco_complemento?: string
-  forma_pagamento?: string
-  troco_para?: number
-  comprovante_url?: string
-  comprovante_key?: string
-  observacoes?: string
-}
+import { CreateOrderSchema, zodErrorResponse, type CreateOrderInput } from '@/lib/domains/core/schemas'
 
 const MAX_ITEMS_PER_ORDER = 50
 const MAX_ITEM_QUANTITY = 50
@@ -69,7 +46,7 @@ type DbError = {
   hint?: string | null
 }
 
-function normalizeDeliveryType(deliveryType: CreateOrderBody['tipo_entrega']) {
+function normalizeDeliveryType(deliveryType: CreateOrderInput['tipo_entrega']) {
   return deliveryType === 'retirada' ? 'retirada' : 'delivery'
 }
 
@@ -229,7 +206,7 @@ async function insertOrderItemsWithCompat(
   return lastError
 }
 
-function buildOrderNotes(body: CreateOrderBody, isTableOrder: boolean) {
+function buildOrderNotes(body: CreateOrderInput, isTableOrder: boolean) {
   const notes = body.observacoes?.trim() || ''
 
   if (!isTableOrder || !body.table_number?.trim()) {
@@ -247,50 +224,12 @@ export async function POST(request: NextRequest) {
       return rateLimit.response
     }
 
-    const body: CreateOrderBody = await request.json()
-
-    // Validações básicas
-    if (!body.restaurant_id) {
-      return NextResponse.json({ error: 'restaurant_id é obrigatório' }, { status: 400 })
+    const raw = await request.json()
+    const parsed = CreateOrderSchema.safeParse(raw)
+    if (!parsed.success) {
+      return zodErrorResponse(parsed.error)
     }
-
-    if (!body.items || body.items.length === 0) {
-      return NextResponse.json({ error: 'items não pode estar vazio' }, { status: 400 })
-    }
-
-    if (!['delivery', 'entrega', 'retirada'].includes(body.tipo_entrega)) {
-      return NextResponse.json(
-        { error: 'tipo_entrega deve ser delivery, entrega ou retirada' },
-        { status: 400 }
-      )
-    }
-
-    if (body.items.length > MAX_ITEMS_PER_ORDER) {
-      return NextResponse.json(
-        { error: `Pedido excede o limite de ${MAX_ITEMS_PER_ORDER} itens` },
-        { status: 400 }
-      )
-    }
-
-    for (const item of body.items) {
-      if (!item.product_id) {
-        return NextResponse.json({ error: 'Cada item precisa de product_id' }, { status: 400 })
-      }
-
-      if (!Number.isInteger(item.quantidade) || item.quantidade <= 0) {
-        return NextResponse.json(
-          { error: 'quantidade deve ser um inteiro positivo' },
-          { status: 400 }
-        )
-      }
-
-      if (item.quantidade > MAX_ITEM_QUANTITY) {
-        return NextResponse.json(
-          { error: `quantidade máxima por item é ${MAX_ITEM_QUANTITY}` },
-          { status: 400 }
-        )
-      }
-    }
+    const body = parsed.data
 
     // Usar cliente admin para bypass de RLS (calcular total com segurança)
     const supabase = createAdminClient()

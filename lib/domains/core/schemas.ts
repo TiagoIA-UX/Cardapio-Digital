@@ -1,0 +1,84 @@
+// ═══════════════════════════════════════════════════════════════
+// SCHEMAS: CORE — Validação Zod nas fronteiras do domínio
+// ═══════════════════════════════════════════════════════════════
+import { z } from 'zod'
+import { NextResponse } from 'next/server'
+
+// ─── Orders ──────────────────────────────────────────────────
+
+const MAX_ITEMS_PER_ORDER = 50
+const MAX_ITEM_QUANTITY = 50
+
+export const OrderItemSchema = z.object({
+  product_id: z.string().uuid('product_id deve ser UUID válido'),
+  quantidade: z
+    .number()
+    .int('quantidade deve ser inteiro')
+    .positive('quantidade deve ser positivo')
+    .max(MAX_ITEM_QUANTITY, `quantidade máxima por item é ${MAX_ITEM_QUANTITY}`),
+  observacao: z.string().max(500).optional(),
+})
+
+export const CreateOrderSchema = z.object({
+  restaurant_id: z.string().uuid('restaurant_id é obrigatório'),
+  items: z
+    .array(OrderItemSchema)
+    .min(1, 'items não pode estar vazio')
+    .max(MAX_ITEMS_PER_ORDER, `Pedido excede o limite de ${MAX_ITEMS_PER_ORDER} itens`),
+  cliente_nome: z.string().max(200).optional(),
+  cliente_telefone: z.string().max(30).optional(),
+  tipo_entrega: z.enum(['delivery', 'entrega', 'retirada'], {
+    errorMap: () => ({ message: 'tipo_entrega deve ser delivery, entrega ou retirada' }),
+  }),
+  order_origin: z.enum(['online', 'mesa']).optional(),
+  table_number: z.string().max(10).optional(),
+  endereco_rua: z.string().max(300).optional(),
+  endereco_bairro: z.string().max(200).optional(),
+  endereco_complemento: z.string().max(300).optional(),
+  forma_pagamento: z.string().max(100).optional(),
+  troco_para: z.number().nonnegative().optional(),
+  comprovante_url: z.string().url().optional(),
+  comprovante_key: z.string().max(500).optional(),
+  observacoes: z.string().max(1000).optional(),
+})
+
+export type CreateOrderInput = z.infer<typeof CreateOrderSchema>
+
+// ─── Provisioning (Sandbox only) ─────────────────────────────
+
+export const ProvisionarSchema = z.object({
+  checkout: z.string().min(1, 'checkout obrigatório').max(200),
+})
+
+export type ProvisionarInput = z.infer<typeof ProvisionarSchema>
+
+// ─── Webhook Subscription ────────────────────────────────────
+
+export const SubscriptionWebhookSchema = z.object({
+  type: z.string().min(1),
+  action: z.string().optional(),
+  data: z
+    .object({
+      id: z.string().optional(),
+    })
+    .optional(),
+})
+
+export type SubscriptionWebhookInput = z.infer<typeof SubscriptionWebhookSchema>
+
+// ─── Helpers ─────────────────────────────────────────────────
+
+/** Gera resposta 400 estruturada a partir de um ZodError */
+export function zodErrorResponse(error: z.ZodError) {
+  const firstIssue = error.issues[0]
+  return NextResponse.json(
+    {
+      error: firstIssue?.message ?? 'Dados inválidos',
+      issues: error.issues.map((i) => ({
+        path: i.path.join('.'),
+        message: i.message,
+      })),
+    },
+    { status: 400 }
+  )
+}

@@ -68,7 +68,9 @@ export async function createDeliveryCheckout(
   // 1. Buscar restaurante
   const { data: restaurant, error: rError } = await admin
     .from('restaurants')
-    .select('id, nome, slug, telefone, ativo, status_pagamento, suspended, delivery_mode, customizacao, mp_delivery_enabled, template_slug')
+    .select(
+      'id, nome, slug, telefone, ativo, status_pagamento, suspended, delivery_mode, customizacao, mp_delivery_enabled, template_slug'
+    )
     .eq('slug', input.restaurantSlug)
     .single()
 
@@ -191,9 +193,7 @@ export async function createDeliveryCheckout(
       throw new Error('Falha ao atualizar registro de pagamento')
     }
   } else {
-    const { error: iError } = await admin
-      .from('delivery_payments')
-      .insert(paymentData)
+    const { error: iError } = await admin.from('delivery_payments').insert(paymentData)
 
     if (iError) {
       throw new Error('Falha ao registrar pagamento')
@@ -279,10 +279,7 @@ export async function processDeliveryPayment(
     updateData.paid_at = payment.date_approved || new Date().toISOString()
   }
 
-  await admin
-    .from('delivery_payments')
-    .update(updateData)
-    .eq('id', deliveryPayment.id)
+  await admin.from('delivery_payments').update(updateData).eq('id', deliveryPayment.id)
 
   // 4. Atualizar status do pedido
   if (isApproved) {
@@ -359,11 +356,13 @@ async function generateWhatsAppAfterPayment(
     // Buscar pedido
     const { data: order } = await admin
       .from('orders')
-      .select(`
+      .select(
+        `
         id, numero_pedido, cliente_nome, cliente_telefone, cliente_email,
         tipo_entrega, endereco_rua, endereco_bairro, endereco_complemento,
         forma_pagamento, troco_para, observacoes, total, created_at, status
-      `)
+      `
+      )
       .eq('id', orderId)
       .single()
 
@@ -425,11 +424,10 @@ async function generateWhatsAppAfterPayment(
     const mensagem = formatarPedidoWhatsApp(dadosPedido as never)
 
     // Adicionar nota de pagamento confirmado
-    const mensagemComPagamento =
-      mensagem.replace(
-        '💳 *PAGAMENTO*\n',
-        '💳 *PAGAMENTO*\n✅ *PAGO ONLINE via Mercado Pago*\n'
-      )
+    const mensagemComPagamento = mensagem.replace(
+      '💳 *PAGAMENTO*\n',
+      '💳 *PAGAMENTO*\n✅ *PAGO ONLINE via Mercado Pago*\n'
+    )
 
     // Gerar link WhatsApp
     const link = gerarLinkWhatsApp(restaurant.telefone, mensagemComPagamento)

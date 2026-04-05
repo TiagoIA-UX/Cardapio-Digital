@@ -27,7 +27,12 @@ interface ScanMetrics {
 
 async function collectPlatformData(supabase: ReturnType<typeof createAdminClient>) {
   const issues: ScanIssue[] = []
-  const metrics: ScanMetrics = { db_size_mb: 0, db_usage_pct: 0, active_connections: 0, slow_queries: 0 }
+  const metrics: ScanMetrics = {
+    db_size_mb: 0,
+    db_usage_pct: 0,
+    active_connections: 0,
+    slow_queries: 0,
+  }
 
   // 1. RPC platform_health_check
   try {
@@ -46,9 +51,10 @@ async function collectPlatformData(supabase: ReturnType<typeof createAdminClient
       const noRls = h.tables_no_rls as { table: string }[] | undefined
       if (noRls?.length) {
         issues.push({
-          source: 'no-rls', level: 'critical',
+          source: 'no-rls',
+          level: 'critical',
           title: `${noRls.length} tabelas SEM RLS`,
-          detail: noRls.map(t => t.table).join(', '),
+          detail: noRls.map((t) => t.table).join(', '),
           fix: 'ALTER TABLE <name> ENABLE ROW LEVEL SECURITY',
         })
       }
@@ -56,16 +62,18 @@ async function collectPlatformData(supabase: ReturnType<typeof createAdminClient
       const noPolicy = h.rls_no_policy as { table: string }[] | undefined
       if (noPolicy?.length) {
         issues.push({
-          source: 'rls-no-policy', level: 'warning',
+          source: 'rls-no-policy',
+          level: 'warning',
           title: `${noPolicy.length} tabelas RLS sem policies`,
-          detail: noPolicy.map(t => t.table).join(', '),
+          detail: noPolicy.map((t) => t.table).join(', '),
         })
       }
 
       const permissive = h.permissive_policies as { table: string; policy: string }[] | undefined
       for (const p of (permissive ?? []).slice(0, 5)) {
         issues.push({
-          source: 'permissive-policy', level: 'warning',
+          source: 'permissive-policy',
+          level: 'warning',
           title: `Policy permissiva: ${p.policy}`,
           detail: p.table,
         })
@@ -74,74 +82,149 @@ async function collectPlatformData(supabase: ReturnType<typeof createAdminClient
       const definer = h.definer_views as { view: string }[] | undefined
       if (definer?.length) {
         issues.push({
-          source: 'security-definer', level: 'critical',
+          source: 'security-definer',
+          level: 'critical',
           title: `${definer.length} views SECURITY DEFINER`,
-          detail: definer.map(v => v.view).join(', '),
+          detail: definer.map((v) => v.view).join(', '),
           fix: 'ALTER VIEW SET (security_invoker = true)',
         })
       }
 
       if (metrics.db_usage_pct >= 90) {
-        issues.push({ source: 'db-size', level: 'critical', title: `Banco ${metrics.db_usage_pct}% cheio`, detail: `${dbMb}MB/500MB` })
+        issues.push({
+          source: 'db-size',
+          level: 'critical',
+          title: `Banco ${metrics.db_usage_pct}% cheio`,
+          detail: `${dbMb}MB/500MB`,
+        })
       } else if (metrics.db_usage_pct >= 70) {
-        issues.push({ source: 'db-size', level: 'warning', title: `Banco ${metrics.db_usage_pct}%`, detail: `${dbMb}MB/500MB` })
+        issues.push({
+          source: 'db-size',
+          level: 'warning',
+          title: `Banco ${metrics.db_usage_pct}%`,
+          detail: `${dbMb}MB/500MB`,
+        })
       }
       if (metrics.active_connections > 50) {
-        issues.push({ source: 'connections', level: 'critical', title: `${metrics.active_connections}/60 conexões`, detail: 'Próximo do limite' })
+        issues.push({
+          source: 'connections',
+          level: 'critical',
+          title: `${metrics.active_connections}/60 conexões`,
+          detail: 'Próximo do limite',
+        })
       }
       if (metrics.slow_queries > 0) {
-        issues.push({ source: 'slow-queries', level: 'warning', title: `${metrics.slow_queries} queries lentas`, detail: '>10s' })
+        issues.push({
+          source: 'slow-queries',
+          level: 'warning',
+          title: `${metrics.slow_queries} queries lentas`,
+          detail: '>10s',
+        })
       }
     }
   } catch {
-    issues.push({ source: 'rpc', level: 'warning', title: 'RPC indisponível', detail: 'Executar migration 050' })
+    issues.push({
+      source: 'rpc',
+      level: 'warning',
+      title: 'RPC indisponível',
+      detail: 'Executar migration 050',
+    })
   }
 
   // 2. Domain errors (24h)
   try {
     const since = new Date(Date.now() - 24 * 3600_000).toISOString()
-    const { data } = await supabase.from('domain_logs').select('domain').eq('level', 'error').gte('created_at', since)
+    const { data } = await supabase
+      .from('domain_logs')
+      .select('domain')
+      .eq('level', 'error')
+      .gte('created_at', since)
     if (data?.length) {
       const grouped: Record<string, number> = {}
       for (const r of data) grouped[r.domain] = (grouped[r.domain] ?? 0) + 1
       for (const [domain, count] of Object.entries(grouped)) {
-        issues.push({ source: 'domain-logs', level: count >= 10 ? 'critical' : 'warning', title: `${count} erros em '${domain}'`, detail: '24h' })
+        issues.push({
+          source: 'domain-logs',
+          level: count >= 10 ? 'critical' : 'warning',
+          title: `${count} erros em '${domain}'`,
+          detail: '24h',
+        })
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
 
   // 3. Unread alerts
   try {
-    const { count } = await supabase.from('system_alerts').select('id', { count: 'exact', head: true }).eq('read', false)
+    const { count } = await supabase
+      .from('system_alerts')
+      .select('id', { count: 'exact', head: true })
+      .eq('read', false)
     if (count && count >= 20) {
-      issues.push({ source: 'alerts-backlog', level: count >= 50 ? 'critical' : 'warning', title: `${count} alertas não lidos`, detail: 'Acumulação sem revisão' })
+      issues.push({
+        source: 'alerts-backlog',
+        level: count >= 50 ? 'critical' : 'warning',
+        title: `${count} alertas não lidos`,
+        detail: 'Acumulação sem revisão',
+      })
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
 
   // 4. Health check stale
   try {
-    const { data } = await supabase.from('health_checks').select('status,created_at').order('created_at', { ascending: false }).limit(1)
+    const { data } = await supabase
+      .from('health_checks')
+      .select('status,created_at')
+      .order('created_at', { ascending: false })
+      .limit(1)
     if (data?.[0]) {
       const ageH = (Date.now() - new Date(data[0].created_at).getTime()) / 3600_000
-      if (ageH > 25) issues.push({ source: 'health-stale', level: 'warning', title: `Health check ${Math.round(ageH)}h atrás`, detail: 'Cron pode estar falhando' })
+      if (ageH > 25)
+        issues.push({
+          source: 'health-stale',
+          level: 'warning',
+          title: `Health check ${Math.round(ageH)}h atrás`,
+          detail: 'Cron pode estar falhando',
+        })
       if (data[0].status === 'down' || data[0].status === 'degraded') {
-        issues.push({ source: 'health', level: data[0].status === 'down' ? 'critical' : 'warning', title: `Health: ${data[0].status.toUpperCase()}`, detail: 'Último check' })
+        issues.push({
+          source: 'health',
+          level: data[0].status === 'down' ? 'critical' : 'warning',
+          title: `Health: ${data[0].status.toUpperCase()}`,
+          detail: 'Último check',
+        })
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
 
   // 5. Agent failures (24h)
   try {
     const since = new Date(Date.now() - 24 * 3600_000).toISOString()
-    const { data } = await supabase.from('agent_tasks').select('agent_name').eq('status', 'failed').gte('created_at', since)
+    const { data } = await supabase
+      .from('agent_tasks')
+      .select('agent_name')
+      .eq('status', 'failed')
+      .gte('created_at', since)
     if (data?.length) {
       const grouped: Record<string, number> = {}
       for (const r of data) grouped[r.agent_name] = (grouped[r.agent_name] ?? 0) + 1
       for (const [agent, count] of Object.entries(grouped)) {
-        issues.push({ source: 'agent-failure', level: count >= 5 ? 'critical' : 'warning', title: `Agente '${agent}' falhou ${count}x`, detail: '24h' })
+        issues.push({
+          source: 'agent-failure',
+          level: count >= 5 ? 'critical' : 'warning',
+          title: `Agente '${agent}' falhou ${count}x`,
+          detail: '24h',
+        })
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
 
   return { issues, metrics }
 }
@@ -151,17 +234,20 @@ async function collectPlatformData(supabase: ReturnType<typeof createAdminClient
 async function analyzeWithAI(issues: ScanIssue[], metrics: ScanMetrics): Promise<string> {
   if (!GROQ_API_KEY) return fallbackSummary(issues, metrics)
 
-  const issuesText = issues.slice(0, 15).map(i => `- [${i.level.toUpperCase()}] ${i.title}: ${i.detail}`).join('\n')
+  const issuesText = issues
+    .slice(0, 15)
+    .map((i) => `- [${i.level.toUpperCase()}] ${i.title}: ${i.detail}`)
+    .join('\n')
   const metricsText = `DB: ${metrics.db_size_mb}MB (${metrics.db_usage_pct}%), Conexões: ${metrics.active_connections}/60, Queries lentas: ${metrics.slow_queries}`
 
-  const critCount = issues.filter(i => i.level === 'critical').length
-  const warnCount = issues.filter(i => i.level === 'warning').length
+  const critCount = issues.filter((i) => i.level === 'critical').length
+  const warnCount = issues.filter((i) => i.level === 'warning').length
 
   try {
     const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        Authorization: `Bearer ${GROQ_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -169,7 +255,8 @@ async function analyzeWithAI(issues: ScanIssue[], metrics: ScanMetrics): Promise
         messages: [
           {
             role: 'system',
-            content: 'Você é o Zai Sentinel, assistente DevOps da Zairyx (SaaS de cardápio digital). Analise o relatório e gere resumo CURTO (máx 400 chars) em PT-BR. Priorize: 1) Ações imediatas se crítico 2) Tendências se warning 3) "Tudo OK" se limpo. Emojis moderados. Texto plano para WhatsApp.',
+            content:
+              'Você é o Zai Sentinel, assistente DevOps da Zairyx (SaaS de cardápio digital). Analise o relatório e gere resumo CURTO (máx 400 chars) em PT-BR. Priorize: 1) Ações imediatas se crítico 2) Tendências se warning 3) "Tudo OK" se limpo. Emojis moderados. Texto plano para WhatsApp.',
           },
           {
             role: 'user',
@@ -186,15 +273,18 @@ async function analyzeWithAI(issues: ScanIssue[], metrics: ScanMetrics): Promise
       const data = await resp.json()
       return data.choices?.[0]?.message?.content?.trim() ?? fallbackSummary(issues, metrics)
     }
-  } catch { /* fallback */ }
+  } catch {
+    /* fallback */
+  }
 
   return fallbackSummary(issues, metrics)
 }
 
 function fallbackSummary(issues: ScanIssue[], metrics: ScanMetrics): string {
-  const crit = issues.filter(i => i.level === 'critical').length
-  const warn = issues.filter(i => i.level === 'warning').length
-  if (crit === 0 && warn === 0) return `✅ Plataforma OK. Banco: ${metrics.db_size_mb}MB. Sem problemas.`
+  const crit = issues.filter((i) => i.level === 'critical').length
+  const warn = issues.filter((i) => i.level === 'warning').length
+  if (crit === 0 && warn === 0)
+    return `✅ Plataforma OK. Banco: ${metrics.db_size_mb}MB. Sem problemas.`
   const parts: string[] = []
   if (crit) parts.push(`🔴 ${crit} críticos`)
   if (warn) parts.push(`🟡 ${warn} avisos`)
@@ -211,14 +301,18 @@ function buildWhatsAppLink(text: string): string {
 
 function formatWhatsApp(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: string): string {
   const ts = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
-  const crit = issues.filter(i => i.level === 'critical').length
-  const warn = issues.filter(i => i.level === 'warning').length
+  const crit = issues.filter((i) => i.level === 'critical').length
+  const warn = issues.filter((i) => i.level === 'warning').length
 
   const lines: string[] = [
     '🛡️ *Zai Sentinel — Relatório*',
     `📅 ${ts}`,
     '',
-    crit > 0 ? `🔴 *${crit} CRÍTICOS* | 🟡 ${warn} avisos` : warn > 0 ? `🟡 *${warn} AVISOS*` : '✅ *Tudo limpo!*',
+    crit > 0
+      ? `🔴 *${crit} CRÍTICOS* | 🟡 ${warn} avisos`
+      : warn > 0
+        ? `🟡 *${warn} AVISOS*`
+        : '✅ *Tudo limpo!*',
     '',
   ]
 
@@ -238,16 +332,25 @@ function formatWhatsApp(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: st
   return lines.join('\n')
 }
 
-function formatTelegram(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: string, waLink: string): string {
+function formatTelegram(
+  issues: ScanIssue[],
+  metrics: ScanMetrics,
+  aiSummary: string,
+  waLink: string
+): string {
   const ts = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
-  const crit = issues.filter(i => i.level === 'critical').length
-  const warn = issues.filter(i => i.level === 'warning').length
+  const crit = issues.filter((i) => i.level === 'critical').length
+  const warn = issues.filter((i) => i.level === 'warning').length
 
   const lines: string[] = [
     '🛡️ <b>Zai Sentinel — Relatório</b>',
     `<i>📅 ${ts}</i>`,
     '',
-    crit > 0 ? `🔴 <b>${crit} CRÍTICOS</b> · 🟡 ${warn} avisos` : warn > 0 ? `🟡 <b>${warn} AVISOS</b>` : '✅ <b>Tudo limpo!</b>',
+    crit > 0
+      ? `🔴 <b>${crit} CRÍTICOS</b> · 🟡 ${warn} avisos`
+      : warn > 0
+        ? `🟡 <b>${warn} AVISOS</b>`
+        : '✅ <b>Tudo limpo!</b>',
     '',
   ]
 
@@ -257,8 +360,14 @@ function formatTelegram(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: st
     if (issue.fix) lines.push(`    💡 <i>${issue.fix}</i>`)
   }
 
-  lines.push('', `📊 Banco: ${metrics.db_size_mb}MB (${metrics.db_usage_pct}%) · Conexões: ${metrics.active_connections}/60`)
-  lines.push('', `🤖 <b>IA:</b> ${aiSummary.replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] ?? c).slice(0, 600)}`)
+  lines.push(
+    '',
+    `📊 Banco: ${metrics.db_size_mb}MB (${metrics.db_usage_pct}%) · Conexões: ${metrics.active_connections}/60`
+  )
+  lines.push(
+    '',
+    `🤖 <b>IA:</b> ${aiSummary.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] ?? c).slice(0, 600)}`
+  )
   lines.push('', `📱 <a href="${waLink}">Abrir no WhatsApp</a>`)
 
   return lines.join('\n')
@@ -275,7 +384,12 @@ async function sendTelegram(text: string): Promise<boolean> {
     const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true }),
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      }),
       signal: AbortSignal.timeout(8000),
     })
     return resp.ok
@@ -285,7 +399,7 @@ async function sendTelegram(text: string): Promise<boolean> {
 }
 
 async function saveLearning(supabase: ReturnType<typeof createAdminClient>, issues: ScanIssue[]) {
-  for (const issue of issues.filter(i => i.level === 'critical' && i.fix)) {
+  for (const issue of issues.filter((i) => i.level === 'critical' && i.fix)) {
     try {
       const pattern = `${issue.source}: ${issue.title}`
       const { data: existing } = await supabase
@@ -297,7 +411,10 @@ async function saveLearning(supabase: ReturnType<typeof createAdminClient>, issu
       if (existing?.[0]) {
         await supabase
           .from('agent_knowledge')
-          .update({ occurrences: (existing[0].occurrences ?? 1) + 1, last_seen_at: new Date().toISOString() })
+          .update({
+            occurrences: (existing[0].occurrences ?? 1) + 1,
+            last_seen_at: new Date().toISOString(),
+          })
           .eq('id', existing[0].id)
       } else {
         await supabase.from('agent_knowledge').insert({
@@ -310,17 +427,21 @@ async function saveLearning(supabase: ReturnType<typeof createAdminClient>, issu
           files_changed: [],
         })
       }
-    } catch { /* skip */ }
+    } catch {
+      /* skip */
+    }
   }
 }
 
 // ── Route Handler ───────────────────────────────────────────────────────────
 
 export async function GET(request: NextRequest) {
-  if (!CRON_SECRET) return NextResponse.json({ error: 'CRON_SECRET não configurado' }, { status: 500 })
+  if (!CRON_SECRET)
+    return NextResponse.json({ error: 'CRON_SECRET não configurado' }, { status: 500 })
 
   const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${CRON_SECRET}`) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  if (authHeader !== `Bearer ${CRON_SECRET}`)
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const supabase = createAdminClient()
   const start = Date.now()
@@ -347,7 +468,7 @@ export async function GET(request: NextRequest) {
     await supabase.from('domain_logs').insert({
       domain: 'shared',
       level: 'info',
-      message: `Sentinel scan: ${issues.filter(i => i.level === 'critical').length}🔴 ${issues.filter(i => i.level === 'warning').length}🟡`,
+      message: `Sentinel scan: ${issues.filter((i) => i.level === 'critical').length}🔴 ${issues.filter((i) => i.level === 'warning').length}🟡`,
       metadata: {
         scan_type: 'sentinel_cron',
         has_ai: !!GROQ_API_KEY,
@@ -355,18 +476,20 @@ export async function GET(request: NextRequest) {
         duration_ms: Date.now() - start,
       },
     })
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
 
-  const crit = issues.filter(i => i.level === 'critical').length
+  const crit = issues.filter((i) => i.level === 'critical').length
 
   return NextResponse.json({
     ok: crit === 0,
-    severity: crit > 0 ? 'critical' : issues.some(i => i.level === 'warning') ? 'warning' : 'ok',
+    severity: crit > 0 ? 'critical' : issues.some((i) => i.level === 'warning') ? 'warning' : 'ok',
     duration_ms: Date.now() - start,
     summary: {
       critical: crit,
-      warning: issues.filter(i => i.level === 'warning').length,
-      info: issues.filter(i => i.level === 'info').length,
+      warning: issues.filter((i) => i.level === 'warning').length,
+      info: issues.filter((i) => i.level === 'info').length,
     },
     ai_summary: aiSummary,
     whatsapp_link: waLink,

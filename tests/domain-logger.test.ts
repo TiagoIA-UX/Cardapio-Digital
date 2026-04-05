@@ -12,7 +12,15 @@ describe('domain-logger', () => {
   })
 
   it('accepts all valid domain names', () => {
-    const domains: DomainName[] = ['core', 'image', 'affiliate', 'zaea', 'auth', 'marketing', 'shared']
+    const domains: DomainName[] = [
+      'core',
+      'image',
+      'affiliate',
+      'zaea',
+      'auth',
+      'marketing',
+      'shared',
+    ]
     for (const d of domains) {
       const log = createDomainLogger(d)
       assert.ok(log, `createDomainLogger('${d}') should return a logger`)
@@ -54,7 +62,8 @@ describe('domain-logger', () => {
     const log: DomainLogger = createDomainLogger('core')
     const _info: (message: string, metadata?: Record<string, unknown>) => void = log.info
     const _warn: (message: string, metadata?: Record<string, unknown>) => void = log.warn
-    const _error: (message: string, err?: unknown, metadata?: Record<string, unknown>) => void = log.error
+    const _error: (message: string, err?: unknown, metadata?: Record<string, unknown>) => void =
+      log.error
     assert.ok(_info)
     assert.ok(_warn)
     assert.ok(_error)

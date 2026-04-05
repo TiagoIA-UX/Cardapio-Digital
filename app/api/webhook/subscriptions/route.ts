@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createMercadoPagoPreApprovalClient } from '@/lib/domains/core/mercadopago'
 import { validateMercadoPagoWebhookSignature } from '@/lib/domains/core/mercadopago-webhook'
+import { SubscriptionWebhookSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 
 function getSupabaseAdmin() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
@@ -45,8 +46,14 @@ export async function POST(request: NextRequest) {
     const xRequestId = request.headers.get('x-request-id')
     const body = await request.json()
 
+    // Validar estrutura do payload
+    const parsed = SubscriptionWebhookSchema.safeParse(body)
+    if (!parsed.success) {
+      return zodErrorResponse(parsed.error)
+    }
+
     // Mercado Pago envia diferentes tipos de notificação
-    const { type, data, action } = body
+    const { type, data, action } = parsed.data
 
     logSubEvent('info', 'subscription_webhook_received', { type, action, data_id: data?.id })
 

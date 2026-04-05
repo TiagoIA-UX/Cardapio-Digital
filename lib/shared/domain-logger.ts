@@ -14,8 +14,8 @@ export type DomainName = 'core' | 'image' | 'affiliate' | 'zaea' | 'auth' | 'mar
 export type LogLevel = 'info' | 'warn' | 'error'
 
 export interface DomainLogger {
-  info:  (message: string, metadata?: Record<string, unknown>) => void
-  warn:  (message: string, metadata?: Record<string, unknown>) => void
+  info: (message: string, metadata?: Record<string, unknown>) => void
+  warn: (message: string, metadata?: Record<string, unknown>) => void
   error: (message: string, err?: unknown, metadata?: Record<string, unknown>) => void
 }
 
@@ -66,7 +66,7 @@ async function flush() {
     const supabase = createAdminClient()
 
     const { error } = await supabase.from('domain_logs').insert(
-      batch.map(entry => ({
+      batch.map((entry) => ({
         domain: entry.domain,
         level: entry.level,
         message: entry.message,
@@ -92,9 +92,8 @@ async function flush() {
 
 function consoleFallback(entry: LogEntry) {
   const prefix = `[${entry.domain}]`
-  const method = entry.level === 'error' ? console.error
-    : entry.level === 'warn' ? console.warn
-    : console.log
+  const method =
+    entry.level === 'error' ? console.error : entry.level === 'warn' ? console.warn : console.log
   method(prefix, entry.message, entry.metadata)
 }
 
