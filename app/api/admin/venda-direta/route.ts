@@ -2,7 +2,7 @@
  * POST /api/admin/venda-direta
  *
  * Cria restaurante + assinatura diretamente pelo admin.
- * 100% da receita fica com o admin — zero comissão de afiliado.
+ * Não gera comissão de afiliado para a plataforma.
  *
  * Marca origin_sale = 'admin_direct' no metadata para que o webhook
  * de renovação de assinatura PULE a lógica de comissão.
@@ -217,7 +217,7 @@ export async function POST(req: NextRequest) {
         id: ownerUserId,
         email,
       },
-      message: `Restaurante "${body.restaurantName}" criado com sucesso! 100% da receita é sua.`,
+      message: `Restaurante "${body.restaurantName}" criado com sucesso! Venda registrada sem comissão de afiliado.`,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

@@ -115,11 +115,12 @@ export default function QuantoPossoLucrarPage() {
 
               {/* Faturamento mensal */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-zinc-300">
+                <label htmlFor="monthly-revenue-range" className="text-sm font-semibold text-zinc-300">
                   Faturamento mensal total
                   <span className="ml-2 text-xl font-bold text-white">{fmt(monthlyRevenue)}</span>
                 </label>
                 <input
+                  id="monthly-revenue-range"
                   type="range"
                   min={1000}
                   max={100000}
@@ -127,6 +128,8 @@ export default function QuantoPossoLucrarPage() {
                   value={monthlyRevenue}
                   onChange={(e) => setMonthlyRevenue(Number(e.target.value))}
                   className="w-full accent-orange-500"
+                  title="Ajustar faturamento mensal total"
+                  aria-label="Ajustar faturamento mensal total"
                 />
                 <div className="flex justify-between text-xs text-zinc-500">
                   <span>R$ 1.000</span>
@@ -136,11 +139,12 @@ export default function QuantoPossoLucrarPage() {
 
               {/* % iFood */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-zinc-300">
+                <label htmlFor="ifood-share-range" className="text-sm font-semibold text-zinc-300">
                   % do faturamento que vem pelo iFood
                   <span className="ml-2 text-xl font-bold text-white">{ifoodShare}%</span>
                 </label>
                 <input
+                  id="ifood-share-range"
                   type="range"
                   min={10}
                   max={100}
@@ -148,6 +152,8 @@ export default function QuantoPossoLucrarPage() {
                   value={ifoodShare}
                   onChange={(e) => setIfoodShare(Number(e.target.value))}
                   className="w-full accent-orange-500"
+                  title="Ajustar percentual do faturamento que vem pelo iFood"
+                  aria-label="Ajustar percentual do faturamento que vem pelo iFood"
                 />
                 <div className="flex justify-between text-xs text-zinc-500">
                   <span>10% (complementar)</span>

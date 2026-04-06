@@ -94,7 +94,7 @@ export default function FuncionalidadesPage() {
             },
             {
               icon: ShieldCheck,
-              title: 'Controle total',
+              title: 'Mais controle operacional',
               desc: 'Você ativa ou desativa o pagamento online a qualquer momento pelo painel. Sua operação, suas regras.',
             },
           ].map(({ icon: Icon, title, desc }) => (

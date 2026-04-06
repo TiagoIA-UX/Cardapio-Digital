@@ -520,7 +520,7 @@ export default function Home() {
                 <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
                   <div className="border-b border-zinc-100 bg-zinc-50 px-5 py-3">
                     <span className="text-sm font-semibold text-zinc-700">
-                      Dashboard — Controle total
+                      Dashboard — mais controle
                     </span>
                   </div>
                   <div className="relative aspect-16/10">

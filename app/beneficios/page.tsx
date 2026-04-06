@@ -366,7 +366,7 @@ export default function BeneficiosPage() {
                 {
                   step: '4',
                   title: 'Gerencie tudo pela Zairyx',
-                  desc: 'Quando o cliente pedir pelo seu canal, o pedido chega organizado no WhatsApp ou no painel — sem comissão, com IA de atendimento 24h.',
+                  desc: 'Quando o cliente pedir pelo seu canal, o pedido chega organizado no WhatsApp ou no painel, sem comissao da Zairyx por pedido e com IA de atendimento 24h.',
                 },
               ].map(({ step, title, desc }) => (
                 <div key={step} className="flex flex-col gap-3">

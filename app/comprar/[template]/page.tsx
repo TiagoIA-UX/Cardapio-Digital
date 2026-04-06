@@ -38,8 +38,15 @@ import { getTemplatePricing } from '@/lib/domains/marketing/pricing'
 import { createClient } from '@/lib/shared/supabase/client'
 import { normalizePhone } from '@/lib/domains/core/restaurant-onboarding'
 import { seoConfig } from '@/lib/domains/marketing/seo'
-import { getCheckoutWizardProgress, getCheckoutWizardSteps } from '@/lib/domains/core/checkout-wizard'
-import { formatTaxDocument, isValidTaxDocument, normalizeTaxDocument } from '@/lib/domains/core/tax-document'
+import {
+  getCheckoutWizardProgress,
+  getCheckoutWizardSteps,
+} from '@/lib/domains/core/checkout-wizard'
+import {
+  formatTaxDocument,
+  isValidTaxDocument,
+  normalizeTaxDocument,
+} from '@/lib/domains/core/tax-document'
 
 const TEMPLATES = {
   restaurante: {
@@ -285,11 +292,15 @@ function ComprarContent() {
   useEffect(() => {
     let mounted = true
 
-    const syncSession = (user: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session'] extends infer Session
-      ? Session extends { user?: infer User }
-        ? User | null | undefined
+    const syncSession = (
+      user: Awaited<
+        ReturnType<typeof supabase.auth.getSession>
+      >['data']['session'] extends infer Session
+        ? Session extends { user?: infer User }
+          ? User | null | undefined
+          : null
         : null
-      : null) => {
+    ) => {
       if (!mounted) return
 
       const resolvedEmail =
@@ -845,11 +856,11 @@ function ComprarContent() {
                         Carregando conta...
                       </span>
                     ) : isAuthenticated && normalizedAccountEmail ? (
-                      <span className="block break-all font-medium">{normalizedAccountEmail}</span>
+                      <span className="block font-medium break-all">{normalizedAccountEmail}</span>
                     ) : isAuthenticated ? (
                       <span className="text-amber-600">
-                        Sua conta está autenticada, mas o e-mail não foi carregado. Atualize a página
-                        ou entre novamente.
+                        Sua conta está autenticada, mas o e-mail não foi carregado. Atualize a
+                        página ou entre novamente.
                       </span>
                     ) : (
                       <span className="text-foreground/60">

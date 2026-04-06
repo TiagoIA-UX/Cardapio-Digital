@@ -81,10 +81,12 @@ export default function FaqSection() {
                   }`}
                 >
                   <button
+                    type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                     data-testid={`faq-toggle-${index}`}
-                    aria-expanded={isOpen ? 'true' : 'false'}
+                    aria-controls={`faq-panel-${index}`}
+                    id={`faq-trigger-${index}`}
                   >
                     <span className="text-base font-semibold text-zinc-900">{item.question}</span>
                     <ChevronDown
@@ -94,6 +96,9 @@ export default function FaqSection() {
                     />
                   </button>
                   <div
+                    id={`faq-panel-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-trigger-${index}`}
                     className={`grid transition-all duration-200 ${
                       isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                     }`}
