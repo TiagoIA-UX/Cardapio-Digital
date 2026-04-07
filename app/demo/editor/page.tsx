@@ -885,7 +885,7 @@ function EditorCanvas({
                 onDelete={() => onDeleteCategory(categoria)}
               />
 
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 {catProducts.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -974,9 +974,9 @@ function ProductCard({
   }
 
   return (
-    <div className="group relative flex items-start gap-3 rounded-2xl border border-transparent bg-white p-3 shadow-sm transition-all hover:border-gray-200 hover:shadow-md dark:bg-zinc-800 dark:hover:border-zinc-700">
+    <div className="group relative flex flex-col rounded-2xl border border-transparent bg-white shadow-sm transition-all hover:border-gray-200 hover:shadow-md dark:bg-zinc-800 dark:hover:border-zinc-700 overflow-hidden">
       {/* Foto */}
-      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-24">
+      <div className="relative aspect-square w-full overflow-hidden">
         {product.imagem_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={product.imagem_url} alt={product.nome} className="h-full w-full object-cover" />
@@ -1005,7 +1005,7 @@ function ProductCard({
       </div>
 
       {/* Conteúdo */}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 p-2.5">
         {/* Nome */}
         {editingField === 'nome' ? (
           <input
