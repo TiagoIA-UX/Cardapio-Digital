@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zairyx — Painel de Prospecção</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --red: #ef4444;
+      --text: #e5e5e5;
+      --muted: #737373;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }
+
+    header { max-width: 1100px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 22px; font-weight: 700; }
+    header h1 span { color: var(--green); }
+    .date { color: var(--muted); font-size: 14px; }
+
+    /* Dashboard */
+    .dashboard { max-width: 1100px; margin: 0 auto 28px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-card .num { font-size: 32px; font-weight: 800; line-height: 1; }
+    .stat-card .lbl { font-size: 12px; color: var(--muted); margin-top: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .stat-card.green .num { color: var(--green); }
+    .stat-card.yellow .num { color: var(--yellow); }
+    .stat-card.blue .num { color: var(--blue); }
+    .stat-card.purple .num { color: var(--purple); }
+
+    /* Grid */
+    .grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s; }
+    .card:hover { border-color: #444; }
+    .card.status-fechado { border-color: var(--green) !important; }
+    .card.status-interessado { border-color: var(--yellow) !important; }
+    .card.status-contactado { border-color: var(--blue) !important; }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .card-title { font-size: 17px; font-weight: 700; }
+    .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+    .badge-nao { background: #1f1f1f; color: var(--muted); border: 1px solid var(--border); }
+    .badge-contactado { background: #1e3a5f; color: #60a5fa; border: 1px solid #1e40af; }
+    .badge-interessado { background: #3d2b00; color: #fbbf24; border: 1px solid #78350f; }
+    .badge-fechado { background: #052e16; color: #4ade80; border: 1px solid #14532d; }
+
+    .card-meta { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .card-meta strong { color: #aaa; }
+
+    .card-msg { background: #111; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; color: #bbb; line-height: 1.6; white-space: pre-wrap; max-height: 140px; overflow-y: auto; }
+
+    .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { cursor: pointer; border: none; border-radius: 8px; padding: 9px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: opacity .15s; }
+    .btn:hover { opacity: .85; }
+    .btn-wa { background: #128C7E; color: #fff; flex: 1; justify-content: center; }
+    .btn-copy { background: #2a2a2a; color: #ddd; border: 1px solid var(--border); }
+    .btn-copy.copied { background: #052e16; color: var(--green); border-color: #14532d; }
+
+    .status-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .status-btn { cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600; transition: all .15s; }
+    .status-btn:hover { background: #2a2a2a; color: var(--text); }
+    .status-btn.active-nao { background: #1f1f1f; color: var(--text); border-color: #555; }
+    .status-btn.active-contactado { background: #1e3a5f; color: #60a5fa; border-color: #1e40af; }
+    .status-btn.active-interessado { background: #3d2b00; color: #fbbf24; border-color: #78350f; }
+    .status-btn.active-fechado { background: #052e16; color: #4ade80; border-color: #14532d; }
+
+    .notes-area { width: 100%; background: #111; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 8px 10px; font-size: 12px; font-family: inherit; resize: vertical; min-height: 52px; }
+    .notes-area:focus { outline: none; border-color: #555; }
+
+    .add-btn { max-width: 1100px; margin: 16px auto 0; display: block; background: #1a1a1a; border: 1px dashed var(--border); color: var(--muted); border-radius: 14px; padding: 14px; font-size: 14px; cursor: pointer; width: 100%; font-family: inherit; transition: all .2s; }
+    .add-btn:hover { border-color: #555; color: var(--text); background: #222; }
+
+    .revenue-box { max-width: 1100px; margin: 24px auto 0; background: #0a1f12; border: 1px solid #14532d; border-radius: 12px; padding: 18px 24px; font-size: 14px; color: #4ade80; }
+    .revenue-box strong { font-size: 22px; }
+
+    .footer { max-width: 1100px; margin: 32px auto 0; text-align: center; color: #333; font-size: 12px; }
+
+    @media (max-width: 600px) {
+      .dashboard { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🍕 Zairyx — <span>Prospecção</span></h1>
+  <div class="date" id="hoje"></div>
+</header>
+
+<div class="dashboard">
+  <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Total</div></div>
+  <div class="stat-card blue"><div class="num" id="s-contactado">0</div><div class="lbl">Contactados</div></div>
+  <div class="stat-card yellow"><div class="num" id="s-interessado">0</div><div class="lbl">Interessados</div></div>
+  <div class="stat-card green"><div class="num" id="s-fechado">0</div><div class="lbl">Fechados</div></div>
+  <div class="stat-card purple"><div class="num" id="s-mrr">R$0</div><div class="lbl">MRR potencial</div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="add-btn" onclick="adicionarPizzaria()">+ Adicionar pizzaria</button>
+
+<div class="revenue-box">
+  💰 <strong id="receita-total">R$0</strong> em MRR se fechar todos os interessados → <strong id="receita-anual">R$0</strong>/ano
+</div>
+
+<p class="footer">Dados salvos localmente no seu navegador · Zairyx © 2026</p>
+
+<script>
+const DEMO_URL = 'https://zairyx.com.br/demo';
+const CADASTRO_URL = 'https://www.zairyx.com.br/cadastro';
+
+const pizzariasIniciais = [
+  {
+    id: 'fratello',
+    nome: 'Pizzaria Fratello',
+    bairro: 'Centro',
+    foco: 'Delivery e salão',
+    obs: 'Verificar se tem iFood',
+    hook: 'ifood',
+  },
+  {
+    id: 'donna-pizza',
+    nome: 'Donna Pizza',
+    bairro: 'Martim de Sá',
+    foco: 'Pizzas artesanais',
+    obs: 'Público classe média-alta',
+    hook: 'premium',
+  },
+  {
+    id: 'bella-italia',
+    nome: 'Pizzaria Bella Italia',
+    bairro: 'Prainha',
+    foco: 'Tradicional, família',
+    obs: 'Muitos anos na região',
+    hook: 'identidade',
+  },
+  {
+    id: 'deck-pizza',
+    nome: 'Deck Pizza',
+    bairro: 'Orla da praia',
+    foco: 'Turistas e moradores',
+    obs: 'Movimento sazonal (verão)',
+    hook: 'qr',
+  },
+  {
+    id: 'sabor-italia',
+    nome: 'Pizzaria Sabor da Itália',
+    bairro: 'Indaiá',
+    foco: 'Delivery forte',
+    obs: 'Usuário pesado de iFood',
+    hook: 'ifood',
+  },
+  {
+    id: 'pizza-house',
+    nome: 'Pizza House Caraguá',
+    bairro: 'Porto Novo',
+    foco: 'Preço popular, alto volume',
+    obs: 'Alto volume de pedidos',
+    hook: 'volume',
+  },
+  {
+    id: 'forneria',
+    nome: 'Forneria do Litoral',
+    bairro: 'Massaguaçu',
+    foco: 'Gourmet, especialidades',
+    obs: 'Ticket médio alto',
+    hook: 'premium',
+  },
+  {
+    id: 'napoles',
+    nome: 'Pizzaria Nápoles',
+    bairro: 'Sumaré',
+    foco: 'Bairro residencial, fiéis',
+    obs: 'Clientes fiéis do bairro',
+    hook: 'fidelidade',
+  },
+  {
+    id: 'dom-corleone',
+    nome: 'Dom Corleone Pizzaria',
+    bairro: 'Centro',
+    foco: 'Salão grande',
+    obs: 'Temática italiana',
+    hook: 'salao',
+  },
+  {
+    id: 'alemao',
+    nome: 'Pizzaria do Alemão',
+    bairro: 'Tabatinga',
+    foco: 'Tradicional local',
+    obs: 'Conhecido na região',
+    hook: 'identidade',
+  },
+];
+
+function gerarMensagem(p) {
+  const hooks = {
+    ifood: `Oi! Sou o Tiago, sou de Caraguá e trabalho só com pizzarias aqui da região. Vocês usam iFood? Pergunto porque desenvolvemos um sistema que dá cardápio digital igual iFood — mas *sem pagar taxa nenhuma*. Tô procurando 2 pizzarias pra testar de graça por 30 dias. Topam ver como funciona? 👇\n${DEMO_URL}`,
+    premium: `Oi! Sou o Tiago, trabalho com tecnologia pra pizzarias aqui em Caraguá. Vi que a ${p.nome} trabalha com pizzas de qualidade — faz sentido ter um cardápio digital que combine com essa identidade, certo? Desenvolvemos uma plataforma que a pizzaria tem em vez de depender do iFood. Tô buscando 2 parceiros pra testar grátis por 30 dias. Topam? 👇\n${DEMO_URL}`,
+    identidade: `Oi! Sou o Tiago, de Caraguá. A ${p.nome} tem uma história forte aqui na região — faz todo sentido ter seu próprio cardápio digital, com a sua cara, sem pagar taxa pra aplicativo. Criamos uma plataforma só pra pizzarias e quero oferecer 30 dias grátis pra testar. Interesse? 👇\n${DEMO_URL}`,
+    qr: `Oi! Sou o Tiago, trabalho com tecnologia pra pizzarias aqui em Caraguá. Pra uma pizzaria com movimento de turistas como a ${p.nome}, um cardápio digital com QR code na mesa faz muita diferença — cliente pede direto, sem fila, sem confusão. Criamos isso e quero oferecer 30 dias de teste grátis. Topam ver? 👇\n${DEMO_URL}`,
+    volume: `Oi! Sou o Tiago, de Caraguá, trabalho só com pizzarias. Com um volume alto de pedidos como o de vocês, cada % de taxa no iFood vira dinheiro grande no fim do mês. Desenvolvemos um cardápio digital próprio — zero taxa. Quero oferecer 30 dias grátis pra testar. Topam? 👇\n${DEMO_URL}`,
+    fidelidade: `Oi! Sou o Tiago, de Caraguá. Pra uma pizzaria com clientes fiéis do bairro como a ${p.nome}, ter o próprio cardápio digital com link direto pelo WhatsApp é um diferencial enorme. Sem iFood, sem taxa, tudo por conta da pizzaria. Quero oferecer 30 dias grátis. Topam ver? 👇\n${DEMO_URL}`,
+    salao: `Oi! Sou o Tiago, de Caraguá, trabalho com tecnologia pra pizzarias. Com um salão grande como o de vocês, um sistema de cardápio digital com QR code por mesa elimina erros de pedido e libera garçons. Criamos isso pra pizzarias e quero oferecer 30 dias grátis pra testar. Interesse? 👇\n${DEMO_URL}`,
+  };
+  return hooks[p.hook] || hooks.ifood;
+}
+
+// Estado — carrega do localStorage
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('zairyx_prospec') || '{}'); } catch { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem('zairyx_prospec', JSON.stringify(state));
+}
+
+// Pizzarias (base + customizadas salvas)
+function loadPizzarias() {
+  const saved = loadState();
+  const extras = saved._extras || [];
+  return [...pizzariasIniciais, ...extras];
+}
+
+function getCardStatus(id) {
+  const s = loadState();
+  return s[id]?.status || 'nao';
+}
+function getCardNotes(id) {
+  const s = loadState();
+  return s[id]?.notes || '';
+}
+function setCardStatus(id, status) {
+  const s = loadState();
+  if (!s[id]) s[id] = {};
+  s[id].status = status;
+  saveState(s);
+}
+function setCardNotes(id, notes) {
+  const s = loadState();
+  if (!s[id]) s[id] = {};
+  s[id].notes = notes;
+  saveState(s);
+}
+
+const labelStatus = { nao: 'Não contactado', contactado: 'Contactado', interessado: 'Interessado 🔥', fechado: 'Fechado ✅' };
+
+function renderCard(p) {
+  const status = getCardStatus(p.id);
+  const notes = getCardNotes(p.id);
+  const msg = gerarMensagem(p);
+  return `
+  <div class="card status-${status}" id="card-${p.id}">
+    <div class="card-header">
+      <div class="card-title">${p.nome}</div>
+      <div class="badge badge-${status}">${labelStatus[status]}</div>
+    </div>
+    <div class="card-meta">
+      <strong>📍</strong> ${p.bairro} &nbsp;·&nbsp; <strong>🎯</strong> ${p.foco}<br>
+      <span style="color:#555">💬 ${p.obs}</span>
+    </div>
+    <div class="card-msg">${escHtml(msg)}</div>
+    <div class="card-actions">
+      <button class="btn btn-wa" onclick="abrirWA('${p.id}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 2.12.554 4.11 1.523 5.837L0 24l6.335-1.503A11.96 11.96 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm5.894 16.515c-.243.683-1.409 1.306-1.94 1.385-.531.079-1.02.327-3.457-.72-2.897-1.234-4.738-4.186-4.882-4.38-.143-.196-1.178-1.57-1.178-2.987s.741-2.122 1.005-2.411c.263-.289.573-.361.764-.361.19 0 .381.002.548.011.176.009.412-.067.643.49.243.588.82 2.003.892 2.148.072.145.12.314.023.506-.096.192-.145.311-.287.479-.143.167-.301.373-.43.501-.143.143-.292.298-.126.584.167.287.741 1.222 1.594 1.979 1.095.975 2.019 1.276 2.305 1.419.287.143.454.12.621-.072.167-.191.716-.834.907-1.12.19-.287.381-.239.641-.144.26.096 1.647.777 1.93.919.287.143.479.215.55.335.072.12.072.692-.173 1.375z"/></svg>
+        Abrir WhatsApp
+      </button>
+      <button class="btn btn-copy" id="copy-${p.id}" onclick="copiarMsg('${p.id}')">📋</button>
+    </div>
+    <div class="status-row">
+      ${['nao','contactado','interessado','fechado'].map(s =>
+        `<button class="status-btn ${status===s?'active-'+s:''}" onclick="mudarStatus('${p.id}','${s}')">${labelStatus[s]}</button>`
+      ).join('')}
+    </div>
+    <textarea class="notes-area" placeholder="Notas (nome do dono, horário, observações...)" onchange="salvarNotes('${p.id}', this.value)">${escHtml(notes)}</textarea>
+  </div>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function abrirWA(id) {
+  const todas = loadPizzarias();
+  const p = todas.find(x => x.id === id);
+  if (!p) return;
+  const msg = gerarMensagem(p);
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  if (getCardStatus(id) === 'nao') {
+    mudarStatus(id, 'contactado');
+  }
+}
+
+function copiarMsg(id) {
+  const todas = loadPizzarias();
+  const p = todas.find(x => x.id === id);
+  if (!p) return;
+  navigator.clipboard.writeText(gerarMensagem(p)).then(() => {
+    const btn = document.getElementById('copy-' + id);
+    btn.textContent = '✅';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function mudarStatus(id, status) {
+  setCardStatus(id, status);
+  renderGrid();
+  updateDash();
+}
+
+function salvarNotes(id, notes) {
+  setCardNotes(id, notes);
+}
+
+function adicionarPizzaria() {
+  const nome = prompt('Nome da pizzaria:');
+  if (!nome) return;
+  const bairro = prompt('Bairro/endereço:') || '';
+  const obs = prompt('Observação (ex: tem iFood, ticket alto...):') || '';
+  const id = 'custom-' + Date.now();
+  const nova = { id, nome, bairro, foco: 'Delivery', obs, hook: 'ifood' };
+  const s = loadState();
+  if (!s._extras) s._extras = [];
+  s._extras.push(nova);
+  saveState(s);
+  renderGrid();
+  updateDash();
+}
+
+function renderGrid() {
+  const todas = loadPizzarias();
+  document.getElementById('grid').innerHTML = todas.map(renderCard).join('');
+}
+
+function updateDash() {
+  const todas = loadPizzarias();
+  const stats = { nao: 0, contactado: 0, interessado: 0, fechado: 0 };
+  todas.forEach(p => { stats[getCardStatus(p.id)]++; });
+  document.getElementById('s-total').textContent = todas.length;
+  document.getElementById('s-contactado').textContent = stats.contactado;
+  document.getElementById('s-interessado').textContent = stats.interessado;
+  document.getElementById('s-fechado').textContent = stats.fechado;
+  // MRR: fechados = R$129/mês, interessados = 50% probabilidade
+  const mrr = stats.fechado * 129 + Math.round(stats.interessado * 129 * 0.5);
+  document.getElementById('s-mrr').textContent = 'R$' + mrr;
+  // Receita potencial (todos interessados + fechados fecharão)
+  const pot = (stats.interessado + stats.fechado) * 129;
+  const anual = pot * 12;
+  document.getElementById('receita-total').textContent = 'R$' + pot + '/mês';
+  document.getElementById('receita-anual').textContent = 'R$' + anual.toLocaleString('pt-BR');
+}
+
+// Init
+document.getElementById('hoje').textContent = new Date().toLocaleDateString('pt-BR', {
+  weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+});
+renderGrid();
+updateDash();
+</script>
+</body>
+</html>
