@@ -1026,19 +1026,25 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Detectar arquivos SQL alterados
+      - name: Detectar arquivos SQL alterados (PR)
+        id: sha-pr
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Detectar arquivos SQL alterados (push)
+        id: sha-push
+        if: github.event_name == 'push'
+        run: |
+          echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          echo "head=${{ github.sha }}"          >> "$GITHUB_OUTPUT"
+
+      - name: Resolver diff e listar SQL
         id: changed
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE="${{ github.event.pull_request.base.sha }}"
-            HEAD="${{ github.event.pull_request.head.sha }}"
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            BASE="${{ github.event.before }}"
-            HEAD="${{ github.sha }}"
-          else
-            BASE=""
-            HEAD=""
-          fi
+          BASE="${{ steps.sha-pr.outputs.base || steps.sha-push.outputs.base || '' }}"
+          HEAD="${{ steps.sha-pr.outputs.head || steps.sha-push.outputs.head || github.sha }}"
 
           if [ -n "$BASE" ] && [ -n "$HEAD" ] && [ "$BASE" != "0000000000000000000000000000000000000000" ]; then
             CHANGED=$(git diff --name-only "$BASE" "$HEAD" | grep 'supabase/migrations/.*\.sql' | tr '\n' '\n')

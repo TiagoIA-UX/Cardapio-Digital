@@ -255,22 +255,16 @@ export default function AdminAlertasPage() {
               </div>
               <div className="flex h-2 w-full overflow-hidden rounded-full bg-zinc-800">
                 <div
-                  className="bg-red-500 transition-all"
-                  style={{
-                    width: `${stats.severity.total ? (stats.severity.critical / stats.severity.total) * 100 : 0}%`,
-                  }}
+                  className="bg-red-500 transition-all w-(--bar-crit)"
+                  style={{ '--bar-crit': `${stats.severity.total ? (stats.severity.critical / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
                 />
                 <div
-                  className="bg-yellow-500 transition-all"
-                  style={{
-                    width: `${stats.severity.total ? (stats.severity.warning / stats.severity.total) * 100 : 0}%`,
-                  }}
+                  className="bg-yellow-500 transition-all w-(--bar-warn)"
+                  style={{ '--bar-warn': `${stats.severity.total ? (stats.severity.warning / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
                 />
                 <div
-                  className="bg-blue-500 transition-all"
-                  style={{
-                    width: `${stats.severity.total ? (stats.severity.info / stats.severity.total) * 100 : 0}%`,
-                  }}
+                  className="bg-blue-500 transition-all w-(--bar-info)"
+                  style={{ '--bar-info': `${stats.severity.total ? (stats.severity.info / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
                 />
               </div>
               <div className="flex gap-3 text-xs text-zinc-500">
@@ -307,8 +301,8 @@ export default function AdminAlertasPage() {
                         </div>
                         <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-zinc-800">
                           <div
-                            className="absolute inset-y-0 left-0 rounded-full bg-purple-500"
-                            style={{ width: `${(s.total / max) * 100}%` }}
+                            className="absolute inset-y-0 left-0 rounded-full bg-purple-500 w-(--bar-src)"
+                            style={{ '--bar-src': `${(s.total / max) * 100}%` } as React.CSSProperties}
                           />
                         </div>
                         <span className="w-8 text-right text-xs text-zinc-500">{s.total}</span>
@@ -348,8 +342,8 @@ export default function AdminAlertasPage() {
                         <div
                           key={h.hour}
                           title={`${h.hour}: ${h.total} alertas`}
-                          className={`flex-1 rounded-sm transition-all ${h.critical > 0 ? 'bg-red-500/70' : 'bg-zinc-600'}`}
-                          style={{ height: `${Math.max(4, (h.total / maxHour) * 100)}%` }}
+                          className={`flex-1 rounded-sm transition-all h-(--bar-h) ${h.critical > 0 ? 'bg-red-500/70' : 'bg-zinc-600'}`}
+                          style={{ '--bar-h': `${Math.max(4, (h.total / maxHour) * 100)}%` } as React.CSSProperties}
                         />
                       )
                     })}
@@ -368,6 +362,7 @@ export default function AdminAlertasPage() {
           value={filter.severity ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, severity: e.target.value || undefined }))}
           className="rounded bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300"
+          title="Filtrar por severidade"
         >
           <option value="">Todas severidades</option>
           <option value="critical">Crítico</option>
@@ -378,6 +373,7 @@ export default function AdminAlertasPage() {
           value={filter.channel ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, channel: e.target.value || undefined }))}
           className="rounded bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300"
+          title="Filtrar por canal"
         >
           <option value="">Todos canais</option>
           <option value="payment">Pagamento</option>

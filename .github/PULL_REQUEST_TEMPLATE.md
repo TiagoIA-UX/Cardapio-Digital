@@ -1,6 +1,6 @@
-## Checklist de Pull Request
+# Checklist de Pull Request
 
-### 📋 Mudanças gerais
+## 📋 Mudanças gerais
 
 - [ ] Self-review feito (leu o diff completo)
 - [ ] Testes passando (`npm run build` sem erros)
@@ -8,7 +8,7 @@
 
 ---
 
-### 🗄️ Banco de dados (preencher se alterou schema)
+## 🗄️ Banco de dados (preencher se alterou schema)
 
 **Criei ou alterei migrations?**
 
@@ -26,7 +26,7 @@
 
 ---
 
-### 🔒 Segurança
+## 🔒 Segurança
 
 - [ ] Nenhuma credencial, API key ou secret no código/migration
 - [ ] Inputs de formulário validados com Zod no servidor
@@ -35,7 +35,7 @@
 
 ---
 
-### 🔗 APIs e integrações
+## 🔗 APIs e integrações
 
 - [ ] Novas rotas `/api` têm validação de autenticação
 - [ ] Novas rotas `/api/cron` verificam `CRON_SECRET`

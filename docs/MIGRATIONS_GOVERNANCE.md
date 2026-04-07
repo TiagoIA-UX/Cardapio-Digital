@@ -107,7 +107,7 @@ Antes de criar qualquer policy, confirmar:
 
 ## Fluxo de trabalho correto
 
-```
+```text
 1. Identificar necessidade de mudança no banco
 2. Criar arquivo: supabase/migrations/NNN_descricao.sql
 3. Testar localmente: supabase db reset (se disponível)
@@ -131,4 +131,4 @@ O Sentinel Python (`backend/sentinel.py`) dispara alertas Telegram para qualquer
 
 ---
 
-_Última atualização: 07/04/2026 — após incidente de drift detectado pelo Sentinel_
+<!-- Última atualização: 07/04/2026 — após incidente de drift detectado pelo Sentinel -->
