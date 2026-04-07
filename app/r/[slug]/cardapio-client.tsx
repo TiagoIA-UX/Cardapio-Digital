@@ -735,7 +735,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
                   <span className="text-muted-foreground text-sm">({categoryProducts.length})</span>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-2 gap-3">
                   {categoryProducts.map((product) => (
                     <ProductCard
                       key={product.id}
@@ -935,32 +935,32 @@ interface ProductCardProps {
 
 function ProductCard({ product, restaurant, onAdd }: ProductCardProps) {
   return (
-    <div className="group bg-card border-border hover:border-primary/30 flex min-w-0 gap-3 rounded-xl border p-3 transition-all duration-300 hover:shadow-md sm:gap-4 sm:p-4">
+    <div className="group bg-card border-border hover:border-primary/30 flex min-w-0 flex-col rounded-xl border transition-all duration-300 hover:shadow-md overflow-hidden">
       {/* Image */}
       {product.imagem_url && (
-        <div className="bg-muted relative h-24 w-24 shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-28">
+        <div className="bg-muted relative aspect-square w-full overflow-hidden">
           <Image
             src={product.imagem_url}
             alt={product.nome}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 96px, 112px"
+            sizes="(max-width: 640px) 50vw, 280px"
           />
         </div>
       )}
 
       {/* Content */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <h3 className="text-foreground group-hover:text-primary font-semibold transition-colors">
+      <div className="flex min-w-0 flex-1 flex-col gap-1 p-2.5 sm:p-3">
+        <h3 className="text-foreground group-hover:text-primary text-sm font-semibold leading-tight transition-colors">
           {product.nome}
         </h3>
 
         {product.descricao && (
-          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{product.descricao}</p>
+          <p className="text-muted-foreground line-clamp-2 text-xs">{product.descricao}</p>
         )}
 
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-3">
-          <span className="text-primary text-base font-bold sm:text-lg">
+        <div className="mt-auto flex items-center justify-between gap-1 pt-2">
+          <span className="text-primary text-sm font-bold sm:text-base">
             {formatCurrency(product.preco)}
           </span>
 
@@ -970,10 +970,10 @@ function ProductCard({ product, restaurant, onAdd }: ProductCardProps) {
               onAdd()
             }}
             data-testid="btn-add-product"
-            className="border-border bg-background hover:bg-muted flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-all active:scale-95"
+            className="border-border bg-background hover:bg-muted flex shrink-0 items-center justify-center rounded-lg border p-1.5 transition-all active:scale-95"
+            aria-label={`Adicionar ${product.nome}`}
           >
             <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Adicionar</span>
           </button>
         </div>
       </div>
