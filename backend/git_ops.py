@@ -1,6 +1,6 @@
 """
 backend/git_ops.py
-Zaea Git Ops — Automação de fluxos Git com IA (Groq).
+ForgeOps AI — Git Ops — Automação de fluxos Git com IA (Groq).
 
 Responsabilidades:
   1. Executar operações Git via subprocess (stage, commit, push, status, diff)
@@ -10,7 +10,7 @@ Responsabilidades:
 
 Integração:
   - Chamado diretamente pelo server.py via endpoints /api/git/*
-  - Pode ser importado por outros agentes da Zaea (Surgeon, Validator)
+  - Pode ser importado por outros agentes do ForgeOps AI (Surgeon, Validator)
   - Todas as operações assíncronas via asyncio.to_thread (não bloqueia o event loop)
 """
 
@@ -141,7 +141,7 @@ async def generate_commit_message(diff: str) -> str:
     Retorna mensagem genérica se Groq não estiver configurado ou falhar.
     """
     if not GROQ_API_KEY:
-        return "chore: atualização automática via Zaea"
+        return "chore: atualização automática via ForgeOps AI"
 
     if not diff.strip():
         return "chore: sem alterações detectadas"
@@ -175,11 +175,11 @@ async def generate_commit_message(diff: str) -> str:
                 message = data["choices"][0]["message"]["content"].strip()
                 # Remove aspas ou prefixo que o modelo às vezes adiciona
                 message = message.strip('"').strip("'")
-                return message[:72] if message else "chore: atualização automática via Zaea"
+                return message[:72] if message else "chore: atualização automática via ForgeOps AI"
     except Exception as exc:
         print(f"[git_ops] Groq falhou ao gerar mensagem de commit: {exc}")
 
-    return "chore: atualização automática via Zaea"
+    return "chore: atualização automática via ForgeOps AI"
 
 
 # ── Pipeline completo ─────────────────────────────────────────────────────────

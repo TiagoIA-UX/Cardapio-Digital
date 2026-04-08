@@ -1,6 +1,6 @@
 """
 backend/code_surgeon.py
-MergeForge — Cirurgião de Código
+ForgeOps AI — Cirurgião de Código
 
 Responsabilidades:
   1. Receber issues do workspace_scanner
@@ -205,7 +205,7 @@ async def apply_fixes(
     repo = report.repo
     ref = report.ref
 
-    branch = branch_name or f"mergeforge/auto-fix-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
+    branch = branch_name or f"forgeops/auto-fix-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
 
     # Pega SHA do branch base
     base_sha = await get_default_branch_sha(owner, repo, ref, token)
@@ -247,7 +247,7 @@ async def apply_fixes(
         sha = await get_file_sha(owner, repo, path, token)
 
         # Faz push
-        commit_msg = f"fix({path}): {fix_desc or issue.message} [MergeForge]"
+        commit_msg = f"fix({path}): {fix_desc or issue.message} [ForgeOps AI]"
         pushed = await push_file(owner, repo, path, patched, sha, branch, commit_msg, token)
 
         if pushed:

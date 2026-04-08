@@ -1,6 +1,6 @@
 """
 backend/workspace_scanner.py
-MergeForge — Scanner de Workspace
+ForgeOps AI — Scanner de Workspace
 
 Responsabilidades:
   1. Clonar/atualizar repositório via GitHub App token
@@ -98,7 +98,7 @@ class ScanReport:
 
     def to_markdown(self) -> str:
         lines = [
-            f"## Relatório MergeForge — `{self.owner}/{self.repo}` @ `{self.ref}`\n",
+            f"## Relatório ForgeOps AI — `{self.owner}/{self.repo}` @ `{self.ref}`\n",
             f"**Arquivos escaneados:** {self.total_files}  ",
             f"**Críticos:** {len(self.critical)}  ",
             f"**Avisos:** {len(self.warnings)}\n",

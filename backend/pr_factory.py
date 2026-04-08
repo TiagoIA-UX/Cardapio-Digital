@@ -1,6 +1,6 @@
 """
 backend/pr_factory.py
-MergeForge — Fábrica de Pull Requests
+ForgeOps AI — Fábrica de Pull Requests
 
 Responsabilidades:
   1. Criar PRs com as correções do code_surgeon
@@ -34,9 +34,9 @@ class PullRequest:
 # ── Helpers GitHub API ────────────────────────────────────────────────────────
 
 async def ensure_labels(owner: str, repo: str, token: str) -> None:
-    """Cria labels do MergeForge se ainda não existem no repositório."""
+    """Cria labels do ForgeOps AI se ainda não existem no repositório."""
     labels = [
-        {"name": "mergeforge", "color": "0075ca", "description": "Criado pelo MergeForge Agent"},
+        {"name": "forgeops-ai", "color": "0075ca", "description": "Criado pelo ForgeOps AI"},
         {"name": "auto-fix", "color": "e4e669", "description": "Correção automática de código"},
         {"name": "security", "color": "d93f0b", "description": "Problema de segurança"},
         {"name": "quality", "color": "bfd4f2", "description": "Qualidade de código"},
@@ -96,13 +96,13 @@ def build_pr_title(result: SurgeryResult, report: ScanReport) -> str:
     n = len(result.changes)
     critical = sum(1 for c in result.changes if c.issue.severity == "critical")
     if critical:
-        return f"fix: MergeForge corrigiu {n} problema(s) — {critical} crítico(s)"
-    return f"fix: MergeForge aplicou {n} melhoria(s) de qualidade"
+        return f"fix: ForgeOps AI corrigiu {n} problema(s) — {critical} crítico(s)"
+    return f"fix: ForgeOps AI aplicou {n} melhoria(s) de qualidade"
 
 
 def build_pr_body(result: SurgeryResult, report: ScanReport) -> str:
     lines = [
-        "## MergeForge Auto-Fix\n",
+        "## ForgeOps AI Auto-Fix\n",
         f"> Scan de `{report.owner}/{report.repo}` — {report.total_files} arquivos analisados\n",
     ]
 
@@ -125,7 +125,7 @@ def build_pr_body(result: SurgeryResult, report: ScanReport) -> str:
 
     lines += [
         "\n---",
-        "_Este PR foi criado automaticamente pelo [MergeForge](https://mergeforge-backend.onrender.com). "
+        "_Este PR foi criado automaticamente pelo [ForgeOps AI](https://mergeforge-backend.onrender.com). "
         "Revise as alterações antes de fazer merge._",
     ]
     return "\n".join(lines)
@@ -133,13 +133,13 @@ def build_pr_body(result: SurgeryResult, report: ScanReport) -> str:
 
 def build_welcome_comment(result: SurgeryResult) -> str:
     return (
-        "### MergeForge analisou este PR\n\n"
+        "### ForgeOps AI analisou este PR\n\n"
         f"Apliquei **{len(result.changes)}** correção(ões) automática(s) nesta branch.\n\n"
         "**O que fazer agora:**\n"
         "1. Revise cada arquivo modificado no diff acima\n"
         "2. Rode os testes localmente se necessário\n"
         "3. Aprove e faça merge quando estiver satisfeito\n\n"
-        "_MergeForge nunca faz merge automático de suas próprias correções._"
+        "_ForgeOps AI nunca faz merge automático de suas próprias correções._"
     )
 
 
@@ -175,7 +175,7 @@ async def open_fix_pr(
     pr_url = pr_data["html_url"]
 
     # Labels
-    labels = ["mergeforge", "auto-fix"]
+    labels = ["forgeops-ai", "auto-fix"]
     has_critical = any(c.issue.severity == "critical" for c in result.changes)
     has_security = any(c.issue.category == "security" for c in result.changes)
     if has_critical or has_security:

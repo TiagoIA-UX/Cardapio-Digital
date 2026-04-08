@@ -1,6 +1,6 @@
 """
 backend/server.py
-Zairyx Dev Agent — serviço Python de monitoramento e notificação.
+ForgeOps AI — serviço Python de monitoramento e notificação.
 
 Responsabilidades:
   1. Receber webhooks de alerta direto do Next.js (/api/webhook/alert)
@@ -51,7 +51,7 @@ from ops_runtime import (
     fetch_briefings_summary,
     fetch_incident_state,
     fetch_learning_summary,
-    fetch_mergeforge_summary,
+    fetch_forgeops_summary,
     fetch_negocios_summary,
     fetch_pagamentos_summary,
     fetch_pending_alerts,
@@ -1401,12 +1401,12 @@ async def handle_telegram_command(chat_id: int | str, raw_text: str) -> None:
         return
 
     if cmd == "/mergeforge":
-        await _tg_reply(chat_id, "🤖 <i>Consultando MergeForge...</i>")
+        await _tg_reply(chat_id, "🤖 <i>Consultando ForgeOps AI...</i>")
         try:
-            data = await fetch_mergeforge_summary()
+            data = await fetch_forgeops_summary()
             await _tg_reply(chat_id, _format_mergeforge(data), reply_markup=_inline_forge_markup())
         except Exception as exc:
-            await _tg_reply(chat_id, f"❌ Erro ao consultar MergeForge: {str(exc)[:200]}", reply_markup=_main_menu_markup())
+            await _tg_reply(chat_id, f"❌ Erro ao consultar ForgeOps AI: {str(exc)[:200]}", reply_markup=_main_menu_markup())
         return
 
     if cmd == "/audit":

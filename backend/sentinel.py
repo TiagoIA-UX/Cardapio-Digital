@@ -376,7 +376,7 @@ async def _check_recent_health(client: httpx.AsyncClient) -> list[dict]:
 
 
 async def _check_agent_failures(client: httpx.AsyncClient) -> list[dict]:
-    """Verifica tarefas de agentes ZAEA falhadas recentes."""
+    """Verifica tarefas de agentes ForgeOps AI falhadas recentes."""
     issues: list[dict] = []
     from datetime import timedelta
     since = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
@@ -457,7 +457,7 @@ async def analyze_with_ai(
         )
 
     system_prompt = (
-        "Você é o Zai Sentinel, o assistente de DevOps da plataforma Zairyx (SaaS de cardápio digital). "
+        "Você é o ForgeOps AI, o assistente de DevOps da plataforma Zairyx (SaaS de cardápio digital). "
         "Analise o relatório de monitoramento e gere um resumo CURTO (máx 400 chars) em português BR. "
         "Priorize: 1) Ações imediatas se crítico 2) Tendências se warning 3) 'Tudo OK' se limpo. "
         "Use emojis moderadamente. Não use markdown. Texto plano para WhatsApp."

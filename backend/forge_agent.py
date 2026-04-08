@@ -1,6 +1,6 @@
 """
 backend/forge_agent.py
-Forge Agent — Agente autônomo de GitHub (módulo ZAEA).
+Forge Agent — Agente autônomo de GitHub (módulo ForgeOps AI).
 
 Responsabilidades:
   1. Verificar assinatura de webhooks GitHub (HMAC-SHA256)

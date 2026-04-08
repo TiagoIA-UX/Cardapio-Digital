@@ -374,9 +374,9 @@ async def fetch_pagamentos_summary() -> dict[str, Any]:
     }
 
 
-async def fetch_mergeforge_summary() -> dict[str, Any]:
-    """Saúde e métricas do agente MergeForge (GitHub App)."""
-    MERGEFORGE_URL = os.getenv("MERGEFORGE_URL", "https://mergeforge-backend.onrender.com")
+async def fetch_forgeops_summary() -> dict[str, Any]:
+    """Saúde e métricas do agente ForgeOps AI (GitHub App)."""
+    MERGEFORGE_URL = os.getenv("FORGEOPS_URL", os.getenv("MERGEFORGE_URL", "https://mergeforge-backend.onrender.com"))
 
     # Checa se o backend está vivo
     status = "offline"
