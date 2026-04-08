@@ -152,7 +152,40 @@ async def collect_platform_data(client: httpx.AsyncClient) -> PlatformReport:
         elif isinstance(result, Exception):
             print(f"[sentinel] Erro em {name}: {result}")
 
+    # Dedup: agrupa issues com título semelhante (ex: múltiplos erros TS)
+    report.issues = _dedup_issues(report.issues)
+
     return report
+
+
+def _dedup_issues(issues: list[dict]) -> list[dict]:
+    """
+    Agrupa issues com a mesma 'source' em um único item consolidado.
+    Evita que 10+ erros TypeScript idênticos virem 10 alertas separados.
+    """
+    grouped: dict[str, dict] = {}
+    for issue in issues:
+        key = issue.get("source", "unknown")
+        if key not in grouped:
+            grouped[key] = {**issue, "_count": 1}
+        else:
+            grouped[key]["_count"] += 1
+            # Eleva severity se acumular críticos
+            if issue.get("level") == "critical":
+                grouped[key]["level"] = "critical"
+            # Concatena detalhes distintos
+            existing_detail = grouped[key].get("detail", "")
+            new_detail = issue.get("detail", "")
+            if new_detail and new_detail not in existing_detail:
+                grouped[key]["detail"] = f"{existing_detail} | {new_detail}"[:300]
+
+    result = []
+    for issue in grouped.values():
+        count = issue.pop("_count", 1)
+        if count > 1:
+            issue["title"] = f"{issue['title']} ({count}x)"
+        result.append(issue)
+    return result
 
 
 def _process_health(report: PlatformReport, health: dict) -> None:
@@ -810,6 +843,163 @@ def format_ux_telegram_report(ux_data: dict) -> str:
         lines.append(f'🔗 <a href="{run_url}">Ver detalhes no GitHub Actions</a>')
 
     return "\n".join(lines)
+
+
+# ── Relatório semanal ────────────────────────────────────────────────────────
+
+WEEKLY_REPORT_INTERVAL_SECONDS: int = int(os.getenv("WEEKLY_REPORT_INTERVAL_SECONDS", "604800"))  # 7 dias
+_last_weekly_report_at: float = 0.0
+
+
+async def generate_weekly_report() -> str:
+    """
+    Gera um relatório semanal consolidado de saúde da plataforma.
+    Coleta métricas de negócio + operacionais e resume com IA.
+    """
+    ts = datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M UTC")
+
+    lines = [
+        "📈 <b>Relatório Semanal — ForgeOps</b>",
+        f"<i>Gerado em {ts}</i>",
+        "",
+    ]
+
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        lines.append("⚠️ Supabase não configurado — relatório parcial.")
+        return "\n".join(lines)
+
+    async with httpx.AsyncClient(timeout=20) as client:
+        # Coleta dados em paralelo
+        try:
+            from ops_runtime import (
+                fetch_negocios_summary,
+                fetch_receita_summary,
+                fetch_learning_summary,
+                fetch_recent_agent_failures,
+            )
+            negocios, receita, learning, failures = await asyncio.gather(
+                fetch_negocios_summary(),
+                fetch_receita_summary(days=7),
+                fetch_learning_summary(),
+                fetch_recent_agent_failures(),
+                return_exceptions=True,
+            )
+        except Exception as exc:
+            lines.append(f"⚠️ Erro ao coletar métricas: {exc}")
+            return "\n".join(lines)
+
+        # Negócios
+        if isinstance(negocios, dict):
+            ativos = negocios.get("deliverys_ativos", 0)
+            ativas_ass = negocios.get("assinaturas_ativas", 0)
+            trial = negocios.get("em_trial", 0)
+            inad = negocios.get("inadimplentes_vencidas", 0)
+            lines += [
+                "🏪 <b>Negócios</b>",
+                f"  Deliverys ativos: <b>{ativos}</b>",
+                f"  Assinaturas ativas: <b>{ativas_ass}</b> | Trial: <b>{trial}</b> | Inadimplentes: <b>{inad}</b>",
+                "",
+            ]
+
+        # Receita
+        if isinstance(receita, dict):
+            def brl(v: float) -> str:
+                return f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+            periodo = receita.get("periodo_total", 0.0)
+            pedidos = receita.get("periodo_pedidos", 0)
+            ticket = receita.get("ticket_medio", 0.0)
+            lines += [
+                "💰 <b>Receita (7 dias)</b>",
+                f"  Total: <b>{brl(periodo)}</b> ({pedidos} pedidos)",
+                f"  Ticket médio: <b>{brl(ticket)}</b>",
+                "",
+            ]
+
+        # Relatório de scan rápido
+        try:
+            report_obj = await collect_platform_data(client)
+            crit = report_obj.critical_count
+            warn = report_obj.warning_count
+            status_icon = "🔴" if crit > 0 else ("🟡" if warn > 0 else "✅")
+            lines += [
+                f"{status_icon} <b>Saúde da Plataforma</b>",
+                f"  Críticos: <b>{crit}</b> | Avisos: <b>{warn}</b>",
+                "",
+            ]
+        except Exception:
+            pass
+
+        # Agentes
+        if isinstance(failures, list):
+            agents_fail = len(failures)
+            agent_icon = "❌" if agents_fail > 5 else ("⚠️" if agents_fail > 0 else "✅")
+            lines += [
+                f"{agent_icon} <b>Agentes (24h)</b>",
+                f"  Falhas: <b>{agents_fail}</b>",
+                "",
+            ]
+
+        # Aprendizado
+        if isinstance(learning, list):
+            lines += [
+                "🧠 <b>Padrões Aprendidos</b>",
+                f"  Entradas na base: <b>{len(learning)}</b>",
+                "",
+            ]
+
+        # Resumo IA com Groq
+        if GROQ_API_KEY:
+            context = "\n".join(
+                line for line in lines
+                if line and not line.startswith("<") and "<b>" not in line[:5]
+            )
+            try:
+                r = await client.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+                    json={
+                        "model": "llama-3.3-70b-versatile",
+                        "messages": [{
+                            "role": "user",
+                            "content": (
+                                "Você é o ForgeOps, agente de engenharia do Zairyx SaaS. "
+                                "Com base nos dados semanais abaixo, escreva 2-3 frases com foco em: "
+                                "o que está bem, o que precisa de ação urgente, e uma recomendação estratégica. "
+                                "Seja direto, sem enrolação. Responda em português:\n\n"
+                                + context
+                            ),
+                        }],
+                        "max_tokens": 250,
+                        "temperature": 0.4,
+                    },
+                    timeout=15,
+                )
+                if r.status_code == 200:
+                    ai_text = r.json()["choices"][0]["message"]["content"].strip()
+                    lines += ["💬 <b>Análise ForgeOps</b>", f"<i>{ai_text}</i>"]
+            except Exception:
+                pass
+
+    return "\n".join(lines)
+
+
+async def weekly_report_loop(send_fn: Any) -> None:
+    """Loop que dispara relatório semanal via Telegram."""
+    global _last_weekly_report_at
+    # Aguarda 10 minutos após boot antes de verificar
+    await asyncio.sleep(600)
+
+    while True:
+        now = datetime.now(timezone.utc).timestamp()
+        if now - _last_weekly_report_at >= WEEKLY_REPORT_INTERVAL_SECONDS:
+            try:
+                report_text = await generate_weekly_report()
+                await send_fn(report_text)
+                _last_weekly_report_at = datetime.now(timezone.utc).timestamp()
+                print("[sentinel] 📈 Relatório semanal enviado.")
+            except Exception as exc:
+                print(f"[sentinel] ❌ Erro no relatório semanal: {exc}")
+        await asyncio.sleep(3600)  # verifica a cada hora
 
 
 # ── Background loop ──────────────────────────────────────────────────────────

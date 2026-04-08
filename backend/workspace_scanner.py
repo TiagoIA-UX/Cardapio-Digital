@@ -24,6 +24,24 @@ import httpx
 GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 GITHUB_API = "https://api.github.com"
+GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
+
+# Padrões adicionais por persona
+UX_PATTERNS = [
+    (r"loading\.\.\.(?!.*<)", "loading state sem feedback visual adequado"),
+    (r"<button(?![^>]*aria-label)", "botão sem aria-label (acessibilidade)"),
+    (r"disabled(?!.*tooltip)", "elemento desabilitado sem feedback ao usuário"),
+    (r'''href=['"]#['"](?!.*onClick)''', "link vazio sem handler — frustra navegação"),
+    (r"catch.*console\.error", "erro tratado mas não exibido pro usuário"),
+]
+
+BUSINESS_PATTERNS = [
+    (r"price\s*[\*\+\-/]\s*(?!.*server)", "cálculo de preço no cliente (risco de manipulação)"),
+    (r'''status\s*===?\s*['"]paid['"]\s*(?!.*server)''', "validação de pagamento no cliente"),
+    (r"TODO.*pagar|TODO.*pagamento|TODO.*cobrar", "lógica de cobrança pendente (TODO)"),
+    (r"isPremium|hasPlan|canAccess.*true", "entitlement hardcoded como true"),
+    (r"trial.*\b30\b|trial.*\b7\b", "período de trial hardcoded — usar constante"),
+]
 
 # Extensões analisadas
 SCAN_EXTENSIONS = {".ts", ".tsx", ".js", ".jsx", ".py", ".sql", ".json", ".mjs"}
@@ -163,7 +181,26 @@ def scan_file_content(filepath: str, content: str) -> list[ScanIssue]:
     return issues
 
 
-async def ai_summarize(report: ScanReport) -> str:
+PERSONA_PROMPTS: dict[str, str] = {
+    "dev_auditor": (
+        "Você é um Desenvolvedor Sênior auditando o código do repositório `{repo}`. "
+        "Foque em: segurança, arquitetura, dívida técnica, padrões e manutenção. "
+        "Escreva um resumo executivo em português de 3-4 frases com os riscos mais críticos:"
+    ),
+    "ux_inspector": (
+        "Você é um Designer UX auditando a experiência do usuário no repositório `{repo}`. "
+        "Foque em: consistência de fluxos, feedback visual, acessibilidade, erros silenciados. "
+        "Escreva um resumo executivo em português de 3-4 frases com os problemas de UX:"
+    ),
+    "business_analyst": (
+        "Você é um Analista de Negócio auditando o repositório `{repo}`. "
+        "Foque em: regras de pagamento, entitlements, planos, onboarding e lógicas críticas de negócio. "
+        "Escreva um resumo executivo em português de 3-4 frases com os riscos de negócio:"
+    ),
+}
+
+
+async def ai_summarize(report: ScanReport, persona: str = "dev_auditor") -> str:
     """Usa Groq para gerar análise em linguagem natural do relatório."""
     if not GROQ_API_KEY or not report.issues:
         return ""
@@ -172,11 +209,10 @@ async def ai_summarize(report: ScanReport) -> str:
         f"- [{i.severity}] {i.file}:{i.line} — {i.message}"
         for i in report.issues[:30]
     )
-    prompt = (
-        f"Você é um revisor sênior de código. Analise estes problemas encontrados no repositório "
-        f"`{report.owner}/{report.repo}` e escreva um resumo executivo em português de 3-4 frases "
-        f"destacando os riscos mais críticos e recomendações prioritárias:\n\n{snippet}"
+    base_prompt = PERSONA_PROMPTS.get(persona, PERSONA_PROMPTS["dev_auditor"]).format(
+        repo=f"{report.owner}/{report.repo}"
     )
+    prompt = f"{base_prompt}\n\n{snippet}"
 
     async with httpx.AsyncClient(timeout=30) as client:
         r = await client.post(
@@ -194,27 +230,71 @@ async def ai_summarize(report: ScanReport) -> str:
     return ""
 
 
+def scan_file_content_for_persona(
+    filepath: str,
+    content: str,
+    persona: str,
+) -> list[ScanIssue]:
+    """Aplica padrões específicos de persona em um arquivo."""
+    issues = scan_file_content(filepath, content)
+    extra_patterns: list[tuple[str, str]] = []
+    if persona == "ux_inspector":
+        extra_patterns = UX_PATTERNS
+    elif persona == "business_analyst":
+        extra_patterns = BUSINESS_PATTERNS
+    if extra_patterns:
+        lines = content.splitlines()
+        for lineno, line in enumerate(lines, start=1):
+            for pattern, message in extra_patterns:
+                if re.search(pattern, line, re.IGNORECASE):
+                    issues.append(ScanIssue(
+                        file=filepath,
+                        line=lineno,
+                        category="persona",
+                        severity="warning",
+                        message=message,
+                        snippet=line.strip()[:120],
+                    ))
+    return issues
+
+
 async def scan_repository(
     owner: str,
     repo: str,
-    token: str,
+    token: str | None = None,
     ref: str = "main",
     max_files: int = 200,
+    persona: str = "dev_auditor",
 ) -> ScanReport:
     """
     Pipeline completo: busca árvore → filtra arquivos relevantes →
     escaneia conteúdo → gera relatório com resumo IA.
+    Aceita `persona` para adaptar o foco da análise:
+      - dev_auditor: segurança + qualidade (padrão)
+      - ux_inspector: UX + acessibilidade
+      - business_analyst: regras de negócio + pagamentos
     """
+    resolved_token = token or GITHUB_TOKEN
+    if not resolved_token:
+        raise ValueError("GITHUB_TOKEN não configurado e nenhum token foi fornecido.")
+
     report = ScanReport(owner=owner, repo=repo, ref=ref)
 
     # 1. Busca árvore
-    tree = await fetch_repo_tree(owner, repo, token, ref)
+    tree = await fetch_repo_tree(owner, repo, resolved_token, ref)
 
     # 2. Filtra por extensão e exclui node_modules/dist/build
     EXCLUDE = {"node_modules", ".next", "dist", "build", ".git", "__pycache__", ".venv"}
+    # Persona business_analyst foca em TS/TSX; ux_inspector também em TSX
+    focus_exts = SCAN_EXTENSIONS
+    if persona == "ux_inspector":
+        focus_exts = {".tsx", ".ts", ".jsx", ".js"}
+    elif persona == "business_analyst":
+        focus_exts = {".ts", ".tsx", ".js"}
+
     relevant = [
         f for f in tree
-        if Path(f["path"]).suffix in SCAN_EXTENSIONS
+        if Path(f["path"]).suffix in focus_exts
         and not any(part in EXCLUDE for part in Path(f["path"]).parts)
     ][:max_files]
 
@@ -222,10 +302,10 @@ async def scan_repository(
 
     # 3. Busca e escaneia arquivos em paralelo (lotes de 10)
     async def scan_one(file_info: dict) -> list[ScanIssue]:
-        content = await fetch_file_content(owner, repo, file_info["path"], token)
+        content = await fetch_file_content(owner, repo, file_info["path"], resolved_token)
         if not content:
             return []
-        return scan_file_content(file_info["path"], content)
+        return scan_file_content_for_persona(file_info["path"], content, persona)
 
     batch_size = 10
     for i in range(0, len(relevant), batch_size):
@@ -234,7 +314,7 @@ async def scan_repository(
         for issues in results:
             report.issues.extend(issues)
 
-    # 4. Resumo IA
-    report.summary = await ai_summarize(report)
+    # 4. Resumo IA com prompt de persona
+    report.summary = await ai_summarize(report, persona=persona)
 
     return report

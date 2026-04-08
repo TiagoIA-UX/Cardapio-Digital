@@ -63,7 +63,7 @@ from ops_runtime import (
     persist_incident_state,
     resolve_incident_state,
 )
-from sentinel import sentinel_loop, run_full_scan, fetch_last_ux_report, format_ux_telegram_report
+from sentinel import sentinel_loop, run_full_scan, fetch_last_ux_report, format_ux_telegram_report, weekly_report_loop
 try:
     from fiscal import EmissaoNFCeRequest, emitir_nfce
     FISCAL_ENABLED = True
@@ -109,7 +109,7 @@ TELEGRAM_ALLOWED_USER_IDS: frozenset[int] = frozenset(
     int(uid.strip()) for uid in _raw_allowed.split(",") if uid.strip().lstrip("-").isdigit()
 )
 POLL_INTERVAL: int = int(os.getenv("ALERT_POLL_INTERVAL_SECONDS", "30"))
-TELEGRAM_BOT_HANDLE: str = os.getenv("TELEGRAM_BOT_HANDLE", "@ZaiSentinelBot")
+TELEGRAM_BOT_HANDLE: str = os.getenv("TELEGRAM_BOT_HANDLE", "@ForgeOpsBot")
 ALERT_DEDUP_WINDOW_SECONDS: int = int(os.getenv("ALERT_DEDUP_WINDOW_SECONDS", "1800"))
 INCIDENT_WINDOW_SECONDS: int = int(os.getenv("ALERT_INCIDENT_WINDOW_SECONDS", "7200"))
 INCIDENT_ESCALATION_THRESHOLD: int = int(os.getenv("ALERT_INCIDENT_ESCALATION_THRESHOLD", "3"))
@@ -133,23 +133,30 @@ def _is_authorized(user_id: int | None) -> bool:
     return user_id in TELEGRAM_ALLOWED_USER_IDS
 
 TELEGRAM_COMMANDS = [
-    {"command": "overview", "description": "Resumo operacional da plataforma"},
-    {"command": "status", "description": "Status dos canais e serviços"},
-    {"command": "incidents", "description": "Incidentes ativos correlacionados"},
-    {"command": "resolve", "description": "Resolve um incidente pela chave curta"},
-    {"command": "agents", "description": "Falhas recentes dos agentes"},
-    {"command": "alerts", "description": "Alertas pendentes"},
-    {"command": "negocios", "description": "Deliverys ativos, trials e cancelamentos"},
-    {"command": "receita", "description": "Faturamento hoje e últimos 7 dias"},
-    {"command": "briefings", "description": "Status dos briefings Feito Pra Você"},
-    {"command": "pagamentos", "description": "Cobranças PIX recentes"},
-    {"command": "learn", "description": "Resumo da base de aprendizado"},
-    {"command": "cleanup", "description": "Auditoria de cache e artefatos"},
-    {"command": "cleanup_run", "description": "Executa limpeza segura"},
-    {"command": "sentinel", "description": "Executa scan completo agora"},
-    {"command": "ux", "description": "Último resultado de inspeção UX das personas"},
-    {"command": "mergeforge", "description": "Saúde e métricas do agente MergeForge"},
-    {"command": "ajuda", "description": "Abrir menu do bot"},
+    # — Operacional —
+    {"command": "overview", "description": "📊 Visão executiva do runtime"},
+    {"command": "status", "description": "⚙️ Status dos canais e serviços"},
+    {"command": "incidents", "description": "🚨 Incidentes ativos correlacionados"},
+    {"command": "resolve", "description": "✅ Resolve um incidente pela chave curta"},
+    {"command": "alerts", "description": "🔔 Alertas pendentes não lidos"},
+    {"command": "sentinel", "description": "🛡️ Executa scan completo agora"},
+    # — Negócios —
+    {"command": "negocios", "description": "🏪 Deliverys ativos, trials e cancelamentos"},
+    {"command": "receita", "description": "💰 Faturamento hoje e últimos 7 dias"},
+    {"command": "briefings", "description": "📋 Status dos briefings Feito Pra Você"},
+    {"command": "pagamentos", "description": "💳 Cobranças PIX recentes"},
+    # — Forge —
+    {"command": "mergeforge", "description": "🤖 Saúde e métricas do agente MergeForge"},
+    {"command": "audit", "description": "🔍 Auditoria geral do repositório"},
+    {"command": "personas", "description": "👤 Inspecionar repo como personas (UX/Dev/Negócio)"},
+    {"command": "ux", "description": "🎨 Último resultado de inspeção UX"},
+    {"command": "agents", "description": "🤯 Falhas recentes dos agentes"},
+    # — Sistema —
+    {"command": "report", "description": "📈 Relatório semanal de saúde"},
+    {"command": "learn", "description": "🧠 Resumo da base de aprendizado"},
+    {"command": "cleanup", "description": "🧹 Auditoria de cache e artefatos"},
+    {"command": "cleanup_run", "description": "⚡ Executa limpeza segura"},
+    {"command": "ajuda", "description": "❓ Abrir menu do bot"},
 ]
 
 # ── Modelos ───────────────────────────────────────────────────────────────────
@@ -461,48 +468,82 @@ def _should_suppress_notification(signature: str) -> bool:
 def _main_menu_markup() -> dict[str, Any]:
     return {
         "keyboard": [
-            [{"text": "/overview"}, {"text": "/status"}],
-            [{"text": "/incidents"}, {"text": "/alerts"}],
-            [{"text": "/negocios"}, {"text": "/receita"}],
-            [{"text": "/briefings"}, {"text": "/pagamentos"}],
-            [{"text": "/agents"}, {"text": "/learn"}],
-            [{"text": "/sentinel"}, {"text": "/ux"}],
-            [{"text": "/mergeforge"}, {"text": "/cleanup"}],
-            [{"text": "/ajuda"}],
+            # — Operacional —
+            [{"text": "📊 /overview"}, {"text": "🚨 /incidents"}],
+            [{"text": "🔔 /alerts"}, {"text": "🛡️ /sentinel"}],
+            # — Negócios —
+            [{"text": "🏪 /negocios"}, {"text": "💰 /receita"}],
+            [{"text": "💳 /pagamentos"}, {"text": "📋 /briefings"}],
+            # — Forge —
+            [{"text": "🤖 /mergeforge"}, {"text": "🔍 /audit"}],
+            [{"text": "👤 /personas"}, {"text": "🎨 /ux"}],
+            # — Sistema —
+            [{"text": "📈 /report"}, {"text": "🧠 /learn"}],
+            [{"text": "🧹 /cleanup"}, {"text": "⚙️ /status"}],
+            [{"text": "❓ /ajuda"}],
         ],
         "resize_keyboard": True,
         "is_persistent": True,
     }
 
 
+def _inline_ops_markup() -> dict[str, Any]:
+    """Botões inline rápidos para ações operacionais."""
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "🚨 Incidentes", "callback_data": "/incidents"},
+                {"text": "🔔 Alertas", "callback_data": "/alerts"},
+                {"text": "🛡️ Scan", "callback_data": "/sentinel"},
+            ],
+        ],
+    }
+
+
+def _inline_forge_markup() -> dict[str, Any]:
+    """Botões inline rápidos para ações do MergeForge."""
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "🔍 Auditoria", "callback_data": "/audit"},
+                {"text": "👤 Personas", "callback_data": "/personas"},
+                {"text": "📈 Relatório", "callback_data": "/report"},
+            ],
+        ],
+    }
+
+
 def _help_text() -> str:
     return (
-        "🛡️ <b>Zai Sentinel Enterprise</b>\n\n"
-        "Central operacional do ecossistema Zairyx. Agora o bot cobre visão de runtime, "
-        "alertas, incidentes correlacionados, agentes, aprendizado, housekeeping seguro "
-        "e inteligência de negócios da plataforma.\n\n"
-        "<b>Operacional:</b>\n"
+        "⚡ <b>ForgeOps — ZAEA Control Center</b>\n\n"
+        "Agente de engenharia autônomo do ecossistema Zairyx. "
+        "Monitora runtime, detecta incidentes, audita código via MergeForge e "
+        "entrega inteligência de negócio direto no Telegram.\n\n"
+        "<b>📊 Operacional</b>\n"
         "/overview — visão executiva do runtime\n"
         "/status — canais, integrações e automações\n"
         "/incidents — incidentes ativos e ruído suprimido\n"
-        "/resolve CHAVE [motivo] [nota] — fecha um incidente ativo pela chave curta\n"
-        "/agents — falhas recentes dos agentes\n"
+        "/resolve CHAVE [motivo] [nota] — fecha um incidente\n"
         "/alerts — backlog de alertas pendentes\n"
-        "/sentinel — scan completo imediato\n"
-        "/ux — última inspeção de UX das personas\n\n"
-        "<b>Negócios:</b>\n"
+        "/sentinel — scan completo imediato\n\n"
+        "<b>🏪 Negócios</b>\n"
         "/negocios — deliverys ativos, trials e cancelamentos\n"
         "/receita — faturamento hoje e últimos 7 dias\n"
         "/briefings — status dos briefings Feito Pra Você\n"
         "/pagamentos — cobranças PIX recentes\n\n"
-        "<b>MergeForge:</b>\n"
-        "/mergeforge — saúde e métricas do GitHub Agent\n\n"
-        "<b>Sistema:</b>\n"
+        "<b>🤖 MergeForge</b>\n"
+        "/mergeforge — saúde e métricas do GitHub Agent\n"
+        "/audit — auditoria geral do repositório agora\n"
+        "/personas — inspecionar como Dev / UX / Negócio\n"
+        "/ux — último resultado de inspeção UX\n"
+        "/agents — falhas recentes dos agentes\n\n"
+        "<b>⚙️ Sistema</b>\n"
+        "/report — relatório semanal de saúde\n"
         "/learn — padrões aprendidos mais fortes\n"
         "/cleanup — auditoria de cache e artefatos\n"
         "/cleanup_run — limpeza segura sob demanda\n"
         "/ajuda — abre este menu\n\n"
-        "<i>Fale livremente para consultar a ZAEA em linguagem natural.</i>"
+        "<i>Fale livremente — ForgeOps responde em linguagem natural.</i>"
     )
 
 
@@ -718,6 +759,7 @@ def _format_mergeforge(data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _format_cleanup_summary(result: dict[str, Any], executed: bool = False) -> str:
     action = "Limpeza executada" if executed else "Auditoria de housekeeping"
     lines = [f"🧹 <b>{action}</b>", ""]
     lines.append(f"Itens: <b>{result.get('total_entries', 0)}</b>")
@@ -941,13 +983,15 @@ async def lifespan(app: FastAPI):  # noqa: ARG001
     task_sentinel = asyncio.create_task(sentinel_loop())
     task_housekeeping = asyncio.create_task(housekeeping_loop(dispatch_notifications))
     task_incidents = asyncio.create_task(incident_reconciliation_loop())
+    task_weekly = asyncio.create_task(weekly_report_loop(send_telegram))
     yield
     task_supabase.cancel()
     task_telegram.cancel()
     task_sentinel.cancel()
     task_housekeeping.cancel()
     task_incidents.cancel()
-    for t in (task_supabase, task_telegram, task_sentinel, task_housekeeping, task_incidents):
+    task_weekly.cancel()
+    for t in (task_supabase, task_telegram, task_sentinel, task_housekeeping, task_incidents, task_weekly):
         try:
             await t
         except asyncio.CancelledError:
@@ -1072,7 +1116,7 @@ async def _ask_zaea(user_text: str, chat_id: int | str) -> str:
     """
     if not GROQ_API_KEY:
         return (
-            "🤖 <b>ZAEA</b>\n\n"
+            "⚡ <b>ForgeOps</b>\n\n"
             "IA não configurada (GROQ_API_KEY ausente).\n"
             "Use /ajuda para ver os comandos disponíveis."
         )
@@ -1108,14 +1152,15 @@ async def _ask_zaea(user_text: str, chat_id: int | str) -> str:
     context_block = "\n".join(context_lines)
 
     system_prompt = (
-        "Você é o ZAEA (Zairyx Autonomous Engineering Agent), o agente operacional "
-        "da plataforma Zairyx — um SaaS de cardápio digital para deliverys. "
-        "Você monitora segurança, alertas, incidentes e a saúde do sistema. "
-        "Responda de forma direta, objetiva e técnica, mas com personalidade: "
-        "você é confiante, pragmático e não enrola. "
+        "Você é o ForgeOps, agente de engenharia autônomo do ecossistema Zairyx — "
+        "um SaaS de cardápio digital para deliverys brasileiros. "
+        "Sua missão: monitorar runtime, detectar incidentes, auditar código e "
+        "entregar inteligência de negócio de forma precisa e acionável. "
+        "Personalidade: direto, assertivo, técnico — sem rodeios, sem enrolação. "
+        "Quando criticar, aponte a solução. Quando alertar, diga o impacto. "
         "Use no máximo 3 parágrafos curtos. "
-        "Quando relevante, mencione que comandos como /status, /incidents ou /sentinel estão disponíveis. "
-        "Responda sempre em português. "
+        "Mencione comandos relevantes como /incidents, /audit ou /sentinel quando cabível. "
+        "Responda sempre em português brasileiro. "
         "NÃO use markdown com asteriscos — use HTML do Telegram: <b>negrito</b>, <i>itálico</i>, <code>código</code>.\n\n"
         f"Contexto atual da plataforma:\n{context_block}"
     )
@@ -1141,14 +1186,14 @@ async def _ask_zaea(user_text: str, chat_id: int | str) -> str:
 
         if resp.status_code == 200:
             content = resp.json()["choices"][0]["message"]["content"].strip()
-            return f"🤖 <b>ZAEA</b>\n\n{content}"
+            return f"⚡ <b>ForgeOps</b>\n\n{content}"
 
-        print(f"[zaea-chat] Groq HTTP {resp.status_code}: {resp.text[:200]}")
-        return "🤖 <b>ZAEA</b>\n\nNão consegui processar sua mensagem agora. Tente /status ou /ajuda."
+        print(f"[forgeops-chat] Groq HTTP {resp.status_code}: {resp.text[:200]}")
+        return "⚡ <b>ForgeOps</b>\n\nNão consegui processar agora. Tente /status ou /ajuda."
 
     except Exception as exc:
-        print(f"[zaea-chat] Erro Groq: {exc}")
-        return "🤖 <b>ZAEA</b>\n\nErro ao contatar IA. Os comandos operacionais continuam funcionando normalmente — use /ajuda."
+        print(f"[forgeops-chat] Erro Groq: {exc}")
+        return "⚡ <b>ForgeOps</b>\n\nErro ao contatar IA. Comandos operacionais funcionando — use /ajuda."
 
 
 async def handle_telegram_command(chat_id: int | str, raw_text: str) -> None:
@@ -1170,14 +1215,14 @@ async def handle_telegram_command(chat_id: int | str, raw_text: str) -> None:
         wa_ok = bool(EVOLUTION_API_URL and EVOLUTION_API_KEY)
         await _tg_reply(
             chat_id,
-            "🛡️ <b>Zai Sentinel — Status</b>\n\n"
+            "⚡ <b>ForgeOps — Status</b>\n\n"
             f"{_status_icon(supabase_ok)} Supabase (polling alertas)\n"
             f"{_status_icon(tg_ok)} Telegram\n"
             f"{_status_icon(wa_ok)} WhatsApp Evolution\n"
             f"{_status_icon(bool(TELEGRAM_BOT_TOKEN))} Bot commands sincronizados\n\n"
             f"🔄 Polling de alertas: {POLL_INTERVAL}s\n"
             f"🧹 Housekeeping automático: {'ATIVO' if AUTO_HOUSEKEEPING_ENABLED else 'DESATIVADO'}\n"
-            f"🤖 Bot: {TELEGRAM_BOT_HANDLE}",
+            f"⚡ Bot: {TELEGRAM_BOT_HANDLE}",
             reply_markup=_main_menu_markup(),
         )
         return
@@ -1348,9 +1393,82 @@ async def handle_telegram_command(chat_id: int | str, raw_text: str) -> None:
         await _tg_reply(chat_id, "🤖 <i>Consultando MergeForge...</i>")
         try:
             data = await fetch_mergeforge_summary()
-            await _tg_reply(chat_id, _format_mergeforge(data), reply_markup=_main_menu_markup())
+            await _tg_reply(chat_id, _format_mergeforge(data), reply_markup=_inline_forge_markup())
         except Exception as exc:
             await _tg_reply(chat_id, f"❌ Erro ao consultar MergeForge: {str(exc)[:200]}", reply_markup=_main_menu_markup())
+        return
+
+    if cmd == "/audit":
+        await _tg_reply(chat_id, "🔍 <i>Iniciando auditoria completa do repositório... (pode levar 30-60s)</i>")
+        try:
+            report = await scan_repository(
+                owner="TiagoIA-UX",
+                repo="Cardapio-Digital",
+                ref="main",
+            )
+            crit = len(report.critical)
+            warn = len(report.warnings)
+            total = len(report.issues)
+            lines = [
+                "🔍 <b>Auditoria do Repositório</b>",
+                "",
+                f"📁 Arquivos analisados: <b>{report.total_files}</b>",
+                f"🔴 Críticos: <b>{crit}</b>  🟡 Avisos: <b>{warn}</b>  Total: <b>{total}</b>",
+            ]
+            if report.summary:
+                lines.append("")
+                lines.append(f"<b>Resumo IA:</b> {report.summary[:600]}")
+            if report.critical:
+                lines.append("")
+                lines.append("<b>Top críticos:</b>")
+                for issue in report.critical[:5]:
+                    lines.append(f"  🔴 {issue.file}:{issue.line} — {issue.message}")
+            await _tg_reply(chat_id, "\n".join(lines), reply_markup=_main_menu_markup())
+        except Exception as exc:
+            await _tg_reply(chat_id, f"❌ Erro na auditoria: {str(exc)[:300]}", reply_markup=_main_menu_markup())
+        return
+
+    if cmd == "/personas":
+        await _tg_reply(chat_id, "👤 <i>Inspecionando repositório como múltiplas personas...</i>")
+        try:
+            personas = [
+                ("dev_auditor", "Desenvolvedor Sênior", "qualidade, arquitetura e segurança do código"),
+                ("ux_inspector", "Designer UX", "consistência de UX, fluxos e acessibilidade"),
+                ("business_analyst", "Analista de Negócio", "regras de negócio, pagamentos e onboarding"),
+            ]
+            lines = ["👤 <b>Inspeção Multi-Persona</b>", ""]
+            for persona_id, persona_name, persona_focus in personas:
+                try:
+                    report = await scan_repository(
+                        owner="TiagoIA-UX",
+                        repo="Cardapio-Digital",
+                        ref="main",
+                        persona=persona_id,
+                    )
+                    crit = len(report.critical)
+                    warn = len(report.warnings)
+                    icon = "🔴" if crit > 0 else ("🟡" if warn > 0 else "✅")
+                    lines.append(f"{icon} <b>{persona_name}</b> ({persona_focus})")
+                    lines.append(f"   {crit} crítico(s) · {warn} aviso(s)")
+                    if report.summary:
+                        lines.append(f"   <i>{report.summary[:200]}</i>")
+                    lines.append("")
+                except Exception as pe:
+                    lines.append(f"⚠️ <b>{persona_name}</b>: erro — {str(pe)[:100]}")
+                    lines.append("")
+            await _tg_reply(chat_id, "\n".join(lines), reply_markup=_main_menu_markup())
+        except Exception as exc:
+            await _tg_reply(chat_id, f"❌ Erro na inspeção de personas: {str(exc)[:300]}", reply_markup=_main_menu_markup())
+        return
+
+    if cmd == "/report":
+        await _tg_reply(chat_id, "📈 <i>Gerando relatório semanal de saúde...</i>")
+        try:
+            from sentinel import generate_weekly_report
+            report_text = await generate_weekly_report()
+            await _tg_reply(chat_id, report_text, reply_markup=_main_menu_markup())
+        except Exception as exc:
+            await _tg_reply(chat_id, f"❌ Erro ao gerar relatório: {str(exc)[:200]}", reply_markup=_main_menu_markup())
         return
 
     # Mensagem em linguagem natural — responder com Groq
