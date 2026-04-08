@@ -236,9 +236,17 @@ export default function FiscalPage() {
       <div>
         <h1 className="text-2xl font-bold text-zinc-900">Nota Fiscal (NFC-e)</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Emita notas fiscais direto com o Sefaz — sem custo extra. Você só precisa do seu
-          certificado digital A1.
+          Configure a emissão fiscal do seu delivery com certificado A1, dados do emitente e
+          ambiente de operação antes de ativar a rotina em produção.
         </p>
+        <div className="mt-4 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+          <p className="font-semibold">Como usar esta área com segurança</p>
+          <p className="mt-1 leading-6 text-sky-800">
+            Esta configuração prepara a emissão fiscal do emitente. Dados de CPF ou CNPJ do
+            comprador, quando coletados no checkout, servem para identificar o cliente no documento
+            quando aplicável; eles não substituem a configuração fiscal do seu delivery.
+          </p>
+        </div>
       </div>
 
       {message && (
@@ -259,6 +267,11 @@ export default function FiscalPage() {
           <Shield className="h-5 w-5 text-orange-500" />
           <h2 className="text-lg font-semibold text-zinc-900">Certificado Digital A1</h2>
         </div>
+
+        <p className="mb-4 text-sm leading-6 text-zinc-600">
+          O certificado A1 é usado para autenticar o emitente perante a Sefaz. Faça upload do
+          arquivo válido antes de ativar a emissão em produção.
+        </p>
 
         {config.certificado_storage_path ? (
           <div className="mb-4 flex items-center gap-2 rounded-lg bg-green-50 p-3">
@@ -322,6 +335,11 @@ export default function FiscalPage() {
       {/* Dados Fiscais do Emitente */}
       <section className="rounded-xl border border-zinc-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold text-zinc-900">Dados Fiscais do Emitente</h2>
+
+        <p className="mb-4 text-sm leading-6 text-zinc-600">
+          Preencha os dados cadastrais do delivery exatamente como constam no cadastro fiscal que
+          será usado para emissão.
+        </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
@@ -496,6 +514,11 @@ export default function FiscalPage() {
       <section className="rounded-xl border border-zinc-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold text-zinc-900">Configurações de Emissão</h2>
 
+        <p className="mb-4 text-sm leading-6 text-zinc-600">
+          Use homologação para validar certificado, numeração e integração. Ative produção apenas
+          quando a operação fiscal já estiver conferida.
+        </p>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="ambiente" className="mb-1 block text-xs font-medium text-zinc-600">
@@ -545,6 +568,11 @@ export default function FiscalPage() {
             {config.ativo ? 'Emissão ativada' : 'Emissão desativada'}
           </span>
         </div>
+
+        <p className="mt-3 text-xs leading-5 text-zinc-500">
+          Quando ativada, a emissão depende desta configuração do emitente. A identificação fiscal
+          do comprador pode ser enviada separadamente quando o fluxo de venda coletar esse dado.
+        </p>
       </section>
 
       {/* Botão Salvar */}

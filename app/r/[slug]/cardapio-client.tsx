@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import {
   AlertCircle,
+  ArrowUp,
   CheckCircle2,
   ChevronRight,
   ExternalLink,
@@ -735,7 +736,7 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
                   <span className="text-muted-foreground text-sm">({categoryProducts.length})</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5 sm:grid sm:grid-cols-3 sm:gap-3">
                   {categoryProducts.map((product) => (
                     <ProductCard
                       key={product.id}
@@ -919,7 +920,40 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
           canSubmit={canSubmit}
         />
       )}
+
+      {/* Scroll to top */}
+      <ScrollToTopButton />
     </main>
+  )
+}
+
+// =====================================================
+// Scroll to Top Button
+// =====================================================
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
+  if (!visible) return null
+
+  return (
+    <button
+      onClick={scrollToTop}
+      aria-label="Voltar ao topo"
+      className="bg-primary text-primary-foreground fixed right-4 bottom-24 z-40 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 active:scale-95"
+    >
+      <ArrowUp className="h-5 w-5" />
+    </button>
   )
 }
 
@@ -935,34 +969,35 @@ interface ProductCardProps {
 
 function ProductCard({ product, restaurant, onAdd }: ProductCardProps) {
   return (
-    <div className="group bg-card border-border hover:border-primary/30 flex min-w-0 flex-col rounded-xl border transition-all duration-300 hover:shadow-md overflow-hidden">
-      {/* Image */}
+    <div className="group bg-card border-border hover:border-primary/30 flex min-w-0 overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-md sm:flex-col">
+      {/* Mobile: horizontal row layout | Desktop: vertical card */}
       {product.imagem_url && (
-        <div className="bg-muted relative aspect-square w-full overflow-hidden">
+        <div className="bg-muted relative h-16 w-16 shrink-0 overflow-hidden sm:h-24 sm:w-full">
           <Image
             src={product.imagem_url}
             alt={product.nome}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, 280px"
+            sizes="(max-width: 640px) 64px, 200px"
           />
         </div>
       )}
 
       {/* Content */}
-      <div className="flex min-w-0 flex-1 flex-col gap-1 p-2.5 sm:p-3">
-        <h3 className="text-foreground group-hover:text-primary text-sm font-semibold leading-tight transition-colors">
-          {product.nome}
-        </h3>
+      <div className="flex min-w-0 flex-1 items-center gap-2 p-2 sm:flex-col sm:items-stretch sm:gap-1 sm:p-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-foreground group-hover:text-primary sm:truncate-none truncate text-sm leading-tight font-semibold transition-colors">
+            {product.nome}
+          </h3>
+          {product.descricao && (
+            <p className="text-muted-foreground line-clamp-1 text-xs sm:line-clamp-2">
+              {product.descricao}
+            </p>
+          )}
+        </div>
 
-        {product.descricao && (
-          <p className="text-muted-foreground line-clamp-2 text-xs">{product.descricao}</p>
-        )}
-
-        <div className="mt-auto flex items-center justify-between gap-1 pt-2">
-          <span className="text-primary text-sm font-bold sm:text-base">
-            {formatCurrency(product.preco)}
-          </span>
+        <div className="flex shrink-0 items-center gap-2 sm:mt-auto sm:justify-between sm:pt-2">
+          <span className="text-primary text-sm font-bold">{formatCurrency(product.preco)}</span>
 
           <button
             onClick={(e) => {

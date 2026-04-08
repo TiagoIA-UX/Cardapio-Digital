@@ -30,8 +30,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Faça login' }, { status: 401, headers: rateLimit.headers })
   }
 
-  const body = await request.json()
+  const body = (await request.json()) as {
+    plan_slug?: PlanSlug
+    restaurant_id?: string
+  }
   const newPlan = body.plan_slug as PlanSlug
+  const restaurantId = typeof body.restaurant_id === 'string' ? body.restaurant_id : null
 
   if (!newPlan || !VALID_PLANS.includes(newPlan)) {
     return NextResponse.json(
@@ -42,13 +46,40 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient()
 
+  const { data: targetPlanRow, error: targetPlanError } = await admin
+    .from('plans')
+    .select('id, slug')
+    .eq('slug', newPlan)
+    .maybeSingle()
+
+  if (targetPlanError || !targetPlanRow) {
+    return NextResponse.json(
+      { error: 'Plano de destino não encontrado' },
+      { status: 500, headers: rateLimit.headers }
+    )
+  }
+
   // Buscar restaurante do usuário
-  const { data: restaurant, error: restErr } = await admin
+  let restaurantQuery = admin
     .from('restaurants')
     .select('id, plan_slug, nome, user_id')
     .eq('user_id', user.id)
     .eq('ativo', true)
-    .single()
+
+  if (restaurantId) {
+    restaurantQuery = restaurantQuery.eq('id', restaurantId)
+  }
+
+  const { data: restaurants, error: restErr } = await restaurantQuery.limit(2)
+
+  if (!restaurantId && (restaurants?.length || 0) > 1) {
+    return NextResponse.json(
+      { error: 'Selecione a unidade que deseja alterar antes de fazer upgrade.' },
+      { status: 400, headers: rateLimit.headers }
+    )
+  }
+
+  const restaurant = restaurants?.[0] ?? null
 
   if (restErr || !restaurant) {
     return NextResponse.json(
@@ -122,7 +153,7 @@ export async function POST(request: NextRequest) {
       // Atualizar banco local — MP foi atualizado com sucesso
       await admin
         .from('subscriptions')
-        .update({ updated_at: new Date().toISOString(), plan_id: newPlan })
+        .update({ updated_at: new Date().toISOString(), plan_id: targetPlanRow.id })
         .eq('id', subscription.id)
 
       await admin.from('restaurants').update({ plan_slug: newPlan }).eq('id', restaurant.id)
@@ -202,6 +233,7 @@ export async function POST(request: NextRequest) {
       {
         restaurant_id: restaurant.id,
         user_id: user.id,
+        plan_id: targetPlanRow.id,
         mp_preapproval_id: preapproval.id,
         status: 'pending',
         mp_subscription_status: 'pending',

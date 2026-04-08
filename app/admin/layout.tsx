@@ -23,6 +23,7 @@ import {
   BarChart3,
   KeyRound,
   ClipboardList,
+  ScanSearch,
 } from 'lucide-react'
 
 interface AdminMenuGroup {
@@ -54,6 +55,7 @@ const menuGroups: AdminMenuGroup[] = [
     label: 'Ferramentas',
     items: [
       { href: '/admin/feedbacks', icon: MessageSquare, label: 'Feedbacks IA' },
+      { href: '/admin/audit-photos', icon: ScanSearch, label: 'Auditoria Fotos' },
       { href: '/admin/suporte', icon: ShieldCheck, label: 'Suporte' },
       { href: '/admin/logs', icon: Activity, label: 'Logs' },
       { href: '/admin/seo', icon: Globe, label: 'SEO' },

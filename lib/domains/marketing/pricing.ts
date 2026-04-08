@@ -75,7 +75,7 @@ export const PLAN_LIMITS = {
   premium: { maxProducts: 1200, label: 'Premium' },
 } as const
 
-export const NETWORK_EXPANSION_UNIT_OPTIONS = [5, 10, 15, 20, 25] as const
+export const NETWORK_EXPANSION_UNIT_OPTIONS = [3, 5, 10, 20] as const
 
 export function formatNetworkExpansionLabel(units: number) {
   return units === 1 ? '1 unidade extra' : `${units} unidades extras`

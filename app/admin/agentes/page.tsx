@@ -200,7 +200,7 @@ export default function AdminAgentesPage() {
             ZAEA — Sistema de Agentes
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Autonomous Engineering Agent · atualiza a cada 30s
+            Autonomous Engineering Agent · detecção de defeitos operacionais · atualiza a cada 30s
           </p>
         </div>
         <button

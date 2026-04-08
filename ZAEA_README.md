@@ -11,7 +11,7 @@
 
 <br/>
 
-> **ZAEA** é um sistema de agentes autônomos de engenharia de software que monitora, diagnostica, corrige e valida plataformas Next.js + Supabase — com zero intervenção humana para falhas triviais.
+> **ZAEA** é um sistema de agentes autônomos de engenharia de software com detecção de defeitos operacionais, monitoramento, diagnóstico, correção e validação para plataformas Next.js + Supabase — com zero intervenção humana para falhas triviais.
 
 ---
 
@@ -39,13 +39,13 @@
 
 ## Agentes do sistema Forge (ZAEA)
 
-| Agente           | Função                                     | Trigger                       |
-| ---------------- | ------------------------------------------ | ----------------------------- |
-| **Scanner**      | Detecta erros de TypeScript, lint e build  | Cron 10min                    |
-| **Surgeon**      | Gera e aplica patches automáticos via Groq | Pós-Scanner (erro encontrado) |
-| **Validator**    | Valida patches antes do merge em produção  | Pós-Surgeon                   |
-| **Sentinel**     | Monitora alertas e notifica via Telegram   | Contínuo (Python + Vercel)    |
-| **Orchestrator** | Coordena todos os agentes                  | Sempre                        |
+| Agente           | Função                                                                                  | Trigger                       |
+| ---------------- | --------------------------------------------------------------------------------------- | ----------------------------- |
+| **Scanner**      | Detecta defeitos operacionais em TypeScript, lint, build, runtime e sinais de regressão | Cron 10min                    |
+| **Surgeon**      | Gera e aplica patches automáticos via Groq                                              | Pós-Scanner (erro encontrado) |
+| **Validator**    | Valida patches antes do merge em produção                                               | Pós-Surgeon                   |
+| **Sentinel**     | Monitora alertas e notifica via Telegram                                                | Contínuo (Python + Vercel)    |
+| **Orchestrator** | Coordena todos os agentes                                                               | Sempre                        |
 
 ### Classificação de risco
 

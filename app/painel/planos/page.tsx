@@ -131,7 +131,10 @@ export default function PlanosPage() {
       const response = await fetch('/api/pagamento/upgrade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_slug: targetPlan }),
+        body: JSON.stringify({
+          plan_slug: targetPlan,
+          restaurant_id: restaurant.id,
+        }),
       })
 
       const payload = await response.json()
@@ -241,7 +244,8 @@ export default function PlanosPage() {
 
       <div className="mb-4 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-800">
         Você pode trocar de plano a qualquer momento. A alteração do valor será aplicada no próximo
-        ciclo de cobrança.
+        ciclo de cobrança. O editor e o canal digital atual permanecem preservados; o upgrade apenas
+        libera mais produtos para cadastro conforme o plano escolhido.
       </div>
 
       {message && (
@@ -446,15 +450,15 @@ export default function PlanosPage() {
               <div className="grid grid-cols-4 gap-1 text-[11px]">
                 {getVolumeDiscountTiers().map((tier) => (
                   <div
-                    key={tier.minBranches}
+                    key={tier.branchCount}
                     className={`rounded-lg p-2 text-center ${
-                      extraUnits >= tier.minBranches
+                      extraUnits === tier.branchCount
                         ? 'bg-primary/10 text-primary font-medium'
                         : 'bg-secondary text-muted-foreground'
                     }`}
                   >
                     <p className="font-semibold">{tier.discountPercent}</p>
-                    <p>{tier.minBranches}+ filiais</p>
+                    <p>{tier.branchCount} filiais</p>
                     <p className="text-[10px] opacity-70">{tier.label}</p>
                   </div>
                 ))}

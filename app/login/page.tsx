@@ -7,10 +7,15 @@ import { createClient, resetBrowserClient, signOut } from '@/lib/shared/supabase
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { PizzaIcon, Loader2, Mail, ShieldCheck, KeyRound, Sparkles } from 'lucide-react'
-import { getSafeAuthRedirect } from '@/lib/domains/auth/auth-access'
+import {
+  getPostAuthSuccessRedirect,
+  getSafeAuthRedirect,
+  requiresPasswordSetup,
+} from '@/lib/domains/auth/auth-access'
 import {
   getLoginMethodGuidance,
   listLoginMethodGuidance,
@@ -33,6 +38,45 @@ function getOauthRedirectOrigin() {
   return process.env.NEXT_PUBLIC_SITE_URL || currentOrigin
 }
 
+function getOtpSendErrorMessage(error: unknown) {
+  const rawMessage =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? String((error as { message?: unknown }).message || '')
+      : ''
+
+  const normalizedMessage = rawMessage.toLowerCase()
+
+  if (
+    normalizedMessage.includes('user not found') ||
+    normalizedMessage.includes('email not found') ||
+    normalizedMessage.includes('signup is disabled') ||
+    normalizedMessage.includes('should_create_user')
+  ) {
+    return 'Esse e-mail ainda não existe como conta ativa. Se o cliente nunca entrou antes, use Google ou crie a conta primeiro no fluxo assistido.'
+  }
+
+  if (
+    normalizedMessage.includes('email logins are disabled') ||
+    normalizedMessage.includes('unsupported email provider')
+  ) {
+    return 'O login por e-mail não está habilitado no Supabase deste projeto. É preciso ativar o provedor de e-mail no painel do Supabase Auth.'
+  }
+
+  if (
+    normalizedMessage.includes('error sending') ||
+    normalizedMessage.includes('smtp') ||
+    normalizedMessage.includes('mailer')
+  ) {
+    return 'O projeto não conseguiu entregar o e-mail com o código. Verifique a configuração de SMTP ou do provedor de e-mail no Supabase.'
+  }
+
+  if (rawMessage) {
+    return `Motivo retornado pelo Auth: ${rawMessage}`
+  }
+
+  return 'Confira o e-mail informado e tente novamente. Se continuar falhando, o mais provável é conta inexistente ou envio de e-mail não configurado no Supabase.'
+}
+
 function LoginForm() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -51,6 +95,9 @@ function LoginForm() {
   const [currentSessionEmail, setCurrentSessionEmail] = useState('')
   const [checkingSession, setCheckingSession] = useState(true)
   const [email, setEmail] = useState('')
+  const [emailCode, setEmailCode] = useState('')
+  const [codeSentTo, setCodeSentTo] = useState('')
+  const [verifyLoading, setVerifyLoading] = useState(false)
 
   // Redireciona automaticamente se o usuário já está autenticado
   useEffect(() => {
@@ -82,7 +129,7 @@ function LoginForm() {
     const messages: Record<string, { title: string; description: string }> = {
       auth: {
         title: 'Não foi possível concluir o acesso',
-        description: 'Tente novamente ou solicite um novo link por e-mail.',
+        description: 'Tente novamente ou solicite um novo código por e-mail.',
       },
       recovery: {
         title: 'Link de recuperação inválido ou expirado',
@@ -136,7 +183,7 @@ function LoginForm() {
     }
   }
 
-  const handleEmailAccessLink = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailAccessCode = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const normalizedEmail = email.trim().toLowerCase()
 
@@ -153,14 +200,10 @@ function LoginForm() {
 
     try {
       const supabase = createClient()
-      const siteOrigin = getOauthRedirectOrigin()
-      const callbackUrl = new URL('/auth/callback', siteOrigin)
-      callbackUrl.searchParams.set('next', redirectTo)
 
       const { error } = await supabase.auth.signInWithOtp({
         email: normalizedEmail,
         options: {
-          emailRedirectTo: callbackUrl.toString(),
           shouldCreateUser: false,
         },
       })
@@ -170,18 +213,85 @@ function LoginForm() {
       }
 
       toast({
-        title: 'Link enviado',
-        description: 'Verifique seu e-mail para acessar a conta e concluir o primeiro acesso.',
+        title: 'Código enviado',
+        description: 'Confira seu e-mail, digite o código e conclua o acesso nesta tela.',
       })
+      setCodeSentTo(normalizedEmail)
+      setEmailCode('')
     } catch (error) {
-      console.error('Erro ao enviar magic link:', error)
+      console.error('Erro ao enviar código de acesso:', error)
       toast({
-        title: 'Não foi possível enviar o link',
-        description: 'Confira o e-mail informado e tente novamente.',
+        title: 'Não foi possível enviar o código',
+        description: getOtpSendErrorMessage(error),
         variant: 'destructive',
       })
     } finally {
       setEmailLoading(false)
+    }
+  }
+
+  const handleVerifyEmailCode = async () => {
+    const normalizedEmail = (codeSentTo || email).trim().toLowerCase()
+    const normalizedCode = emailCode.trim()
+
+    if (!normalizedEmail) {
+      toast({
+        title: 'Informe seu e-mail',
+        description: 'Digite o e-mail da conta antes de validar o código.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (normalizedCode.length !== 6) {
+      toast({
+        title: 'Código incompleto',
+        description: 'Digite os 6 números recebidos por e-mail.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setVerifyLoading(true)
+
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.verifyOtp({
+        email: normalizedEmail,
+        token: normalizedCode,
+        type: 'email',
+      })
+
+      if (error) {
+        throw error
+      }
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      const target = getPostAuthSuccessRedirect({
+        next: redirectTo,
+        flowType: 'email',
+        requiresPasswordSetup: !!user && requiresPasswordSetup(user.user_metadata),
+      })
+
+      toast({
+        title: 'Código confirmado',
+        description: 'Acesso liberado com sucesso.',
+      })
+
+      router.replace(target)
+      router.refresh()
+    } catch (error) {
+      console.error('Erro ao validar código de acesso:', error)
+      toast({
+        title: 'Código inválido ou expirado',
+        description: 'Peça um novo código e tente novamente.',
+        variant: 'destructive',
+      })
+    } finally {
+      setVerifyLoading(false)
     }
   }
 
@@ -240,6 +350,8 @@ function LoginForm() {
       await signOut()
       setCurrentSessionEmail('')
       setEmail('')
+      setEmailCode('')
+      setCodeSentTo('')
       toast({
         title: 'Conta desconectada',
         description: 'Agora entre com a conta que deve receber o template.',
@@ -438,17 +550,23 @@ function LoginForm() {
             </div>
           </div>
 
-          <form className="space-y-4" onSubmit={handleEmailAccessLink}>
+          <form className="space-y-4" onSubmit={handleEmailAccessCode}>
             <div className="space-y-2">
-              <Label htmlFor="email-access">Receber link de acesso por e-mail</Label>
+              <Label htmlFor="email-access">Receber código de acesso por e-mail</Label>
               <Input
                 id="email-access"
                 type="email"
                 autoComplete="email"
                 placeholder="voce@empresa.com"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                disabled={emailLoading || checkingSession || hasActiveCheckoutSession}
+                onChange={(event) => {
+                  setEmail(event.target.value)
+                  setCodeSentTo('')
+                  setEmailCode('')
+                }}
+                disabled={
+                  emailLoading || verifyLoading || checkingSession || hasActiveCheckoutSession
+                }
               />
             </div>
 
@@ -456,21 +574,90 @@ function LoginForm() {
               type="submit"
               variant="outline"
               className="w-full"
-              disabled={emailLoading || checkingSession || hasActiveCheckoutSession}
+              disabled={
+                emailLoading || verifyLoading || checkingSession || hasActiveCheckoutSession
+              }
             >
               {emailLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Mail className="mr-2 h-4 w-4" />
               )}
-              {emailLoading ? 'Enviando link...' : 'Receber link de acesso'}
+              {emailLoading
+                ? 'Enviando código...'
+                : codeSentTo
+                  ? 'Reenviar código'
+                  : 'Receber código de acesso'}
             </Button>
+
+            {codeSentTo ? (
+              <div className="space-y-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <div>
+                  <p className="text-sm font-semibold text-emerald-900">Código enviado para</p>
+                  <p className="mt-1 text-sm break-all text-emerald-800">{codeSentTo}</p>
+                  <p className="mt-2 text-xs text-emerald-700">
+                    Digite o código de 6 números. Depois da validação ele é consumido pelo sistema e
+                    não pode ser reutilizado.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="email-code">Código de confirmação</Label>
+                    <InputOTP
+                      id="email-code"
+                      maxLength={6}
+                      value={emailCode}
+                      onChange={setEmailCode}
+                      disabled={verifyLoading || emailLoading || checkingSession}
+                      containerClassName="justify-center"
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+
+                  <Button
+                    type="button"
+                    className="w-full"
+                    disabled={
+                      verifyLoading ||
+                      emailLoading ||
+                      checkingSession ||
+                      emailCode.trim().length !== 6
+                    }
+                    onClick={() => void handleVerifyEmailCode()}
+                  >
+                    {verifyLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Conferindo código...
+                      </>
+                    ) : (
+                      'Entrar com código'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
 
             <Button
               type="button"
               variant="ghost"
               className="w-full"
-              disabled={resetLoading || checkingSession || hasActiveCheckoutSession}
+              disabled={
+                resetLoading ||
+                emailLoading ||
+                verifyLoading ||
+                checkingSession ||
+                hasActiveCheckoutSession
+              }
               onClick={handlePasswordReset}
             >
               {resetLoading ? (
@@ -482,8 +669,8 @@ function LoginForm() {
             </Button>
 
             <p className="text-xs text-gray-500">
-              Se você comprou no checkout, normalmente este é o caminho mais seguro para entrar pela
-              primeira vez.
+              Se você comprou no checkout, esse fluxo por código é o jeito mais direto de confirmar
+              o e-mail e entrar pela primeira vez.
             </p>
           </form>
         </CardContent>

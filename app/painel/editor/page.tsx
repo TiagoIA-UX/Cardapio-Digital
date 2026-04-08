@@ -9,6 +9,7 @@ import { cn } from '@/lib/shared/utils'
 import { getRestaurantScopedHref } from '@/lib/domains/core/active-restaurant'
 import { useEditorState } from '@/lib/domains/core/editor/use-editor-state'
 import { usePanelAccess } from '@/lib/domains/core/panel/panel-context'
+import { getMaxProducts } from '@/lib/domains/marketing/pricing'
 import type { FormState } from '@/lib/domains/core/editor/types'
 
 export default function EditorVisualPage() {
@@ -52,6 +53,8 @@ export default function EditorVisualPage() {
     )
   }
 
+  const maxProductsAllowed = getMaxProducts(editor.restaurant.plan_slug || 'basico')
+
   return (
     <div className="flex h-[calc(100vh-4rem)] min-w-0 flex-col overflow-hidden lg:h-screen">
       <EditorHeader
@@ -62,6 +65,11 @@ export default function EditorVisualPage() {
         copied={editor.copied}
         onCopyAndPublish={editor.copyAndPublish}
       />
+
+      <div className="border-b border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs text-blue-900 sm:px-6 sm:text-sm">
+        Seu editor e o canal digital seguem preservados ao fazer upgrade. O plano apenas libera mais
+        capacidade de cadastro, hoje em {maxProductsAllowed} produtos para esta unidade.
+      </div>
 
       <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
         {!editor.panelHidden && (

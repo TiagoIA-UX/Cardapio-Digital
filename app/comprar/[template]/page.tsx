@@ -136,6 +136,7 @@ function ComprarContent() {
   const [couponLoading, setCouponLoading] = useState(false)
   const [couponError, setCouponError] = useState('')
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [includeTaxDocument, setIncludeTaxDocument] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState<{
     id: string
     code: string
@@ -213,12 +214,18 @@ function ComprarContent() {
             paymentMethod?: 'pix' | 'card'
             couponCode?: string
             acceptedTerms?: boolean
+            includeTaxDocument?: boolean
             form?: typeof form
           }
           if (draft.selectedPlan) setSelectedPlan(draft.selectedPlan)
           if (draft.paymentMethod) setPaymentMethod(draft.paymentMethod)
           if (draft.couponCode) setCouponCode(draft.couponCode)
           if (typeof draft.acceptedTerms === 'boolean') setAcceptedTerms(draft.acceptedTerms)
+          if (typeof draft.includeTaxDocument === 'boolean') {
+            setIncludeTaxDocument(draft.includeTaxDocument)
+          } else if (draft.form?.customerDocument) {
+            setIncludeTaxDocument(true)
+          }
           if (draft.form) {
             setForm((current) => ({ ...current, ...draft.form }))
           }
@@ -296,7 +303,16 @@ function ComprarContent() {
         monthlyChargeAmount: planPrices.monthly,
         accountEmail: normalizedAccountEmail || undefined,
       }),
-    [normalizedAccountEmail, parcelas, paymentMethod, planMeta.nome, planPrices.monthly, selectedPlan, template.nome, total]
+    [
+      normalizedAccountEmail,
+      parcelas,
+      paymentMethod,
+      planMeta.nome,
+      planPrices.monthly,
+      selectedPlan,
+      template.nome,
+      total,
+    ]
   )
 
   const resetCoupon = () => {
@@ -340,7 +356,9 @@ function ComprarContent() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const normalizedCustomerDocument = normalizeTaxDocument(form.customerDocument)
+    const normalizedCustomerDocument = includeTaxDocument
+      ? normalizeTaxDocument(form.customerDocument)
+      : ''
 
     if (normalizedCustomerDocument && !isValidTaxDocument(normalizedCustomerDocument)) {
       setError('Informe um CPF ou CNPJ válido para continuar.')
@@ -360,6 +378,7 @@ function ComprarContent() {
           paymentMethod,
           couponCode,
           acceptedTerms,
+          includeTaxDocument,
           form,
         })
       )
@@ -713,10 +732,10 @@ function ComprarContent() {
                 ) : null}
 
                 <div className="mt-3 rounded-xl border border-sky-500/20 bg-sky-500/5 px-4 py-3 text-sm">
-                  <p className="text-foreground font-medium">Quer fechar com ajuda humana?</p>
+                  <p className="text-foreground font-medium">Quer seguir com mais clareza?</p>
                   <p className="text-muted-foreground mt-1">
-                    Se bater dúvida em preço, plano ou pagamento, fale com a equipe no WhatsApp sem
-                    sair da compra.
+                    A Zai conduz o fluxo de compra de forma automática. Se surgir uma exceção em
+                    preço, plano ou pagamento, você ainda pode acionar suporte sem sair da compra.
                   </p>
                   <Link
                     href={supportHref}
@@ -725,7 +744,7 @@ function ComprarContent() {
                     className="text-primary mt-3 inline-flex items-center gap-2 font-medium hover:underline"
                   >
                     <MessageCircle className="h-4 w-4" />
-                    Falar com suporte agora
+                    Acionar suporte em caso de exceção
                   </Link>
                 </div>
               </div>
@@ -809,26 +828,53 @@ function ComprarContent() {
                 </div>
               </div>
 
-              <div>
-                <label className="text-foreground mb-1 block text-sm font-medium">
-                  CPF ou CNPJ do comprador
+              <div className="border-border bg-background space-y-3 rounded-xl border p-4">
+                <label className="flex items-start gap-3 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={includeTaxDocument}
+                    onChange={(event) => setIncludeTaxDocument(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-slate-300"
+                  />
+                  <span>
+                    <span className="text-foreground block font-medium">
+                      Informar CPF ou CNPJ do comprador
+                    </span>
+                    <span className="text-foreground/70 mt-1 block leading-5">
+                      Opcional. Se informado, o documento segue com os dados do pedido para
+                      identificação fiscal do comprador quando aplicável.
+                    </span>
+                  </span>
                 </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={form.customerDocument}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      customerDocument: formatTaxDocument(event.target.value),
-                    })
-                  }
-                  className="border-border bg-background text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
-                  placeholder="Opcional, usado para emissão fiscal"
-                />
-                <p className="text-foreground/60 mt-1 text-xs">
-                  Preencha se quiser adiantar os dados para emissão fiscal no próximo passo.
-                </p>
+
+                {includeTaxDocument ? (
+                  <div>
+                    <label className="text-foreground mb-1 block text-sm font-medium">
+                      CPF ou CNPJ do comprador
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={form.customerDocument}
+                      onChange={(event) =>
+                        setForm({
+                          ...form,
+                          customerDocument: formatTaxDocument(event.target.value),
+                        })
+                      }
+                      className="border-border bg-card text-foreground focus:border-primary w-full rounded-xl border px-4 py-3 transition outline-none"
+                      placeholder="Digite o CPF ou CNPJ"
+                    />
+                    <p className="text-foreground/60 mt-1 text-xs">
+                      A emissão fiscal não depende deste campo para existir; ele serve para
+                      identificar o comprador no documento quando necessário.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-foreground/60 text-xs leading-5">
+                    Se preferir, você pode seguir sem preencher esse dado agora.
+                  </p>
+                )}
               </div>
 
               <details className="border-border bg-background rounded-xl border">
@@ -908,7 +954,7 @@ function ComprarContent() {
                   </p>
                 </div>
 
-                <div className="space-y-2 text-xs leading-5 text-foreground/80">
+                <div className="text-foreground/80 space-y-2 text-xs leading-5">
                   <p>
                     <span className="text-foreground font-semibold">Template e plano:</span>{' '}
                     {contractSummary.templateName} no plano {contractSummary.planName}.
@@ -918,7 +964,9 @@ function ComprarContent() {
                     {contractSummary.initialChargeLabel} via {contractSummary.paymentMethodLabel}.
                   </p>
                   <p>
-                    <span className="text-foreground font-semibold">Mensalidade após ativação:</span>{' '}
+                    <span className="text-foreground font-semibold">
+                      Mensalidade após ativação:
+                    </span>{' '}
                     {contractSummary.monthlyChargeLabel}.
                   </p>
                   <p>
@@ -952,11 +1000,19 @@ function ComprarContent() {
                   />
                   <span className="text-foreground/80 leading-6">
                     Li e aceito o resumo contratual desta compra, os{' '}
-                    <Link href={contractSummary.termsPath} target="_blank" className="text-primary font-medium hover:underline">
+                    <Link
+                      href={contractSummary.termsPath}
+                      target="_blank"
+                      className="text-primary font-medium hover:underline"
+                    >
                       Termos de Uso
                     </Link>{' '}
                     e a{' '}
-                    <Link href={contractSummary.privacyPath} target="_blank" className="text-primary font-medium hover:underline">
+                    <Link
+                      href={contractSummary.privacyPath}
+                      target="_blank"
+                      className="text-primary font-medium hover:underline"
+                    >
                       Política de Privacidade
                     </Link>
                     .

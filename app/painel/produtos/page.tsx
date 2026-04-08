@@ -21,7 +21,10 @@ import { getRestaurantTemplateConfig } from '@/lib/domains/marketing/templates-c
 import { ImageUploader } from '@/components/shared/image-uploader'
 import { getMaxProducts, PLAN_LIMITS } from '@/lib/domains/marketing/pricing'
 import { resolveTemplateProductImageUrl } from '@/lib/domains/image/template-product-images'
-import { getActiveRestaurantForUser, getRestaurantScopedHref } from '@/lib/domains/core/active-restaurant'
+import {
+  getActiveRestaurantForUser,
+  getRestaurantScopedHref,
+} from '@/lib/domains/core/active-restaurant'
 
 export default function ProdutosPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -240,7 +243,9 @@ export default function ProdutosPage() {
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-foreground text-2xl font-bold">Produtos</h1>
-          <p className="text-muted-foreground">{products.length} produtos cadastrados</p>
+          <p className="text-muted-foreground">
+            {products.length} de {maxProductsAllowed} produtos cadastrados no plano atual
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -258,6 +263,11 @@ export default function ProdutosPage() {
             Novo Produto
           </button>
         </div>
+      </div>
+
+      <div className="mb-6 rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-800">
+        Fazer upgrade não altera o editor nem o canal digital já publicado. O sistema apenas
+        destrava a quantidade extra de produtos que esta unidade pode cadastrar conforme o plano.
       </div>
 
       {products.length === 0 ? (

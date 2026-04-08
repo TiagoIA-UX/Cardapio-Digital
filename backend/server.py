@@ -63,7 +63,13 @@ from ops_runtime import (
     resolve_incident_state,
 )
 from sentinel import sentinel_loop, run_full_scan, fetch_last_ux_report, format_ux_telegram_report
-from fiscal import EmissaoNFCeRequest, emitir_nfce
+try:
+    from fiscal import EmissaoNFCeRequest, emitir_nfce
+    FISCAL_ENABLED = True
+except ImportError:
+    FISCAL_ENABLED = False
+    EmissaoNFCeRequest = None  # type: ignore
+    emitir_nfce = None  # type: ignore
 from git_ops import auto_ship, git_status, generate_commit_message, git_diff, git_stage, git_detect_conflicts
 from forge_agent import (
     verify_webhook_signature,
@@ -1445,7 +1451,7 @@ async def set_telegram_webhook(
 # ── NFC-e: Emissão direta com Sefaz (R$0) ────────────────────────────────────
 @app.post("/api/fiscal/emitir-nfce")
 async def fiscal_emitir_nfce(
-    payload: EmissaoNFCeRequest,
+    payload: "EmissaoNFCeRequest",  # type: ignore[name-defined]
     authorization: str = Header(default=""),
 ):
     """
@@ -1453,6 +1459,9 @@ async def fiscal_emitir_nfce(
     O delivery precisa ter certificado A1 e dados fiscais configurados.
     """
     _require_secret(authorization)
+
+    if not FISCAL_ENABLED:
+        raise HTTPException(status_code=503, detail="Módulo fiscal indisponível neste ambiente.")
 
     result = emitir_nfce(payload)
 

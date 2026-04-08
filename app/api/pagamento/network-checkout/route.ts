@@ -13,9 +13,19 @@ import { checkRateLimit, getRateLimitIdentifier } from '@/lib/shared/rate-limit'
 import { getSiteUrl } from '@/lib/shared/site-url'
 import { COMPANY_NAME, COMPANY_PAYMENT_DESCRIPTOR } from '@/lib/shared/brand'
 
+const ALLOWED_NETWORK_BRANCH_BLOCKS = [3, 5, 10, 20] as const
+
 const networkCheckoutSchema = z.object({
   parentRestaurantId: z.string().uuid(),
-  branchEmails: z.array(z.string().email()).min(1).max(50),
+  branchEmails: z
+    .array(z.string().email())
+    .refine(
+      (emails) =>
+        ALLOWED_NETWORK_BRANCH_BLOCKS.includes(
+          emails.length as (typeof ALLOWED_NETWORK_BRANCH_BLOCKS)[number]
+        ),
+      'branchEmails must match one of the supported blocks: 3, 5, 10 or 20'
+    ),
 })
 
 export async function POST(request: NextRequest) {
@@ -96,6 +106,17 @@ export async function POST(request: NextRequest) {
   }
 
   const branchCount = emailValidation.valid.length
+  if (
+    !ALLOWED_NETWORK_BRANCH_BLOCKS.includes(
+      branchCount as (typeof ALLOWED_NETWORK_BRANCH_BLOCKS)[number]
+    )
+  ) {
+    return NextResponse.json(
+      { error: 'Quantidade de filiais deve ser um dos blocos suportados: 3, 5, 10 ou 20.' },
+      { status: 400 }
+    )
+  }
+
   const planSlug = (restaurant.plan_slug || 'premium') as keyof typeof PUBLIC_SUBSCRIPTION_PRICES
   const planMonthlyPrice =
     PUBLIC_SUBSCRIPTION_PRICES[planSlug]?.monthly ?? PUBLIC_SUBSCRIPTION_PRICES.premium.monthly

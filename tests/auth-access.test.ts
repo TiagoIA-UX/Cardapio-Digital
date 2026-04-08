@@ -78,6 +78,6 @@ test('resolveRecommendedLoginMethod highlights the safest path for each auth err
 
 test('login guidance exposes stable labels for the interface', () => {
   const guidance = getLoginMethodGuidance('magiclink')
-  assert.equal(guidance.ctaLabel, 'Receber link de acesso')
+  assert.equal(guidance.ctaLabel, 'Receber código de acesso')
   assert.equal(listLoginMethodGuidance().length, 3)
 })

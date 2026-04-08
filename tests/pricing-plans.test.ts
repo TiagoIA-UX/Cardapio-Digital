@@ -132,8 +132,9 @@ test('card_12x é calculado (não zero)', () => {
 // Network expansion
 // ═══════════════════════════════════════════════════════════════
 
-test('NETWORK_EXPANSION_UNIT_OPTIONS: 5 opções', () => {
-  assert.equal(NETWORK_EXPANSION_UNIT_OPTIONS.length, 5)
+test('NETWORK_EXPANSION_UNIT_OPTIONS: 4 blocos fixos', () => {
+  assert.equal(NETWORK_EXPANSION_UNIT_OPTIONS.length, 4)
+  assert.deepEqual(NETWORK_EXPANSION_UNIT_OPTIONS, [3, 5, 10, 20])
 })
 
 test('formatNetworkExpansionLabel singular', () => {

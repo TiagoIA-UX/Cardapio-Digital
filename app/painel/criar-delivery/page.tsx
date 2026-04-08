@@ -8,7 +8,10 @@ import { Store, Loader2, ArrowRight, CheckCircle2, Sparkles, Circle } from 'luci
 import { buildRestaurantInstallation } from '@/lib/domains/core/restaurant-onboarding'
 import { normalizeTemplateSlug } from '@/lib/domains/core/restaurant-customization'
 import { resolveRestaurantCreationEntitlements } from '@/lib/domains/core/commercial-entitlements'
-import { getCreateDeliveryWizardProgress, getCreateDeliveryWizardSteps } from '@/lib/domains/core/setup-wizard'
+import {
+  getCreateDeliveryWizardProgress,
+  getCreateDeliveryWizardSteps,
+} from '@/lib/domains/core/setup-wizard'
 import { trackEvent } from '@/lib/domains/marketing/analytics'
 
 // ========================================
@@ -433,8 +436,8 @@ export default function CriarRestaurantePage() {
                 <div className="flex gap-3">
                   <CheckCircle2 className="text-primary mt-0.5 h-4 w-4" />
                   <p className="text-muted-foreground">
-                    Se preferir ajuda humana, o suporte acompanha você no WhatsApp durante a
-                    implantação.
+                    A implantacao foi desenhada para acontecer direto no painel. Se surgir alguma
+                    excecao, o suporte entra como contingencia.
                   </p>
                 </div>
               </div>

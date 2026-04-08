@@ -19,10 +19,11 @@ const LOGIN_METHOD_GUIDANCE: Record<LoginMethod, LoginMethodGuidance> = {
   },
   magiclink: {
     method: 'magiclink',
-    title: 'Receber link de acesso',
-    summary: 'Ideal para quem comprou no checkout e ainda não vinculou o Google.',
-    whenToUse: 'Use quando você quer entrar pelo e-mail sem depender de senha salva no momento.',
-    ctaLabel: 'Receber link de acesso',
+    title: 'Receber código por e-mail',
+    summary: 'Ideal para quem comprou no checkout e quer confirmar o acesso pelo próprio e-mail.',
+    whenToUse:
+      'Use quando você quer entrar pelo e-mail com um código temporário, sem depender de senha.',
+    ctaLabel: 'Receber código de acesso',
   },
   reset: {
     method: 'reset',

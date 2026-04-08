@@ -255,16 +255,28 @@ export default function AdminAlertasPage() {
               </div>
               <div className="flex h-2 w-full overflow-hidden rounded-full bg-zinc-800">
                 <div
-                  className="bg-red-500 transition-all w-(--bar-crit)"
-                  style={{ '--bar-crit': `${stats.severity.total ? (stats.severity.critical / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
+                  className="w-(--bar-crit) bg-red-500 transition-all"
+                  style={
+                    {
+                      '--bar-crit': `${stats.severity.total ? (stats.severity.critical / stats.severity.total) * 100 : 0}%`,
+                    } as React.CSSProperties
+                  }
                 />
                 <div
-                  className="bg-yellow-500 transition-all w-(--bar-warn)"
-                  style={{ '--bar-warn': `${stats.severity.total ? (stats.severity.warning / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
+                  className="w-(--bar-warn) bg-yellow-500 transition-all"
+                  style={
+                    {
+                      '--bar-warn': `${stats.severity.total ? (stats.severity.warning / stats.severity.total) * 100 : 0}%`,
+                    } as React.CSSProperties
+                  }
                 />
                 <div
-                  className="bg-blue-500 transition-all w-(--bar-info)"
-                  style={{ '--bar-info': `${stats.severity.total ? (stats.severity.info / stats.severity.total) * 100 : 0}%` } as React.CSSProperties}
+                  className="w-(--bar-info) bg-blue-500 transition-all"
+                  style={
+                    {
+                      '--bar-info': `${stats.severity.total ? (stats.severity.info / stats.severity.total) * 100 : 0}%`,
+                    } as React.CSSProperties
+                  }
                 />
               </div>
               <div className="flex gap-3 text-xs text-zinc-500">
@@ -301,8 +313,10 @@ export default function AdminAlertasPage() {
                         </div>
                         <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-zinc-800">
                           <div
-                            className="absolute inset-y-0 left-0 rounded-full bg-purple-500 w-(--bar-src)"
-                            style={{ '--bar-src': `${(s.total / max) * 100}%` } as React.CSSProperties}
+                            className="absolute inset-y-0 left-0 w-(--bar-src) rounded-full bg-purple-500"
+                            style={
+                              { '--bar-src': `${(s.total / max) * 100}%` } as React.CSSProperties
+                            }
                           />
                         </div>
                         <span className="w-8 text-right text-xs text-zinc-500">{s.total}</span>
@@ -342,8 +356,12 @@ export default function AdminAlertasPage() {
                         <div
                           key={h.hour}
                           title={`${h.hour}: ${h.total} alertas`}
-                          className={`flex-1 rounded-sm transition-all h-(--bar-h) ${h.critical > 0 ? 'bg-red-500/70' : 'bg-zinc-600'}`}
-                          style={{ '--bar-h': `${Math.max(4, (h.total / maxHour) * 100)}%` } as React.CSSProperties}
+                          className={`h-(--bar-h) flex-1 rounded-sm transition-all ${h.critical > 0 ? 'bg-red-500/70' : 'bg-zinc-600'}`}
+                          style={
+                            {
+                              '--bar-h': `${Math.max(4, (h.total / maxHour) * 100)}%`,
+                            } as React.CSSProperties
+                          }
                         />
                       )
                     })}

@@ -17,11 +17,11 @@ export interface NetworkPricing {
 }
 
 /** Faixas de desconto por volume */
-const VOLUME_DISCOUNTS: { minBranches: number; discount: number; label: string }[] = [
-  { minBranches: 20, discount: 0.25, label: 'Franquia' },
-  { minBranches: 10, discount: 0.2, label: 'Enterprise' },
-  { minBranches: 5, discount: 0.15, label: 'Rede grande' },
-  { minBranches: 3, discount: 0.1, label: 'Rede' },
+const VOLUME_DISCOUNTS: { branchCount: number; discount: number; label: string }[] = [
+  { branchCount: 20, discount: 0.25, label: 'Franquia' },
+  { branchCount: 10, discount: 0.2, label: 'Enterprise' },
+  { branchCount: 5, discount: 0.15, label: 'Rede grande' },
+  { branchCount: 3, discount: 0.1, label: 'Rede' },
 ]
 
 export function calculateNetworkPrice(
@@ -36,7 +36,7 @@ export function calculateNetworkPrice(
     }
   }
 
-  const discountTier = VOLUME_DISCOUNTS.find((d) => branchCount >= d.minBranches)
+  const discountTier = VOLUME_DISCOUNTS.find((d) => branchCount === d.branchCount)
   const discountRate = discountTier?.discount ?? 0
 
   const monthlyPrice = Math.round(planMonthlyPrice * (1 - discountRate))
@@ -109,13 +109,13 @@ export function formatDiscountPercent(rate: number): string {
 }
 
 export function getDiscountTierLabel(branchCount: number): string {
-  const tier = VOLUME_DISCOUNTS.find((d) => branchCount >= d.minBranches)
+  const tier = VOLUME_DISCOUNTS.find((d) => branchCount === d.branchCount)
   return tier?.label ?? 'Padrão'
 }
 
 export function getVolumeDiscountTiers() {
   return VOLUME_DISCOUNTS.map((d) => ({
-    minBranches: d.minBranches,
+    branchCount: d.branchCount,
     discount: d.discount,
     label: d.label,
     discountPercent: formatDiscountPercent(d.discount),
