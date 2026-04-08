@@ -92,6 +92,21 @@ jobs:
           echo "task_id=$TASK_ID" >> "$GITHUB_OUTPUT"
           echo "Task ID: $TASK_ID"
 
+      - name: Gerar stub de tipos do Next.js
+        run: |
+          mkdir -p .next/types
+          cat > .next/types/routes.d.ts << 'EOF'
+          // Stub gerado pelo CI para permitir tsc --noEmit sem next build
+          type AppRoutes = string
+          type AppRouteHandlerRoutes = string
+          type PageRoutes = never
+          type LayoutRoutes = string
+          type RedirectRoutes = never
+          type RewriteRoutes = never
+          type Routes = string
+          interface ParamMap {}
+          EOF
+
       - name: TypeScript — checar tipos
         id: tsc
         run: npx tsc --noEmit 2>&1 | tee /tmp/tsc_output.txt || true
@@ -274,6 +289,7 @@ jobs:
         id: collect_errors
         shell: bash
         run: |
+          mkdir -p .next/types && echo "type AppRoutes=string;type AppRouteHandlerRoutes=string;type PageRoutes=never;type LayoutRoutes=string;type RedirectRoutes=never;type RewriteRoutes=never;type Routes=string;interface ParamMap {}" > .next/types/routes.d.ts
           npx tsc --noEmit 2>&1 | head -c 6000 > /tmp/tsc_full.txt || true
           npm run lint 2>&1 | head -c 3000 > /tmp/lint_full.txt || true
 
@@ -413,6 +429,7 @@ jobs:
 
           # Verificar se o build ainda passa após o patch
           if [ "$APPLIED" = "true" ]; then
+            mkdir -p .next/types && echo "type AppRoutes=string;type AppRouteHandlerRoutes=string;type PageRoutes=never;type LayoutRoutes=string;type RedirectRoutes=never;type RewriteRoutes=never;type Routes=string;interface ParamMap {}" > .next/types/routes.d.ts
             npx tsc --noEmit 2>&1 | tee /tmp/tsc_after.txt || true
             TSC_REMAINING=$(grep -cE "error TS[0-9]+" /tmp/tsc_after.txt 2>/dev/null || echo "0")
             echo "tsc_remaining=$TSC_REMAINING" >> "$GITHUB_OUTPUT"

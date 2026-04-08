@@ -31,7 +31,10 @@ jobs:
         run: npm run lint
 
       - name: TypeScript
-        run: npx tsc --noEmit
+        run: |
+          mkdir -p .next/types
+          echo "type AppRoutes=string;type AppRouteHandlerRoutes=string;type PageRoutes=never;type LayoutRoutes=string;type RedirectRoutes=never;type RewriteRoutes=never;type Routes=string;interface ParamMap {}" > .next/types/routes.d.ts
+          npx tsc --noEmit
 
   security:
     name: Dependency Security

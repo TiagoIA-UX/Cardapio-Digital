@@ -29,13 +29,39 @@ function isAuthorizedCronRequest(request: NextRequest) {
 async function loadOverdueSubscriptions(supabaseAdmin: ReturnType<typeof getSupabaseAdmin>) {
   const { data, error } = await supabaseAdmin.rpc('check_overdue_subscriptions')
 
-  if (error) {
+  // Se a RPC existir, usar o resultado dela
+  if (!error) {
+    return ((data as OverdueSubscriptionRow[] | null) ?? []).map((item) => ({
+      ...item,
+      days_overdue: Number(item.days_overdue ?? 0),
+    }))
+  }
+
+  // Fallback: query direta quando a RPC não está no schema cache
+  const isMissingRpc =
+    error.message.includes('Could not find the function') || error.message.includes('schema cache')
+
+  if (!isMissingRpc) {
     throw error
   }
 
-  return ((data as OverdueSubscriptionRow[] | null) ?? []).map((item) => ({
-    ...item,
-    days_overdue: Number(item.days_overdue ?? 0),
+  const { data: subs, error: subsError } = await supabaseAdmin
+    .from('subscriptions')
+    .select('restaurant_id, user_id, current_period_end, status, restaurants!inner(id, suspended)')
+    .eq('status', 'active')
+    .lt('current_period_end', new Date().toISOString())
+
+  if (subsError) throw subsError
+
+  const now = Date.now()
+  return ((subs ?? []) as Array<Record<string, unknown>>).map((item) => ({
+    restaurant_id: item.restaurant_id as string,
+    user_id: (item.user_id as string | null) ?? null,
+    restaurant_name: null,
+    user_email: null,
+    days_overdue: Math.floor(
+      (now - new Date(item.current_period_end as string).getTime()) / 86400000
+    ),
   }))
 }
 
@@ -160,10 +186,7 @@ export async function GET(request: NextRequest) {
       error: message,
       details: { rpc: 'auto_suspend_overdue_restaurants' },
     }).catch(() => {})
-    return NextResponse.json(
-      { error: message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
 
@@ -185,14 +208,12 @@ export async function POST(request: NextRequest) {
     const overdueList = await loadOverdueSubscriptions(supabaseAdmin)
 
     // Enviar alertas (aqui poderia enviar email/WhatsApp)
-    const alerts = (overdueList || []).map(
-      (item: OverdueSubscriptionRow) => ({
-        restaurant_id: item.restaurant_id,
-        user_id: item.user_id ?? null,
-        days_overdue: item.days_overdue,
-        will_suspend: item.days_overdue > DAYS_TOLERANCE,
-      })
-    )
+    const alerts = (overdueList || []).map((item: OverdueSubscriptionRow) => ({
+      restaurant_id: item.restaurant_id,
+      user_id: item.user_id ?? null,
+      days_overdue: item.days_overdue,
+      will_suspend: item.days_overdue > DAYS_TOLERANCE,
+    }))
 
     return NextResponse.json({
       success: true,
