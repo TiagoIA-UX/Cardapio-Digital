@@ -37,7 +37,7 @@ SITE_URL: str = os.getenv("NEXT_PUBLIC_SITE_URL", "https://zairyx.com.br")
 
 # Intervalo base em segundos (15 min) — aumenta se tudo OK, diminui se crítico
 BASE_INTERVAL = int(os.getenv("SENTINEL_INTERVAL_SECONDS", "900"))
-MIN_INTERVAL = 120   # 2 min em emergência
+MIN_INTERVAL = int(os.getenv("SENTINEL_MIN_INTERVAL_SECONDS", "600"))  # 10 min em emergência (dedup evita spam)
 MAX_INTERVAL = 3600  # 1h se tudo tranquilo
 
 # ── Supabase helpers ──────────────────────────────────────────────────────────
