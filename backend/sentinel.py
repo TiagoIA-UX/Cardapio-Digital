@@ -1040,14 +1040,28 @@ async def weekly_report_loop(send_fn: Any) -> None:
     # Aguarda 10 minutos após boot antes de verificar
     await asyncio.sleep(600)
 
+    # No startup, inicializa o timer com o tempo atual para não disparar imediatamente
+    if _last_weekly_report_at == 0.0:
+        _last_weekly_report_at = datetime.now(timezone.utc).timestamp()
+        print("[sentinel] 📈 Relatório semanal: timer inicializado, próximo envio em 7 dias.")
+
+    _last_weekly_hash: str = ""
+
     while True:
         now = datetime.now(timezone.utc).timestamp()
         if now - _last_weekly_report_at >= WEEKLY_REPORT_INTERVAL_SECONDS:
             try:
                 report_text = await generate_weekly_report()
-                await send_fn(report_text)
-                _last_weekly_report_at = datetime.now(timezone.utc).timestamp()
-                print("[sentinel] 📈 Relatório semanal enviado.")
+                from hashlib import sha1
+                report_hash = sha1(report_text.encode()).hexdigest()[:12]
+                if report_hash == _last_weekly_hash:
+                    print("[sentinel] 🔇 Relatório semanal suprimido — conteúdo idêntico ao anterior.")
+                    _last_weekly_report_at = datetime.now(timezone.utc).timestamp()
+                else:
+                    await send_fn(report_text)
+                    _last_weekly_hash = report_hash
+                    _last_weekly_report_at = datetime.now(timezone.utc).timestamp()
+                    print("[sentinel] 📈 Relatório semanal enviado.")
             except Exception as exc:
                 print(f"[sentinel] ❌ Erro no relatório semanal: {exc}")
         await asyncio.sleep(3600)  # verifica a cada hora
