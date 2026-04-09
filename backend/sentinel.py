@@ -758,14 +758,12 @@ async def run_full_scan() -> dict[str, Any]:
         tg_report = format_telegram_report(report, ai_summary)
         wa_report = format_whatsapp_report(report, ai_summary)
 
-        # 6. Dedup: suprime envio se issues idênticos ao último relatório E dentro da janela
+        # 6. Dedup: suprime envio se issues idênticos ao último relatório (hash igual = silêncio total)
         global _last_report_hash, _last_report_sent_at
         now_ts = datetime.now(timezone.utc).timestamp()
         current_hash = _compute_report_hash(report)
-        already_sent_recently = (now_ts - _last_report_sent_at) < REPORT_MIN_REPEAT_SECONDS
-        if current_hash == _last_report_hash and already_sent_recently:
-            print(f"[sentinel] 🔇 Relatório suprimido — sem mudanças (hash {current_hash}). "
-                  f"Próximo envio em {int(REPORT_MIN_REPEAT_SECONDS - (now_ts - _last_report_sent_at))}s.")
+        if current_hash == _last_report_hash:
+            print(f"[sentinel] 🔇 Relatório suprimido — sem mudanças (hash {current_hash}).")
             return {
                 "severity": report.severity,
                 "critical": report.critical_count,
