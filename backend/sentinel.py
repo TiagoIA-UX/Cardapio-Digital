@@ -759,7 +759,8 @@ async def run_full_scan() -> dict[str, Any]:
         wa_report = format_whatsapp_report(report, ai_summary)
 
         # 6. Dedup: suprime envio se issues idênticos ao último relatório (hash igual = silêncio total)
-        global _last_report_hash, _last_report_sent_at
+        #    No primeiro scan após (re)start, apenas registra o hash sem enviar para evitar spam de deploy.
+        global _last_report_hash, _last_report_sent_at, _startup_scan_done
         now_ts = datetime.now(timezone.utc).timestamp()
         current_hash = _compute_report_hash(report)
         if current_hash == _last_report_hash:
@@ -775,6 +776,23 @@ async def run_full_scan() -> dict[str, Any]:
                 "suppressed": True,
                 "timestamp": ts,
             }
+        if not _startup_scan_done:
+            _startup_scan_done = True
+            _last_report_hash = current_hash
+            print(f"[sentinel] 🔇 Scan de startup — hash {current_hash} registrado, sem envio.")
+            return {
+                "severity": report.severity,
+                "critical": report.critical_count,
+                "warning": report.warning_count,
+                "issues": len(report.issues),
+                "ai_summary": "",
+                "telegram_sent": False,
+                "whatsapp_link_sent": False,
+                "suppressed": True,
+                "startup": True,
+                "timestamp": ts,
+            }
+        _startup_scan_done = True
         _last_report_hash = current_hash
         _last_report_sent_at = now_ts
 
@@ -881,6 +899,7 @@ _last_weekly_report_at: float = 0.0
 REPORT_MIN_REPEAT_SECONDS: int = int(os.getenv("SENTINEL_REPORT_REPEAT_SECONDS", "3600"))  # 1h
 _last_report_hash: str = ""
 _last_report_sent_at: float = 0.0
+_startup_scan_done: bool = False  # primeiro scan após (re)start: registra hash sem enviar
 
 
 async def generate_weekly_report() -> str:
