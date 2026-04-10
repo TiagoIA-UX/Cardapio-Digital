@@ -10,7 +10,7 @@ test.describe('Seção de Edição Fácil', () => {
     await expect(
       page.getByRole('heading', {
         name: /Mude preços, crie combos e atualize produtos/i,
-      }),
+      })
     ).toBeVisible()
     await expect(page.getByText('em segundos — sem pagar desenvolvedor')).toBeVisible()
     await expect(page.getByText(/Cardápio de verão no litoral/i)).toBeVisible()

@@ -12,8 +12,11 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1)
 }
 
+const resolvedSupabaseUrl = supabaseUrl
+const resolvedSupabaseKey = supabaseKey
+
 async function createTestAccount() {
-  const supabase = createClient(supabaseUrl, supabaseKey)
+  const supabase = createClient(resolvedSupabaseUrl, resolvedSupabaseKey)
 
   const email = 'teste@zairyx.com'
   const password = 'teste123456'
@@ -21,7 +24,7 @@ async function createTestAccount() {
   console.log('🔄 Criando conta de teste...')
   console.log('📧 Email:', email)
   console.log('🔑 Senha:', password)
-  console.log('🌐 URL:', supabaseUrl.substring(0, 30) + '...')
+  console.log('🌐 URL:', resolvedSupabaseUrl.substring(0, 30) + '...')
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -29,9 +32,9 @@ async function createTestAccount() {
     options: {
       data: {
         nome: 'Usuário Teste Zairyx',
-        telefone: '(11) 99999-9999'
-      }
-    }
+        telefone: '(11) 99999-9999',
+      },
+    },
   })
 
   if (error) {

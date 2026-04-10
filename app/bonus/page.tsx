@@ -1,17 +1,18 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BookOpen, Download, ExternalLink, Gift, Star } from 'lucide-react'
+import { ArrowLeft, BookOpen, ExternalLink, Gift, ShoppingCart, Star } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Bônus Exclusivos | Zairyx',
-  description: 'Acesse seu e-book gratuito de Google Meu Negócio e outros materiais exclusivos',
+  title: 'Bônus Exclusivos e Compra Avulsa | Zairyx',
+  description:
+    'Conheça o e-book de Google Meu Negócio da Zairyx. Assinantes acessam como bônus e novos clientes podem comprar avulso.',
 }
 
 export default function BonusPublicPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="from-background to-secondary/20 min-h-screen bg-gradient-to-b">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
+      <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4">
           <Link
             href="/"
@@ -20,7 +21,7 @@ export default function BonusPublicPage() {
             <ArrowLeft className="h-4 w-4" />
             Voltar ao Início
           </Link>
-          <div className="h-4 w-px bg-border" />
+          <div className="bg-border h-4 w-px" />
           <div className="flex items-center gap-2">
             <Gift className="text-primary h-5 w-5" />
             <span className="text-foreground font-semibold">Seus Materiais Exclusivos</span>
@@ -64,7 +65,7 @@ export default function BonusPublicPage() {
                   Guia Completo de Configuração Profissional
                 </p>
               </div>
-              <div className="hidden shrink-0 rounded-xl border border-purple-300 bg-white px-4 py-2 text-center dark:border-purple-700 dark:bg-purple-900 md:block">
+              <div className="hidden shrink-0 rounded-xl border border-purple-300 bg-white px-4 py-2 text-center md:block dark:border-purple-700 dark:bg-purple-900">
                 <div className="text-foreground/60 text-xs">Valor</div>
                 <div className="text-primary text-2xl font-bold">R$ 197</div>
               </div>
@@ -73,8 +74,7 @@ export default function BonusPublicPage() {
             {/* Conteúdo */}
             <div className="mb-6 space-y-3 rounded-xl border border-purple-200 bg-white/60 p-5 dark:border-purple-800 dark:bg-purple-950/30">
               <h3 className="flex items-center gap-2 font-semibold text-purple-900 dark:text-purple-100">
-                <BookOpen className="h-5 w-5" />
-                O que você vai aprender:
+                <BookOpen className="h-5 w-5" />O que você vai aprender:
               </h3>
               <ul className="space-y-2 text-sm text-purple-900/90 dark:text-purple-100/90">
                 <li className="flex items-start gap-2">
@@ -103,44 +103,48 @@ export default function BonusPublicPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">✓</span>
-                  <span>
-                    Modelos prontos de respostas a avaliações (5 cenários com exemplos)
-                  </span>
+                  <span>Modelos prontos de respostas a avaliações (5 cenários com exemplos)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">✓</span>
-                  <span>
-                    Integração com seu cardápio digital Zairyx + checklist de 40+ itens
-                  </span>
+                  <span>Integração com seu cardápio digital Zairyx + checklist de 40+ itens</span>
                 </li>
               </ul>
             </div>
 
-            {/* Botão de Download */}
-            <a
-              href="/Ebook-GMB-Profissional-v2.md"
-              download="Google-Meu-Negocio-Guia-Completo-Zairyx.md"
-              className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
-            >
-              <Download className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
-              <span>Baixar E-book Agora (92 páginas)</span>
-            </a>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Link
+                href="/ebook-google-meu-negocio"
+                className="group flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-center font-bold text-white shadow-lg transition-all hover:shadow-xl"
+              >
+                <ShoppingCart className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
+                <span>Comprar avulso</span>
+              </Link>
+              <Link
+                href="/login?redirect=%2Fpainel%2Fbonus"
+                className="flex items-center justify-center gap-3 rounded-xl border border-purple-300 bg-white px-6 py-4 text-center font-bold text-purple-800 transition-colors hover:bg-purple-50 dark:border-purple-700 dark:bg-purple-950 dark:text-purple-100"
+              >
+                <Gift className="h-5 w-5" />
+                <span>Já sou assinante</span>
+              </Link>
+            </div>
 
             <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-center text-xs font-medium text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
-              📄 Formato: Markdown (.md) — Abra em qualquer editor de texto ou VS Code
+              Assinantes acessam o download dentro do painel. Quem ainda não é cliente pode comprar
+              o guia separadamente.
             </div>
           </div>
         </div>
 
         {/* Setup Assistido */}
-        <div className="mb-6 overflow-hidden rounded-2xl border border-border bg-card shadow-md">
+        <div className="border-border bg-card mb-6 overflow-hidden rounded-2xl border shadow-md">
           <div className="p-6">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-2xl dark:bg-blue-900">
                 🛠️
               </div>
               <div className="flex-1">
-                <h3 className="mb-2 text-lg font-bold text-foreground">
+                <h3 className="text-foreground mb-2 text-lg font-bold">
                   Setup Assistido (Bônus Extra)
                 </h3>
                 <p className="text-foreground/80 mb-4 text-sm">
@@ -159,7 +163,7 @@ export default function BonusPublicPage() {
                   Agendar pelo WhatsApp
                 </Link>
               </div>
-              <div className="hidden shrink-0 rounded-lg border border-green-300 bg-green-100 px-3 py-1.5 text-center dark:border-green-700 dark:bg-green-900 md:block">
+              <div className="hidden shrink-0 rounded-lg border border-green-300 bg-green-100 px-3 py-1.5 text-center md:block dark:border-green-700 dark:bg-green-900">
                 <div className="text-xs text-green-700 dark:text-green-300">Valor</div>
                 <div className="text-lg font-bold text-green-700 dark:text-green-300">R$ 350</div>
               </div>
@@ -185,27 +189,36 @@ export default function BonusPublicPage() {
             </div>
             <div className="text-2xl">=</div>
             <div>
-              <div className="text-green-700 dark:text-green-300 text-xs font-bold">TOTAL</div>
+              <div className="text-xs font-bold text-green-700 dark:text-green-300">TOTAL</div>
               <div className="text-2xl font-bold text-green-700 dark:text-green-300">R$ 547</div>
             </div>
           </div>
           <p className="text-foreground/80 text-sm">
-            Tudo isso <strong className="text-foreground">100% GRÁTIS</strong> como agradecimento por
-            ser assinante Zairyx 🎉
+            Tudo isso <strong className="text-foreground">100% GRÁTIS</strong> como agradecimento
+            por ser assinante Zairyx 🎉
           </p>
         </div>
 
         {/* CTA para adquirir plano */}
-        <div className="mt-8 rounded-2xl border border-border bg-card p-6 text-center">
+        <div className="border-border bg-card mt-8 rounded-2xl border p-6 text-center">
           <p className="text-foreground/80 mb-4 text-sm">
-            Ainda não é assinante? Adquira qualquer plano e ganhe este bônus:
+            Você pode comprar o guia de forma avulsa ou liberar este bônus junto com um plano
+            Zairyx.
           </p>
-          <Link
-            href="/precos"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
-          >
-            Ver Planos e Preços
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/ebook-google-meu-negocio"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
+            >
+              Comprar o guia
+            </Link>
+            <Link
+              href="/precos"
+              className="border-primary text-primary hover:bg-primary/5 inline-flex items-center gap-2 rounded-lg border px-6 py-3 font-semibold transition-colors"
+            >
+              Ver planos com bônus
+            </Link>
+          </div>
         </div>
       </main>
     </div>

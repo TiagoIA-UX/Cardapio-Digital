@@ -282,11 +282,19 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
-                    Toda vez que você paga alguém para <strong className="font-extrabold text-zinc-950">mudar preço</strong>, <strong className="font-extrabold text-zinc-950">criar combo</strong> ou <strong className="font-extrabold text-zinc-950">trocar foto</strong>, sai dinheiro do caixa sem necessidade. Uma rotina de 5 ajustes no mês pode virar <strong className="text-rose-700">R$ 750 indo embora</strong> só para manter o básico funcionando.
+                    Toda vez que você paga alguém para{' '}
+                    <strong className="font-extrabold text-zinc-950">mudar preço</strong>,{' '}
+                    <strong className="font-extrabold text-zinc-950">criar combo</strong> ou{' '}
+                    <strong className="font-extrabold text-zinc-950">trocar foto</strong>, sai
+                    dinheiro do caixa sem necessidade. Uma rotina de 5 ajustes no mês pode virar{' '}
+                    <strong className="text-rose-700">R$ 750 indo embora</strong> só para manter o
+                    básico funcionando.
                   </p>
                   <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
                     <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
-                      ✓ Com o painel editor: <span className="text-emerald-900">R$ 0 por ajuste</span>. Você altera quando quiser, sem fila, sem intermediário e sem depender de desenvolvedor.
+                      ✓ Com o painel editor:{' '}
+                      <span className="text-emerald-900">R$ 0 por ajuste</span>. Você altera quando
+                      quiser, sem fila, sem intermediário e sem depender de desenvolvedor.
                     </p>
                   </div>
                 </div>
@@ -309,11 +317,17 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
-                    Segunda vendeu pouco? <strong className="font-extrabold text-zinc-950">Baixe o preço.</strong> Sexta lotou? <strong className="font-extrabold text-zinc-950">Suba a margem.</strong> Páscoa, feriado, verão no litoral ou promoção relâmpago? <strong className="text-amber-700">Você publica no mesmo instante</strong> e aproveita o momento certo de venda.
+                    Segunda vendeu pouco?{' '}
+                    <strong className="font-extrabold text-zinc-950">Baixe o preço.</strong> Sexta
+                    lotou? <strong className="font-extrabold text-zinc-950">Suba a margem.</strong>{' '}
+                    Páscoa, feriado, verão no litoral ou promoção relâmpago?{' '}
+                    <strong className="text-amber-700">Você publica no mesmo instante</strong> e
+                    aproveita o momento certo de venda.
                   </p>
                   <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
                     <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
-                      ✓ 2 cliques, atualização imediata e publicação no ar direto do celular ou computador. Sem atraso, sem espera, sem perder timing de faturamento.
+                      ✓ 2 cliques, atualização imediata e publicação no ar direto do celular ou
+                      computador. Sem atraso, sem espera, sem perder timing de faturamento.
                     </p>
                   </div>
                 </div>
@@ -325,7 +339,8 @@ export default function Home() {
                         Operação multiunidade
                       </span>
                       <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
-                        🏖️ Quem opera centro, bairro e litoral precisa de liberdade, não de retrabalho
+                        🏖️ Quem opera centro, bairro e litoral precisa de liberdade, não de
+                        retrabalho
                       </p>
                     </div>
                     <div className="rounded-2xl border border-sky-100 bg-sky-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
@@ -336,11 +351,17 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
-                    Delivery no centro, quiosque no litoral, operação sazonal no verão, cardápio diferente no inverno: tudo isso fica mais simples quando cada unidade pode ser ajustada por você. <strong className="text-sky-700">Sem ligação, sem espera e sem ruído entre equipes.</strong>
+                    Delivery no centro, quiosque no litoral, operação sazonal no verão, cardápio
+                    diferente no inverno: tudo isso fica mais simples quando cada unidade pode ser
+                    ajustada por você.{' '}
+                    <strong className="text-sky-700">
+                      Sem ligação, sem espera e sem ruído entre equipes.
+                    </strong>
                   </p>
                   <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
                     <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
-                      ✓ Controle centralizado para editar categorias, preços, combos e campanhas sazonais em cada operação com muito mais clareza.
+                      ✓ Controle centralizado para editar categorias, preços, combos e campanhas
+                      sazonais em cada operação com muito mais clareza.
                     </p>
                   </div>
                 </div>

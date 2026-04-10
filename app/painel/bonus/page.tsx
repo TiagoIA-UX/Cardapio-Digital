@@ -113,8 +113,7 @@ export default function BonusPage() {
 
             {/* Botão de Download */}
             <a
-              href="/Ebook-GMB-Profissional-v2.md"
-              download="Google-Meu-Negocio-Guia-Completo-Zairyx.md"
+              href="/api/ebook-gmb/download?source=bonus"
               className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
             >
               <Download className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
@@ -122,7 +121,7 @@ export default function BonusPage() {
             </a>
 
             <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-center text-xs font-medium text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
-              📄 Formato: Markdown (.md) — Abra em qualquer editor de texto ou VS Code
+              Download exclusivo para assinantes com acesso ao painel.
             </div>
           </div>
         </div>

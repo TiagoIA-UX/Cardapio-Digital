@@ -106,10 +106,10 @@ export default function PrecosPage() {
         </div>
 
         {/* Bônus Exclusivo */}
-        <div className="mb-12 overflow-hidden rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 p-8 shadow-lg dark:border-purple-800 dark:from-purple-950/50 dark:via-blue-950/50 dark:to-indigo-950/50">
+        <div className="mb-12 overflow-hidden rounded-2xl border-2 border-purple-200 bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50 p-8 shadow-lg dark:border-purple-800 dark:from-purple-950/50 dark:via-blue-950/50 dark:to-indigo-950/50">
           <div className="flex flex-col items-center gap-6 md:flex-row md:gap-8">
             <div className="flex flex-col items-center gap-4 md:w-1/3">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-5xl shadow-xl">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-indigo-600 text-5xl shadow-xl">
                 🎁
               </div>
               <div className="rounded-full border-2 border-purple-300 bg-white px-4 py-1.5 text-sm font-bold text-purple-700 dark:border-purple-700 dark:bg-purple-900 dark:text-purple-100">

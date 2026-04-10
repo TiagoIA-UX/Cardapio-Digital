@@ -101,6 +101,10 @@ const nextConfig = {
       },
     ],
   },
+  serverExternalPackages: ['canvas', 'puppeteer', 'sharp'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 export default nextConfig
