@@ -6,16 +6,14 @@ import { useEffect } from 'react'
 
 const VARIANTS = {
   A: {
-    badge: 'Ja vende no iFood? Descubra quanto da sua margem ainda fica fora do seu caixa',
+    badge: 'Seu cliente ja te conhece — por que pagar 15% ao iFood?',
     heading: (
       <>
-        Se hoje voce vende no
-        <span className="mx-2 inline-flex rounded-full bg-orange-500 px-3 py-1 text-[0.72em] font-extrabold tracking-[0.08em] text-white align-middle uppercase">
-          iFood
-        </span>
-        <span className="text-orange-400"> parte do seu lucro pode estar ficando la.</span>
-        <span className="mt-2 block text-green-400">
-          Crie seu canal proprio e recupere margem sem parar de vender onde ja vende.
+        <span className="text-orange-400">Cliente fiel pedindo pelo iFood?</span>
+        {' '}
+        <span className="text-white">Ele pode pedir direto de voce.</span>
+        <span className="mt-3 block text-2xl md:text-3xl lg:text-4xl font-semibold text-green-400">
+          Seu cardapio. Sua marca. 100% do lucro.
         </span>
       </>
     ),
@@ -31,6 +29,19 @@ const VARIANTS = {
         <span className="text-orange-400"> sem deixar toda a margem por la.</span>
         <span className="mt-2 block text-green-400">
           WhatsApp, site proprio e IA para recuperar relacionamento e lucro.
+        </span>
+      </>
+    ),
+  },
+  C: {
+    badge: 'Seu cliente ja te conhece — por que pagar 15% ao iFood?',
+    heading: (
+      <>
+        <span className="text-orange-400">Cliente fiel pedindo pelo iFood?</span>
+        {' '}
+        <span className="text-white">Ele pode pedir direto de voce.</span>
+        <span className="mt-3 block text-2xl md:text-3xl lg:text-4xl font-semibold text-green-400">
+          Seu cardapio. Sua marca. 100% do lucro.
         </span>
       </>
     ),

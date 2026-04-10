@@ -99,12 +99,15 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
-                Se o seu delivery ja vende no iFood, o problema pode nao ser falta de pedido.{' '}
                 <strong className="text-white">
-                  O problema e continuar pagando para intermediar cliente que poderia pedir direto.
+                  Seu cardapio digital pronto em 30 minutos.
                 </strong>{' '}
-                A Zairyx organiza seu canal proprio com site, WhatsApp e fluxo simples para voce
-                vender com mais margem.
+                Zero comissao por pedido — nunca cobramos % sobre suas vendas.{' '}
+                <strong className="text-green-400">Pedidos direto no WhatsApp.</strong>{' '}
+                IA que atende 24h.{' '}
+                <span className="text-zinc-300">
+                  O iFood traz gente nova — o SEU cardapio fideliza.
+                </span>
               </p>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
