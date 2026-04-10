@@ -41,8 +41,7 @@ const paymentMode = (
 const siteUrl = (env.NEXT_PUBLIC_SITE_URL || '').trim().toLowerCase()
 const isLocalSiteUrl =
   siteUrl === '' || siteUrl.includes('localhost') || siteUrl.includes('127.0.0.1')
-const isProductionTarget =
-  env.VERCEL_ENV === 'production' || env.NODE_ENV === 'production' || env.CI === 'true'
+const isProductionTarget = env.VERCEL_ENV === 'production' || env.NODE_ENV === 'production'
 
 const requiredAlways = [
   'NEXT_PUBLIC_SUPABASE_URL',

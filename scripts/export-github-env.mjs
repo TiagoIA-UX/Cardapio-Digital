@@ -27,8 +27,15 @@ if (!Array.isArray(keys)) {
 
 const lines = []
 
-for (const key of keys) {
-  const value = secrets[key]
+for (const entry of keys) {
+  const key = typeof entry === 'string' ? entry : entry?.target
+  const source = typeof entry === 'string' ? entry : entry?.source ?? entry?.target
+
+  if (!key || !source) {
+    continue
+  }
+
+  const value = secrets[source]
   if (!value) {
     continue
   }
