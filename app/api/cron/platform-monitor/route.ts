@@ -195,6 +195,8 @@ async function checkUnreadAlerts(
       .from('system_alerts')
       .select('id', { count: 'exact', head: true })
       .eq('read', false)
+      .eq('resolved', false)
+      .in('severity', ['warning', 'critical'])
 
     if (count && count >= 20) {
       issues.push({
@@ -210,6 +212,28 @@ async function checkUnreadAlerts(
   }
 
   return issues
+}
+
+async function hasRecentOpenMonitorAlert(
+  supabase: ReturnType<typeof createAdminClient>,
+  title: string
+): Promise<boolean> {
+  try {
+    const cutoff = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
+    const { data } = await supabase
+      .from('system_alerts')
+      .select('id')
+      .eq('channel', 'security')
+      .eq('title', title)
+      .eq('read', false)
+      .eq('resolved', false)
+      .gte('created_at', cutoff)
+      .limit(1)
+
+    return Boolean(data && data.length > 0)
+  } catch {
+    return false
+  }
 }
 
 /** Verifica health_checks recentes */
@@ -366,38 +390,25 @@ export async function GET(request: NextRequest) {
   // Notificar se houver problemas
   const hasCritical = allIssues.some((i) => i.level === 'critical')
   const hasWarning = allIssues.some((i) => i.level === 'warning')
+  const criticalCount = allIssues.filter((i) => i.level === 'critical').length
+  const warningCount = allIssues.filter((i) => i.level === 'warning').length
 
   if (hasCritical || hasWarning) {
-    await notify({
-      severity: hasCritical ? 'critical' : 'warning',
-      channel: 'security',
-      title: `Platform Monitor: ${allIssues.filter((i) => i.level === 'critical').length} críticos, ${allIssues.filter((i) => i.level === 'warning').length} avisos`,
-      body: formatTelegramReport(allIssues, projectRef),
-      metadata: {
-        issues: allIssues,
-        duration_ms: duration,
-        checked_at: new Date().toISOString(),
-      },
-    })
-  }
+    const title = `Platform Monitor: ${criticalCount} críticos, ${warningCount} avisos`
+    const alreadyOpen = await hasRecentOpenMonitorAlert(supabase, title)
 
-  // Sempre enviar relatório completo pro Telegram
-  const token = process.env.TELEGRAM_BOT_TOKEN
-  const chatId = process.env.TELEGRAM_CHAT_ID
-  if (token && chatId) {
-    try {
-      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: formatTelegramReport(allIssues, projectRef),
-          parse_mode: 'HTML',
-        }),
-        signal: AbortSignal.timeout(5000),
+    if (!alreadyOpen) {
+      await notify({
+        severity: hasCritical ? 'critical' : 'warning',
+        channel: 'security',
+        title,
+        body: formatTelegramReport(allIssues, projectRef),
+        metadata: {
+          issues: allIssues,
+          duration_ms: duration,
+          checked_at: new Date().toISOString(),
+        },
       })
-    } catch {
-      // Telegram indisponível
     }
   }
 
@@ -405,8 +416,8 @@ export async function GET(request: NextRequest) {
     ok: !hasCritical,
     duration_ms: duration,
     summary: {
-      critical: allIssues.filter((i) => i.level === 'critical').length,
-      warning: allIssues.filter((i) => i.level === 'warning').length,
+      critical: criticalCount,
+      warning: warningCount,
       info: allIssues.filter((i) => i.level === 'info').length,
     },
     issues: allIssues,
