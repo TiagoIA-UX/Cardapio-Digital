@@ -55,7 +55,7 @@
     "validate:mp": "tsx scripts/validate-mp-credentials.ts",
     "screenshots": "node scripts/capture-screenshots.mjs",
     "start": "next start",
-    "test": "tsx --test tests/**/*.test.ts"
+    "test": "node scripts/run-unit-tests.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1012.0",
