@@ -175,8 +175,9 @@ export default function Home() {
                 <span className="text-orange-500">em segundos — sem pagar desenvolvedor</span>
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-700">
-                Cardápio de verão no litoral? Combo de páscoa? Promoção de happy hour? Ajuste de preço
-                na segunda-feira? Você faz tudo direto no painel — rápido, fácil e sem custo extra.
+                Cardápio de verão no litoral? Combo de páscoa? Promoção de happy hour? Ajuste de
+                preço na segunda-feira? Você faz tudo direto no painel — rápido, fácil e sem custo
+                extra.
               </p>
             </div>
 
@@ -261,29 +262,87 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <p className="text-sm font-semibold text-zinc-900">
-                    🎯 Economize com desenvolvedor
+              <div className="space-y-5">
+                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                  <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-rose-400 to-orange-400" />
+                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                    <div>
+                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-rose-700 uppercase">
+                        Economia real
+                      </span>
+                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                        🎯 Pare de pagar por cada ajuste do seu próprio cardápio
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-rose-100 bg-rose-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                      <p className="text-[10px] font-bold tracking-[0.16em] text-rose-600 uppercase">
+                        Economia mensal
+                      </p>
+                      <p className="text-xl font-black text-rose-700 md:text-2xl">R$ 750</p>
+                    </div>
+                  </div>
+                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                    Toda vez que você paga alguém para <strong className="font-extrabold text-zinc-950">mudar preço</strong>, <strong className="font-extrabold text-zinc-950">criar combo</strong> ou <strong className="font-extrabold text-zinc-950">trocar foto</strong>, sai dinheiro do caixa sem necessidade. Uma rotina de 5 ajustes no mês pode virar <strong className="text-rose-700">R$ 750 indo embora</strong> só para manter o básico funcionando.
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                    Toda vez que você pagar alguém para ajustar um preço, criar um combo ou trocar uma foto,
-                    você gasta de R$ 50 a R$ 300. Aqui você faz sozinho em 2 minutos — quantas vezes quiser.
-                  </p>
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
+                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                      ✓ Com o painel editor: <span className="text-emerald-900">R$ 0 por ajuste</span>. Você altera quando quiser, sem fila, sem intermediário e sem depender de desenvolvedor.
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <p className="text-sm font-semibold text-zinc-900">⚡ Reaja rápido ao mercado</p>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                    Segunda-feira vendeu pouco? Baixe o preço. Sexta tá lotado? Suba a margem. Páscoa chegando?
-                    Crie combo sazonal. Tudo isso em segundos, direto do celular ou computador.
+                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                  <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-amber-400 to-orange-400" />
+                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                    <div>
+                      <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-amber-700 uppercase">
+                        Agilidade comercial
+                      </span>
+                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                        ⚡ Não perca vendas esperando alguém fazer o que você pode resolver agora
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                      <p className="text-[10px] font-bold tracking-[0.16em] text-amber-600 uppercase">
+                        Tempo de reação
+                      </p>
+                      <p className="text-xl font-black text-amber-700 md:text-2xl">30 seg</p>
+                    </div>
+                  </div>
+                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                    Segunda vendeu pouco? <strong className="font-extrabold text-zinc-950">Baixe o preço.</strong> Sexta lotou? <strong className="font-extrabold text-zinc-950">Suba a margem.</strong> Páscoa, feriado, verão no litoral ou promoção relâmpago? <strong className="text-amber-700">Você publica no mesmo instante</strong> e aproveita o momento certo de venda.
                   </p>
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
+                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                      ✓ 2 cliques, atualização imediata e publicação no ar direto do celular ou computador. Sem atraso, sem espera, sem perder timing de faturamento.
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <p className="text-sm font-semibold text-zinc-900">🏖️ Perfeito para quem tem múltiplas unidades</p>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                    Delivery no centro + quiosque no litoral? Cardápio de verão diferente do inverno?
-                    Edite cada unidade separadamente sem depender de ninguém — ideal para operações sazonais.
+                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                  <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-sky-400 to-cyan-400" />
+                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                    <div>
+                      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-sky-700 uppercase">
+                        Operação multiunidade
+                      </span>
+                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                        🏖️ Quem opera centro, bairro e litoral precisa de liberdade, não de retrabalho
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-sky-100 bg-sky-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                      <p className="text-[10px] font-bold tracking-[0.16em] text-sky-600 uppercase">
+                        Controle
+                      </p>
+                      <p className="text-xl font-black text-sky-700 md:text-2xl">1 painel</p>
+                    </div>
+                  </div>
+                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                    Delivery no centro, quiosque no litoral, operação sazonal no verão, cardápio diferente no inverno: tudo isso fica mais simples quando cada unidade pode ser ajustada por você. <strong className="text-sky-700">Sem ligação, sem espera e sem ruído entre equipes.</strong>
                   </p>
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
+                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                      ✓ Controle centralizado para editar categorias, preços, combos e campanhas sazonais em cada operação com muito mais clareza.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
