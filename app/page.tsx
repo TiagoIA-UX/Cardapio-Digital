@@ -218,6 +218,10 @@ export default function Home() {
                     Nada de cadastrar produto por produto. Seu catálogo já vem completo com
                     produtos, descrições, preços e categorias do seu nicho. Só trocar o que quiser.
                   </p>
+                  <p className="mt-2 text-xs text-zinc-400">
+                    * Algumas imagens dos templates são ilustrativas. Recomendamos substituí-las
+                    pelas fotos reais dos seus produtos antes de publicar.
+                  </p>
                 </div>
 
                 <div className="rounded-3xl border-2 border-green-200 bg-green-50/50 p-8">

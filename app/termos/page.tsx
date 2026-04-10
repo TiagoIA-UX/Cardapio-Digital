@@ -200,7 +200,28 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="mt-8 mb-4 text-xl font-semibold">10. Encerramento</h2>
+            <h2 className="mt-8 mb-4 text-xl font-semibold">
+              10. Imagens e Conteúdo dos Templates
+            </h2>
+            <p>
+              Os templates fornecidos pela Zairyx podem conter imagens meramente ilustrativas, que
+              servem como referência visual para a montagem do cardápio. Essas imagens não
+              representam necessariamente os produtos reais comercializados pelo contratante.
+            </p>
+            <p className="mt-4">
+              É responsabilidade exclusiva do contratante substituir as imagens ilustrativas por
+              fotos reais dos seus próprios produtos antes de publicar o cardápio ao consumidor
+              final, em conformidade com o Art. 37 do Código de Defesa do Consumidor, que veda
+              publicidade enganosa.
+            </p>
+            <p className="mt-4">
+              A Zairyx não se responsabiliza por imagens publicadas pelo contratante que não
+              correspondam aos produtos efetivamente comercializados.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="mt-8 mb-4 text-xl font-semibold">11. Encerramento</h2>
             <p>
               Podemos suspender ou encerrar sua conta por violação destes termos. Você pode encerrar
               sua conta a qualquer momento nas configurações.
@@ -208,7 +229,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="mt-8 mb-4 text-xl font-semibold">11. Alterações nos Termos</h2>
+            <h2 className="mt-8 mb-4 text-xl font-semibold">12. Alterações nos Termos</h2>
             <p>
               Podemos atualizar estes termos periodicamente. Notificaremos sobre mudanças
               significativas por email ou aviso no serviço.
@@ -216,7 +237,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="mt-8 mb-4 text-xl font-semibold">12. Lei Aplicável</h2>
+            <h2 className="mt-8 mb-4 text-xl font-semibold">13. Lei Aplicável</h2>
             <p>
               Estes termos são regidos pelas leis do Brasil. Foro: comarca do domicílio do
               consumidor, conforme Art. 101 §I do Código de Defesa do Consumidor.
@@ -224,7 +245,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="mt-8 mb-4 text-xl font-semibold">13. Contato e documentação</h2>
+            <h2 className="mt-8 mb-4 text-xl font-semibold">14. Contato e documentação</h2>
             <p>
               <strong>Marca comercial:</strong> {COMPANY_NAME}
             </p>
