@@ -288,7 +288,69 @@ destruir a credibilidade da marca e causar dano irreparável ao negócio.
 
 ---
 
-## §8 — ASSINATURA DE PROTEÇÃO
+## §8 — PROTEÇÃO CRÍTICA: VERCEL CLI PROIBIDO
+
+### 8.1 — Incidente de Perda de Dados (10/04/2026)
+
+Vercel CLI executou `vercel deploy` e **apagou 52 variáveis de ambiente** do `.env.local`
+durante sync automático, incluindo credenciais de pagamento, API keys e secrets críticos.
+
+### 8.2 — REGRA ABSOLUTA: NUNCA usar Vercel CLI para deploys
+
+**Comandos PROIBIDOS neste projeto:**
+```bash
+vercel deploy          # ❌ PROIBIDO - sobrescreve .env.local
+vercel pull            # ❌ PROIBIDO - sync destrutivo
+vercel env pull        # ❌ PROIBIDO - remove variáveis locais
+vercel env sync        # ❌ PROIBIDO - sync forçado
+```
+
+**Motivo:** Vercel CLI faz sync automático de environment variables do cloud,
+**SOBRESCREVENDO e REMOVENDO** todas as variáveis que não existem no painel da Vercel.
+Isso causa perda de credenciais críticas armazenadas apenas localmente.
+
+### 8.3 — Workflow CORRETO para deploys
+
+**✅ MÉTODO APROVADO: GitHub Integration (deploy automático)**
+```bash
+git add .
+git commit -m "descrição"
+git push origin main
+# Vercel detecta push automaticamente e faz deploy
+```
+
+**Vantagens:**
+- Zero risco de perda de `.env.local`
+- Deploy automático em cada push
+- Mais rápido e confiável
+- Sem necessidade de tokens locais ou CLI
+
+### 8.4 — Proteções Existentes
+
+- ✅ Backup automático em `.env-backups/` (script `protect-env.ps1`)
+- ✅ `.env.local` protegido no `.gitignore`
+- ✅ Múltiplos backups timestamped
+
+**Restauração de emergência:**
+```powershell
+cp .env-backups/2026-04-07_20-10-26_.env.local .env.local
+```
+
+### 8.5 — Instrução para Agentes de IA
+
+**Qualquer agente que sugerir Vercel CLI deploy DEVE:**
+1. **PARAR** e alertar sobre risco de perda de `.env.local`
+2. Sugerir alternativa via GitHub Integration (git push)
+3. Obter confirmação EXPLÍCITA do owner antes de prosseguir
+4. NUNCA executar comandos `vercel deploy`, `vercel pull` ou `vercel env *` sem autorização
+
+**Exception:** Vercel CLI permitido APENAS para comandos read-only:
+- `vercel logs` (leitura de logs)
+- `vercel inspect <url>` (inspeção de deploy)
+
+---
+
+## §9 — ASSINATURA DE PROTEÇÃO
 
 Este documento foi criado para proteger o patrimônio de código do projeto
 Cardápio Digital / Zairyx, garantindo que funcionalidades validadas em produção
@@ -299,7 +361,8 @@ e operacional ao projeto e seus clientes.**
 
 ```
 HASH DE REFERÊNCIA: Este documento é a fonte de verdade.
-DATA DE VALIDAÇÃO: 07/04/2026
+DATA DE VALIDAÇÃO: 10/04/2026
 OWNER: Tiago (globemarket7@gmail.com)
 STATUS: ATIVO — APLICA-SE A TODOS OS AGENTES
+ÚLTIMA ATUALIZAÇÃO: 10/04/2026 - Proteção Vercel CLI adicionada
 ```
