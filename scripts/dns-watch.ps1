@@ -89,7 +89,7 @@ function Set-VercelEnvVar($key, $value) {
     return $null -ne $result
 }
 
-function Trigger-VercelRedeploy {
+function Invoke-VercelRedeploy {
     Write-Log "Buscando último deployment para redeploy..."
     $deps = Invoke-VercelApi "GET" "/v6/deployments?projectId=$VERCEL_PROJECT_ID&teamId=$VERCEL_TEAM_ID&limit=1&state=READY"
     if ($deps -and $deps.deployments.Count -gt 0) {
@@ -194,7 +194,7 @@ try {
 # =====================================================================================
 # FASE 5 — Redeploy Vercel
 # =====================================================================================
-$deployUrl = Trigger-VercelRedeploy
+$deployUrl = Invoke-VercelRedeploy
 $deployStatus = if ($deployUrl) { "✅ https://$deployUrl" } else { "⚠️ use o painel Vercel" }
 
 # =====================================================================================

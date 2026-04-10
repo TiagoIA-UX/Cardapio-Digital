@@ -1,15 +1,6 @@
 # ForgeOps AI — Autonomous Engineering Agent
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square" />
-  <img src="https://img.shields.io/badge/Stack-Next.js_15_%2B_Supabase-black?style=flat-square&logo=nextdotjs" />
-  <img src="https://img.shields.io/badge/AI-Groq_llama--3.3--70b-orange?style=flat-square" />
-  <img src="https://img.shields.io/badge/Alerts-Telegram-blue?style=flat-square&logo=telegram" />
-  <img src="https://img.shields.io/badge/CI-GitHub_Actions-black?style=flat-square&logo=githubactions" />
-  <img src="https://img.shields.io/badge/License-MIT-purple?style=flat-square" />
-</div>
-
-<br/>
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square) ![Stack](https://img.shields.io/badge/Stack-Next.js_15_%2B_Supabase-black?style=flat-square&logo=nextdotjs) ![AI](https://img.shields.io/badge/AI-Groq_llama--3.3--70b-orange?style=flat-square) ![Alerts](https://img.shields.io/badge/Alerts-Telegram-blue?style=flat-square&logo=telegram) ![CI](https://img.shields.io/badge/CI-GitHub_Actions-black?style=flat-square&logo=githubactions) ![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square)
 
 > **ForgeOps AI** é um sistema de agentes autônomos de engenharia de software com detecção de defeitos operacionais, monitoramento, diagnóstico, correção e validação para plataformas Next.js + Supabase — com zero intervenção humana para falhas triviais.
 
@@ -17,7 +8,7 @@
 
 ## Visão geral
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │  MAESTRO            │  FORGE (este repo)     │
 │  Chat AI Orchestrator│  TI/DevOps Orchestrator│
@@ -49,7 +40,7 @@
 
 ### Classificação de risco
 
-```
+```text
 SAFE     → Forge aplica automaticamente + PR para revisão
 MODERATE → Forge cria branch + aguarda aprovação
 RISKY    → Forge documenta + escala para humano via Telegram
@@ -59,7 +50,7 @@ RISKY    → Forge documenta + escala para humano via Telegram
 
 ## Stack técnica
 
-```
+```text
 GitHub Actions     — Runner gratuito (2000min/mês) + cron scheduler
 Groq llama-3.3-70b — Análise, diagnóstico, geração de patches
 Supabase           — agent_tasks + agent_knowledge (base evolutiva)
@@ -131,7 +122,7 @@ jobs: scanner → surgeon → notifier
 
 ## API
 
-```
+```http
 POST /api/agents/dispatch
 Authorization: Bearer {INTERNAL_API_SECRET}
 
@@ -145,7 +136,7 @@ Body: {
 Response: { "success": true, "taskId": "uuid..." }
 ```
 
-```
+```http
 GET /api/agents/dispatch?agent=scanner&status=failed&hours=24
 Authorization: Bearer {INTERNAL_API_SECRET}
 
@@ -179,7 +170,7 @@ O Surgeon **nunca** toca em:
 
 ## Estrutura de arquivos principais
 
-```
+```text
 lib/orchestrator.ts              → Forge: dispatchTask, recordOutcome, getKnowledge
 backend/server.py                → ForgeOps Sentinel Python agent (local + Docker)
 .github/workflows/forgeops.yml   → Pipeline Scanner → Surgeon → Notifier
