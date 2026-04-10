@@ -11,6 +11,8 @@
   "scripts": {
     "access:grant": "tsx scripts/grant-private-repo-access.ts",
     "build": "next build",
+    "forge:seed": "tsx scripts/forge-seed-knowledge.ts",
+    "forge:seed:dry": "tsx scripts/forge-seed-knowledge.ts --dry-run",
     "check:api-routes": "node scripts/check-api-route-references.mjs",
     "check": "node scripts/check.mjs",
     "dev": "next dev",
