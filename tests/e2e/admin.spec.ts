@@ -12,7 +12,7 @@ import { test, expect } from '@playwright/test'
  * - Área financeira
  */
 
-const BASE_URL = 'https://zairyx.com'
+const BASE_URL = 'https://zairyx.com.br'
 
 test.describe('Admin — Proteção de Rotas', () => {
   test('1. /admin sem login é bloqueado', async ({ page }) => {

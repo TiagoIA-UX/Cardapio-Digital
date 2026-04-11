@@ -13,7 +13,7 @@ import { test, expect } from '@playwright/test'
  * - Acesso ao painel pós-compra
  */
 
-const BASE_URL = 'https://zairyx.com'
+const BASE_URL = 'https://zairyx.com.br'
 
 test.describe('Cliente — Navegação Pública', () => {
   test('1. Acessar homepage sem login', async ({ page }) => {

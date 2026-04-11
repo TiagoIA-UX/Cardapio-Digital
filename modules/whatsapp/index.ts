@@ -268,7 +268,7 @@ export function formatarPedidoWhatsApp(dados: DadosPedido): string {
   // Footer
   mensagem += `\n━━━━━━━━━━━━━━━━━━━━━\n`
   mensagem += `✅ Pedido realizado via Zairyx CardápioDigital\n`
-  mensagem += `🌐 zairyx.com`
+  mensagem += `🌐 zairyx.com.br`
 
   return mensagem
 }

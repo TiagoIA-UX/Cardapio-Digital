@@ -107,7 +107,9 @@ export default function BonusPublicPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">✓</span>
-                  <span>Integração com seu cardápio digital Zairyx AI + checklist de 40+ itens</span>
+                  <span>
+                    Integração com seu cardápio digital Zairyx AI + checklist de 40+ itens
+                  </span>
                 </li>
               </ul>
             </div>
@@ -202,8 +204,8 @@ export default function BonusPublicPage() {
         {/* CTA para adquirir plano */}
         <div className="border-border bg-card mt-8 rounded-2xl border p-6 text-center">
           <p className="text-foreground/80 mb-4 text-sm">
-            Você pode comprar o guia de forma avulsa ou liberar este bônus junto com um plano
-            Zairyx AI.
+            Você pode comprar o guia de forma avulsa ou liberar este bônus junto com um plano Zairyx
+            AI.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link

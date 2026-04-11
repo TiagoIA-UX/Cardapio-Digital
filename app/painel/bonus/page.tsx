@@ -106,7 +106,9 @@ export default function BonusPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">✓</span>
-                  <span>Integração com seu cardápio digital Zairyx AI + checklist de 40+ itens</span>
+                  <span>
+                    Integração com seu cardápio digital Zairyx AI + checklist de 40+ itens
+                  </span>
                 </li>
               </ul>
             </div>
