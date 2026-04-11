@@ -116,6 +116,11 @@ export default function Home() {
                 adesao do cliente ao canal proprio.
               </p>
 
+              <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+                iFood ajuda na descoberta. Seu canal proprio e o que protege margem, recompra e
+                relacionamento.
+              </p>
+
               <p className="mx-auto mt-3 max-w-3xl text-sm font-bold tracking-wide text-orange-300 uppercase">
                 Sem comissão por pedido. Mais margem. Mais controle do seu canal.
               </p>
@@ -270,25 +275,25 @@ export default function Home() {
               </div>
 
               <div className="space-y-5">
-                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-6">
                   <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-rose-400 to-orange-400" />
-                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                  <div className="mb-3 flex items-start justify-between gap-3 pl-2">
                     <div>
-                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-rose-700 uppercase">
+                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-rose-700 uppercase">
                         Economia real
                       </span>
-                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                      <p className="mt-2 text-base font-black tracking-tight text-zinc-950 md:text-lg">
                         🎯 Pare de pagar por cada ajuste do seu próprio cardápio
                       </p>
                     </div>
-                    <div className="rounded-2xl border border-rose-100 bg-rose-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                    <div className="rounded-xl border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
                       <p className="text-[10px] font-bold tracking-[0.16em] text-rose-600 uppercase">
                         Economia mensal
                       </p>
-                      <p className="text-xl font-black text-rose-700 md:text-2xl">R$ 750</p>
+                      <p className="text-lg font-black text-rose-700 md:text-xl">R$ 750</p>
                     </div>
                   </div>
-                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                  <p className="pl-2 text-sm leading-6 text-zinc-700 md:text-base">
                     Toda vez que você paga alguém para{' '}
                     <strong className="font-extrabold text-zinc-950">mudar preço</strong>,{' '}
                     <strong className="font-extrabold text-zinc-950">criar combo</strong> ou{' '}
@@ -297,33 +302,33 @@ export default function Home() {
                     <strong className="text-rose-700">R$ 750 indo embora</strong> só para manter o
                     básico funcionando.
                   </p>
-                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
-                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                  <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-2 pl-5">
+                    <p className="text-xs font-bold text-emerald-800 md:text-sm">
                       ✓ Com o painel editor:{' '}
                       <span className="text-emerald-900">R$ 0 por ajuste</span>. Você altera quando
                       quiser, sem fila, sem intermediário e sem depender de desenvolvedor.
                     </p>
                   </div>
                 </div>
-                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-6">
                   <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-amber-400 to-orange-400" />
-                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                  <div className="mb-3 flex items-start justify-between gap-3 pl-2">
                     <div>
-                      <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-amber-700 uppercase">
+                      <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-amber-700 uppercase">
                         Agilidade comercial
                       </span>
-                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                      <p className="mt-2 text-base font-black tracking-tight text-zinc-950 md:text-lg">
                         ⚡ Não perca vendas esperando alguém fazer o que você pode resolver agora
                       </p>
                     </div>
-                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                    <div className="rounded-xl border border-amber-100 bg-amber-50 px-2.5 py-1.5 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
                       <p className="text-[10px] font-bold tracking-[0.16em] text-amber-600 uppercase">
                         Tempo de reação
                       </p>
-                      <p className="text-xl font-black text-amber-700 md:text-2xl">30 seg</p>
+                      <p className="text-lg font-black text-amber-700 md:text-xl">30 seg</p>
                     </div>
                   </div>
-                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                  <p className="pl-2 text-sm leading-6 text-zinc-700 md:text-base">
                     Segunda vendeu pouco?{' '}
                     <strong className="font-extrabold text-zinc-950">Baixe o preço.</strong> Sexta
                     lotou? <strong className="font-extrabold text-zinc-950">Suba a margem.</strong>{' '}
@@ -331,33 +336,33 @@ export default function Home() {
                     <strong className="text-amber-700">Você publica no mesmo instante</strong> e
                     aproveita o momento certo de venda.
                   </p>
-                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
-                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                  <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-2 pl-5">
+                    <p className="text-xs font-bold text-emerald-800 md:text-sm">
                       ✓ 2 cliques, atualização imediata e publicação no ar direto do celular ou
                       computador. Sem atraso, sem espera, sem perder timing de faturamento.
                     </p>
                   </div>
                 </div>
-                <div className="group relative overflow-hidden rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-7">
+                <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-38px_rgba(15,23,42,0.32)] md:p-6">
                   <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-sky-400 to-cyan-400" />
-                  <div className="mb-4 flex items-start justify-between gap-4 pl-2">
+                  <div className="mb-3 flex items-start justify-between gap-3 pl-2">
                     <div>
-                      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-sky-700 uppercase">
+                      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-sky-700 uppercase">
                         Operação multiunidade
                       </span>
-                      <p className="mt-3 text-lg font-black tracking-tight text-zinc-950 md:text-xl">
+                      <p className="mt-2 text-base font-black tracking-tight text-zinc-950 md:text-lg">
                         🏖️ Quem opera centro, bairro e litoral precisa de liberdade, não de
                         retrabalho
                       </p>
                     </div>
-                    <div className="rounded-2xl border border-sky-100 bg-sky-50 px-3 py-2 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
+                    <div className="rounded-xl border border-sky-100 bg-sky-50 px-2.5 py-1.5 text-right shadow-sm transition-transform duration-300 group-hover:scale-105">
                       <p className="text-[10px] font-bold tracking-[0.16em] text-sky-600 uppercase">
                         Controle
                       </p>
-                      <p className="text-xl font-black text-sky-700 md:text-2xl">1 painel</p>
+                      <p className="text-lg font-black text-sky-700 md:text-xl">1 painel</p>
                     </div>
                   </div>
-                  <p className="pl-2 text-base leading-7 text-zinc-700 md:text-[1.02rem]">
+                  <p className="pl-2 text-sm leading-6 text-zinc-700 md:text-base">
                     Delivery no centro, quiosque no litoral, operação sazonal no verão, cardápio
                     diferente no inverno: tudo isso fica mais simples quando cada unidade pode ser
                     ajustada por você.{' '}
@@ -365,8 +370,8 @@ export default function Home() {
                       Sem ligação, sem espera e sem ruído entre equipes.
                     </strong>
                   </p>
-                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 pl-6">
-                    <p className="text-sm font-bold text-emerald-800 md:text-[0.95rem]">
+                  <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-2 pl-5">
+                    <p className="text-xs font-bold text-emerald-800 md:text-sm">
                       ✓ Controle centralizado para editar categorias, preços, combos e campanhas
                       sazonais em cada operação com muito mais clareza.
                     </p>
