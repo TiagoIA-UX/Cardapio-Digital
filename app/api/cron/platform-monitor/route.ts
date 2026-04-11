@@ -287,7 +287,7 @@ function formatTelegramReport(issues: PlatformIssue[], projectRef: string | null
   const infos = issues.filter((i) => i.level === 'info')
 
   const lines: string[] = []
-  lines.push('🛡️ <b>Platform Monitor — Zairyx</b>')
+  lines.push('🛡️ <b>Platform Monitor — Zairyx AI Canais Digitais</b>')
   lines.push(`<i>🕐 ${ts}</i>`)
   if (projectRef) lines.push(`<code>Projeto: ${projectRef}</code>`)
   lines.push('')

@@ -256,7 +256,7 @@ async function analyzeWithAI(issues: ScanIssue[], metrics: ScanMetrics): Promise
           {
             role: 'system',
             content:
-              'Você é o Zai Sentinel, assistente DevOps da Zairyx (SaaS de cardápio digital). Analise o relatório e gere resumo CURTO (máx 400 chars) em PT-BR. Priorize: 1) Ações imediatas se crítico 2) Tendências se warning 3) "Tudo OK" se limpo. Emojis moderados. Texto plano para WhatsApp.',
+              'Você é o Zai Sentinel, assistente DevOps da Zairyx AI Canais Digitais (SaaS de cardápio digital). Analise o relatório e gere resumo CURTO (máx 400 chars) em PT-BR. Priorize: 1) Ações imediatas se crítico 2) Tendências se warning 3) "Tudo OK" se limpo. Emojis moderados. Texto plano para WhatsApp.',
           },
           {
             role: 'user',
@@ -305,7 +305,7 @@ function formatWhatsApp(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: st
   const warn = issues.filter((i) => i.level === 'warning').length
 
   const lines: string[] = [
-    '🛡️ *Zai Sentinel — Relatório*',
+    '🛡️ *Zai Sentinel — Zairyx AI Canais Digitais*',
     `📅 ${ts}`,
     '',
     crit > 0
@@ -327,7 +327,7 @@ function formatWhatsApp(issues: ScanIssue[], metrics: ScanMetrics, aiSummary: st
   lines.push(`  • Conexões: ${metrics.active_connections}/60`)
 
   lines.push('', '🤖 *Análise IA*', aiSummary.slice(0, 500))
-  lines.push('', `_Zai Sentinel v2 · ${SITE_URL}_`)
+  lines.push('', `_Zai Sentinel v2 · Zairyx AI Canais Digitais · ${SITE_URL}_`)
 
   return lines.join('\n')
 }
@@ -343,7 +343,7 @@ function formatTelegram(
   const warn = issues.filter((i) => i.level === 'warning').length
 
   const lines: string[] = [
-    '🛡️ <b>Zai Sentinel — Relatório</b>',
+    '🛡️ <b>Zai Sentinel — Zairyx AI Canais Digitais</b>',
     `<i>📅 ${ts}</i>`,
     '',
     crit > 0
