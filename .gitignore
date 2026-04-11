@@ -21,6 +21,7 @@ yarn-error.log*
 
 # MCP server config (contém tokens)
 .vscode/mcp.json
+.vscode/easycode.ignore
 
 # vercel
 .vercel
