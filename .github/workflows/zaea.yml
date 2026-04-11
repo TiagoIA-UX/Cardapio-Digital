@@ -1047,14 +1047,14 @@ jobs:
         id: sha-pr
         if: github.event_name == 'pull_request'
         run: |
-          echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
-          echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          echo "base=$(jq -r '.pull_request.base.sha // empty' "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
+          echo "head=$(jq -r '.pull_request.head.sha // empty' "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
 
       - name: Detectar arquivos SQL alterados (push)
         id: sha-push
         if: github.event_name == 'push'
         run: |
-          echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          echo "base=$(jq -r '.before // empty' "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
           echo "head=${{ github.sha }}"          >> "$GITHUB_OUTPUT"
 
       - name: Resolver diff e listar SQL

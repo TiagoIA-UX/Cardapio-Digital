@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function BonusPage() {
   return (
-    <div className="from-background to-secondary/20 min-h-screen bg-gradient-to-b">
+    <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* Header */}
       <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4">
@@ -45,11 +45,11 @@ export default function BonusPage() {
         </div>
 
         {/* E-book Card */}
-        <div className="mb-6 overflow-hidden rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 shadow-xl dark:border-purple-800 dark:from-purple-950/50 dark:via-blue-950/50 dark:to-indigo-950/50">
+        <div className="mb-6 overflow-hidden rounded-2xl border-2 border-purple-200 bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50 shadow-xl dark:border-purple-800 dark:from-purple-950/50 dark:via-blue-950/50 dark:to-indigo-950/50">
           <div className="p-8">
             {/* Header do Card */}
             <div className="mb-6 flex items-start gap-6">
-              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-4xl shadow-lg">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 to-indigo-600 text-4xl shadow-lg">
                 📍
               </div>
               <div className="flex-1">
@@ -114,7 +114,7 @@ export default function BonusPage() {
             {/* Botão de Download */}
             <a
               href="/api/ebook-gmb/download?source=bonus"
-              className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
+              className="group flex w-full items-center justify-center gap-3 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
             >
               <Download className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
               <span>Baixar E-book Agora (92 páginas)</span>
@@ -162,7 +162,7 @@ export default function BonusPage() {
         </div>
 
         {/* Economia Total */}
-        <div className="rounded-2xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6 text-center shadow-md dark:border-green-800 dark:from-green-950/30 dark:to-emerald-950/30">
+        <div className="rounded-2xl border-2 border-green-200 bg-linear-to-br from-green-50 to-emerald-50 p-6 text-center shadow-md dark:border-green-800 dark:from-green-950/30 dark:to-emerald-950/30">
           <div className="mb-3 text-4xl">💰</div>
           <h3 className="mb-2 text-xl font-bold text-green-900 dark:text-green-100">
             Economia Total com Bônus
