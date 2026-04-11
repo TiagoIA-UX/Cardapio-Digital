@@ -102,12 +102,12 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
-                <strong className="text-white">Seu cardapio digital pronto em 30 minutos.</strong>{' '}
-                Zero comissao por pedido — nunca cobramos % sobre suas vendas.{' '}
+                <strong className="text-white">Seu cardápio digital pronto em 30 minutos.</strong>{' '}
+                Zero comissão por pedido — nunca cobramos % sobre suas vendas.{' '}
                 <strong className="text-green-400">Pedidos direto no WhatsApp.</strong> IA que
                 atende 24h.{' '}
                 <span className="text-zinc-300">
-                  O iFood traz gente nova — o SEU cardapio fideliza.
+                  O iFood traz gente nova — o SEU cardápio fideliza.
                 </span>
               </p>
 
@@ -146,7 +146,7 @@ export default function Home() {
                   className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-7 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/40"
                 >
                   <Flame className="h-5 w-5 transition-transform group-hover:scale-110" />
-                  Ver quanto posso recuperar
+                  Quero parar de perder dinheiro
                 </TrackedLink>
                 <TrackedLink
                   href="/templates"
