@@ -94,5 +94,8 @@
   },
   "[sql]": {
     "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "[powershell]": {
+    "editor.defaultFormatter": "ms-vscode.powershell"
   }
 }

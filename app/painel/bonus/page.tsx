@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { ArrowLeft, BookOpen, Download, ExternalLink, Gift, Star } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Seus Bônus Exclusivos | Zairyx',
-  description: 'Acesse seus materiais exclusivos como assinante Zairyx',
+  title: 'Seus Bônus Exclusivos | Zairyx AI',
+  description: 'Acesse seus materiais exclusivos como assinante Zairyx AI',
 }
 
 export default function BonusPage() {
@@ -39,7 +39,7 @@ export default function BonusPage() {
             Seus Materiais Exclusivos
           </h1>
           <p className="text-foreground/80 mx-auto max-w-2xl">
-            Como assinante Zairyx, você tem acesso a conteúdos premium que valem mais de{' '}
+            Como assinante Zairyx AI, você tem acesso a conteúdos premium que valem mais de{' '}
             <strong className="text-foreground">R$ 547</strong> — 100% grátis.
           </p>
         </div>
@@ -106,7 +106,7 @@ export default function BonusPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">✓</span>
-                  <span>Integração com seu cardápio digital Zairyx + checklist de 40+ itens</span>
+                  <span>Integração com seu cardápio digital Zairyx AI + checklist de 40+ itens</span>
                 </li>
               </ul>
             </div>
@@ -144,7 +144,7 @@ export default function BonusPage() {
                   </strong>
                 </p>
                 <Link
-                  href="https://wa.me/5512988331095?text=Olá!%20Sou%20assinante%20Zairyx%20e%20gostaria%20de%20agendar%20o%20setup%20assistido%20do%20Google%20Meu%20Negócio%20(bônus%20gratuito)."
+                  href="https://wa.me/5512988331095?text=Olá!%20Sou%20assinante%20Zairyx%20AI%20e%20gostaria%20de%20agendar%20o%20setup%20assistido%20do%20Google%20Meu%20Negócio%20(bônus%20gratuito)."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border-primary text-primary hover:bg-primary/5 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors"
@@ -185,7 +185,7 @@ export default function BonusPage() {
           </div>
           <p className="text-foreground/80 text-sm">
             Tudo isso <strong className="text-foreground">100% GRÁTIS</strong> como agradecimento
-            por ser assinante Zairyx 🎉
+            por ser assinante Zairyx AI 🎉
           </p>
         </div>
       </main>

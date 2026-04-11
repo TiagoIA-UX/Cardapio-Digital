@@ -29,9 +29,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'google1a0b3e572aae5f34',
   },
-  title: 'Zairyx Canais Digitais | Seu Canal Vende. Você Lucra.',
+  title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
   description:
-    'Zairyx Canais Digitais — A plataforma que transforma qualquer operação de delivery em máquina de vendas. Edite tudo pelo painel, receba pedidos no seu canal e venda com zero taxa por pedido.',
+    'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
   keywords: [
     'canal digital',
     'canal online',
@@ -47,11 +47,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Zairyx Canais Digitais | Seu Canal Vende. Você Lucra.',
+    title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
     description:
-      'Zairyx Canais Digitais — A plataforma que transforma qualquer operação de delivery em máquina de vendas. Edite pelo painel, receba pedidos no seu canal e venda com zero taxa por pedido.',
+      'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
     url: siteUrl,
-    siteName: 'Zairyx Canais Digitais',
+    siteName: 'Zairyx AI Canais Digitais',
     locale: 'pt_BR',
     type: 'website',
     images: [
@@ -59,15 +59,15 @@ export const metadata: Metadata = {
         url: `${siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Zairyx Canais Digitais',
+        alt: 'Zairyx AI Canais Digitais',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Zairyx Canais Digitais | Seu Canal Vende. Você Lucra.',
+    title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
     description:
-      'Zairyx Canais Digitais — A plataforma que transforma qualquer operação de delivery em máquina de vendas. Edite pelo painel, receba pedidos no seu canal e venda com zero taxa por pedido.',
+      'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
     images: [`${siteUrl}/og-image.jpg`],
   },
   robots: {
@@ -112,7 +112,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
-              name: 'Zairyx — Canal Digital',
+              name: 'Zairyx AI — Canal Digital',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               url: siteUrl,

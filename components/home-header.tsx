@@ -159,13 +159,13 @@ export function HomeHeader() {
       <div className="container-premium flex items-center justify-between py-4">
         <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
           <div className="relative h-10 w-10 overflow-hidden rounded-2xl shadow-lg shadow-orange-500/20 ring-1 ring-orange-500/20">
-            <Image src="/icon.png" alt="Zairyx" fill className="object-cover" sizes="40px" />
+            <Image src="/icon.png" alt="Zairyx AI" fill className="object-cover" sizes="40px" />
           </div>
           <div>
             <span className="text-foreground block text-sm font-semibold tracking-[0.18em] uppercase">
-              Zairyx
+              Zairyx AI
             </span>
-            <span className="block text-base font-semibold">Canais Digitais</span>
+            <span className="block text-base font-semibold">Sem comissão por pedido</span>
           </div>
         </Link>
 

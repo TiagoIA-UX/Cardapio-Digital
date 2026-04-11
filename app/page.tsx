@@ -25,7 +25,10 @@ import {
 } from 'lucide-react'
 import { HomeHeader } from '@/components/home-header'
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
-import { RESTAURANT_TEMPLATES } from '@/lib/domains/marketing/templates-config'
+import {
+  HOME_TEMPLATE_CARDS,
+  HOME_TEMPLATE_NICHES,
+} from '@/lib/domains/marketing/home-template-catalog'
 import { ScrollReveal } from '@/components/scroll-reveal'
 import { TrackedLink } from '@/components/tracked-link'
 import { HeroBadge, HeroHeading } from '@/components/hero-ab'
@@ -36,7 +39,7 @@ const FaqSection = dynamic(() => import('@/components/sections/FaqSection'))
 const SavingsCalculator = dynamic(() => import('@/components/sections/SavingsCalculator'))
 const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'))
 
-const TOP_TEMPLATES = RESTAURANT_TEMPLATES.slice(0, 6)
+const TOP_TEMPLATES = HOME_TEMPLATE_CARDS
 
 export default function Home() {
   // Hero GIF animation
@@ -111,6 +114,10 @@ export default function Home() {
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
                 Estimativas de economia dependem do seu faturamento, percentual vindo do app e
                 adesao do cliente ao canal proprio.
+              </p>
+
+              <p className="mx-auto mt-3 max-w-3xl text-sm font-bold tracking-wide text-orange-300 uppercase">
+                Sem comissão por pedido. Mais margem. Mais controle do seu canal.
               </p>
 
               <div className="mx-auto mt-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 backdrop-blur-sm">
@@ -194,7 +201,7 @@ export default function Home() {
 
                 <div className="relative mx-auto w-full max-w-90 rounded-[2.5rem] border border-zinc-900/10 bg-zinc-900/95 p-2.5 shadow-2xl shadow-black/20 sm:p-3">
                   <div className="overflow-hidden rounded-4xl bg-white ring-1 ring-black/5 sm:rounded-[2.25rem]">
-                    <div className="hero-gif-container relative aspect-10/17 w-full overflow-hidden bg-zinc-100 sm:aspect-10/16 lg:aspect-[10/15.5]">
+                    <div className="hero-gif-container relative aspect-10/17 w-full overflow-hidden bg-zinc-100 sm:aspect-10/16 lg:aspect-10/15.5">
                       <div className="hero-track flex h-full w-full transition-transform duration-700 ease-out will-change-transform">
                         <div className="hero-frame relative h-full min-w-full bg-zinc-100">
                           <Image
@@ -619,7 +626,7 @@ export default function Home() {
               <div className="mt-10 rounded-3xl border-2 border-orange-200 bg-orange-50 p-8 text-center">
                 <p className="text-lg font-bold text-zinc-900">
                   <Sparkles className="mr-2 inline h-5 w-5 text-orange-500" />
-                  Por que a Zairyx criou esta seção?
+                  Por que a Zairyx AI criou esta seção?
                 </p>
                 <p className="mx-auto mt-3 max-w-3xl text-sm leading-relaxed text-zinc-700">
                   Muitos donos de delivery acham que o iFood é "marketing". Não é. iFood é um{' '}
@@ -639,7 +646,7 @@ export default function Home() {
         <section data-testid="proof-section" className="border-b border-zinc-100 bg-zinc-50 py-8">
           <div className="container-premium">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              <ProofStat value="0%" label="de comissao da Zairyx por pedido" highlight />
+              <ProofStat value="0%" label="de comissao da Zairyx AI por pedido" highlight />
               <ProofStat value="16" label="nichos com modelo pronto" />
               <ProofStat value="30 min" label="e seu cardápio está no ar" />
               <ProofStat
@@ -805,7 +812,7 @@ export default function Home() {
                   step="03"
                   icon={<Send className="h-6 w-6" />}
                   title="Publique e comece a lucrar"
-                  description="Envie seu link por WhatsApp, Instagram e QR Code. Pedidos chegam organizados. O valor do pedido entra no seu canal, sem comissao da Zairyx por venda."
+                  description="Envie seu link por WhatsApp, Instagram e QR Code. Pedidos chegam organizados. O valor do pedido entra no seu canal, sem comissao da Zairyx AI por venda."
                 />
               </div>
 
@@ -888,7 +895,7 @@ export default function Home() {
                 <BenefitCard
                   icon={<Shield className="h-5 w-5" />}
                   title={`Mensalidade fixa, ${COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}`}
-                  text="Vendeu R$ 1.000 ou R$ 100.000? A mensalidade da Zairyx nao muda. Taxas de pagamento e entrega, quando existirem, seguem separadas."
+                  text="Vendeu R$ 1.000 ou R$ 100.000? A mensalidade da Zairyx AI nao muda. Taxas de pagamento e entrega, quando existirem, seguem separadas."
                 />
                 <BenefitCard
                   icon={<ShieldCheck className="h-5 w-5" />}
@@ -993,7 +1000,7 @@ export default function Home() {
                   <div className="relative aspect-4/3 bg-zinc-100 p-2 sm:p-3 lg:aspect-16/10">
                     <Image
                       src="/screenshots/painel-editor.png"
-                      alt="Editor visual intuitivo do cardápio digital Zairyx"
+                      alt="Editor visual intuitivo do cardápio digital Zairyx AI"
                       fill
                       className="object-contain object-top"
                       sizes="(max-width: 1024px) 100vw, 58vw"
@@ -1014,7 +1021,7 @@ export default function Home() {
                     <div className="relative aspect-4/3 bg-zinc-100 p-2 sm:p-3">
                       <Image
                         src="/screenshots/painel-dashboard.png"
-                        alt="Dashboard completo do painel Zairyx com métricas de vendas"
+                        alt="Dashboard completo do painel Zairyx AI com métricas de vendas"
                         fill
                         className="object-contain object-top"
                         sizes="(max-width: 1024px) 100vw, 42vw"
@@ -1145,7 +1152,7 @@ export default function Home() {
 
               {/* All niches strip */}
               <div className="mt-10 flex flex-wrap justify-center gap-2">
-                {RESTAURANT_TEMPLATES.map((t) => (
+                {HOME_TEMPLATE_NICHES.map((t) => (
                   <Link
                     key={t.slug}
                     href={`/templates/${t.slug}`}
@@ -1175,7 +1182,7 @@ export default function Home() {
             <div className="container-premium">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Para quem é a Zairyx
+                  Para quem é a Zairyx AI
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                   Seu canal próprio. <span className="text-orange-500">Suas regras.</span>
@@ -1208,7 +1215,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="mt-6 text-xs text-zinc-400">
-                  A Zairyx é ideal para deliverys, mini mercados, bares, cafeterias e qualquer
+                  A Zairyx AI é ideal para deliverys, mini mercados, bares, cafeterias e qualquer
                   negócio que queira vender online com praticidade e autonomia.
                 </p>
               </div>
@@ -1258,7 +1265,7 @@ export default function Home() {
                         WhatsApp informal
                       </th>
                       <th className="bg-green-50 px-5 py-4 text-center font-bold text-green-700">
-                        Zairyx
+                        Zairyx AI
                       </th>
                     </tr>
                   </thead>
@@ -1399,7 +1406,7 @@ export default function Home() {
               </p>
               <p className="mt-3 text-center text-xs text-zinc-400">
                 *Plano Básico iFood (entrega própria): 12% + 3,2% online + R$&nbsp;110/mês. O Plano
-                Entrega (motoboy do iFood) cobra até 27%, mas inclui logística que a Zairyx não
+                Entrega (motoboy do iFood) cobra até 27%, mas inclui logística que a Zairyx AI não
                 oferece. Fonte: blog-parceiros.ifood.com.br (consulta em abr/2026).
               </p>
 
@@ -1422,7 +1429,7 @@ export default function Home() {
                       <th className="px-4 py-4 text-center font-bold text-zinc-600">Saipos</th>
                       <th className="px-4 py-4 text-center font-bold text-zinc-600">Kyte</th>
                       <th className="bg-green-50 px-4 py-4 text-center font-bold text-green-700">
-                        Zairyx
+                        Zairyx AI
                       </th>
                     </tr>
                   </thead>
@@ -1559,7 +1566,7 @@ export default function Home() {
                   A estratégia inteligente
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">
-                  Use o iFood para captar. Use a Zairyx para lucrar.
+                  Use o iFood para captar. Use a Zairyx AI para lucrar.
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-zinc-700">
                   Marketplaces são ótimos para aquisição: seu delivery aparece para milhares de
@@ -1584,7 +1591,7 @@ export default function Home() {
                     </p>
                     <p className="mt-1 text-sm leading-6 text-zinc-600">
                       QR Code na embalagem, link no Instagram, mensagem pós-venda. Traga o cliente
-                      para pedir direto no seu cardápio Zairyx.
+                      para pedir direto no seu cardápio Zairyx AI.
                     </p>
                   </div>
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
@@ -1621,7 +1628,7 @@ export default function Home() {
 
               <div className="mt-8 rounded-3xl border border-zinc-200 bg-zinc-50 p-6 md:p-8">
                 <p className="text-sm font-bold tracking-[0.18em] text-zinc-600 uppercase">
-                  Por que donos de delivery escolhem a Zairyx
+                  Por que donos de delivery escolhem a Zairyx AI
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">
                   Produto pronto + editor simples + WhatsApp = vendas desde o primeiro dia.
