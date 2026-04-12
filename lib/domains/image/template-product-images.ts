@@ -50,6 +50,12 @@ const LEGACY_TEMPLATE_SLUG_ALIASES: Record<string, string[]> = {
   minimercado: ['mercadinho'],
 }
 
+const BLOCKED_MINIMERCADO_IMAGE_IDS = ['5217889', '159751', '3735217', '4038653', '2544989']
+
+function isBlockedMinimercadoImageUrl(url: string) {
+  return BLOCKED_MINIMERCADO_IMAGE_IDS.some((id) => url.includes(id))
+}
+
 function normalizeForMatch(value: string) {
   return value
     .toLowerCase()
@@ -314,9 +320,9 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
       }
       if (/formula|papinha|mucilon|farinha lactea|biscoito baby|suco baby/.test(nome)) {
         return pickDeterministicUrl(seed, [
-          'https://images.pexels.com/photos/6845799/pexels-photo-6845799.jpeg?auto=compress&cs=tinysrgb&w=800',
-          'https://images.pexels.com/photos/6294154/pexels-photo-6294154.jpeg?auto=compress&cs=tinysrgb&w=800',
           'https://images.pexels.com/photos/6849576/pexels-photo-6849576.jpeg?auto=compress&cs=tinysrgb&w=800',
+          'https://images.pexels.com/photos/6322805/pexels-photo-6322805.jpeg?auto=compress&cs=tinysrgb&w=800',
+          'https://images.pexels.com/photos/4045552/pexels-photo-4045552.jpeg?auto=compress&cs=tinysrgb&w=800',
         ])
       }
     }
@@ -333,9 +339,9 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
     return pickDeterministicUrl(seed, [
       'https://images.pexels.com/photos/5218019/pexels-photo-5218019.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/159751/book-address-book-learning-learn-159751.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/6322805/pexels-photo-6322805.jpeg?auto=compress&cs=tinysrgb&w=800',
     ])
   }
 
@@ -377,9 +383,9 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
 
   if (categoria === 'tabacaria-conveniencia') {
     return pickDeterministicUrl(seed, [
-      'https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
     ])
   }
 
@@ -448,7 +454,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
     'https://images.pexels.com/photos/5009732/pexels-photo-5009732.jpeg?auto=compress&cs=tinysrgb&w=800',
     'https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800',
     'https://images.pexels.com/photos/5218019/pexels-photo-5218019.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
   ])
 }
 
@@ -536,10 +542,11 @@ export function resolveTemplateProductImage(params: {
   fallbackTemplateImageUrl: string
 }): { url: string; source: TemplateProductImageSource } {
   const { templateSlug, product, fallbackTemplateImageUrl } = params
+  const isMinimercado = normalizeKeyPart(templateSlug) === 'minimercado'
   const key = getTemplateProductImageKey(templateSlug, product)
   const generatedUrl =
     TEMPLATE_PRODUCT_IMAGE_URLS[key] ?? getCompatibleGeneratedImageUrl(templateSlug, product)
-  if (generatedUrl) {
+  if (generatedUrl && !(isMinimercado && isBlockedMinimercadoImageUrl(generatedUrl))) {
     return {
       url: generatedUrl,
       source: 'generated-map',
@@ -553,9 +560,9 @@ export function resolveTemplateProductImage(params: {
     }
   }
 
-  if (normalizeKeyPart(templateSlug) === 'minimercado') {
+  if (isMinimercado) {
     const smartFallback = getMinimercadoSmartFallbackImage(product)
-    if (smartFallback) {
+    if (smartFallback && !isBlockedMinimercadoImageUrl(smartFallback)) {
       return {
         url: smartFallback,
         source: 'product-fallback',
@@ -564,7 +571,7 @@ export function resolveTemplateProductImage(params: {
   }
 
   const productFallbackUrl = getProductFallbackImage(product.nome, product.categoria)
-  if (productFallbackUrl) {
+  if (productFallbackUrl && !(isMinimercado && isBlockedMinimercadoImageUrl(productFallbackUrl))) {
     return {
       url: productFallbackUrl,
       source: 'product-fallback',
@@ -572,7 +579,7 @@ export function resolveTemplateProductImage(params: {
   }
 
   const categoryFallbackUrl = getCategoryFallbackImage(product.categoria)
-  if (categoryFallbackUrl) {
+  if (categoryFallbackUrl && !(isMinimercado && isBlockedMinimercadoImageUrl(categoryFallbackUrl))) {
     return {
       url: categoryFallbackUrl,
       source: 'category-fallback',
