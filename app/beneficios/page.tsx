@@ -572,7 +572,10 @@ export default function BeneficiosPage() {
                 { label: 'Cartão de crédito', detail: 'Visa, Mastercard, Elo, Amex e outras' },
                 { label: 'Cartão de débito', detail: 'Principais bandeiras aceitas' },
                 { label: 'PIX', detail: 'Confirmação em segundos, disponível 24h' },
-                { label: 'Parcelado', detail: 'Até 12x — seu cliente decide' },
+                {
+                  label: 'Parcelado',
+                  detail: 'Parcelamento conforme regras e disponibilidade no checkout',
+                },
               ].map(({ label, detail }) => (
                 <div key={label} className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />

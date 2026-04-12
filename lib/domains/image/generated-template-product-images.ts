@@ -2,883 +2,1919 @@
 // Atualizado por scripts/update-images-pexels-smart.mjs
 // Última atualização: 2026-03-27T03:26:33.344Z
 
-export const TEMPLATE_PRODUCT_IMAGE_URLS: Record<string, string> =
-{
-  "acai::acai-especiais::10::acai-com-pacoca": "https://images.pexels.com/photos/5847235/pexels-photo-5847235.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-especiais::11::acai-power": "https://images.pexels.com/photos/6217960/pexels-photo-6217960.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-especiais::12::acai-ovomaltine": "https://images.pexels.com/photos/4143543/pexels-photo-4143543.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-especiais::13::acai-oreo": "https://images.pexels.com/photos/6412959/pexels-photo-6412959.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-especiais::14::acai-zero": "https://images.pexels.com/photos/6708441/pexels-photo-6708441.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-especiais::9::acai-napolitano": "https://images.pexels.com/photos/2161649/pexels-photo-2161649.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-no-copo::1::acai-300ml": "https://images.pexels.com/photos/2291070/pexels-photo-2291070.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-no-copo::2::acai-500ml": "https://images.pexels.com/photos/1517277/pexels-photo-1517277.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-no-copo::3::acai-700ml": "https://images.pexels.com/photos/5396133/pexels-photo-5396133.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::acai-no-copo::4::acai-1-litro": "https://images.pexels.com/photos/6224595/pexels-photo-6224595.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::19::granola": "https://images.pexels.com/photos/5505465/pexels-photo-5505465.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::20::leite-condensado": "https://images.pexels.com/photos/3646861/pexels-photo-3646861.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::21::nutella": "https://images.pexels.com/photos/6465741/pexels-photo-6465741.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::22::morango": "https://images.pexels.com/photos/60795/pexels-photo-60795.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::23::banana": "https://images.pexels.com/photos/7195053/pexels-photo-7195053.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::24::ovomaltine": "https://images.pexels.com/photos/1212845/pexels-photo-1212845.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::25::oreo": "https://images.pexels.com/photos/5060281/pexels-photo-5060281.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::26::pacoca": "https://images.pexels.com/photos/5865648/pexels-photo-5865648.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::27::leite-em-po": "https://images.pexels.com/photos/5078582/pexels-photo-5078582.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::28::whey-protein": "https://images.pexels.com/photos/7149595/pexels-photo-7149595.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::adicionais::29::pasta-de-amendoim": "https://images.pexels.com/photos/5149349/pexels-photo-5149349.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::bebidas::30::smoothie-de-acai": "https://images.pexels.com/photos/5864652/pexels-photo-5864652.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::bebidas::31::vitamina-de-acai": "https://images.pexels.com/photos/1438080/pexels-photo-1438080.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::bebidas::32::suco-de-acai-com-guarana": "https://images.pexels.com/photos/322341/pexels-photo-322341.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::bebidas::33::agua-de-coco-300ml": "https://images.pexels.com/photos/1386934/pexels-photo-1386934.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::bebidas::34::refrigerante-350ml": "https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::combos::35::combo-acai-500ml-suco": "https://images.pexels.com/photos/543730/pexels-photo-543730.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::combos::36::combo-casal": "https://images.pexels.com/photos/4099238/pexels-photo-4099238.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::combos::37::combo-familia": "https://images.pexels.com/photos/1179135/pexels-photo-1179135.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::combos::38::combo-fitness": "https://images.pexels.com/photos/4725762/pexels-photo-4725762.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::pitaya-cupuacu::15::pitaya-300ml": "https://images.pexels.com/photos/4443514/pexels-photo-4443514.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::pitaya-cupuacu::16::pitaya-500ml": "https://images.pexels.com/photos/35802593/pexels-photo-35802593.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::pitaya-cupuacu::17::tigela-de-pitaya": "https://images.pexels.com/photos/7227387/pexels-photo-7227387.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::pitaya-cupuacu::18::cupuacu-500ml": "https://images.pexels.com/photos/36183661/pexels-photo-36183661.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::tigelas::5::tigela-classica-500ml": "https://images.pexels.com/photos/879202/pexels-photo-879202.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::tigelas::6::tigela-1l-familia": "https://images.pexels.com/photos/6708437/pexels-photo-6708437.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::tigelas::7::tigela-fitness": "https://images.pexels.com/photos/674554/pexels-photo-674554.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acai::tigelas::8::tigela-tropical": "https://images.pexels.com/photos/1242512/pexels-photo-1242512.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::45::carvao-vegetal-3kg": "https://images.pexels.com/photos/6023/pexels-photo-6023.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::46::carvao-vegetal-5kg": "https://images.pexels.com/photos/5533764/pexels-photo-5533764.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::47::sal-grosso-1kg": "https://images.pexels.com/photos/6705625/pexels-photo-6705625.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::48::farofa-pronta-yoki-500g": "https://images.pexels.com/photos/4475558/pexels-photo-4475558.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::49::pao-de-alho-4un": "https://images.pexels.com/photos/7159284/pexels-photo-7159284.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::50::vinagrete-pronto-300g": "https://images.pexels.com/photos/7393208/pexels-photo-7393208.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::51::queijo-coalho-espeto-5un": "https://images.pexels.com/photos/604659/pexels-photo-604659.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::52::chimichurri-artesanal-200ml": "https://images.pexels.com/photos/4315148/pexels-photo-4315148.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::acompanhamentos::53::gelo-em-cubo-3kg": "https://images.pexels.com/photos/3675620/pexels-photo-3675620.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::1::picanha-inteira-1-2kg": "https://images.pexels.com/photos/5774147/pexels-photo-5774147.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::10::carne-moida-1-500g": "https://images.pexels.com/photos/7284305/pexels-photo-7284305.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::11::t-bone-steak-700g": "https://images.pexels.com/photos/36682994/pexels-photo-36682994.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::12::patinho-kg": "https://images.pexels.com/photos/36319687/pexels-photo-36319687.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::2::contra-file-peca-1kg": "https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::3::alcatra-peca-1kg": "https://images.pexels.com/photos/618773/pexels-photo-618773.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::4::maminha-peca-1kg": "https://images.pexels.com/photos/36669799/pexels-photo-36669799.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::5::fraldinha-peca-1kg": "https://images.pexels.com/photos/7613561/pexels-photo-7613561.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::6::costela-bovina-kg": "https://images.pexels.com/photos/4253617/pexels-photo-4253617.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::7::cupim-peca-1-5kg": "https://images.pexels.com/photos/36319690/pexels-photo-36319690.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::8::file-mignon-peca-1kg": "https://images.pexels.com/photos/1639561/pexels-photo-1639561.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-bovinos::9::acem-kg": "https://images.pexels.com/photos/36319683/pexels-photo-36319683.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::13::costela-suina-kg": "https://images.pexels.com/photos/410648/pexels-photo-410648.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::14::bisteca-suina-kg": "https://images.pexels.com/photos/7333262/pexels-photo-7333262.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::15::pernil-suino-peca-3kg": "https://images.pexels.com/photos/4637551/pexels-photo-4637551.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::16::lombo-suino-peca-1kg": "https://images.pexels.com/photos/5500663/pexels-photo-5500663.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::17::panceta-suina-kg": "https://images.pexels.com/photos/3727183/pexels-photo-3727183.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::cortes-suinos::18::picanha-suina-peca-800g": "https://images.pexels.com/photos/5774155/pexels-photo-5774155.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::25::linguica-toscana-seara-700g": "https://images.pexels.com/photos/4504592/pexels-photo-4504592.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::26::linguica-de-frango-sadia-500g": "https://images.pexels.com/photos/96619/pexels-photo-96619.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::27::linguica-calabresa-perdigao-400g": "https://images.pexels.com/photos/5393659/pexels-photo-5393659.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::28::salsicha-hot-dog-sadia-500g": "https://images.pexels.com/photos/357576/pexels-photo-357576.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::29::bacon-em-manta-500g": "https://images.pexels.com/photos/5939414/pexels-photo-5939414.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::30::linguica-artesanal-apimentada-kg": "https://images.pexels.com/photos/5656726/pexels-photo-5656726.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::embutidos-linguicas::31::kafta-500g": "https://images.pexels.com/photos/5175628/pexels-photo-5175628.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::19::frango-inteiro-resfriado-2kg": "https://images.pexels.com/photos/5769382/pexels-photo-5769382.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::20::peito-de-frango-file-1kg": "https://images.pexels.com/photos/5769375/pexels-photo-5769375.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::21::coxa-e-sobrecoxa-1kg": "https://images.pexels.com/photos/3926125/pexels-photo-3926125.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::22::asa-de-frango-1kg": "https://images.pexels.com/photos/29908653/pexels-photo-29908653.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::23::coracao-de-frango-500g": "https://images.pexels.com/photos/5840330/pexels-photo-5840330.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::frango-aves::24::tulipa-de-frango-1kg": "https://images.pexels.com/photos/33406/pexels-photo-33406.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::32::kit-churrasco-4-pessoas": "https://images.pexels.com/photos/5774145/pexels-photo-5774145.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::33::kit-churrasco-8-pessoas": "https://images.pexels.com/photos/6896527/pexels-photo-6896527.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::34::kit-churrasco-15-pessoas": "https://images.pexels.com/photos/5774148/pexels-photo-5774148.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::35::kit-costela-no-bafo": "https://images.pexels.com/photos/4669225/pexels-photo-4669225.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::36::kit-espetinhos-20un": "https://images.pexels.com/photos/5192415/pexels-photo-5192415.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::kits-churrasco::37::kit-hamburguer-artesanal-8un": "https://images.pexels.com/photos/2128536/pexels-photo-2128536.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::38::picanha-temperada-1kg": "https://images.pexels.com/photos/36570436/pexels-photo-36570436.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::39::costela-temperada-kg": "https://images.pexels.com/photos/144432/pexels-photo-144432.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::40::frango-desossado-temperado-1kg": "https://images.pexels.com/photos/6014/pexels-photo-6014.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::41::sobrecoxa-recheada-unid": "https://images.pexels.com/photos/7140306/pexels-photo-7140306.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::42::espetinho-misto-bovino-5un": "https://images.pexels.com/photos/5840331/pexels-photo-5840331.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::43::maminha-ao-alho-1kg": "https://images.pexels.com/photos/36683026/pexels-photo-36683026.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "acougue::temperados-prontos::44::medalhao-de-file-mignon-4un": "https://images.pexels.com/photos/341048/pexels-photo-341048.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-600ml-litrao::12::brahma-chopp-600ml": "https://images.pexels.com/photos/7421851/pexels-photo-7421851.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-600ml-litrao::13::skol-600ml": "https://images.pexels.com/photos/4620723/pexels-photo-4620723.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-600ml-litrao::14::antarctica-original-600ml": "https://images.pexels.com/photos/5055189/pexels-photo-5055189.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-600ml-litrao::15::heineken-600ml": "https://images.pexels.com/photos/5538166/pexels-photo-5538166.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-600ml-litrao::16::brahma-duplo-malte-litrao-1l": "https://images.pexels.com/photos/4833632/pexels-photo-4833632.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-artesanais-especiais::17::colorado-appia-600ml": "https://images.pexels.com/photos/46527/pexels-photo-46527.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-artesanais-especiais::18::praya-witbier-600ml": "https://images.pexels.com/photos/3324440/pexels-photo-3324440.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-artesanais-especiais::19::baden-baden-witbier-600ml": "https://images.pexels.com/photos/5055175/pexels-photo-5055175.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-artesanais-especiais::20::eisenbahn-weizenbier-355ml": "https://images.pexels.com/photos/5061677/pexels-photo-5061677.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::1::brahma-chopp-350ml": "https://images.pexels.com/photos/5538231/pexels-photo-5538231.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::2::heineken-350ml": "https://images.pexels.com/photos/59146/pexels-photo-59146.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::3::budweiser-350ml": "https://images.pexels.com/photos/168567/pexels-photo-168567.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::4::amstel-350ml": "https://images.pexels.com/photos/2043561/pexels-photo-2043561.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::5::spaten-350ml": "https://images.pexels.com/photos/760895/pexels-photo-760895.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-lata::6::corona-330ml-lata": "https://images.pexels.com/photos/2120696/pexels-photo-2120696.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-long-neck::10::corona-extra-long-neck-330ml": "https://images.pexels.com/photos/1212278/pexels-photo-1212278.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-long-neck::11::eisenbahn-pilsen-long-neck-355ml": "https://images.pexels.com/photos/5054683/pexels-photo-5054683.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-long-neck::7::heineken-long-neck-330ml": "https://images.pexels.com/photos/338711/pexels-photo-338711.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-long-neck::8::budweiser-long-neck-330ml": "https://images.pexels.com/photos/3222707/pexels-photo-3222707.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::cervejas-long-neck::9::stella-artois-long-neck-330ml": "https://images.pexels.com/photos/3660307/pexels-photo-3660307.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::78::kit-churrasco-na-praia": "https://images.pexels.com/photos/5175351/pexels-photo-5175351.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::79::kit-sunset": "https://images.pexels.com/photos/5539975/pexels-photo-5539975.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::80::kit-casal-romantico": "https://images.pexels.com/photos/5870781/pexels-photo-5870781.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::81::kit-gin-tonica": "https://images.pexels.com/photos/3557746/pexels-photo-3557746.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::82::kit-familia-praia": "https://images.pexels.com/photos/1372647/pexels-photo-1372647.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::combos-kits-praia::83::kit-reveillon-ano-novo": "https://images.pexels.com/photos/3171770/pexels-photo-3171770.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::drinks-prontos-ice::54::smirnoff-ice-275ml": "https://images.pexels.com/photos/4271813/pexels-photo-4271813.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::drinks-prontos-ice::56::keep-cooler-classic-275ml": "https://images.pexels.com/photos/4254033/pexels-photo-4254033.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::drinks-prontos-ice::57::askov-ice-limao-275ml": "https://images.pexels.com/photos/5668209/pexels-photo-5668209.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::energeticos::58::red-bull-250ml": "https://images.pexels.com/photos/3684971/pexels-photo-3684971.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::energeticos::59::monster-energy-473ml": "https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::energeticos::60::tnt-energy-269ml": "https://images.pexels.com/photos/4386022/pexels-photo-4386022.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::energeticos::61::fusion-energy-250ml": "https://images.pexels.com/photos/6662994/pexels-photo-6662994.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::espumantes::31::chandon-brut-750ml": "https://images.pexels.com/photos/2454122/pexels-photo-2454122.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::espumantes::32::chandon-rose-750ml": "https://images.pexels.com/photos/207080/pexels-photo-207080.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::espumantes::33::salton-brut-750ml": "https://images.pexels.com/photos/5340997/pexels-photo-5340997.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::espumantes::34::garibaldi-prosecco-750ml": "https://images.pexels.com/photos/4959844/pexels-photo-4959844.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::espumantes::35::freixenet-cordon-negro-750ml": "https://images.pexels.com/photos/5379876/pexels-photo-5379876.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gelo-acessorios::69::saco-de-gelo-3kg": "https://images.pexels.com/photos/4686950/pexels-photo-4686950.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gelo-acessorios::70::saco-de-gelo-5kg": "https://images.pexels.com/photos/4686955/pexels-photo-4686955.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gelo-acessorios::71::carvao-vegetal-3kg": "https://images.pexels.com/photos/35963583/pexels-photo-35963583.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gelo-acessorios::72::copo-descartavel-300ml-pct-50un": "https://images.pexels.com/photos/36133552/pexels-photo-36133552.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gelo-acessorios::73::limao-taiti-rede-10un": "https://images.pexels.com/photos/357577/pexels-photo-357577.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gin::46::tanqueray-london-dry-750ml": "https://images.pexels.com/photos/1277203/pexels-photo-1277203.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gin::47::beefeater-london-dry-750ml": "https://images.pexels.com/photos/4329152/pexels-photo-4329152.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::gin::48::bombay-sapphire-750ml": "https://images.pexels.com/photos/3023237/pexels-photo-3023237.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::petiscos-acompanhamentos::74::amendoim-japones-200g": "https://images.pexels.com/photos/4202964/pexels-photo-4202964.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::petiscos-acompanhamentos::75::batata-chips-ruffles-96g": "https://images.pexels.com/photos/6349943/pexels-photo-6349943.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::petiscos-acompanhamentos::76::salaminho-sadia-100g": "https://images.pexels.com/photos/5627443/pexels-photo-5627443.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::petiscos-acompanhamentos::77::mix-de-nuts-premium-150g": "https://images.pexels.com/photos/53591/pexels-photo-53591.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::62::coca-cola-lata-350ml": "https://images.pexels.com/photos/4113625/pexels-photo-4113625.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::63::coca-cola-2l": "https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::64::guarana-antarctica-350ml": "https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::65::guarana-antarctica-2l": "https://images.pexels.com/photos/39720/pexels-photo-39720.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::66::agua-mineral-500ml": "https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::67::agua-de-coco-1l": "https://images.pexels.com/photos/4113681/pexels-photo-4113681.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::refrigerantes-agua::68::suco-del-valle-nectar-1l": "https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::rum-cachaca::50::bacardi-carta-blanca-980ml": "https://images.pexels.com/photos/2360578/pexels-photo-2360578.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::rum-cachaca::51::captain-morgan-original-750ml": "https://images.pexels.com/photos/7435170/pexels-photo-7435170.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::rum-cachaca::52::ypioca-prata-965ml": "https://images.pexels.com/photos/6400269/pexels-photo-6400269.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::rum-cachaca::53::51-965ml": "https://images.pexels.com/photos/3084623/pexels-photo-3084623.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-brancos-roses::26::casillero-del-diablo-chardonnay": "https://images.pexels.com/photos/3244133/pexels-photo-3244133.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-brancos-roses::27::concha-y-toro-reservado-sauvignon-blanc": "https://images.pexels.com/photos/6967344/pexels-photo-6967344.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-brancos-roses::28::marcus-james-chardonnay": "https://images.pexels.com/photos/5895443/pexels-photo-5895443.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-brancos-roses::29::mateus-rose": "https://images.pexels.com/photos/5732808/pexels-photo-5732808.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-brancos-roses::30::almaden-rose": "https://images.pexels.com/photos/2992311/pexels-photo-2992311.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-tintos::21::casillero-del-diablo-cabernet-sauvignon": "https://images.pexels.com/photos/7564984/pexels-photo-7564984.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-tintos::22::santa-helena-reservado-merlot": "https://images.pexels.com/photos/4515528/pexels-photo-4515528.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-tintos::23::miolo-selecao-cabernet-sauvignon": "https://images.pexels.com/photos/724092/pexels-photo-724092.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-tintos::24::marcus-james-merlot": "https://images.pexels.com/photos/3730914/pexels-photo-3730914.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vinhos-tintos::25::pergola-tinto-suave": "https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vodka::41::absolut-original-750ml": "https://images.pexels.com/photos/4167425/pexels-photo-4167425.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vodka::42::smirnoff-998ml": "https://images.pexels.com/photos/4433107/pexels-photo-4433107.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vodka::43::grey-goose-750ml": "https://images.pexels.com/photos/3738485/pexels-photo-3738485.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vodka::44::ciroc-750ml": "https://images.pexels.com/photos/4329151/pexels-photo-4329151.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::vodka::45::skyy-980ml": "https://images.pexels.com/photos/331114/pexels-photo-331114.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::whisky::36::johnnie-walker-red-label-750ml": "https://images.pexels.com/photos/6103842/pexels-photo-6103842.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::whisky::37::johnnie-walker-black-label-750ml": "https://images.pexels.com/photos/7254799/pexels-photo-7254799.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::whisky::39::chivas-regal-12-anos-750ml": "https://images.pexels.com/photos/6766696/pexels-photo-6766696.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "adega::whisky::40::white-horse-750ml": "https://images.pexels.com/photos/6367/pexels-photo-6367.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::caipirinhas::27::caipirinha-de-limao": "https://images.pexels.com/photos/1189255/pexels-photo-1189255.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::caipirinhas::28::caipirinha-de-morango": "https://images.pexels.com/photos/7259058/pexels-photo-7259058.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::caipirinhas::29::caipirinha-de-maracuja": "https://images.pexels.com/photos/4051210/pexels-photo-4051210.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::caipirinhas::30::caipiroska-de-limao": "https://images.pexels.com/photos/4051223/pexels-photo-4051223.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::caipirinhas::31::caipiroska-de-frutas-vermelhas": "https://images.pexels.com/photos/6988421/pexels-photo-6988421.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::cervejas-artesanais::23::colorado-appia": "https://images.pexels.com/photos/1251797/pexels-photo-1251797.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::cervejas-artesanais::24::praya-witbier": "https://images.pexels.com/photos/3324437/pexels-photo-3324437.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::cervejas-artesanais::25::eisenbahn-pilsen": "https://images.pexels.com/photos/7016420/pexels-photo-7016420.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::cervejas-artesanais::26::baden-baden-ipa": "https://images.pexels.com/photos/2294341/pexels-photo-2294341.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::13::chopp-brahma-300ml": "https://images.pexels.com/photos/5858085/pexels-photo-5858085.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::14::chopp-brahma-600ml": "https://images.pexels.com/photos/5537955/pexels-photo-5537955.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::15::heineken-long-neck-330ml": "https://images.pexels.com/photos/6377486/pexels-photo-6377486.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::16::budweiser-long-neck-330ml": "https://images.pexels.com/photos/5055450/pexels-photo-5055450.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::17::stella-artois-long-neck-330ml": "https://images.pexels.com/photos/5537953/pexels-photo-5537953.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::18::corona-long-neck-330ml": "https://images.pexels.com/photos/669210/pexels-photo-669210.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::19::brahma-600ml": "https://images.pexels.com/photos/2410165/pexels-photo-2410165.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::20::original-600ml": "https://images.pexels.com/photos/3324434/pexels-photo-3324434.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::21::balde-6-long-necks-heineken": "https://images.pexels.com/photos/7568959/pexels-photo-7568959.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::chopp-cervejas::22::balde-6-long-necks-budweiser": "https://images.pexels.com/photos/36698524/pexels-photo-36698524.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::combos-happy-hour::52::combo-chopp-batata": "https://images.pexels.com/photos/5743361/pexels-photo-5743361.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::combos-happy-hour::53::combo-balde-petisco": "https://images.pexels.com/photos/793011/pexels-photo-793011.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::combos-happy-hour::54::combo-tabua-cervejas": "https://images.pexels.com/photos/7016487/pexels-photo-7016487.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::combos-happy-hour::55::combo-casal-drinks": "https://images.pexels.com/photos/605408/pexels-photo-605408.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::doses-garrafas::40::johnnie-walker-red-label": "https://images.pexels.com/photos/2344583/pexels-photo-2344583.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::doses-garrafas::42::absolut-vodka": "https://images.pexels.com/photos/35915995/pexels-photo-35915995.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::doses-garrafas::43::tanqueray-gin": "https://images.pexels.com/photos/1682451/pexels-photo-1682451.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::doses-garrafas::44::campari": "https://images.pexels.com/photos/35925508/pexels-photo-35925508.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::32::gin-tonica-tanqueray": "https://images.pexels.com/photos/225236/pexels-photo-225236.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::33::gin-tonica-beefeater": "https://images.pexels.com/photos/616836/pexels-photo-616836.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::34::moscow-mule": "https://images.pexels.com/photos/5433780/pexels-photo-5433780.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::35::mojito": "https://images.pexels.com/photos/7259040/pexels-photo-7259040.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::36::aperol-spritz": "https://images.pexels.com/photos/4485379/pexels-photo-4485379.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::37::negroni": "https://images.pexels.com/photos/5491015/pexels-photo-5491015.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::38::vodka-com-red-bull": "https://images.pexels.com/photos/5858028/pexels-photo-5858028.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::drinks::39::sex-on-the-beach": "https://images.pexels.com/photos/4279101/pexels-photo-4279101.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::1::porcao-de-batata-frita": "https://images.pexels.com/photos/6941042/pexels-photo-6941042.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::2::frango-a-passarinha": "https://images.pexels.com/photos/5474676/pexels-photo-5474676.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::3::bolinho-de-bacalhau": "https://images.pexels.com/photos/5863613/pexels-photo-5863613.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::4::isca-de-peixe": "https://images.pexels.com/photos/4198344/pexels-photo-4198344.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::5::camarao-empanado": "https://images.pexels.com/photos/4021926/pexels-photo-4021926.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::6::mandioca-frita": "https://images.pexels.com/photos/5652261/pexels-photo-5652261.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::7::pastel-frito-misto": "https://images.pexels.com/photos/5881015/pexels-photo-5881015.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::petiscos-quentes::8::polenta-frita": "https://images.pexels.com/photos/921362/pexels-photo-921362.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::45::coca-cola-350ml": "https://images.pexels.com/photos/4113668/pexels-photo-4113668.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::46::guarana-antarctica-350ml": "https://images.pexels.com/photos/3008/pexels-photo-3008.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::47::red-bull-250ml": "https://images.pexels.com/photos/7033796/pexels-photo-7033796.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::48::agua-tonica-schweppes": "https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::49::suco-de-laranja-natural": "https://images.pexels.com/photos/6412584/pexels-photo-6412584.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::50::agua-mineral-500ml": "https://images.pexels.com/photos/593099/pexels-photo-593099.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::sem-alcool::51::agua-com-gas": "https://images.pexels.com/photos/7509048/pexels-photo-7509048.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::tabuas-porcoes-frias::10::tabua-de-petiscos": "https://images.pexels.com/photos/6004718/pexels-photo-6004718.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::tabuas-porcoes-frias::11::bruschetta-italiana": "https://images.pexels.com/photos/1660045/pexels-photo-1660045.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::tabuas-porcoes-frias::12::carpaccio": "https://images.pexels.com/photos/4963598/pexels-photo-4963598.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "bar::tabuas-porcoes-frias::9::tabua-de-frios": "https://images.pexels.com/photos/6004245/pexels-photo-6004245.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::10::iced-latte": "https://images.pexels.com/photos/4869293/pexels-photo-4869293.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::11::iced-mocha": "https://images.pexels.com/photos/6213741/pexels-photo-6213741.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::12::frappuccino": "https://images.pexels.com/photos/6030360/pexels-photo-6030360.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::13::smoothie-de-frutas": "https://images.pexels.com/photos/4551617/pexels-photo-4551617.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::14::cha-gelado": "https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::bebidas-geladas::15::limonada-suica": "https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::1::espresso": "https://images.pexels.com/photos/1233528/pexels-photo-1233528.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::2::espresso-duplo": "https://images.pexels.com/photos/5567610/pexels-photo-5567610.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::3::cappuccino": "https://images.pexels.com/photos/2251753/pexels-photo-2251753.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::4::latte": "https://images.pexels.com/photos/6612781/pexels-photo-6612781.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::5::mocha": "https://images.pexels.com/photos/4115021/pexels-photo-4115021.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::6::americano": "https://images.pexels.com/photos/36238394/pexels-photo-36238394.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::7::cafe-com-leite": "https://images.pexels.com/photos/5461664/pexels-photo-5461664.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::8::chocolate-quente": "https://images.pexels.com/photos/1839882/pexels-photo-1839882.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::cafes-quentes::9::chai-latte": "https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::combos-cafe-da-manha::41::combo-cafe-da-manha": "https://images.pexels.com/photos/28445831/pexels-photo-28445831.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::combos-cafe-da-manha::42::combo-brunch": "https://images.pexels.com/photos/4109136/pexels-photo-4109136.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::combos-cafe-da-manha::43::combo-lanche-da-tarde": "https://images.pexels.com/photos/4676413/pexels-photo-4676413.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::32::bolo-de-chocolate-fatia": "https://images.pexels.com/photos/3740193/pexels-photo-3740193.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::33::bolo-de-cenoura-fatia": "https://images.pexels.com/photos/1011182/pexels-photo-1011182.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::34::cheesecake-fatia": "https://images.pexels.com/photos/7710242/pexels-photo-7710242.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::35::brownie": "https://images.pexels.com/photos/36567176/pexels-photo-36567176.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::36::torta-de-limao-fatia": "https://images.pexels.com/photos/6033617/pexels-photo-6033617.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::37::cookie-artesanal": "https://images.pexels.com/photos/2987564/pexels-photo-2987564.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::38::brigadeiro-gourmet": "https://images.pexels.com/photos/3803490/pexels-photo-3803490.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::39::waffle-com-sorvete": "https://images.pexels.com/photos/67024/pexels-photo-67024.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::doces-confeitaria::40::pao-de-mel": "https://images.pexels.com/photos/3082788/pexels-photo-3082788.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::20::croissant-presunto-e-queijo": "https://images.pexels.com/photos/6537669/pexels-photo-6537669.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::21::croissant-de-chocolate": "https://images.pexels.com/photos/4828315/pexels-photo-4828315.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::22::pao-de-queijo": "https://images.pexels.com/photos/7440414/pexels-photo-7440414.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::23::empada-de-frango": "https://images.pexels.com/photos/7440405/pexels-photo-7440405.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::24::esfirra-de-carne": "https://images.pexels.com/photos/6202224/pexels-photo-6202224.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::25::torta-salgada-fatia": "https://images.pexels.com/photos/3850398/pexels-photo-3850398.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::salgados-croissants::26::quiche-lorraine-fatia": "https://images.pexels.com/photos/6365931/pexels-photo-6365931.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sanduiches-toasts::27::misto-quente": "https://images.pexels.com/photos/824635/pexels-photo-824635.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sanduiches-toasts::28::toast-de-cream-cheese-e-salmao": "https://images.pexels.com/photos/7282384/pexels-photo-7282384.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sanduiches-toasts::29::toast-abacate": "https://images.pexels.com/photos/6327124/pexels-photo-6327124.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sanduiches-toasts::30::club-sandwich": "https://images.pexels.com/photos/7656041/pexels-photo-7656041.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sanduiches-toasts::31::sanduiche-natural": "https://images.pexels.com/photos/7282389/pexels-photo-7282389.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sucos-naturais::16::suco-de-laranja": "https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sucos-naturais::17::suco-verde-detox": "https://images.pexels.com/photos/4443440/pexels-photo-4443440.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sucos-naturais::18::vitamina-de-banana": "https://images.pexels.com/photos/4239/pexels-photo-4239.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "cafeteria::sucos-naturais::19::agua-de-coco-300ml": "https://images.pexels.com/photos/1803516/pexels-photo-1803516.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::10::bolo-red-velvet-1kg": "https://images.pexels.com/photos/5112676/pexels-photo-5112676.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::11::bolo-de-morango-chantilly-1-5kg": "https://images.pexels.com/photos/851204/pexels-photo-851204.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::12::bolo-naked-cake-2kg": "https://images.pexels.com/photos/1359294/pexels-photo-1359294.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::13::bolo-decorado-personalizado-2kg": "https://images.pexels.com/photos/3859921/pexels-photo-3859921.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::14::bolo-de-cenoura-com-chocolate-1kg": "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::15::bolo-de-coco-1kg": "https://images.pexels.com/photos/7600418/pexels-photo-7600418.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::bolos-decorados::9::bolo-de-chocolate-1kg": "https://images.pexels.com/photos/3740237/pexels-photo-3740237.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::1::brigadeiro-tradicional-unid": "https://images.pexels.com/photos/6441133/pexels-photo-6441133.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::2::brigadeiro-de-ninho": "https://images.pexels.com/photos/5365924/pexels-photo-5365924.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::3::brigadeiro-de-pistache": "https://images.pexels.com/photos/6441123/pexels-photo-6441123.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::4::brigadeiro-de-nutella": "https://images.pexels.com/photos/6441165/pexels-photo-6441165.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::5::brigadeiro-de-pacoca": "https://images.pexels.com/photos/6441136/pexels-photo-6441136.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::6::brigadeiro-belga-70": "https://images.pexels.com/photos/7248045/pexels-photo-7248045.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::7::caixa-12-brigadeiros-sortidos": "https://images.pexels.com/photos/3856045/pexels-photo-3856045.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brigadeiros-gourmet::8::caixa-25-brigadeiros-sortidos": "https://images.pexels.com/photos/5365960/pexels-photo-5365960.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::26::brownie-de-chocolate-unid": "https://images.pexels.com/photos/4421615/pexels-photo-4421615.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::27::brownie-de-doce-de-leite-unid": "https://images.pexels.com/photos/36500579/pexels-photo-36500579.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::28::cookie-chocolate-chip-unid": "https://images.pexels.com/photos/6390632/pexels-photo-6390632.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::29::cookie-red-velvet-unid": "https://images.pexels.com/photos/806363/pexels-photo-806363.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::30::kit-6-brownies-sortidos": "https://images.pexels.com/photos/6390673/pexels-photo-6390673.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::brownies-cookies::31::kit-8-cookies-sortidos": "https://images.pexels.com/photos/5194468/pexels-photo-5194468.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::cupcakes::16::cupcake-de-baunilha-unid": "https://images.pexels.com/photos/1028704/pexels-photo-1028704.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::cupcakes::17::cupcake-de-chocolate-unid": "https://images.pexels.com/photos/853006/pexels-photo-853006.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::cupcakes::18::cupcake-red-velvet-unid": "https://images.pexels.com/photos/2861842/pexels-photo-2861842.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::cupcakes::19::kit-6-cupcakes-sortidos": "https://images.pexels.com/photos/7525119/pexels-photo-7525119.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::cupcakes::20::kit-12-mini-cupcakes": "https://images.pexels.com/photos/2474609/pexels-photo-2474609.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::32::cento-de-brigadeiros-tradicionais": "https://images.pexels.com/photos/7541726/pexels-photo-7541726.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::33::cento-de-beijinhos": "https://images.pexels.com/photos/4808372/pexels-photo-4808372.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::34::cento-de-cajuzinhos": "https://images.pexels.com/photos/2337857/pexels-photo-2337857.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::35::cento-de-docinhos-finos-sortidos": "https://images.pexels.com/photos/2337819/pexels-photo-2337819.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::36::bem-casado-unid": "https://images.pexels.com/photos/35985223/pexels-photo-35985223.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::docinhos-para-festa::37::mesa-de-doces-completa-150-doces": "https://images.pexels.com/photos/7103706/pexels-photo-7103706.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::38::cheesecake-de-frutas-vermelhas": "https://images.pexels.com/photos/2035736/pexels-photo-2035736.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::39::cheesecake-de-maracuja": "https://images.pexels.com/photos/4748434/pexels-photo-4748434.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::40::torta-de-limao": "https://images.pexels.com/photos/5419100/pexels-photo-5419100.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::41::torta-de-chocolate": "https://images.pexels.com/photos/2035740/pexels-photo-2035740.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::42::torta-de-morango": "https://images.pexels.com/photos/6574598/pexels-photo-6574598.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::43::pavlova-de-frutas": "https://images.pexels.com/photos/4748432/pexels-photo-4748432.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::tortas-cheesecakes::44::torta-banoffee": "https://images.pexels.com/photos/2035731/pexels-photo-2035731.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::trufas-bombons::21::trufa-de-chocolate-ao-leite-unid": "https://images.pexels.com/photos/66234/pexels-photo-66234.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::trufas-bombons::22::trufa-de-maracuja-unid": "https://images.pexels.com/photos/7407278/pexels-photo-7407278.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::trufas-bombons::23::trufa-de-cafe-unid": "https://images.pexels.com/photos/4114979/pexels-photo-4114979.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::trufas-bombons::24::bombom-de-nozes-unid": "https://images.pexels.com/photos/5150168/pexels-photo-5150168.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "doceria::trufas-bombons::25::caixa-12-trufas-sortidas": "https://images.pexels.com/photos/6366899/pexels-photo-6366899.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::63::cesta-de-frutas-pequena": "https://images.pexels.com/photos/6646021/pexels-photo-6646021.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::64::cesta-de-frutas-grande": "https://images.pexels.com/photos/4109132/pexels-photo-4109132.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::65::kit-salada-da-semana": "https://images.pexels.com/photos/3070968/pexels-photo-3070968.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::66::kit-sopa": "https://images.pexels.com/photos/5820105/pexels-photo-5820105.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::67::kit-suco-detox": "https://images.pexels.com/photos/7208619/pexels-photo-7208619.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::68::cesta-organica-semanal": "https://images.pexels.com/photos/7801216/pexels-photo-7801216.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::cestas-combos::69::kit-temperos-frescos": "https://images.pexels.com/photos/2725744/pexels-photo-2725744.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::1::banana-prata-kg": "https://images.pexels.com/photos/4399936/pexels-photo-4399936.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::10::limao-tahiti-kg": "https://images.pexels.com/photos/6077639/pexels-photo-6077639.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::11::maracuja-kg": "https://images.pexels.com/photos/35874793/pexels-photo-35874793.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::12::goiaba-vermelha-kg": "https://images.pexels.com/photos/5782205/pexels-photo-5782205.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::13::pera-williams-kg": "https://images.pexels.com/photos/7288786/pexels-photo-7288786.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::14::kiwi-bandeja-4un": "https://images.pexels.com/photos/36048358/pexels-photo-36048358.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::15::coco-seco-un": "https://images.pexels.com/photos/36687330/pexels-photo-36687330.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::2::maca-fuji-kg": "https://images.pexels.com/photos/3903599/pexels-photo-3903599.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::3::laranja-pera-kg": "https://images.pexels.com/photos/2912621/pexels-photo-2912621.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::4::manga-tommy-kg": "https://images.pexels.com/photos/5629821/pexels-photo-5629821.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::5::mamao-papaia-un": "https://images.pexels.com/photos/4113814/pexels-photo-4113814.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::6::melancia-un-8kg": "https://images.pexels.com/photos/3513238/pexels-photo-3513238.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::7::morango-bandeja-300g": "https://images.pexels.com/photos/36656052/pexels-photo-36656052.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::8::abacaxi-perola-un": "https://images.pexels.com/photos/915016/pexels-photo-915016.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::frutas::9::uva-italia-kg": "https://images.pexels.com/photos/5852229/pexels-photo-5852229.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::26::tomate-italiano-kg": "https://images.pexels.com/photos/7223311/pexels-photo-7223311.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::27::cebola-branca-kg": "https://images.pexels.com/photos/4163411/pexels-photo-4163411.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::28::pimentao-verde-un": "https://images.pexels.com/photos/7657015/pexels-photo-7657015.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::29::pimentao-vermelho-un": "https://images.pexels.com/photos/5620882/pexels-photo-5620882.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::30::abobrinha-italiana-un": "https://images.pexels.com/photos/7543107/pexels-photo-7543107.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::31::berinjela-un": "https://images.pexels.com/photos/6102865/pexels-photo-6102865.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::32::pepino-japones-un": "https://images.pexels.com/photos/7223305/pexels-photo-7223305.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::33::chuchu-un": "https://images.pexels.com/photos/36698092/pexels-photo-36698092.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::34::milho-verde-espiga-2un": "https://images.pexels.com/photos/7341749/pexels-photo-7341749.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::legumes::35::quiabo-bandeja-300g": "https://images.pexels.com/photos/6039877/pexels-photo-6039877.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::50::alface-organica-maco": "https://images.pexels.com/photos/36165494/pexels-photo-36165494.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::51::tomate-organico-kg": "https://images.pexels.com/photos/5782207/pexels-photo-5782207.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::52::cenoura-organica-kg": "https://images.pexels.com/photos/4193418/pexels-photo-4193418.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::53::banana-organica-kg": "https://images.pexels.com/photos/108059/pexels-photo-108059.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::54::ovos-organicos-duzia": "https://images.pexels.com/photos/6827029/pexels-photo-6827029.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::organicos::55::mix-de-salada-organica-200g": "https://images.pexels.com/photos/6653881/pexels-photo-6653881.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::56::polpa-de-acerola-400g": "https://images.pexels.com/photos/2479242/pexels-photo-2479242.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::57::polpa-de-maracuja-400g": "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::58::polpa-de-manga-400g": "https://images.pexels.com/photos/7591681/pexels-photo-7591681.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::59::polpa-de-goiaba-400g": "https://images.pexels.com/photos/2189206/pexels-photo-2189206.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::60::polpa-de-abacaxi-com-hortela-400g": "https://images.pexels.com/photos/2531196/pexels-photo-2531196.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::61::suco-verde-natural-500ml": "https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::polpas-sucos::62::suco-de-laranja-natural-1l": "https://images.pexels.com/photos/3603/pexels-photo-3603.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::36::batata-lavada-kg": "https://images.pexels.com/photos/7774212/pexels-photo-7774212.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::37::batata-doce-kg": "https://images.pexels.com/photos/6301775/pexels-photo-6301775.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::38::mandioca-descascada-kg": "https://images.pexels.com/photos/7543155/pexels-photo-7543155.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::39::cenoura-kg": "https://images.pexels.com/photos/2914749/pexels-photo-2914749.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::40::beterraba-kg": "https://images.pexels.com/photos/7543098/pexels-photo-7543098.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::41::inhame-kg": "https://images.pexels.com/photos/7543161/pexels-photo-7543161.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::42::gengibre-100g": "https://images.pexels.com/photos/36681458/pexels-photo-36681458.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::raizes-tuberculos::43::alho-nacional-cabeca": "https://images.pexels.com/photos/5507590/pexels-photo-5507590.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::44::manjericao-maco": "https://images.pexels.com/photos/95214/pexels-photo-95214.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::45::alecrim-maco": "https://images.pexels.com/photos/4834332/pexels-photo-4834332.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::46::hortela-maco": "https://images.pexels.com/photos/3067707/pexels-photo-3067707.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::47::coentro-maco": "https://images.pexels.com/photos/1309426/pexels-photo-1309426.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::48::pimenta-dedo-de-moca-100g": "https://images.pexels.com/photos/7015221/pexels-photo-7015221.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::temperos-ervas::49::louro-fresco-maco": "https://images.pexels.com/photos/36269729/pexels-photo-36269729.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::16::alface-crespa-maco": "https://images.pexels.com/photos/102123/pexels-photo-102123.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::17::alface-americana-maco": "https://images.pexels.com/photos/6849628/pexels-photo-6849628.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::18::rucula-maco": "https://images.pexels.com/photos/5202198/pexels-photo-5202198.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::19::espinafre-maco": "https://images.pexels.com/photos/868110/pexels-photo-868110.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::20::couve-manteiga-maco": "https://images.pexels.com/photos/4182678/pexels-photo-4182678.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::21::agriao-maco": "https://images.pexels.com/photos/7456546/pexels-photo-7456546.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::22::repolho-verde-un": "https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::23::brocolis-ninja-un": "https://images.pexels.com/photos/7456554/pexels-photo-7456554.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::24::couve-flor-un": "https://images.pexels.com/photos/4162151/pexels-photo-4162151.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "hortifruti::verduras-folhagens::25::cheiro-verde-maco": "https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::41::coca-cola-350ml": "https://images.pexels.com/photos/4113680/pexels-photo-4113680.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::42::guarana-antarctica-350ml": "https://images.pexels.com/photos/6920721/pexels-photo-6920721.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::43::coca-cola-2l": "https://images.pexels.com/photos/4113632/pexels-photo-4113632.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::44::suco-del-valle-350ml": "https://images.pexels.com/photos/7412/pexels-photo-7412.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::45::agua-mineral-500ml": "https://images.pexels.com/photos/4467605/pexels-photo-4467605.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::bebidas::46::agua-de-coco-300ml": "https://images.pexels.com/photos/3735634/pexels-photo-3735634.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::combos::36::combo-x-salada": "https://images.pexels.com/photos/4628465/pexels-photo-4628465.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::combos::37::combo-x-bacon": "https://images.pexels.com/photos/5908049/pexels-photo-5908049.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::combos::38::combo-smash-duplo": "https://images.pexels.com/photos/36570987/pexels-photo-36570987.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::combos::39::combo-casal": "https://images.pexels.com/photos/7497303/pexels-photo-7497303.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::combos::40::combo-familia": "https://images.pexels.com/photos/4109118/pexels-photo-4109118.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::10::burger-costela": "https://images.pexels.com/photos/1639565/pexels-photo-1639565.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::11::burger-bacon-cheddar": "https://images.pexels.com/photos/2299981/pexels-photo-2299981.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::12::burger-catupiry": "https://images.pexels.com/photos/756680/pexels-photo-756680.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::13::burger-vegano": "https://images.pexels.com/photos/103886/pexels-photo-103886.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::8::smash-burger-simples": "https://images.pexels.com/photos/3915915/pexels-photo-3915915.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-artesanais::9::smash-burger-duplo": "https://images.pexels.com/photos/6896381/pexels-photo-6896381.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::1::x-burguer": "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::2::x-salada": "https://images.pexels.com/photos/5865440/pexels-photo-5865440.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::3::x-bacon": "https://images.pexels.com/photos/4109233/pexels-photo-4109233.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::4::x-egg": "https://images.pexels.com/photos/2089717/pexels-photo-2089717.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::5::x-calabresa": "https://images.pexels.com/photos/7813574/pexels-photo-7813574.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::6::x-frango": "https://images.pexels.com/photos/2267538/pexels-photo-2267538.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hamburgueres-classicos::7::x-tudo": "https://images.pexels.com/photos/6213688/pexels-photo-6213688.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hot-dogs::14::hot-dog-tradicional": "https://images.pexels.com/photos/4518642/pexels-photo-4518642.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hot-dogs::15::hot-dog-completo": "https://images.pexels.com/photos/4518644/pexels-photo-4518644.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hot-dogs::16::hot-dog-premium": "https://images.pexels.com/photos/4113470/pexels-photo-4113470.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::hot-dogs::17::hot-dog-calabresa": "https://images.pexels.com/photos/5175567/pexels-photo-5175567.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::milk-shakes::31::milk-shake-chocolate": "https://images.pexels.com/photos/6463655/pexels-photo-6463655.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::milk-shakes::32::milk-shake-morango": "https://images.pexels.com/photos/4399938/pexels-photo-4399938.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::milk-shakes::33::milk-shake-ovomaltine": "https://images.pexels.com/photos/103566/pexels-photo-103566.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::milk-shakes::34::milk-shake-nutella": "https://images.pexels.com/photos/6413660/pexels-photo-6413660.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::milk-shakes::35::milk-shake-oreo": "https://images.pexels.com/photos/7451963/pexels-photo-7451963.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::22::batata-frita-p": "https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::23::batata-frita-g": "https://images.pexels.com/photos/5860680/pexels-photo-5860680.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::24::batata-com-cheddar-e-bacon": "https://images.pexels.com/photos/4747828/pexels-photo-4747828.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::25::onion-rings": "https://images.pexels.com/photos/6941015/pexels-photo-6941015.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::26::nuggets-10un": "https://images.pexels.com/photos/5374414/pexels-photo-5374414.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::porcoes-acompanhamentos::27::mandioca-frita": "https://images.pexels.com/photos/5553389/pexels-photo-5553389.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::sobremesas::28::brownie-com-sorvete": "https://images.pexels.com/photos/7021888/pexels-photo-7021888.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::sobremesas::29::petit-gateau": "https://images.pexels.com/photos/5638516/pexels-photo-5638516.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::sobremesas::30::sundae": "https://images.pexels.com/photos/5914457/pexels-photo-5914457.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::wraps-crepes::18::wrap-de-frango": "https://images.pexels.com/photos/2015191/pexels-photo-2015191.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::wraps-crepes::19::wrap-bacon-cheddar": "https://images.pexels.com/photos/6529824/pexels-photo-6529824.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::wraps-crepes::20::crepe-de-carne": "https://images.pexels.com/photos/6758378/pexels-photo-6758378.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "lanchonete::wraps-crepes::21::crepe-de-frango-com-catupiry": "https://images.pexels.com/photos/5639555/pexels-photo-5639555.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::1::coca-cola-lata-350ml": "https://images.pexels.com/photos/2530319/pexels-photo-2530319.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::10::energetico-red-bull-250ml": "https://images.pexels.com/photos/6781377/pexels-photo-6781377.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::11::energetico-monster-473ml": "https://images.pexels.com/photos/7033795/pexels-photo-7033795.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::12::agua-de-coco-kero-coco-1l": "https://images.pexels.com/photos/3030371/pexels-photo-3030371.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::13::cha-leao-pessego-1-5l": "https://images.pexels.com/photos/5448348/pexels-photo-5448348.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::2::coca-cola-2l": "https://images.pexels.com/photos/2530319/pexels-photo-2530319.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::3::guarana-antarctica-2l": "https://images.pexels.com/photos/6920724/pexels-photo-6920724.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::4::fanta-laranja-lata-350ml": "https://images.pexels.com/photos/5532718/pexels-photo-5532718.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::5::sprite-lata-350ml": "https://images.pexels.com/photos/540523/pexels-photo-540523.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::6::agua-mineral-crystal-500ml": "https://images.pexels.com/photos/1540235/pexels-photo-1540235.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::7::agua-mineral-crystal-1-5l": "https://images.pexels.com/photos/2479095/pexels-photo-2479095.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::8::suco-del-valle-uva-1l": "https://images.pexels.com/photos/6902853/pexels-photo-6902853.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::bebidas::9::suco-del-valle-laranja-1l": "https://images.pexels.com/photos/6902853/pexels-photo-6902853.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::100::cerveja-budweiser-lata-350ml": "https://images.pexels.com/photos/5532830/pexels-photo-5532830.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::101::vodka-absolut-750ml": "https://images.pexels.com/photos/5530252/pexels-photo-5530252.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::102::whisky-johnnie-walker-red-750ml": "https://images.pexels.com/photos/1267264/pexels-photo-1267264.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::103::cachaca-51-965ml": "https://images.pexels.com/photos/36233737/pexels-photo-36233737.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::104::vinho-tinto-concha-y-toro-750ml": "https://images.pexels.com/photos/5531043/pexels-photo-5531043.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::96::cerveja-brahma-lata-350ml": "https://images.pexels.com/photos/5703498/pexels-photo-5703498.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::97::cerveja-skol-lata-350ml": "https://images.pexels.com/photos/5532675/pexels-photo-5532675.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::98::cerveja-heineken-long-neck-330ml": "https://images.pexels.com/photos/168989/pexels-photo-168989.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::cervejas-destilados::99::cerveja-corona-extra-ln-330ml": "https://images.pexels.com/photos/1089932/pexels-photo-1089932.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::combos-kits::124::kit-praia-familia": "https://images.pexels.com/photos/4728856/pexels-photo-4728856.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::combos-kits::125::kit-churrasco-basico": "https://images.pexels.com/photos/4253618/pexels-photo-4253618.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::combos-kits::126::kit-lanche-da-tarde": "https://images.pexels.com/photos/4676402/pexels-photo-4676402.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::combos-kits::127::kit-cafe-da-manha": "https://images.pexels.com/photos/4021994/pexels-photo-4021994.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::combos-kits::128::kit-festa-kids": "https://images.pexels.com/photos/4109139/pexels-photo-4109139.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::58::pizza-seara-mussarela-460g": "https://images.pexels.com/photos/6151203/pexels-photo-6151203.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::59::lasanha-sadia-bolonhesa-600g": "https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::60::nuggets-sadia-frango-300g": "https://images.pexels.com/photos/4021982/pexels-photo-4021982.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::61::hamburguer-seara-bovino-672g": "https://images.pexels.com/photos/1251197/pexels-photo-1251197.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::62::sorvete-kibon-napolitano-1-5l": "https://images.pexels.com/photos/5796721/pexels-photo-5796721.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::63::acai-frooty-pote-500g": "https://images.pexels.com/photos/36457777/pexels-photo-36457777.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::64::polpa-de-fruta-demarchi-maracuja-400g": "https://images.pexels.com/photos/161440/pexels-photo-161440.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::congelados::65::empanado-de-frango-perdigao-300g": "https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::41::sabonete-dove-original-90g": "https://images.pexels.com/photos/6690197/pexels-photo-6690197.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::42::shampoo-pantene-restauracao-400ml": "https://images.pexels.com/photos/7262987/pexels-photo-7262987.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::43::condicionador-pantene-restauracao-400ml": "https://images.pexels.com/photos/7428095/pexels-photo-7428095.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::44::desodorante-rexona-aerosol-150ml": "https://images.pexels.com/photos/7120503/pexels-photo-7120503.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::45::creme-dental-colgate-total-12-90g": "https://images.pexels.com/photos/6322805/pexels-photo-6322805.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::46::papel-higienico-neve-folha-dupla-12un": "https://images.pexels.com/photos/3963082/pexels-photo-3963082.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::47::escova-dental-oral-b-indicator": "https://images.pexels.com/photos/4045552/pexels-photo-4045552.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::48::absorvente-always-noturno-8un": "https://images.pexels.com/photos/7692473/pexels-photo-7692473.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::higiene-pessoal::49::protetor-solar-sundown-fps-50-200ml": "https://images.pexels.com/photos/5202453/pexels-photo-5202453.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::83::banana-prata-kg": "https://images.pexels.com/photos/5370176/pexels-photo-5370176.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::84::maca-fuji-kg": "https://images.pexels.com/photos/2487443/pexels-photo-2487443.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::85::tomate-italiano-kg": "https://images.pexels.com/photos/5589054/pexels-photo-5589054.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::86::cebola-branca-kg": "https://images.pexels.com/photos/6316541/pexels-photo-6316541.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::87::batata-lavada-kg": "https://images.pexels.com/photos/6037886/pexels-photo-6037886.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::88::alface-crespa-maco": "https://images.pexels.com/photos/5496030/pexels-photo-5496030.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::hortifruti-basico::89::limao-tahiti-kg": "https://images.pexels.com/photos/5264580/pexels-photo-5264580.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::14::leite-integral-ninho-1l": "https://images.pexels.com/photos/3735217/pexels-photo-3735217.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::15::leite-desnatado-parmalat-1l": "https://images.pexels.com/photos/4324320/pexels-photo-4324320.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::16::iogurte-danone-morango-900g": "https://images.pexels.com/photos/7407295/pexels-photo-7407295.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::17::iogurte-grego-vigor-100g": "https://images.pexels.com/photos/4006347/pexels-photo-4006347.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::18::queijo-mussarela-tirolez-fatiado-150g": "https://images.pexels.com/photos/2741457/pexels-photo-2741457.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::19::queijo-prato-tirolez-fatiado-150g": "https://images.pexels.com/photos/36040972/pexels-photo-36040972.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::20::presunto-cozido-sadia-fatiado-200g": "https://images.pexels.com/photos/5491290/pexels-photo-5491290.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::21::requeijao-cremoso-catupiry-200g": "https://images.pexels.com/photos/6412957/pexels-photo-6412957.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::22::manteiga-presidente-com-sal-200g": "https://images.pexels.com/photos/94443/pexels-photo-94443.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::23::cream-cheese-philadelphia-150g": "https://images.pexels.com/photos/6412957/pexels-photo-6412957.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::24::mortadela-ceratti-fatiada-200g": "https://images.pexels.com/photos/5491279/pexels-photo-5491279.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::laticinios-frios::25::peito-de-peru-sadia-fatiado-200g": "https://images.pexels.com/photos/133578/pexels-photo-133578.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::50::detergente-ype-neutro-500ml": "https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::51::agua-sanitaria-ype-1l": "https://images.pexels.com/photos/5218019/pexels-photo-5218019.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::52::desinfetante-pinho-sol-original-1l": "https://images.pexels.com/photos/4440523/pexels-photo-4440523.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::53::limpeza-multiuso-veja-original-500ml": "https://images.pexels.com/photos/6160302/pexels-photo-6160302.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::54::sabao-em-po-omo-lavagem-perfeita-1-6kg": "https://images.pexels.com/photos/3177257/pexels-photo-3177257.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::55::amaciante-comfort-concentrado-1l": "https://images.pexels.com/photos/5217774/pexels-photo-5217774.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::56::esponja-scotch-brite-multiuso-3un": "https://images.pexels.com/photos/6160301/pexels-photo-6160301.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::limpeza::57::saco-de-lixo-dover-roll-50l-30un": "https://images.pexels.com/photos/4440533/pexels-photo-4440533.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::matinais-cereais::112::cereal-neston-3-cereais-210g": "https://images.pexels.com/photos/4397282/pexels-photo-4397282.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::matinais-cereais::113::sucrilhos-kelloggs-240g": "https://images.pexels.com/photos/1311244/pexels-photo-1311244.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::matinais-cereais::114::granola-kobber-tradicional-250g": "https://images.pexels.com/photos/7476698/pexels-photo-7476698.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::matinais-cereais::115::barra-de-cereal-nutry-morango-3un": "https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::matinais-cereais::116::toddy-achocolatado-400g": "https://images.pexels.com/photos/36697467/pexels-photo-36697467.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::26::arroz-tio-joao-tipo-1-5kg": "https://images.pexels.com/photos/3737694/pexels-photo-3737694.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::27::feijao-carioca-camil-1kg": "https://images.pexels.com/photos/4716798/pexels-photo-4716798.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::28::acucar-refinado-uniao-1kg": "https://images.pexels.com/photos/5590955/pexels-photo-5590955.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::29::cafe-pilao-torrado-e-moido-500g": "https://images.pexels.com/photos/4829072/pexels-photo-4829072.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::30::oleo-de-soja-liza-900ml": "https://images.pexels.com/photos/5737246/pexels-photo-5737246.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::31::macarrao-espaguete-barilla-500g": "https://images.pexels.com/photos/4431588/pexels-photo-4431588.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::32::molho-de-tomate-heinz-340g": "https://images.pexels.com/photos/5793770/pexels-photo-5793770.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::33::farinha-de-trigo-dona-benta-1kg": "https://images.pexels.com/photos/6996209/pexels-photo-6996209.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::34::sal-refinado-cisne-1kg": "https://images.pexels.com/photos/36465192/pexels-photo-36465192.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::35::azeite-extra-virgem-gallo-500ml": "https://images.pexels.com/photos/4910159/pexels-photo-4910159.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::36::vinagre-de-maca-castelo-750ml": "https://images.pexels.com/photos/7333124/pexels-photo-7333124.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::37::leite-condensado-moca-395g": "https://images.pexels.com/photos/7451957/pexels-photo-7451957.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::38::creme-de-leite-nestle-200g": "https://images.pexels.com/photos/6804191/pexels-photo-6804191.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::39::milho-verde-quero-200g": "https://images.pexels.com/photos/3859918/pexels-photo-3859918.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::mercearia::40::ervilha-quero-200g": "https://images.pexels.com/photos/5870328/pexels-photo-5870328.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::90::ovos-brancos-mantiqueira-12un": "https://images.pexels.com/photos/6845799/pexels-photo-6845799.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::91::ovos-caipiras-mantiqueira-10un": "https://images.pexels.com/photos/6294154/pexels-photo-6294154.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::92::margarina-qualy-500g": "https://images.pexels.com/photos/3821252/pexels-photo-3821252.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::93::achocolatado-nescau-2-0-400g": "https://images.pexels.com/photos/7034135/pexels-photo-7034135.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::94::aveia-quaker-em-flocos-200g": "https://images.pexels.com/photos/6845651/pexels-photo-6845651.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::ovos-basicos::95::geleia-queensberry-morango-320g": "https://images.pexels.com/photos/7804967/pexels-photo-7804967.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::66::pao-de-forma-pullman-artesano": "https://images.pexels.com/photos/6375551/pexels-photo-6375551.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::67::bisnaguinha-seven-boys-300g": "https://images.pexels.com/photos/3752087/pexels-photo-3752087.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::68::pao-de-hot-dog-panco-6un": "https://images.pexels.com/photos/4518638/pexels-photo-4518638.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::69::biscoito-oreo-original-90g": "https://images.pexels.com/photos/7451962/pexels-photo-7451962.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::70::biscoito-maizena-vitarella-400g": "https://images.pexels.com/photos/5878306/pexels-photo-5878306.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::71::cream-cracker-piraque-200g": "https://images.pexels.com/photos/6480844/pexels-photo-6480844.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::72::torrada-bauducco-integral-160g": "https://images.pexels.com/photos/3872371/pexels-photo-3872371.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::padaria-biscoitos::73::bolo-pullman-chocolate-250g": "https://images.pexels.com/photos/2144200/pexels-photo-2144200.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::74::batata-lays-classica-96g": "https://images.pexels.com/photos/4061441/pexels-photo-4061441.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::75::doritos-queijo-nacho-96g": "https://images.pexels.com/photos/479628/pexels-photo-479628.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::76::cheetos-requeijao-45g": "https://images.pexels.com/photos/7033942/pexels-photo-7033942.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::77::amendoim-japones-dori-200g": "https://images.pexels.com/photos/5386465/pexels-photo-5386465.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::78::chocolate-lacta-ao-leite-90g": "https://images.pexels.com/photos/6167340/pexels-photo-6167340.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::79::chocolate-bis-lacta-126g": "https://images.pexels.com/photos/2272761/pexels-photo-2272761.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::80::bala-fini-dentadura-80g": "https://images.pexels.com/photos/7196444/pexels-photo-7196444.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::81::pacoca-amor-30un": "https://images.pexels.com/photos/6549199/pexels-photo-6549199.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::snacks-guloseimas::82::pipoca-de-micro-ondas-yoki-manteiga-100g": "https://images.pexels.com/photos/7110152/pexels-photo-7110152.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::117::catchup-heinz-397g": "https://images.pexels.com/photos/5779367/pexels-photo-5779367.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::118::mostarda-heinz-215g": "https://images.pexels.com/photos/4628430/pexels-photo-4628430.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::119::maionese-hellmanns-500g": "https://images.pexels.com/photos/1443934/pexels-photo-1443934.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::120::molho-de-soja-sakura-150ml": "https://images.pexels.com/photos/3763799/pexels-photo-3763799.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::121::tempero-sazon-legumes-60g": "https://images.pexels.com/photos/6476384/pexels-photo-6476384.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::122::pimenta-do-reino-kitano-40g": "https://images.pexels.com/photos/5056827/pexels-photo-5056827.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::temperos-molhos::123::alho-triturado-arisco-200g": "https://images.pexels.com/photos/1392585/pexels-photo-1392585.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::105::carvao-vegetal-3kg": "https://images.pexels.com/photos/1857726/pexels-photo-1857726.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::106::gelo-em-cubo-3kg": "https://images.pexels.com/photos/4686938/pexels-photo-4686938.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::107::copos-descartaveis-300ml-50un": "https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::108::guardanapo-snob-50-folhas": "https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::109::pilha-duracell-aa-4un": "https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::110::isqueiro-bic-maxi": "https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "mercadinho::utilidades::111::fosforo-fiat-lux-cx-longa": "https://images.pexels.com/photos/6872805/pexels-photo-6872805.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::21::bolo-de-chocolate-fatia": "https://images.pexels.com/photos/3840200/pexels-photo-3840200.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::22::bolo-de-cenoura-com-chocolate": "https://images.pexels.com/photos/5860730/pexels-photo-5860730.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::23::bolo-de-fuba-cremoso": "https://images.pexels.com/photos/6565740/pexels-photo-6565740.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::24::torta-de-limao-fatia": "https://images.pexels.com/photos/7337103/pexels-photo-7337103.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::25::torta-de-morango-fatia": "https://images.pexels.com/photos/1359323/pexels-photo-1359323.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::26::bolo-de-laranja": "https://images.pexels.com/photos/998237/pexels-photo-998237.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::27::bolo-integral-banana-e-aveia": "https://images.pexels.com/photos/6612694/pexels-photo-6612694.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::bolos-tortas::28::bolo-inteiro-chocolate-1-2kg": "https://images.pexels.com/photos/7687526/pexels-photo-7687526.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::37::cafe-expresso": "https://images.pexels.com/photos/189188/pexels-photo-189188.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::38::cappuccino": "https://images.pexels.com/photos/894696/pexels-photo-894696.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::39::cafe-com-leite": "https://images.pexels.com/photos/302897/pexels-photo-302897.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::40::chocolate-quente": "https://images.pexels.com/photos/5178322/pexels-photo-5178322.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::41::suco-de-laranja-natural-500ml": "https://images.pexels.com/photos/6249449/pexels-photo-6249449.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::42::cha-de-camomila": "https://images.pexels.com/photos/2752031/pexels-photo-2752031.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::43::smoothie-de-morango-400ml": "https://images.pexels.com/photos/36656035/pexels-photo-36656035.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::cafe-bebidas::44::limonada-suica-500ml": "https://images.pexels.com/photos/7262359/pexels-photo-7262359.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::29::brigadeiro-gourmet-unid": "https://images.pexels.com/photos/7103712/pexels-photo-7103712.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::30::sonho-de-creme": "https://images.pexels.com/photos/3301907/pexels-photo-3301907.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::31::berlim-de-doce-de-leite": "https://images.pexels.com/photos/35981910/pexels-photo-35981910.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::32::carolina-recheada-3un": "https://images.pexels.com/photos/602211/pexels-photo-602211.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::33::churros-doce-de-leite": "https://images.pexels.com/photos/5638531/pexels-photo-5638531.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::34::palmier-amanteigado-4un": "https://images.pexels.com/photos/2498936/pexels-photo-2498936.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::35::pudim-de-leite-fatia": "https://images.pexels.com/photos/128399/pexels-photo-128399.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::doces-sobremesas::36::quindim": "https://images.pexels.com/photos/5995770/pexels-photo-5995770.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::encomendas::56::bolo-decorado-festa-2kg": "https://images.pexels.com/photos/433527/pexels-photo-433527.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::encomendas::57::kit-100-salgados-sortidos": "https://images.pexels.com/photos/3856046/pexels-photo-3856046.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::encomendas::58::kit-200-salgados-sortidos": "https://images.pexels.com/photos/4842865/pexels-photo-4842865.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::encomendas::59::torta-salgada-inteira-1-5kg": "https://images.pexels.com/photos/6643739/pexels-photo-6643739.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::encomendas::60::kit-cafe-da-manha-especial": "https://images.pexels.com/photos/28445830/pexels-photo-28445830.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::frios-laticinios::51::queijo-minas-frescal-300g": "https://images.pexels.com/photos/6004121/pexels-photo-6004121.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::frios-laticinios::52::presunto-magro-fatiado-200g": "https://images.pexels.com/photos/5491285/pexels-photo-5491285.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::frios-laticinios::53::manteiga-da-casa-200g": "https://images.pexels.com/photos/6957153/pexels-photo-6957153.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::frios-laticinios::54::iogurte-natural-artesanal-500ml": "https://images.pexels.com/photos/4080532/pexels-photo-4080532.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::frios-laticinios::55::requeijao-caseiro-300g": "https://images.pexels.com/photos/36442795/pexels-photo-36442795.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::45::misto-quente": "https://images.pexels.com/photos/4394139/pexels-photo-4394139.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::46::bauru-no-pao-frances": "https://images.pexels.com/photos/6432076/pexels-photo-6432076.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::47::sanduiche-natural-de-frango": "https://images.pexels.com/photos/5122952/pexels-photo-5122952.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::48::croissant-de-presunto-e-queijo": "https://images.pexels.com/photos/5639299/pexels-photo-5639299.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::49::wrap-de-frango-caesar": "https://images.pexels.com/photos/5639371/pexels-photo-5639371.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::lanches::50::tostex-de-queijo-e-tomate": "https://images.pexels.com/photos/6004145/pexels-photo-6004145.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::1::pao-frances-unid": "https://images.pexels.com/photos/6810737/pexels-photo-6810737.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::10::focaccia-de-alecrim": "https://images.pexels.com/photos/36605452/pexels-photo-36605452.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::2::pao-de-queijo-grande": "https://images.pexels.com/photos/4279102/pexels-photo-4279102.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::3::pao-de-queijo-pequeno-3un": "https://images.pexels.com/photos/4279110/pexels-photo-4279110.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::4::pao-integral-fatiado": "https://images.pexels.com/photos/36353181/pexels-photo-36353181.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::5::pao-de-fermentacao-natural": "https://images.pexels.com/photos/6202270/pexels-photo-6202270.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::6::ciabatta": "https://images.pexels.com/photos/7568493/pexels-photo-7568493.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::7::croissant-de-manteiga": "https://images.pexels.com/photos/6152263/pexels-photo-6152263.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::8::pao-de-alho-4un": "https://images.pexels.com/photos/5213899/pexels-photo-5213899.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::paes::9::broa-de-milho": "https://images.pexels.com/photos/1287277/pexels-photo-1287277.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::11::coxinha-de-frango": "https://images.pexels.com/photos/5639754/pexels-photo-5639754.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::12::esfiha-de-carne": "https://images.pexels.com/photos/5740627/pexels-photo-5740627.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::13::esfiha-de-queijo": "https://images.pexels.com/photos/7368049/pexels-photo-7368049.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::14::empada-de-frango": "https://images.pexels.com/photos/5706417/pexels-photo-5706417.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::15::empada-de-palmito": "https://images.pexels.com/photos/5662167/pexels-photo-5662167.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::16::pastel-de-forno-carne": "https://images.pexels.com/photos/5881018/pexels-photo-5881018.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::17::quiche-de-alho-poro": "https://images.pexels.com/photos/3856043/pexels-photo-3856043.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::18::pao-de-batata-recheado": "https://images.pexels.com/photos/7776547/pexels-photo-7776547.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::19::enroladinho-de-salsicha": "https://images.pexels.com/photos/5864610/pexels-photo-5864610.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "padaria::salgados::20::bolinha-de-queijo-6un": "https://images.pexels.com/photos/166031/pexels-photo-166031.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::42::coleira-regulavel-caes-p": "https://images.pexels.com/photos/5732505/pexels-photo-5732505.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::43::coleira-regulavel-caes-m": "https://images.pexels.com/photos/170325/pexels-photo-170325.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::44::guia-retratil-5m": "https://images.pexels.com/photos/6682225/pexels-photo-6682225.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::45::peitoral-anti-puxao-m": "https://images.pexels.com/photos/5255612/pexels-photo-5255612.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::46::comedouro-inox-500ml": "https://images.pexels.com/photos/4432260/pexels-photo-4432260.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::47::bebedouro-inox-1l": "https://images.pexels.com/photos/5822458/pexels-photo-5822458.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::48::cama-pet-retangular-m": "https://images.pexels.com/photos/6207406/pexels-photo-6207406.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::49::cama-pet-retangular-g": "https://images.pexels.com/photos/6768918/pexels-photo-6768918.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::50::caixa-de-transporte-n3": "https://images.pexels.com/photos/2132710/pexels-photo-2132710.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::acessorios::51::focinheira-de-nylon-m": "https://images.pexels.com/photos/3289950/pexels-photo-3289950.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::59::areia-higienica-pipicat-classica-12kg": "https://images.pexels.com/photos/33424745/pexels-photo-33424745.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::60::areia-higienica-viva-verde-4kg": "https://images.pexels.com/photos/33673961/pexels-photo-33673961.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::61::granulado-sanitario-tofu-6l": "https://images.pexels.com/photos/7009334/pexels-photo-7009334.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::62::tapete-higienico-30un": "https://images.pexels.com/photos/6000304/pexels-photo-6000304.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::63::tapete-higienico-60un": "https://images.pexels.com/photos/3908817/pexels-photo-3908817.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::64::pa-coletora-para-areia": "https://images.pexels.com/photos/3869255/pexels-photo-3869255.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::65::caixa-de-areia-fechada": "https://images.pexels.com/photos/5088844/pexels-photo-5088844.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::areia-tapetes::66::saco-cata-caca-biodegradavel-4-rolos": "https://images.pexels.com/photos/4453132/pexels-photo-4453132.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::35::bolinha-de-tenis-para-caes-3un": "https://images.pexels.com/photos/16111908/pexels-photo-16111908.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::36::corda-interativa-para-caes": "https://images.pexels.com/photos/1739093/pexels-photo-1739093.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::37::brinquedo-de-borracha-resistente": "https://images.pexels.com/photos/35893693/pexels-photo-35893693.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::38::ratinho-de-pelucia-para-gatos": "https://images.pexels.com/photos/7725609/pexels-photo-7725609.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::39::varinha-com-pena-para-gatos": "https://images.pexels.com/photos/5939304/pexels-photo-5939304.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::40::bola-com-guizo-para-gatos": "https://images.pexels.com/photos/137049/pexels-photo-137049.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::brinquedos::41::arranhador-de-papelao-para-gatos": "https://images.pexels.com/photos/7725602/pexels-photo-7725602.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::52::antipulgas-frontline-plus-caes-10-20kg": "https://images.pexels.com/photos/4432261/pexels-photo-4432261.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::53::antipulgas-frontline-plus-gatos": "https://images.pexels.com/photos/7224648/pexels-photo-7224648.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::54::vermifugo-drontal-plus-caes": "https://images.pexels.com/photos/5482826/pexels-photo-5482826.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::55::spray-antisseptico-100ml": "https://images.pexels.com/photos/4177223/pexels-photo-4177223.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::56::suplemento-vitaminico-organnact-120ml": "https://images.pexels.com/photos/2352276/pexels-photo-2352276.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::57::colirio-ocular-pet-10ml": "https://images.pexels.com/photos/129965/pexels-photo-129965.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::farmacia-pet::58::limpa-ouvido-pet-100ml": "https://images.pexels.com/photos/6235650/pexels-photo-6235650.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::27::shampoo-sanol-neutro-500ml": "https://images.pexels.com/photos/4830992/pexels-photo-4830992.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::28::shampoo-antipulgas-sanol-500ml": "https://images.pexels.com/photos/485294/pexels-photo-485294.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::29::condicionador-sanol-revitalizante-500ml": "https://images.pexels.com/photos/36687326/pexels-photo-36687326.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::30::perfume-pet-clean-120ml": "https://images.pexels.com/photos/6801177/pexels-photo-6801177.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::31::escova-rasqueadeira-dupla": "https://images.pexels.com/photos/36714363/pexels-photo-36714363.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::32::cortador-de-unha-pet": "https://images.pexels.com/photos/6560381/pexels-photo-6560381.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::33::toalha-absorvente-para-pets": "https://images.pexels.com/photos/4538457/pexels-photo-4538457.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::higiene-banho::34::lenco-umedecido-pet-50un": "https://images.pexels.com/photos/5745225/pexels-photo-5745225.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::19::bifinho-pedigree-carne-60g": "https://images.pexels.com/photos/36186523/pexels-photo-36186523.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::20::ossinho-pedigree-rodeo-70g": "https://images.pexels.com/photos/6568950/pexels-photo-6568950.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::21::petisco-dreamies-gatos-frango-40g": "https://images.pexels.com/photos/5201246/pexels-photo-5201246.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::22::osso-natural-bovino-un": "https://images.pexels.com/photos/7788682/pexels-photo-7788682.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::23::palito-mastigavel-caes-5un": "https://images.pexels.com/photos/3299906/pexels-photo-3299906.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::24::bifinhos-premier-caes-60g": "https://images.pexels.com/photos/4445456/pexels-photo-4445456.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::25::petisco-golden-cookie-caes-350g": "https://images.pexels.com/photos/36446733/pexels-photo-36446733.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::petiscos::26::petisco-purina-cat-chow-gatos-40g": "https://images.pexels.com/photos/205975/pexels-photo-205975.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::1::racao-golden-caes-adultos-carne-15kg": "https://images.pexels.com/photos/7310128/pexels-photo-7310128.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::10::racao-hills-science-diet-adult-12kg": "https://images.pexels.com/photos/7309473/pexels-photo-7309473.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::2::racao-golden-caes-filhotes-frango-15kg": "https://images.pexels.com/photos/7309448/pexels-photo-7309448.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::3::racao-premier-caes-adultos-frango-12kg": "https://images.pexels.com/photos/3737642/pexels-photo-3737642.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::4::racao-royal-canin-medium-adult-15kg": "https://images.pexels.com/photos/18764148/pexels-photo-18764148.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::5::racao-royal-canin-mini-indoor-7-5kg": "https://images.pexels.com/photos/3735174/pexels-photo-3735174.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::6::racao-pedigree-carne-adulto-10-1kg": "https://images.pexels.com/photos/230785/pexels-photo-230785.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::7::racao-n-d-caes-adultos-frango-10-1kg": "https://images.pexels.com/photos/5079264/pexels-photo-5079264.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::8::racao-gran-plus-caes-adultos-15kg": "https://images.pexels.com/photos/5842509/pexels-photo-5842509.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-caes::9::sache-dog-chow-adultos-100g": "https://images.pexels.com/photos/7258492/pexels-photo-7258492.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::11::racao-golden-gatos-adultos-carne-10-1kg": "https://images.pexels.com/photos/7258493/pexels-photo-7258493.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::12::racao-whiskas-gatos-adultos-carne-10-1kg": "https://images.pexels.com/photos/7258498/pexels-photo-7258498.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::13::racao-royal-canin-indoor-27-7-5kg": "https://images.pexels.com/photos/6529678/pexels-photo-6529678.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::14::racao-premier-gatos-adultos-frango-7-5kg": "https://images.pexels.com/photos/4061388/pexels-photo-4061388.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::15::racao-n-d-gatos-adultos-peixe-7-5kg": "https://images.pexels.com/photos/3622598/pexels-photo-3622598.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::16::sache-whiskas-gatos-adultos-85g": "https://images.pexels.com/photos/4422098/pexels-photo-4422098.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::17::racao-cat-chow-gatos-castrados-10-1kg": "https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "petshop::racao-gatos::18::sache-sheba-gatos-adultos-85g": "https://images.pexels.com/photos/7309465/pexels-photo-7309465.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::36::coca-cola-2l": "https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::37::guarana-antarctica-2l": "https://images.pexels.com/photos/2260561/pexels-photo-2260561.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::38::coca-cola-lata-350ml": "https://images.pexels.com/photos/6151210/pexels-photo-6151210.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::39::guarana-antarctica-350ml": "https://images.pexels.com/photos/5639546/pexels-photo-5639546.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::40::suco-natural-1l": "https://images.pexels.com/photos/1082343/pexels-photo-1082343.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::41::heineken-long-neck-330ml": "https://images.pexels.com/photos/3343622/pexels-photo-3343622.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bebidas::42::agua-mineral-1-5l": "https://images.pexels.com/photos/6223177/pexels-photo-6223177.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bordas-recheadas::32::borda-de-catupiry": "https://images.pexels.com/photos/36374388/pexels-photo-36374388.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bordas-recheadas::33::borda-de-cheddar": "https://images.pexels.com/photos/6111951/pexels-photo-6111951.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bordas-recheadas::34::borda-de-bacon-com-cheddar": "https://images.pexels.com/photos/1460874/pexels-photo-1460874.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::bordas-recheadas::35::borda-de-chocolate": "https://images.pexels.com/photos/6697495/pexels-photo-6697495.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::26::calzone-de-calabresa": "https://images.pexels.com/photos/3682837/pexels-photo-3682837.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::27::calzone-quatro-queijos": "https://images.pexels.com/photos/4562970/pexels-photo-4562970.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::28::calzone-de-frango-com-catupiry": "https://images.pexels.com/photos/7175422/pexels-photo-7175422.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::29::esfiha-de-carne-6un": "https://images.pexels.com/photos/5848286/pexels-photo-5848286.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::30::esfiha-de-queijo-6un": "https://images.pexels.com/photos/5848246/pexels-photo-5848246.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::calzones-esfihas::31::esfiha-de-frango-6un": "https://images.pexels.com/photos/5903378/pexels-photo-5903378.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::43::combo-pizza-media-refri-2l": "https://images.pexels.com/photos/365459/pexels-photo-365459.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::44::combo-2-pizzas-medias": "https://images.pexels.com/photos/7813575/pexels-photo-7813575.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::45::combo-familia": "https://images.pexels.com/photos/5848275/pexels-photo-5848275.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::46::combo-broto-refri": "https://images.pexels.com/photos/5903276/pexels-photo-5903276.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::47::combo-meio-a-meio-refri": "https://images.pexels.com/photos/6493565/pexels-photo-6493565.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::combos::48::combo-esfihas-12un-refri": "https://images.pexels.com/photos/5903111/pexels-photo-5903111.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::20::chocolate-com-morango": "https://images.pexels.com/photos/7770711/pexels-photo-7770711.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::21::romeu-e-julieta": "https://images.pexels.com/photos/3915854/pexels-photo-3915854.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::22::banana-com-canela": "https://images.pexels.com/photos/3644/pexels-photo-3644.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::23::prestigio": "https://images.pexels.com/photos/5903173/pexels-photo-5903173.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::24::nutella-com-morango": "https://images.pexels.com/photos/5639261/pexels-photo-5639261.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-doces::25::chocolate-branco-com-ovomaltine": "https://images.pexels.com/photos/5903164/pexels-photo-5903164.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::12::quatro-queijos": "https://images.pexels.com/photos/7813580/pexels-photo-7813580.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::13::pepperoni": "https://images.pexels.com/photos/3944308/pexels-photo-3944308.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::14::margherita": "https://images.pexels.com/photos/6605191/pexels-photo-6605191.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::15::strogonoff": "https://images.pexels.com/photos/1082342/pexels-photo-1082342.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::16::cheddar-com-bacon": "https://images.pexels.com/photos/6223200/pexels-photo-6223200.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::17::camarao": "https://images.pexels.com/photos/7813579/pexels-photo-7813579.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::18::lombo-canadense": "https://images.pexels.com/photos/6147987/pexels-photo-6147987.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-especiais::19::a-moda-da-casa": "https://images.pexels.com/photos/7813578/pexels-photo-7813578.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::1::calabresa": "https://images.pexels.com/photos/5903452/pexels-photo-5903452.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::10::escarola-com-bacon": "https://images.pexels.com/photos/7098658/pexels-photo-7098658.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::11::aliche": "https://images.pexels.com/photos/5903274/pexels-photo-5903274.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::2::mussarela": "https://images.pexels.com/photos/3731423/pexels-photo-3731423.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::3::portuguesa": "https://images.pexels.com/photos/5640011/pexels-photo-5640011.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::4::frango-com-catupiry": "https://images.pexels.com/photos/3915855/pexels-photo-3915855.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::5::napolitana": "https://images.pexels.com/photos/6605223/pexels-photo-6605223.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::6::bacon": "https://images.pexels.com/photos/6223183/pexels-photo-6223183.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::7::atum": "https://images.pexels.com/photos/6424962/pexels-photo-6424962.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::8::palmito": "https://images.pexels.com/photos/1049626/pexels-photo-1049626.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "pizzaria::pizzas-tradicionais::9::milho-com-bacon": "https://images.pexels.com/photos/7362684/pexels-photo-7362684.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::acompanhamentos::27::arroz-branco": "https://images.pexels.com/photos/36740211/pexels-photo-36740211.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::acompanhamentos::28::feijao": "https://images.pexels.com/photos/3004798/pexels-photo-3004798.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::acompanhamentos::29::farofa-de-bacon": "https://images.pexels.com/photos/5041477/pexels-photo-5041477.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::acompanhamentos::30::salada-fresca-do-dia": "https://images.pexels.com/photos/15554391/pexels-photo-15554391.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::acompanhamentos::31::pirao-de-peixe": "https://images.pexels.com/photos/6754328/pexels-photo-6754328.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::combos-promocoes::48::combo-executivo-suco": "https://images.pexels.com/photos/5264809/pexels-photo-5264809.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::combos-promocoes::49::combo-casal": "https://images.pexels.com/photos/6091046/pexels-photo-6091046.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::combos-promocoes::50::combo-familia": "https://images.pexels.com/photos/35541048/pexels-photo-35541048.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::combos-promocoes::51::combo-marmitao-refri": "https://images.pexels.com/photos/35990239/pexels-photo-35990239.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::combos-promocoes::52::combo-parmegiana-completo": "https://images.pexels.com/photos/5227690/pexels-photo-5227690.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::16::marmita-tradicional-p": "https://images.pexels.com/photos/90893/pexels-photo-90893.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::17::marmita-tradicional-g": "https://images.pexels.com/photos/4929677/pexels-photo-4929677.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::18::marmita-fitness": "https://images.pexels.com/photos/4929706/pexels-photo-4929706.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::19::marmita-low-carb": "https://images.pexels.com/photos/4929675/pexels-photo-4929675.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::20::marmitao-familia-4-pessoas": "https://images.pexels.com/photos/24012421/pexels-photo-24012421.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::marmitas-marmitex::21::marmita-de-peixe": "https://images.pexels.com/photos/4929671/pexels-photo-4929671.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::10::moqueca-caicara-de-peixe": "https://images.pexels.com/photos/4871185/pexels-photo-4871185.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::11::moqueca-de-camarao": "https://images.pexels.com/photos/8321980/pexels-photo-8321980.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::12::camarao-a-paulista": "https://images.pexels.com/photos/5855235/pexels-photo-5855235.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::13::peixe-frito-com-pirao": "https://images.pexels.com/photos/7627414/pexels-photo-7627414.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::14::file-de-robalo-grelhado": "https://images.pexels.com/photos/4603275/pexels-photo-4603275.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::15::casquinha-de-siri": "https://images.pexels.com/photos/19677933/pexels-photo-19677933.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::peixes-frutos-do-mar::9::tilapia-grelhada-na-manteiga": "https://images.pexels.com/photos/6046671/pexels-photo-6046671.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::porcoes::22::porcao-de-batata-frita": "https://images.pexels.com/photos/36292352/pexels-photo-36292352.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::porcoes::23::porcao-de-mandioca-frita": "https://images.pexels.com/photos/700558/pexels-photo-700558.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::porcoes::24::porcao-de-polenta-frita": "https://images.pexels.com/photos/6428247/pexels-photo-6428247.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::porcoes::25::porcao-de-isca-de-peixe": "https://images.pexels.com/photos/7419517/pexels-photo-7419517.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::porcoes::26::porcao-de-frango-a-passarinha": "https://images.pexels.com/photos/284273/pexels-photo-284273.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::1::executivo-do-dia": "https://images.pexels.com/photos/5894767/pexels-photo-5894767.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::2::file-de-frango-grelhado": "https://images.pexels.com/photos/6046747/pexels-photo-6046747.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::3::bife-acebolado": "https://images.pexels.com/photos/1314041/pexels-photo-1314041.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::4::strogonoff-de-frango": "https://images.pexels.com/photos/105588/pexels-photo-105588.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::5::picanha-na-chapa": "https://images.pexels.com/photos/36720626/pexels-photo-36720626.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::6::file-a-parmegiana": "https://images.pexels.com/photos/772513/pexels-photo-772513.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::7::frango-a-parmegiana": "https://images.pexels.com/photos/29631422/pexels-photo-29631422.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::pratos-executivos::8::feijoada-completa": "https://images.pexels.com/photos/6936981/pexels-photo-6936981.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::42::coca-cola-lata-350ml": "https://images.pexels.com/photos/2325307/pexels-photo-2325307.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::43::coca-cola-2l": "https://images.pexels.com/photos/29306497/pexels-photo-29306497.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::44::guarana-antarctica-350ml": "https://images.pexels.com/photos/5741238/pexels-photo-5741238.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::45::guarana-antarctica-2l": "https://images.pexels.com/photos/36740206/pexels-photo-36740206.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::46::agua-mineral-500ml": "https://images.pexels.com/photos/3115006/pexels-photo-3115006.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::refrigerantes-agua::47::cafe-coado": "https://images.pexels.com/photos/33371809/pexels-photo-33371809.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sobremesas::32::pudim-de-leite": "https://images.pexels.com/photos/7190365/pexels-photo-7190365.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sobremesas::33::mousse-de-maracuja": "https://images.pexels.com/photos/4089455/pexels-photo-4089455.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sobremesas::34::bolo-caseiro-do-dia": "https://images.pexels.com/photos/20847544/pexels-photo-20847544.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sobremesas::35::cocada-cremosa": "https://images.pexels.com/photos/2733337/pexels-photo-2733337.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sobremesas::36::sorvete-2-bolas": "https://images.pexels.com/photos/5535554/pexels-photo-5535554.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sucos-naturais::37::suco-de-laranja-500ml": "https://images.pexels.com/photos/6416553/pexels-photo-6416553.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sucos-naturais::38::suco-de-limao-c-hortela-500ml": "https://images.pexels.com/photos/6174870/pexels-photo-6174870.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sucos-naturais::39::suco-de-maracuja-500ml": "https://images.pexels.com/photos/36366987/pexels-photo-36366987.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sucos-naturais::40::suco-de-abacaxi-c-hortela-500ml": "https://images.pexels.com/photos/34704679/pexels-photo-34704679.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "restaurante::sucos-naturais::41::agua-de-coco-natural-500ml": "https://images.pexels.com/photos/35960767/pexels-photo-35960767.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::acai-bowls::38::acai-300ml": "https://images.pexels.com/photos/3034638/pexels-photo-3034638.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::acai-bowls::39::acai-500ml": "https://images.pexels.com/photos/7367952/pexels-photo-7367952.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::acai-bowls::40::acai-700ml": "https://images.pexels.com/photos/5864795/pexels-photo-5864795.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::acai-bowls::41::bowl-de-pitaya": "https://images.pexels.com/photos/6927641/pexels-photo-6927641.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::acai-bowls::42::bowl-tropical": "https://images.pexels.com/photos/5535557/pexels-photo-5535557.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::casquinhas-copoes::33::casquinha-simples-1-bola": "https://images.pexels.com/photos/367191/pexels-photo-367191.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::casquinhas-copoes::34::casquinha-dupla-2-bolas": "https://images.pexels.com/photos/675439/pexels-photo-675439.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::casquinhas-copoes::35::copao-300ml-2-sabores": "https://images.pexels.com/photos/5108030/pexels-photo-5108030.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::casquinhas-copoes::36::copao-500ml-3-sabores": "https://images.pexels.com/photos/684968/pexels-photo-684968.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::casquinhas-copoes::37::copao-premium-700ml": "https://images.pexels.com/photos/1352245/pexels-photo-1352245.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::43::calda-extra-chocolate-morango-caramelo": "https://images.pexels.com/photos/5108033/pexels-photo-5108033.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::44::chantilly-extra": "https://images.pexels.com/photos/126790/pexels-photo-126790.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::45::granola-extra": "https://images.pexels.com/photos/4725722/pexels-photo-4725722.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::46::leite-ninho-extra": "https://images.pexels.com/photos/1352249/pexels-photo-1352249.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::47::frutas-frescas-extra": "https://images.pexels.com/photos/5060943/pexels-photo-5060943.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::48::nutella-extra": "https://images.pexels.com/photos/1352251/pexels-photo-1352251.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::49::castanhas-e-amendoim": "https://images.pexels.com/photos/4947220/pexels-photo-4947220.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::complementos::50::confete-granulado": "https://images.pexels.com/photos/5108031/pexels-photo-5108031.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::27::milkshake-chocolate-500ml": "https://images.pexels.com/photos/2559025/pexels-photo-2559025.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::28::milkshake-morango-500ml": "https://images.pexels.com/photos/6544066/pexels-photo-6544066.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::29::milkshake-ovomaltine-500ml": "https://images.pexels.com/photos/2693404/pexels-photo-2693404.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::30::milkshake-nutella-500ml": "https://images.pexels.com/photos/7463310/pexels-photo-7463310.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::31::milkshake-ninho-com-morango-500ml": "https://images.pexels.com/photos/7091585/pexels-photo-7091585.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::milkshakes::32::milkshake-doce-de-leite-500ml": "https://images.pexels.com/photos/3908198/pexels-photo-3908198.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::13::picole-de-chocolate": "https://images.pexels.com/photos/31412/pexels-photo-31412.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::14::picole-de-morango": "https://images.pexels.com/photos/749102/pexels-photo-749102.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::15::picole-de-coco-queimado": "https://images.pexels.com/photos/4725707/pexels-photo-4725707.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::16::picole-de-maracuja": "https://images.pexels.com/photos/4725699/pexels-photo-4725699.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::17::picole-de-acai-com-banana": "https://images.pexels.com/photos/2173772/pexels-photo-2173772.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::18::picole-limao-com-raspas": "https://images.pexels.com/photos/5657399/pexels-photo-5657399.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::19::picole-abacaxi-com-hortela": "https://images.pexels.com/photos/4725719/pexels-photo-4725719.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::picoles::20::picole-de-doce-de-leite": "https://images.pexels.com/photos/4725704/pexels-photo-4725704.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::1::sorvete-chocolate-belga-1-bola": "https://images.pexels.com/photos/161420/pexels-photo-161420.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::10::sorvete-limao-siciliano-1-bola": "https://images.pexels.com/photos/5061019/pexels-photo-5061019.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::11::pote-500ml-2-sabores": "https://images.pexels.com/photos/4916023/pexels-photo-4916023.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::12::pote-1l-3-sabores": "https://images.pexels.com/photos/5060289/pexels-photo-5060289.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::2::sorvete-morango-1-bola": "https://images.pexels.com/photos/6752845/pexels-photo-6752845.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::3::sorvete-creme-1-bola": "https://images.pexels.com/photos/1352244/pexels-photo-1352244.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::4::sorvete-flocos-1-bola": "https://images.pexels.com/photos/5060895/pexels-photo-5060895.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::5::sorvete-pistache-1-bola": "https://images.pexels.com/photos/5060292/pexels-photo-5060292.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::6::sorvete-doce-de-leite-1-bola": "https://images.pexels.com/photos/5060898/pexels-photo-5060898.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::7::sorvete-maracuja-1-bola": "https://images.pexels.com/photos/5060378/pexels-photo-5060378.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::8::sorvete-coco-1-bola": "https://images.pexels.com/photos/5060458/pexels-photo-5060458.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sorvetes-de-massa::9::sorvete-ninho-com-nutella-1-bola": "https://images.pexels.com/photos/5060457/pexels-photo-5060457.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::21::sundae-de-chocolate": "https://images.pexels.com/photos/4875225/pexels-photo-4875225.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::22::sundae-de-morango": "https://images.pexels.com/photos/5914459/pexels-photo-5914459.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::23::sundae-de-caramelo": "https://images.pexels.com/photos/6025811/pexels-photo-6025811.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::24::banana-split": "https://images.pexels.com/photos/1352282/pexels-photo-1352282.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::25::taca-especial-da-casa": "https://images.pexels.com/photos/1362534/pexels-photo-1362534.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sorveteria::sundaes-tacas::26::petit-gateau-com-sorvete": "https://images.pexels.com/photos/5163948/pexels-photo-5163948.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::41::coca-cola-350ml": "https://images.pexels.com/photos/4113656/pexels-photo-4113656.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::42::guarana-antarctica-350ml": "https://images.pexels.com/photos/4109193/pexels-photo-4109193.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::43::cha-gelado": "https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::44::sake-azuma-kirin-370ml": "https://images.pexels.com/photos/6168933/pexels-photo-6168933.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::45::cerveja-sapporo-350ml": "https://images.pexels.com/photos/1267151/pexels-photo-1267151.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::bebidas::46::agua-mineral-500ml": "https://images.pexels.com/photos/4916536/pexels-photo-4916536.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::12::combo-15-pecas": "https://images.pexels.com/photos/7719913/pexels-photo-7719913.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::13::combo-25-pecas": "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::14::combo-salmao-20-pecas": "https://images.pexels.com/photos/6025655/pexels-photo-6025655.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::15::combo-premium-30-pecas": "https://images.pexels.com/photos/36317040/pexels-photo-36317040.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::16::combo-familia-50-pecas": "https://images.pexels.com/photos/7719911/pexels-photo-7719911.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::combinados::17::combo-festa-60-pecas": "https://images.pexels.com/photos/36317038/pexels-photo-36317038.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::1::harumaki-6un": "https://images.pexels.com/photos/4985525/pexels-photo-4985525.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::2::gyoza-6un": "https://images.pexels.com/photos/35873825/pexels-photo-35873825.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::3::sunomono": "https://images.pexels.com/photos/6327666/pexels-photo-6327666.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::4::edamame": "https://images.pexels.com/photos/3985872/pexels-photo-3985872.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::5::shimeji-na-manteiga": "https://images.pexels.com/photos/6157039/pexels-photo-6157039.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::entradas::6::tempura-de-legumes-8un": "https://images.pexels.com/photos/3622477/pexels-photo-3622477.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::niguiris::30::niguiri-salmao-2un": "https://images.pexels.com/photos/2098143/pexels-photo-2098143.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::niguiris::31::niguiri-atum-2un": "https://images.pexels.com/photos/4725633/pexels-photo-4725633.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::niguiris::32::niguiri-camarao-2un": "https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::niguiris::33::niguiri-de-salmao-macaricado-2un": "https://images.pexels.com/photos/4725638/pexels-photo-4725638.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::34::yakissoba-tradicional": "https://images.pexels.com/photos/5602458/pexels-photo-5602458.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::35::yakissoba-de-camarao": "https://images.pexels.com/photos/4518665/pexels-photo-4518665.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::36::lamen-de-chashu": "https://images.pexels.com/photos/5774092/pexels-photo-5774092.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::37::lamen-picante": "https://images.pexels.com/photos/7490494/pexels-photo-7490494.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::38::tempura-de-camarao-8un": "https://images.pexels.com/photos/6144970/pexels-photo-6144970.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::39::yakimeshi": "https://images.pexels.com/photos/37352/pexels-photo-37352.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::pratos-quentes::40::donburi-de-salmao": "https://images.pexels.com/photos/36481289/pexels-photo-36481289.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::23::hot-philadelphia-10un": "https://images.pexels.com/photos/6531075/pexels-photo-6531075.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::24::uramaki-salmao-8un": "https://images.pexels.com/photos/7353389/pexels-photo-7353389.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::25::philadelphia-roll-8un": "https://images.pexels.com/photos/5208235/pexels-photo-5208235.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::26::dragon-roll-8un": "https://images.pexels.com/photos/5208237/pexels-photo-5208237.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::27::rainbow-roll-8un": "https://images.pexels.com/photos/6249504/pexels-photo-6249504.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::28::joe-de-salmao-4un": "https://images.pexels.com/photos/3147493/pexels-photo-3147493.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::rolls-uramakis::29::joe-de-camarao-4un": "https://images.pexels.com/photos/684965/pexels-photo-684965.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::sashimis::10::tataki-de-salmao": "https://images.pexels.com/photos/4162869/pexels-photo-4162869.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::sashimis::11::carpaccio-de-salmao": "https://images.pexels.com/photos/6140621/pexels-photo-6140621.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::sashimis::7::sashimi-de-salmao-5-fatias": "https://images.pexels.com/photos/6788945/pexels-photo-6788945.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::sashimis::8::sashimi-de-atum-5-fatias": "https://images.pexels.com/photos/1683545/pexels-photo-1683545.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::sashimis::9::sashimi-misto-10-fatias": "https://images.pexels.com/photos/5860652/pexels-photo-5860652.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::temakis::18::temaki-salmao": "https://images.pexels.com/photos/4353085/pexels-photo-4353085.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::temakis::19::temaki-salmao-skin": "https://images.pexels.com/photos/5643190/pexels-photo-5643190.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::temakis::20::temaki-atum": "https://images.pexels.com/photos/5113069/pexels-photo-5113069.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::temakis::21::temaki-camarao-empanado": "https://images.pexels.com/photos/6646372/pexels-photo-6646372.jpeg?auto=compress&cs=tinysrgb&w=800",
-  "sushi::temakis::22::temaki-california": "https://images.pexels.com/photos/5364228/pexels-photo-5364228.jpeg?auto=compress&cs=tinysrgb&w=800"
-};
+export const TEMPLATE_PRODUCT_IMAGE_URLS: Record<string, string> = {
+  'acai::acai-especiais::10::acai-com-pacoca':
+    'https://images.pexels.com/photos/5847235/pexels-photo-5847235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-especiais::11::acai-power':
+    'https://images.pexels.com/photos/6217960/pexels-photo-6217960.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-especiais::12::acai-ovomaltine':
+    'https://images.pexels.com/photos/4143543/pexels-photo-4143543.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-especiais::13::acai-oreo':
+    'https://images.pexels.com/photos/6412959/pexels-photo-6412959.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-especiais::14::acai-zero':
+    'https://images.pexels.com/photos/6708441/pexels-photo-6708441.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-especiais::9::acai-napolitano':
+    'https://images.pexels.com/photos/2161649/pexels-photo-2161649.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-no-copo::1::acai-300ml':
+    'https://images.pexels.com/photos/2291070/pexels-photo-2291070.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-no-copo::2::acai-500ml':
+    'https://images.pexels.com/photos/1517277/pexels-photo-1517277.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-no-copo::3::acai-700ml':
+    'https://images.pexels.com/photos/5396133/pexels-photo-5396133.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::acai-no-copo::4::acai-1-litro':
+    'https://images.pexels.com/photos/6224595/pexels-photo-6224595.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::19::granola':
+    'https://images.pexels.com/photos/5505465/pexels-photo-5505465.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::20::leite-condensado':
+    'https://images.pexels.com/photos/3646861/pexels-photo-3646861.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::21::nutella':
+    'https://images.pexels.com/photos/6465741/pexels-photo-6465741.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::22::morango':
+    'https://images.pexels.com/photos/60795/pexels-photo-60795.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::23::banana':
+    'https://images.pexels.com/photos/7195053/pexels-photo-7195053.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::24::ovomaltine':
+    'https://images.pexels.com/photos/1212845/pexels-photo-1212845.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::25::oreo':
+    'https://images.pexels.com/photos/5060281/pexels-photo-5060281.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::26::pacoca':
+    'https://images.pexels.com/photos/5865648/pexels-photo-5865648.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::27::leite-em-po':
+    'https://images.pexels.com/photos/5078582/pexels-photo-5078582.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::28::whey-protein':
+    'https://images.pexels.com/photos/7149595/pexels-photo-7149595.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::adicionais::29::pasta-de-amendoim':
+    'https://images.pexels.com/photos/5149349/pexels-photo-5149349.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::bebidas::30::smoothie-de-acai':
+    'https://images.pexels.com/photos/5864652/pexels-photo-5864652.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::bebidas::31::vitamina-de-acai':
+    'https://images.pexels.com/photos/1438080/pexels-photo-1438080.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::bebidas::32::suco-de-acai-com-guarana':
+    'https://images.pexels.com/photos/322341/pexels-photo-322341.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::bebidas::33::agua-de-coco-300ml':
+    'https://images.pexels.com/photos/1386934/pexels-photo-1386934.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::bebidas::34::refrigerante-350ml':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::combos::35::combo-acai-500ml-suco':
+    'https://images.pexels.com/photos/543730/pexels-photo-543730.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::combos::36::combo-casal':
+    'https://images.pexels.com/photos/4099238/pexels-photo-4099238.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::combos::37::combo-familia':
+    'https://images.pexels.com/photos/1179135/pexels-photo-1179135.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::combos::38::combo-fitness':
+    'https://images.pexels.com/photos/4725762/pexels-photo-4725762.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::pitaya-cupuacu::15::pitaya-300ml':
+    'https://images.pexels.com/photos/4443514/pexels-photo-4443514.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::pitaya-cupuacu::16::pitaya-500ml':
+    'https://images.pexels.com/photos/35802593/pexels-photo-35802593.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::pitaya-cupuacu::17::tigela-de-pitaya':
+    'https://images.pexels.com/photos/7227387/pexels-photo-7227387.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::pitaya-cupuacu::18::cupuacu-500ml':
+    'https://images.pexels.com/photos/36183661/pexels-photo-36183661.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::tigelas::5::tigela-classica-500ml':
+    'https://images.pexels.com/photos/879202/pexels-photo-879202.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::tigelas::6::tigela-1l-familia':
+    'https://images.pexels.com/photos/6708437/pexels-photo-6708437.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::tigelas::7::tigela-fitness':
+    'https://images.pexels.com/photos/674554/pexels-photo-674554.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acai::tigelas::8::tigela-tropical':
+    'https://images.pexels.com/photos/1242512/pexels-photo-1242512.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::45::carvao-vegetal-3kg':
+    'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::46::carvao-vegetal-5kg':
+    'https://images.pexels.com/photos/5533764/pexels-photo-5533764.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::47::sal-grosso-1kg':
+    'https://images.pexels.com/photos/6705625/pexels-photo-6705625.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::48::farofa-pronta-yoki-500g':
+    'https://images.pexels.com/photos/4475558/pexels-photo-4475558.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::49::pao-de-alho-4un':
+    'https://images.pexels.com/photos/7159284/pexels-photo-7159284.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::50::vinagrete-pronto-300g':
+    'https://images.pexels.com/photos/7393208/pexels-photo-7393208.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::51::queijo-coalho-espeto-5un':
+    'https://images.pexels.com/photos/604659/pexels-photo-604659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::52::chimichurri-artesanal-200ml':
+    'https://images.pexels.com/photos/4315148/pexels-photo-4315148.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::acompanhamentos::53::gelo-em-cubo-3kg':
+    'https://images.pexels.com/photos/3675620/pexels-photo-3675620.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::1::picanha-inteira-1-2kg':
+    'https://images.pexels.com/photos/5774147/pexels-photo-5774147.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::10::carne-moida-1-500g':
+    'https://images.pexels.com/photos/7284305/pexels-photo-7284305.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::11::t-bone-steak-700g':
+    'https://images.pexels.com/photos/36682994/pexels-photo-36682994.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::12::patinho-kg':
+    'https://images.pexels.com/photos/36319687/pexels-photo-36319687.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::2::contra-file-peca-1kg':
+    'https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::3::alcatra-peca-1kg':
+    'https://images.pexels.com/photos/618773/pexels-photo-618773.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::4::maminha-peca-1kg':
+    'https://images.pexels.com/photos/36669799/pexels-photo-36669799.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::5::fraldinha-peca-1kg':
+    'https://images.pexels.com/photos/7613561/pexels-photo-7613561.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::6::costela-bovina-kg':
+    'https://images.pexels.com/photos/4253617/pexels-photo-4253617.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::7::cupim-peca-1-5kg':
+    'https://images.pexels.com/photos/36319690/pexels-photo-36319690.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::8::file-mignon-peca-1kg':
+    'https://images.pexels.com/photos/1639561/pexels-photo-1639561.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-bovinos::9::acem-kg':
+    'https://images.pexels.com/photos/36319683/pexels-photo-36319683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::13::costela-suina-kg':
+    'https://images.pexels.com/photos/410648/pexels-photo-410648.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::14::bisteca-suina-kg':
+    'https://images.pexels.com/photos/7333262/pexels-photo-7333262.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::15::pernil-suino-peca-3kg':
+    'https://images.pexels.com/photos/4637551/pexels-photo-4637551.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::16::lombo-suino-peca-1kg':
+    'https://images.pexels.com/photos/5500663/pexels-photo-5500663.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::17::panceta-suina-kg':
+    'https://images.pexels.com/photos/3727183/pexels-photo-3727183.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::cortes-suinos::18::picanha-suina-peca-800g':
+    'https://images.pexels.com/photos/5774155/pexels-photo-5774155.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::25::linguica-toscana-seara-700g':
+    'https://images.pexels.com/photos/4504592/pexels-photo-4504592.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::26::linguica-de-frango-sadia-500g':
+    'https://images.pexels.com/photos/96619/pexels-photo-96619.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::27::linguica-calabresa-perdigao-400g':
+    'https://images.pexels.com/photos/5393659/pexels-photo-5393659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::28::salsicha-hot-dog-sadia-500g':
+    'https://images.pexels.com/photos/357576/pexels-photo-357576.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::29::bacon-em-manta-500g':
+    'https://images.pexels.com/photos/5939414/pexels-photo-5939414.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::30::linguica-artesanal-apimentada-kg':
+    'https://images.pexels.com/photos/5656726/pexels-photo-5656726.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::embutidos-linguicas::31::kafta-500g':
+    'https://images.pexels.com/photos/5175628/pexels-photo-5175628.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::19::frango-inteiro-resfriado-2kg':
+    'https://images.pexels.com/photos/5769382/pexels-photo-5769382.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::20::peito-de-frango-file-1kg':
+    'https://images.pexels.com/photos/5769375/pexels-photo-5769375.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::21::coxa-e-sobrecoxa-1kg':
+    'https://images.pexels.com/photos/3926125/pexels-photo-3926125.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::22::asa-de-frango-1kg':
+    'https://images.pexels.com/photos/29908653/pexels-photo-29908653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::23::coracao-de-frango-500g':
+    'https://images.pexels.com/photos/5840330/pexels-photo-5840330.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::frango-aves::24::tulipa-de-frango-1kg':
+    'https://images.pexels.com/photos/6107768/pexels-photo-6107768.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::32::kit-churrasco-4-pessoas':
+    'https://images.pexels.com/photos/5774145/pexels-photo-5774145.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::33::kit-churrasco-8-pessoas':
+    'https://images.pexels.com/photos/6896527/pexels-photo-6896527.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::34::kit-churrasco-15-pessoas':
+    'https://images.pexels.com/photos/5774148/pexels-photo-5774148.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::35::kit-costela-no-bafo':
+    'https://images.pexels.com/photos/4669225/pexels-photo-4669225.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::36::kit-espetinhos-20un':
+    'https://images.pexels.com/photos/5192415/pexels-photo-5192415.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::kits-churrasco::37::kit-hamburguer-artesanal-8un':
+    'https://images.pexels.com/photos/2128536/pexels-photo-2128536.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::38::picanha-temperada-1kg':
+    'https://images.pexels.com/photos/36570436/pexels-photo-36570436.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::39::costela-temperada-kg':
+    'https://images.pexels.com/photos/144432/pexels-photo-144432.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::40::frango-desossado-temperado-1kg':
+    'https://images.pexels.com/photos/6107768/pexels-photo-6107768.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::41::sobrecoxa-recheada-unid':
+    'https://images.pexels.com/photos/7140306/pexels-photo-7140306.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::42::espetinho-misto-bovino-5un':
+    'https://images.pexels.com/photos/5840331/pexels-photo-5840331.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::43::maminha-ao-alho-1kg':
+    'https://images.pexels.com/photos/36683026/pexels-photo-36683026.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'acougue::temperados-prontos::44::medalhao-de-file-mignon-4un':
+    'https://images.pexels.com/photos/7741801/pexels-photo-7741801.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-600ml-litrao::12::brahma-chopp-600ml':
+    'https://images.pexels.com/photos/7421851/pexels-photo-7421851.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-600ml-litrao::13::skol-600ml':
+    'https://images.pexels.com/photos/4620723/pexels-photo-4620723.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-600ml-litrao::14::antarctica-original-600ml':
+    'https://images.pexels.com/photos/5055189/pexels-photo-5055189.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-600ml-litrao::15::heineken-600ml':
+    'https://images.pexels.com/photos/5538166/pexels-photo-5538166.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-600ml-litrao::16::brahma-duplo-malte-litrao-1l':
+    'https://images.pexels.com/photos/4833632/pexels-photo-4833632.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-artesanais-especiais::17::colorado-appia-600ml':
+    'https://images.pexels.com/photos/1251797/pexels-photo-1251797.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-artesanais-especiais::18::praya-witbier-600ml':
+    'https://images.pexels.com/photos/3324440/pexels-photo-3324440.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-artesanais-especiais::19::baden-baden-witbier-600ml':
+    'https://images.pexels.com/photos/5055175/pexels-photo-5055175.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-artesanais-especiais::20::eisenbahn-weizenbier-355ml':
+    'https://images.pexels.com/photos/5061677/pexels-photo-5061677.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::1::brahma-chopp-350ml':
+    'https://images.pexels.com/photos/5538231/pexels-photo-5538231.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::2::heineken-350ml':
+    'https://images.pexels.com/photos/59146/pexels-photo-59146.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::3::budweiser-350ml':
+    'https://images.pexels.com/photos/168567/pexels-photo-168567.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::4::amstel-350ml':
+    'https://images.pexels.com/photos/2043561/pexels-photo-2043561.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::5::spaten-350ml':
+    'https://images.pexels.com/photos/760895/pexels-photo-760895.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-lata::6::corona-330ml-lata':
+    'https://images.pexels.com/photos/2120696/pexels-photo-2120696.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-long-neck::10::corona-extra-long-neck-330ml':
+    'https://images.pexels.com/photos/1212278/pexels-photo-1212278.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-long-neck::11::eisenbahn-pilsen-long-neck-355ml':
+    'https://images.pexels.com/photos/5054683/pexels-photo-5054683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-long-neck::7::heineken-long-neck-330ml':
+    'https://images.pexels.com/photos/338711/pexels-photo-338711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-long-neck::8::budweiser-long-neck-330ml':
+    'https://images.pexels.com/photos/3222707/pexels-photo-3222707.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::cervejas-long-neck::9::stella-artois-long-neck-330ml':
+    'https://images.pexels.com/photos/3660307/pexels-photo-3660307.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::78::kit-churrasco-na-praia':
+    'https://images.pexels.com/photos/5175351/pexels-photo-5175351.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::79::kit-sunset':
+    'https://images.pexels.com/photos/5539975/pexels-photo-5539975.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::80::kit-casal-romantico':
+    'https://images.pexels.com/photos/5870781/pexels-photo-5870781.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::81::kit-gin-tonica':
+    'https://images.pexels.com/photos/3557746/pexels-photo-3557746.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::82::kit-familia-praia':
+    'https://images.pexels.com/photos/1372647/pexels-photo-1372647.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::combos-kits-praia::83::kit-reveillon-ano-novo':
+    'https://images.pexels.com/photos/3171770/pexels-photo-3171770.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::drinks-prontos-ice::54::smirnoff-ice-275ml':
+    'https://images.pexels.com/photos/4271813/pexels-photo-4271813.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::drinks-prontos-ice::56::keep-cooler-classic-275ml':
+    'https://images.pexels.com/photos/4254033/pexels-photo-4254033.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::drinks-prontos-ice::57::askov-ice-limao-275ml':
+    'https://images.pexels.com/photos/5668209/pexels-photo-5668209.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::energeticos::58::red-bull-250ml':
+    'https://images.pexels.com/photos/3684971/pexels-photo-3684971.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::energeticos::59::monster-energy-473ml':
+    'https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::energeticos::60::tnt-energy-269ml':
+    'https://images.pexels.com/photos/4386022/pexels-photo-4386022.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::energeticos::61::fusion-energy-250ml':
+    'https://images.pexels.com/photos/6662994/pexels-photo-6662994.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::espumantes::31::chandon-brut-750ml':
+    'https://images.pexels.com/photos/2454122/pexels-photo-2454122.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::espumantes::32::chandon-rose-750ml':
+    'https://images.pexels.com/photos/207080/pexels-photo-207080.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::espumantes::33::salton-brut-750ml':
+    'https://images.pexels.com/photos/5340997/pexels-photo-5340997.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::espumantes::34::garibaldi-prosecco-750ml':
+    'https://images.pexels.com/photos/4959844/pexels-photo-4959844.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::espumantes::35::freixenet-cordon-negro-750ml':
+    'https://images.pexels.com/photos/5379876/pexels-photo-5379876.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gelo-acessorios::69::saco-de-gelo-3kg':
+    'https://images.pexels.com/photos/4686950/pexels-photo-4686950.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gelo-acessorios::70::saco-de-gelo-5kg':
+    'https://images.pexels.com/photos/4686955/pexels-photo-4686955.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gelo-acessorios::71::carvao-vegetal-3kg':
+    'https://images.pexels.com/photos/35963583/pexels-photo-35963583.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gelo-acessorios::72::copo-descartavel-300ml-pct-50un':
+    'https://images.pexels.com/photos/36133552/pexels-photo-36133552.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gelo-acessorios::73::limao-taiti-rede-10un':
+    'https://images.pexels.com/photos/357577/pexels-photo-357577.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gin::46::tanqueray-london-dry-750ml':
+    'https://images.pexels.com/photos/1277203/pexels-photo-1277203.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gin::47::beefeater-london-dry-750ml':
+    'https://images.pexels.com/photos/4329152/pexels-photo-4329152.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::gin::48::bombay-sapphire-750ml':
+    'https://images.pexels.com/photos/3023237/pexels-photo-3023237.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::petiscos-acompanhamentos::74::amendoim-japones-200g':
+    'https://images.pexels.com/photos/4202964/pexels-photo-4202964.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::petiscos-acompanhamentos::75::batata-chips-ruffles-96g':
+    'https://images.pexels.com/photos/6349943/pexels-photo-6349943.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::petiscos-acompanhamentos::76::salaminho-sadia-100g':
+    'https://images.pexels.com/photos/5627443/pexels-photo-5627443.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::petiscos-acompanhamentos::77::mix-de-nuts-premium-150g':
+    'https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::62::coca-cola-lata-350ml':
+    'https://images.pexels.com/photos/4113625/pexels-photo-4113625.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::63::coca-cola-2l':
+    'https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::64::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::65::guarana-antarctica-2l':
+    'https://images.pexels.com/photos/39720/pexels-photo-39720.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::66::agua-mineral-500ml':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::67::agua-de-coco-1l':
+    'https://images.pexels.com/photos/4113681/pexels-photo-4113681.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::refrigerantes-agua::68::suco-del-valle-nectar-1l':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::rum-cachaca::50::bacardi-carta-blanca-980ml':
+    'https://images.pexels.com/photos/2360578/pexels-photo-2360578.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::rum-cachaca::51::captain-morgan-original-750ml':
+    'https://images.pexels.com/photos/7435170/pexels-photo-7435170.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::rum-cachaca::52::ypioca-prata-965ml':
+    'https://images.pexels.com/photos/6400269/pexels-photo-6400269.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::rum-cachaca::53::51-965ml':
+    'https://images.pexels.com/photos/3084623/pexels-photo-3084623.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-brancos-roses::26::casillero-del-diablo-chardonnay':
+    'https://images.pexels.com/photos/3244133/pexels-photo-3244133.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-brancos-roses::27::concha-y-toro-reservado-sauvignon-blanc':
+    'https://images.pexels.com/photos/6967344/pexels-photo-6967344.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-brancos-roses::28::marcus-james-chardonnay':
+    'https://images.pexels.com/photos/5895443/pexels-photo-5895443.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-brancos-roses::29::mateus-rose':
+    'https://images.pexels.com/photos/5732808/pexels-photo-5732808.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-brancos-roses::30::almaden-rose':
+    'https://images.pexels.com/photos/2992311/pexels-photo-2992311.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-tintos::21::casillero-del-diablo-cabernet-sauvignon':
+    'https://images.pexels.com/photos/7564984/pexels-photo-7564984.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-tintos::22::santa-helena-reservado-merlot':
+    'https://images.pexels.com/photos/4515528/pexels-photo-4515528.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-tintos::23::miolo-selecao-cabernet-sauvignon':
+    'https://images.pexels.com/photos/724092/pexels-photo-724092.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-tintos::24::marcus-james-merlot':
+    'https://images.pexels.com/photos/3730914/pexels-photo-3730914.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vinhos-tintos::25::pergola-tinto-suave':
+    'https://images.pexels.com/photos/1407846/pexels-photo-1407846.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vodka::41::absolut-original-750ml':
+    'https://images.pexels.com/photos/4167425/pexels-photo-4167425.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vodka::42::smirnoff-998ml':
+    'https://images.pexels.com/photos/4433107/pexels-photo-4433107.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vodka::43::grey-goose-750ml':
+    'https://images.pexels.com/photos/3738485/pexels-photo-3738485.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vodka::44::ciroc-750ml':
+    'https://images.pexels.com/photos/4329151/pexels-photo-4329151.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::vodka::45::skyy-980ml':
+    'https://images.pexels.com/photos/331114/pexels-photo-331114.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::whisky::36::johnnie-walker-red-label-750ml':
+    'https://images.pexels.com/photos/6103842/pexels-photo-6103842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::whisky::37::johnnie-walker-black-label-750ml':
+    'https://images.pexels.com/photos/7254799/pexels-photo-7254799.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::whisky::39::chivas-regal-12-anos-750ml':
+    'https://images.pexels.com/photos/6766696/pexels-photo-6766696.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'adega::whisky::40::white-horse-750ml':
+    'https://images.pexels.com/photos/6103842/pexels-photo-6103842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::caipirinhas::27::caipirinha-de-limao':
+    'https://images.pexels.com/photos/36101010/pexels-photo-36101010.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::caipirinhas::28::caipirinha-de-morango':
+    'https://images.pexels.com/photos/7259058/pexels-photo-7259058.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::caipirinhas::29::caipirinha-de-maracuja':
+    'https://images.pexels.com/photos/6988421/pexels-photo-6988421.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::caipirinhas::30::caipiroska-de-limao':
+    'https://images.pexels.com/photos/4051223/pexels-photo-4051223.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::caipirinhas::31::caipiroska-de-frutas-vermelhas':
+    'https://images.pexels.com/photos/6988421/pexels-photo-6988421.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::cervejas-artesanais::23::colorado-appia':
+    'https://images.pexels.com/photos/1251797/pexels-photo-1251797.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::cervejas-artesanais::24::praya-witbier':
+    'https://images.pexels.com/photos/3324437/pexels-photo-3324437.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::cervejas-artesanais::25::eisenbahn-pilsen':
+    'https://images.pexels.com/photos/7016420/pexels-photo-7016420.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::cervejas-artesanais::26::baden-baden-ipa':
+    'https://images.pexels.com/photos/2294341/pexels-photo-2294341.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::13::chopp-brahma-300ml':
+    'https://images.pexels.com/photos/5858085/pexels-photo-5858085.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::14::chopp-brahma-600ml':
+    'https://images.pexels.com/photos/5537955/pexels-photo-5537955.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::15::heineken-long-neck-330ml':
+    'https://images.pexels.com/photos/6377486/pexels-photo-6377486.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::16::budweiser-long-neck-330ml':
+    'https://images.pexels.com/photos/5055450/pexels-photo-5055450.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::17::stella-artois-long-neck-330ml':
+    'https://images.pexels.com/photos/5537953/pexels-photo-5537953.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::18::corona-long-neck-330ml':
+    'https://images.pexels.com/photos/669210/pexels-photo-669210.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::19::brahma-600ml':
+    'https://images.pexels.com/photos/2410165/pexels-photo-2410165.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::20::original-600ml':
+    'https://images.pexels.com/photos/3324434/pexels-photo-3324434.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::21::balde-6-long-necks-heineken':
+    'https://images.pexels.com/photos/7568959/pexels-photo-7568959.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::chopp-cervejas::22::balde-6-long-necks-budweiser':
+    'https://images.pexels.com/photos/36698524/pexels-photo-36698524.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::combos-happy-hour::52::combo-chopp-batata':
+    'https://images.pexels.com/photos/5743361/pexels-photo-5743361.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::combos-happy-hour::53::combo-balde-petisco':
+    'https://images.pexels.com/photos/793011/pexels-photo-793011.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::combos-happy-hour::54::combo-tabua-cervejas':
+    'https://images.pexels.com/photos/7016487/pexels-photo-7016487.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::combos-happy-hour::55::combo-casal-drinks':
+    'https://images.pexels.com/photos/605408/pexels-photo-605408.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::doses-garrafas::40::johnnie-walker-red-label':
+    'https://images.pexels.com/photos/2344583/pexels-photo-2344583.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::doses-garrafas::42::absolut-vodka':
+    'https://images.pexels.com/photos/35915995/pexels-photo-35915995.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::doses-garrafas::43::tanqueray-gin':
+    'https://images.pexels.com/photos/1682451/pexels-photo-1682451.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::doses-garrafas::44::campari':
+    'https://images.pexels.com/photos/35925508/pexels-photo-35925508.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::32::gin-tonica-tanqueray':
+    'https://images.pexels.com/photos/225236/pexels-photo-225236.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::33::gin-tonica-beefeater':
+    'https://images.pexels.com/photos/616836/pexels-photo-616836.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::34::moscow-mule':
+    'https://images.pexels.com/photos/5433780/pexels-photo-5433780.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::35::mojito':
+    'https://images.pexels.com/photos/7259040/pexels-photo-7259040.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::36::aperol-spritz':
+    'https://images.pexels.com/photos/4485379/pexels-photo-4485379.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::37::negroni':
+    'https://images.pexels.com/photos/5491015/pexels-photo-5491015.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::38::vodka-com-red-bull':
+    'https://images.pexels.com/photos/5858028/pexels-photo-5858028.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::drinks::39::sex-on-the-beach':
+    'https://images.pexels.com/photos/4279101/pexels-photo-4279101.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::1::porcao-de-batata-frita':
+    'https://images.pexels.com/photos/6941042/pexels-photo-6941042.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::2::frango-a-passarinha':
+    'https://images.pexels.com/photos/5474676/pexels-photo-5474676.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::3::bolinho-de-bacalhau':
+    'https://images.pexels.com/photos/5863613/pexels-photo-5863613.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::4::isca-de-peixe':
+    'https://images.pexels.com/photos/4198344/pexels-photo-4198344.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::5::camarao-empanado':
+    'https://images.pexels.com/photos/4021926/pexels-photo-4021926.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::6::mandioca-frita':
+    'https://images.pexels.com/photos/5652261/pexels-photo-5652261.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::7::pastel-frito-misto':
+    'https://images.pexels.com/photos/5881015/pexels-photo-5881015.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::petiscos-quentes::8::polenta-frita':
+    'https://images.pexels.com/photos/921362/pexels-photo-921362.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::45::coca-cola-350ml':
+    'https://images.pexels.com/photos/4113668/pexels-photo-4113668.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::46::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/6920721/pexels-photo-6920721.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::47::red-bull-250ml':
+    'https://images.pexels.com/photos/7033796/pexels-photo-7033796.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::48::agua-tonica-schweppes':
+    'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::49::suco-de-laranja-natural':
+    'https://images.pexels.com/photos/6412584/pexels-photo-6412584.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::50::agua-mineral-500ml':
+    'https://images.pexels.com/photos/593099/pexels-photo-593099.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::sem-alcool::51::agua-com-gas':
+    'https://images.pexels.com/photos/7509048/pexels-photo-7509048.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::tabuas-porcoes-frias::10::tabua-de-petiscos':
+    'https://images.pexels.com/photos/6004718/pexels-photo-6004718.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::tabuas-porcoes-frias::11::bruschetta-italiana':
+    'https://images.pexels.com/photos/1660045/pexels-photo-1660045.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::tabuas-porcoes-frias::12::carpaccio':
+    'https://images.pexels.com/photos/4963598/pexels-photo-4963598.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'bar::tabuas-porcoes-frias::9::tabua-de-frios':
+    'https://images.pexels.com/photos/6004245/pexels-photo-6004245.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::10::iced-latte':
+    'https://images.pexels.com/photos/4869293/pexels-photo-4869293.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::11::iced-mocha':
+    'https://images.pexels.com/photos/6213741/pexels-photo-6213741.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::12::frappuccino':
+    'https://images.pexels.com/photos/6030360/pexels-photo-6030360.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::13::smoothie-de-frutas':
+    'https://images.pexels.com/photos/4551617/pexels-photo-4551617.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::14::cha-gelado':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::bebidas-geladas::15::limonada-suica':
+    'https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::1::espresso':
+    'https://images.pexels.com/photos/1233528/pexels-photo-1233528.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::2::espresso-duplo':
+    'https://images.pexels.com/photos/5567610/pexels-photo-5567610.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::3::cappuccino':
+    'https://images.pexels.com/photos/2251753/pexels-photo-2251753.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::4::latte':
+    'https://images.pexels.com/photos/6612781/pexels-photo-6612781.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::5::mocha':
+    'https://images.pexels.com/photos/4115021/pexels-photo-4115021.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::6::americano':
+    'https://images.pexels.com/photos/36238394/pexels-photo-36238394.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::7::cafe-com-leite':
+    'https://images.pexels.com/photos/5461664/pexels-photo-5461664.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::8::chocolate-quente':
+    'https://images.pexels.com/photos/1839882/pexels-photo-1839882.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::cafes-quentes::9::chai-latte':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::combos-cafe-da-manha::41::combo-cafe-da-manha':
+    'https://images.pexels.com/photos/28445831/pexels-photo-28445831.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::combos-cafe-da-manha::42::combo-brunch':
+    'https://images.pexels.com/photos/4109136/pexels-photo-4109136.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::combos-cafe-da-manha::43::combo-lanche-da-tarde':
+    'https://images.pexels.com/photos/4676413/pexels-photo-4676413.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::32::bolo-de-chocolate-fatia':
+    'https://images.pexels.com/photos/3740193/pexels-photo-3740193.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::33::bolo-de-cenoura-fatia':
+    'https://images.pexels.com/photos/1011182/pexels-photo-1011182.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::34::cheesecake-fatia':
+    'https://images.pexels.com/photos/7710242/pexels-photo-7710242.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::35::brownie':
+    'https://images.pexels.com/photos/36567176/pexels-photo-36567176.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::36::torta-de-limao-fatia':
+    'https://images.pexels.com/photos/6033617/pexels-photo-6033617.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::37::cookie-artesanal':
+    'https://images.pexels.com/photos/2987564/pexels-photo-2987564.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::38::brigadeiro-gourmet':
+    'https://images.pexels.com/photos/3803490/pexels-photo-3803490.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::39::waffle-com-sorvete':
+    'https://images.pexels.com/photos/67024/pexels-photo-67024.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::doces-confeitaria::40::pao-de-mel':
+    'https://images.pexels.com/photos/3082788/pexels-photo-3082788.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::20::croissant-presunto-e-queijo':
+    'https://images.pexels.com/photos/6537669/pexels-photo-6537669.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::21::croissant-de-chocolate':
+    'https://images.pexels.com/photos/4828315/pexels-photo-4828315.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::22::pao-de-queijo':
+    'https://images.pexels.com/photos/7440414/pexels-photo-7440414.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::23::empada-de-frango':
+    'https://images.pexels.com/photos/7440405/pexels-photo-7440405.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::24::esfirra-de-carne':
+    'https://images.pexels.com/photos/6202224/pexels-photo-6202224.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::25::torta-salgada-fatia':
+    'https://images.pexels.com/photos/3850398/pexels-photo-3850398.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::salgados-croissants::26::quiche-lorraine-fatia':
+    'https://images.pexels.com/photos/6365931/pexels-photo-6365931.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sanduiches-toasts::27::misto-quente':
+    'https://images.pexels.com/photos/824635/pexels-photo-824635.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sanduiches-toasts::28::toast-de-cream-cheese-e-salmao':
+    'https://images.pexels.com/photos/7282384/pexels-photo-7282384.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sanduiches-toasts::29::toast-abacate':
+    'https://images.pexels.com/photos/6327124/pexels-photo-6327124.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sanduiches-toasts::30::club-sandwich':
+    'https://images.pexels.com/photos/7656041/pexels-photo-7656041.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sanduiches-toasts::31::sanduiche-natural':
+    'https://images.pexels.com/photos/7282389/pexels-photo-7282389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sucos-naturais::16::suco-de-laranja':
+    'https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sucos-naturais::17::suco-verde-detox':
+    'https://images.pexels.com/photos/4443440/pexels-photo-4443440.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sucos-naturais::18::vitamina-de-banana':
+    'https://images.pexels.com/photos/2693404/pexels-photo-2693404.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'cafeteria::sucos-naturais::19::agua-de-coco-300ml':
+    'https://images.pexels.com/photos/1803516/pexels-photo-1803516.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::10::bolo-red-velvet-1kg':
+    'https://images.pexels.com/photos/5112676/pexels-photo-5112676.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::11::bolo-de-morango-chantilly-1-5kg':
+    'https://images.pexels.com/photos/851204/pexels-photo-851204.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::12::bolo-naked-cake-2kg':
+    'https://images.pexels.com/photos/1359294/pexels-photo-1359294.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::13::bolo-decorado-personalizado-2kg':
+    'https://images.pexels.com/photos/3859921/pexels-photo-3859921.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::14::bolo-de-cenoura-com-chocolate-1kg':
+    'https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::15::bolo-de-coco-1kg':
+    'https://images.pexels.com/photos/7600418/pexels-photo-7600418.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::bolos-decorados::9::bolo-de-chocolate-1kg':
+    'https://images.pexels.com/photos/3740237/pexels-photo-3740237.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::1::brigadeiro-tradicional-unid':
+    'https://images.pexels.com/photos/6441133/pexels-photo-6441133.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::2::brigadeiro-de-ninho':
+    'https://images.pexels.com/photos/5365924/pexels-photo-5365924.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::3::brigadeiro-de-pistache':
+    'https://images.pexels.com/photos/6441123/pexels-photo-6441123.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::4::brigadeiro-de-nutella':
+    'https://images.pexels.com/photos/6441165/pexels-photo-6441165.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::5::brigadeiro-de-pacoca':
+    'https://images.pexels.com/photos/6441136/pexels-photo-6441136.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::6::brigadeiro-belga-70':
+    'https://images.pexels.com/photos/7248045/pexels-photo-7248045.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::7::caixa-12-brigadeiros-sortidos':
+    'https://images.pexels.com/photos/3856045/pexels-photo-3856045.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brigadeiros-gourmet::8::caixa-25-brigadeiros-sortidos':
+    'https://images.pexels.com/photos/5365960/pexels-photo-5365960.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::26::brownie-de-chocolate-unid':
+    'https://images.pexels.com/photos/4421615/pexels-photo-4421615.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::27::brownie-de-doce-de-leite-unid':
+    'https://images.pexels.com/photos/36500579/pexels-photo-36500579.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::28::cookie-chocolate-chip-unid':
+    'https://images.pexels.com/photos/6390632/pexels-photo-6390632.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::29::cookie-red-velvet-unid':
+    'https://images.pexels.com/photos/806363/pexels-photo-806363.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::30::kit-6-brownies-sortidos':
+    'https://images.pexels.com/photos/6390673/pexels-photo-6390673.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::brownies-cookies::31::kit-8-cookies-sortidos':
+    'https://images.pexels.com/photos/5194468/pexels-photo-5194468.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::cupcakes::16::cupcake-de-baunilha-unid':
+    'https://images.pexels.com/photos/1028704/pexels-photo-1028704.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::cupcakes::17::cupcake-de-chocolate-unid':
+    'https://images.pexels.com/photos/853006/pexels-photo-853006.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::cupcakes::18::cupcake-red-velvet-unid':
+    'https://images.pexels.com/photos/2861842/pexels-photo-2861842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::cupcakes::19::kit-6-cupcakes-sortidos':
+    'https://images.pexels.com/photos/7525119/pexels-photo-7525119.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::cupcakes::20::kit-12-mini-cupcakes':
+    'https://images.pexels.com/photos/2474609/pexels-photo-2474609.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::32::cento-de-brigadeiros-tradicionais':
+    'https://images.pexels.com/photos/7541726/pexels-photo-7541726.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::33::cento-de-beijinhos':
+    'https://images.pexels.com/photos/4808372/pexels-photo-4808372.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::34::cento-de-cajuzinhos':
+    'https://images.pexels.com/photos/2337857/pexels-photo-2337857.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::35::cento-de-docinhos-finos-sortidos':
+    'https://images.pexels.com/photos/2337819/pexels-photo-2337819.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::36::bem-casado-unid':
+    'https://images.pexels.com/photos/35985223/pexels-photo-35985223.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::docinhos-para-festa::37::mesa-de-doces-completa-150-doces':
+    'https://images.pexels.com/photos/7103706/pexels-photo-7103706.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::38::cheesecake-de-frutas-vermelhas':
+    'https://images.pexels.com/photos/2035736/pexels-photo-2035736.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::39::cheesecake-de-maracuja':
+    'https://images.pexels.com/photos/4748434/pexels-photo-4748434.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::40::torta-de-limao':
+    'https://images.pexels.com/photos/5419100/pexels-photo-5419100.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::41::torta-de-chocolate':
+    'https://images.pexels.com/photos/2035740/pexels-photo-2035740.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::42::torta-de-morango':
+    'https://images.pexels.com/photos/6574598/pexels-photo-6574598.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::43::pavlova-de-frutas':
+    'https://images.pexels.com/photos/4748432/pexels-photo-4748432.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::tortas-cheesecakes::44::torta-banoffee':
+    'https://images.pexels.com/photos/2035731/pexels-photo-2035731.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::trufas-bombons::21::trufa-de-chocolate-ao-leite-unid':
+    'https://images.pexels.com/photos/6441165/pexels-photo-6441165.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::trufas-bombons::22::trufa-de-maracuja-unid':
+    'https://images.pexels.com/photos/7407278/pexels-photo-7407278.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::trufas-bombons::23::trufa-de-cafe-unid':
+    'https://images.pexels.com/photos/4114979/pexels-photo-4114979.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::trufas-bombons::24::bombom-de-nozes-unid':
+    'https://images.pexels.com/photos/5150168/pexels-photo-5150168.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'doceria::trufas-bombons::25::caixa-12-trufas-sortidas':
+    'https://images.pexels.com/photos/6366899/pexels-photo-6366899.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::63::cesta-de-frutas-pequena':
+    'https://images.pexels.com/photos/6646021/pexels-photo-6646021.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::64::cesta-de-frutas-grande':
+    'https://images.pexels.com/photos/4109132/pexels-photo-4109132.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::65::kit-salada-da-semana':
+    'https://images.pexels.com/photos/3070968/pexels-photo-3070968.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::66::kit-sopa':
+    'https://images.pexels.com/photos/5820105/pexels-photo-5820105.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::67::kit-suco-detox':
+    'https://images.pexels.com/photos/7208619/pexels-photo-7208619.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::68::cesta-organica-semanal':
+    'https://images.pexels.com/photos/7801216/pexels-photo-7801216.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::cestas-combos::69::kit-temperos-frescos':
+    'https://images.pexels.com/photos/2725744/pexels-photo-2725744.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::1::banana-prata-kg':
+    'https://images.pexels.com/photos/4399936/pexels-photo-4399936.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::10::limao-tahiti-kg':
+    'https://images.pexels.com/photos/6077639/pexels-photo-6077639.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::11::maracuja-kg':
+    'https://images.pexels.com/photos/35874793/pexels-photo-35874793.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::12::goiaba-vermelha-kg':
+    'https://images.pexels.com/photos/5782205/pexels-photo-5782205.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::13::pera-williams-kg':
+    'https://images.pexels.com/photos/7288786/pexels-photo-7288786.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::14::kiwi-bandeja-4un':
+    'https://images.pexels.com/photos/36048358/pexels-photo-36048358.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::15::coco-seco-un':
+    'https://images.pexels.com/photos/36687330/pexels-photo-36687330.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::2::maca-fuji-kg':
+    'https://images.pexels.com/photos/3903599/pexels-photo-3903599.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::3::laranja-pera-kg':
+    'https://images.pexels.com/photos/2912621/pexels-photo-2912621.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::4::manga-tommy-kg':
+    'https://images.pexels.com/photos/5629821/pexels-photo-5629821.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::5::mamao-papaia-un':
+    'https://images.pexels.com/photos/4113814/pexels-photo-4113814.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::6::melancia-un-8kg':
+    'https://images.pexels.com/photos/3513238/pexels-photo-3513238.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::7::morango-bandeja-300g':
+    'https://images.pexels.com/photos/36656052/pexels-photo-36656052.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::8::abacaxi-perola-un':
+    'https://images.pexels.com/photos/915016/pexels-photo-915016.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::frutas::9::uva-italia-kg':
+    'https://images.pexels.com/photos/5852229/pexels-photo-5852229.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::26::tomate-italiano-kg':
+    'https://images.pexels.com/photos/7223311/pexels-photo-7223311.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::27::cebola-branca-kg':
+    'https://images.pexels.com/photos/4163411/pexels-photo-4163411.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::28::pimentao-verde-un':
+    'https://images.pexels.com/photos/7657015/pexels-photo-7657015.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::29::pimentao-vermelho-un':
+    'https://images.pexels.com/photos/5620882/pexels-photo-5620882.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::30::abobrinha-italiana-un':
+    'https://images.pexels.com/photos/7543107/pexels-photo-7543107.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::31::berinjela-un':
+    'https://images.pexels.com/photos/6102865/pexels-photo-6102865.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::32::pepino-japones-un':
+    'https://images.pexels.com/photos/7223305/pexels-photo-7223305.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::33::chuchu-un':
+    'https://images.pexels.com/photos/36698092/pexels-photo-36698092.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::34::milho-verde-espiga-2un':
+    'https://images.pexels.com/photos/7341749/pexels-photo-7341749.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::legumes::35::quiabo-bandeja-300g':
+    'https://images.pexels.com/photos/6039877/pexels-photo-6039877.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::50::alface-organica-maco':
+    'https://images.pexels.com/photos/36165494/pexels-photo-36165494.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::51::tomate-organico-kg':
+    'https://images.pexels.com/photos/5782207/pexels-photo-5782207.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::52::cenoura-organica-kg':
+    'https://images.pexels.com/photos/4193418/pexels-photo-4193418.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::53::banana-organica-kg':
+    'https://images.pexels.com/photos/108059/pexels-photo-108059.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::54::ovos-organicos-duzia':
+    'https://images.pexels.com/photos/6827029/pexels-photo-6827029.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::organicos::55::mix-de-salada-organica-200g':
+    'https://images.pexels.com/photos/6653881/pexels-photo-6653881.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::56::polpa-de-acerola-400g':
+    'https://images.pexels.com/photos/2479242/pexels-photo-2479242.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::57::polpa-de-maracuja-400g':
+    'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::58::polpa-de-manga-400g':
+    'https://images.pexels.com/photos/7591681/pexels-photo-7591681.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::59::polpa-de-goiaba-400g':
+    'https://images.pexels.com/photos/2189206/pexels-photo-2189206.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::60::polpa-de-abacaxi-com-hortela-400g':
+    'https://images.pexels.com/photos/2531196/pexels-photo-2531196.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::61::suco-verde-natural-500ml':
+    'https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::polpas-sucos::62::suco-de-laranja-natural-1l':
+    'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::36::batata-lavada-kg':
+    'https://images.pexels.com/photos/7774212/pexels-photo-7774212.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::37::batata-doce-kg':
+    'https://images.pexels.com/photos/6301775/pexels-photo-6301775.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::38::mandioca-descascada-kg':
+    'https://images.pexels.com/photos/7543155/pexels-photo-7543155.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::39::cenoura-kg':
+    'https://images.pexels.com/photos/2914749/pexels-photo-2914749.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::40::beterraba-kg':
+    'https://images.pexels.com/photos/7543098/pexels-photo-7543098.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::41::inhame-kg':
+    'https://images.pexels.com/photos/7543161/pexels-photo-7543161.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::42::gengibre-100g':
+    'https://images.pexels.com/photos/36681458/pexels-photo-36681458.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::raizes-tuberculos::43::alho-nacional-cabeca':
+    'https://images.pexels.com/photos/5507590/pexels-photo-5507590.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::44::manjericao-maco':
+    'https://images.pexels.com/photos/95214/pexels-photo-95214.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::45::alecrim-maco':
+    'https://images.pexels.com/photos/4834332/pexels-photo-4834332.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::46::hortela-maco':
+    'https://images.pexels.com/photos/3067707/pexels-photo-3067707.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::47::coentro-maco':
+    'https://images.pexels.com/photos/1309426/pexels-photo-1309426.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::48::pimenta-dedo-de-moca-100g':
+    'https://images.pexels.com/photos/7015221/pexels-photo-7015221.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::temperos-ervas::49::louro-fresco-maco':
+    'https://images.pexels.com/photos/6996094/pexels-photo-6996094.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::16::alface-crespa-maco':
+    'https://images.pexels.com/photos/102123/pexels-photo-102123.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::17::alface-americana-maco':
+    'https://images.pexels.com/photos/6849628/pexels-photo-6849628.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::18::rucula-maco':
+    'https://images.pexels.com/photos/5202198/pexels-photo-5202198.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::19::espinafre-maco':
+    'https://images.pexels.com/photos/868110/pexels-photo-868110.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::20::couve-manteiga-maco':
+    'https://images.pexels.com/photos/4182678/pexels-photo-4182678.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::21::agriao-maco':
+    'https://images.pexels.com/photos/7456546/pexels-photo-7456546.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::22::repolho-verde-un':
+    'https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::23::brocolis-ninja-un':
+    'https://images.pexels.com/photos/7456554/pexels-photo-7456554.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::24::couve-flor-un':
+    'https://images.pexels.com/photos/4162151/pexels-photo-4162151.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hortifruti::verduras-folhagens::25::cheiro-verde-maco':
+    'https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::41::coca-cola-350ml':
+    'https://images.pexels.com/photos/4113680/pexels-photo-4113680.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::42::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/6920721/pexels-photo-6920721.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::43::coca-cola-2l':
+    'https://images.pexels.com/photos/4113632/pexels-photo-4113632.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::44::suco-del-valle-350ml':
+    'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::45::agua-mineral-500ml':
+    'https://images.pexels.com/photos/4467605/pexels-photo-4467605.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::bebidas::46::agua-de-coco-300ml':
+    'https://images.pexels.com/photos/3030371/pexels-photo-3030371.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::combos::36::combo-x-salada':
+    'https://images.pexels.com/photos/4628465/pexels-photo-4628465.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::combos::37::combo-x-bacon':
+    'https://images.pexels.com/photos/5908049/pexels-photo-5908049.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::combos::38::combo-smash-duplo':
+    'https://images.pexels.com/photos/36570987/pexels-photo-36570987.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::combos::39::combo-casal':
+    'https://images.pexels.com/photos/7497303/pexels-photo-7497303.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::combos::40::combo-familia':
+    'https://images.pexels.com/photos/4109118/pexels-photo-4109118.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::10::burger-costela':
+    'https://images.pexels.com/photos/1639565/pexels-photo-1639565.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::11::burger-bacon-cheddar':
+    'https://images.pexels.com/photos/2299981/pexels-photo-2299981.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::12::burger-catupiry':
+    'https://images.pexels.com/photos/756680/pexels-photo-756680.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::13::burger-vegano':
+    'https://images.pexels.com/photos/103886/pexels-photo-103886.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::8::smash-burger-simples':
+    'https://images.pexels.com/photos/3915915/pexels-photo-3915915.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-artesanais::9::smash-burger-duplo':
+    'https://images.pexels.com/photos/6896381/pexels-photo-6896381.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::1::x-burguer':
+    'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::2::x-salada':
+    'https://images.pexels.com/photos/5865440/pexels-photo-5865440.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::3::x-bacon':
+    'https://images.pexels.com/photos/4109233/pexels-photo-4109233.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::4::x-egg':
+    'https://images.pexels.com/photos/2089717/pexels-photo-2089717.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::5::x-calabresa':
+    'https://images.pexels.com/photos/5474676/pexels-photo-5474676.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::6::x-frango':
+    'https://images.pexels.com/photos/2267538/pexels-photo-2267538.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hamburgueres-classicos::7::x-tudo':
+    'https://images.pexels.com/photos/6213688/pexels-photo-6213688.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hot-dogs::14::hot-dog-tradicional':
+    'https://images.pexels.com/photos/4518642/pexels-photo-4518642.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hot-dogs::15::hot-dog-completo':
+    'https://images.pexels.com/photos/4518644/pexels-photo-4518644.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hot-dogs::16::hot-dog-premium':
+    'https://images.pexels.com/photos/4113470/pexels-photo-4113470.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::hot-dogs::17::hot-dog-calabresa':
+    'https://images.pexels.com/photos/4518644/pexels-photo-4518644.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::milk-shakes::31::milk-shake-chocolate':
+    'https://images.pexels.com/photos/6463655/pexels-photo-6463655.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::milk-shakes::32::milk-shake-morango':
+    'https://images.pexels.com/photos/2693404/pexels-photo-2693404.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::milk-shakes::33::milk-shake-ovomaltine':
+    'https://images.pexels.com/photos/103566/pexels-photo-103566.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::milk-shakes::34::milk-shake-nutella':
+    'https://images.pexels.com/photos/6413660/pexels-photo-6413660.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::milk-shakes::35::milk-shake-oreo':
+    'https://images.pexels.com/photos/6463655/pexels-photo-6463655.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::22::batata-frita-p':
+    'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::23::batata-frita-g':
+    'https://images.pexels.com/photos/5860680/pexels-photo-5860680.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::24::batata-com-cheddar-e-bacon':
+    'https://images.pexels.com/photos/3926126/pexels-photo-3926126.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::25::onion-rings':
+    'https://images.pexels.com/photos/6941015/pexels-photo-6941015.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::26::nuggets-10un':
+    'https://images.pexels.com/photos/5374414/pexels-photo-5374414.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::porcoes-acompanhamentos::27::mandioca-frita':
+    'https://images.pexels.com/photos/5553389/pexels-photo-5553389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::sobremesas::28::brownie-com-sorvete':
+    'https://images.pexels.com/photos/7021888/pexels-photo-7021888.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::sobremesas::29::petit-gateau':
+    'https://images.pexels.com/photos/5638516/pexels-photo-5638516.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::sobremesas::30::sundae':
+    'https://images.pexels.com/photos/5914457/pexels-photo-5914457.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::wraps-crepes::18::wrap-de-frango':
+    'https://images.pexels.com/photos/2015191/pexels-photo-2015191.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::wraps-crepes::19::wrap-bacon-cheddar':
+    'https://images.pexels.com/photos/6529824/pexels-photo-6529824.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::wraps-crepes::20::crepe-de-carne':
+    'https://images.pexels.com/photos/6758378/pexels-photo-6758378.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'lanchonete::wraps-crepes::21::crepe-de-frango-com-catupiry':
+    'https://images.pexels.com/photos/5639555/pexels-photo-5639555.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::1::coca-cola-lata-350ml':
+    'https://images.pexels.com/photos/2530319/pexels-photo-2530319.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::10::energetico-red-bull-250ml':
+    'https://images.pexels.com/photos/6781377/pexels-photo-6781377.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::11::energetico-monster-473ml':
+    'https://images.pexels.com/photos/7033795/pexels-photo-7033795.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::12::agua-de-coco-kero-coco-1l':
+    'https://images.pexels.com/photos/3030371/pexels-photo-3030371.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::13::cha-leao-pessego-1-5l':
+    'https://images.pexels.com/photos/5448348/pexels-photo-5448348.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::2::coca-cola-2l':
+    'https://images.pexels.com/photos/2530319/pexels-photo-2530319.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::3::guarana-antarctica-2l':
+    'https://images.pexels.com/photos/6920724/pexels-photo-6920724.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::4::fanta-laranja-lata-350ml':
+    'https://images.pexels.com/photos/5532718/pexels-photo-5532718.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::5::sprite-lata-350ml':
+    'https://images.pexels.com/photos/540523/pexels-photo-540523.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::6::agua-mineral-crystal-500ml':
+    'https://images.pexels.com/photos/1540235/pexels-photo-1540235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::7::agua-mineral-crystal-1-5l':
+    'https://images.pexels.com/photos/2479095/pexels-photo-2479095.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::8::suco-del-valle-uva-1l':
+    'https://images.pexels.com/photos/6902853/pexels-photo-6902853.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::bebidas::9::suco-del-valle-laranja-1l':
+    'https://images.pexels.com/photos/6902853/pexels-photo-6902853.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::100::cerveja-budweiser-lata-350ml':
+    'https://images.pexels.com/photos/5532830/pexels-photo-5532830.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::101::vodka-absolut-750ml':
+    'https://images.pexels.com/photos/5530252/pexels-photo-5530252.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::102::whisky-johnnie-walker-red-750ml':
+    'https://images.pexels.com/photos/1267264/pexels-photo-1267264.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::103::cachaca-51-965ml':
+    'https://images.pexels.com/photos/36233737/pexels-photo-36233737.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::104::vinho-tinto-concha-y-toro-750ml':
+    'https://images.pexels.com/photos/5531043/pexels-photo-5531043.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::96::cerveja-brahma-lata-350ml':
+    'https://images.pexels.com/photos/5703498/pexels-photo-5703498.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::97::cerveja-skol-lata-350ml':
+    'https://images.pexels.com/photos/5532675/pexels-photo-5532675.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::98::cerveja-heineken-long-neck-330ml':
+    'https://images.pexels.com/photos/168989/pexels-photo-168989.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::cervejas-destilados::99::cerveja-corona-extra-ln-330ml':
+    'https://images.pexels.com/photos/1089932/pexels-photo-1089932.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::combos-kits::124::kit-praia-familia':
+    'https://images.pexels.com/photos/4728856/pexels-photo-4728856.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::combos-kits::125::kit-churrasco-basico':
+    'https://images.pexels.com/photos/4253618/pexels-photo-4253618.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::combos-kits::126::kit-lanche-da-tarde':
+    'https://images.pexels.com/photos/4676402/pexels-photo-4676402.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::combos-kits::127::kit-cafe-da-manha':
+    'https://images.pexels.com/photos/4021994/pexels-photo-4021994.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::combos-kits::128::kit-festa-kids':
+    'https://images.pexels.com/photos/4109139/pexels-photo-4109139.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::58::pizza-seara-mussarela-460g':
+    'https://images.pexels.com/photos/6151203/pexels-photo-6151203.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::59::lasanha-sadia-bolonhesa-600g':
+    'https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::60::nuggets-sadia-frango-300g':
+    'https://images.pexels.com/photos/4021982/pexels-photo-4021982.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::61::hamburguer-seara-bovino-672g':
+    'https://images.pexels.com/photos/1251197/pexels-photo-1251197.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::62::sorvete-kibon-napolitano-1-5l':
+    'https://images.pexels.com/photos/5796721/pexels-photo-5796721.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::63::acai-frooty-pote-500g':
+    'https://images.pexels.com/photos/36457777/pexels-photo-36457777.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::64::polpa-de-fruta-demarchi-maracuja-400g':
+    'https://images.pexels.com/photos/36457777/pexels-photo-36457777.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::congelados::65::empanado-de-frango-perdigao-300g':
+    'https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::41::sabonete-dove-original-90g':
+    'https://images.pexels.com/photos/6690197/pexels-photo-6690197.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::42::shampoo-pantene-restauracao-400ml':
+    'https://images.pexels.com/photos/7262987/pexels-photo-7262987.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::43::condicionador-pantene-restauracao-400ml':
+    'https://images.pexels.com/photos/7428095/pexels-photo-7428095.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::44::desodorante-rexona-aerosol-150ml':
+    'https://images.pexels.com/photos/7120503/pexels-photo-7120503.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::45::creme-dental-colgate-total-12-90g':
+    'https://images.pexels.com/photos/6322805/pexels-photo-6322805.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::46::papel-higienico-neve-folha-dupla-12un':
+    'https://images.pexels.com/photos/3963082/pexels-photo-3963082.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::47::escova-dental-oral-b-indicator':
+    'https://images.pexels.com/photos/4045552/pexels-photo-4045552.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::48::absorvente-always-noturno-8un':
+    'https://images.pexels.com/photos/7692473/pexels-photo-7692473.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::higiene-pessoal::49::protetor-solar-sundown-fps-50-200ml':
+    'https://images.pexels.com/photos/5202453/pexels-photo-5202453.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::83::banana-prata-kg':
+    'https://images.pexels.com/photos/5370176/pexels-photo-5370176.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::84::maca-fuji-kg':
+    'https://images.pexels.com/photos/2487443/pexels-photo-2487443.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::85::tomate-italiano-kg':
+    'https://images.pexels.com/photos/5589054/pexels-photo-5589054.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::86::cebola-branca-kg':
+    'https://images.pexels.com/photos/6316541/pexels-photo-6316541.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::87::batata-lavada-kg':
+    'https://images.pexels.com/photos/6037886/pexels-photo-6037886.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::88::alface-crespa-maco':
+    'https://images.pexels.com/photos/5496030/pexels-photo-5496030.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::hortifruti-basico::89::limao-tahiti-kg':
+    'https://images.pexels.com/photos/5264580/pexels-photo-5264580.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::14::leite-integral-ninho-1l':
+    'https://images.pexels.com/photos/3735217/pexels-photo-3735217.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::15::leite-desnatado-parmalat-1l':
+    'https://images.pexels.com/photos/4324320/pexels-photo-4324320.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::16::iogurte-danone-morango-900g':
+    'https://images.pexels.com/photos/7407295/pexels-photo-7407295.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::17::iogurte-grego-vigor-100g':
+    'https://images.pexels.com/photos/4006347/pexels-photo-4006347.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::18::queijo-mussarela-tirolez-fatiado-150g':
+    'https://images.pexels.com/photos/2741457/pexels-photo-2741457.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::19::queijo-prato-tirolez-fatiado-150g':
+    'https://images.pexels.com/photos/36040972/pexels-photo-36040972.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::20::presunto-cozido-sadia-fatiado-200g':
+    'https://images.pexels.com/photos/5491290/pexels-photo-5491290.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::21::requeijao-cremoso-catupiry-200g':
+    'https://images.pexels.com/photos/6412957/pexels-photo-6412957.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::22::manteiga-presidente-com-sal-200g':
+    'https://images.pexels.com/photos/94443/pexels-photo-94443.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::23::cream-cheese-philadelphia-150g':
+    'https://images.pexels.com/photos/6412957/pexels-photo-6412957.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::24::mortadela-ceratti-fatiada-200g':
+    'https://images.pexels.com/photos/5491279/pexels-photo-5491279.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::laticinios-frios::25::peito-de-peru-sadia-fatiado-200g':
+    'https://images.pexels.com/photos/133578/pexels-photo-133578.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::50::detergente-ype-neutro-500ml':
+    'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::51::agua-sanitaria-ype-1l':
+    'https://images.pexels.com/photos/5218019/pexels-photo-5218019.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::52::desinfetante-pinho-sol-original-1l':
+    'https://images.pexels.com/photos/4440523/pexels-photo-4440523.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::53::limpeza-multiuso-veja-original-500ml':
+    'https://images.pexels.com/photos/6160302/pexels-photo-6160302.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::54::sabao-em-po-omo-lavagem-perfeita-1-6kg':
+    'https://images.pexels.com/photos/3177257/pexels-photo-3177257.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::55::amaciante-comfort-concentrado-1l':
+    'https://images.pexels.com/photos/5217774/pexels-photo-5217774.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::56::esponja-scotch-brite-multiuso-3un':
+    'https://images.pexels.com/photos/6160301/pexels-photo-6160301.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::limpeza::57::saco-de-lixo-dover-roll-50l-30un':
+    'https://images.pexels.com/photos/4440533/pexels-photo-4440533.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::matinais-cereais::112::cereal-neston-3-cereais-210g':
+    'https://images.pexels.com/photos/4397282/pexels-photo-4397282.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::matinais-cereais::113::sucrilhos-kelloggs-240g':
+    'https://images.pexels.com/photos/1311244/pexels-photo-1311244.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::matinais-cereais::114::granola-kobber-tradicional-250g':
+    'https://images.pexels.com/photos/7476698/pexels-photo-7476698.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::matinais-cereais::115::barra-de-cereal-nutry-morango-3un':
+    'https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::matinais-cereais::116::toddy-achocolatado-400g':
+    'https://images.pexels.com/photos/36697467/pexels-photo-36697467.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::26::arroz-tio-joao-tipo-1-5kg':
+    'https://images.pexels.com/photos/3737694/pexels-photo-3737694.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::27::feijao-carioca-camil-1kg':
+    'https://images.pexels.com/photos/4716798/pexels-photo-4716798.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::28::acucar-refinado-uniao-1kg':
+    'https://images.pexels.com/photos/5590955/pexels-photo-5590955.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::29::cafe-pilao-torrado-e-moido-500g':
+    'https://images.pexels.com/photos/4829072/pexels-photo-4829072.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::30::oleo-de-soja-liza-900ml':
+    'https://images.pexels.com/photos/5737246/pexels-photo-5737246.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::31::macarrao-espaguete-barilla-500g':
+    'https://images.pexels.com/photos/4431588/pexels-photo-4431588.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::32::molho-de-tomate-heinz-340g':
+    'https://images.pexels.com/photos/5793770/pexels-photo-5793770.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::33::farinha-de-trigo-dona-benta-1kg':
+    'https://images.pexels.com/photos/6996209/pexels-photo-6996209.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::34::sal-refinado-cisne-1kg':
+    'https://images.pexels.com/photos/36465192/pexels-photo-36465192.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::35::azeite-extra-virgem-gallo-500ml':
+    'https://images.pexels.com/photos/4910159/pexels-photo-4910159.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::36::vinagre-de-maca-castelo-750ml':
+    'https://images.pexels.com/photos/7333124/pexels-photo-7333124.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::37::leite-condensado-moca-395g':
+    'https://images.pexels.com/photos/7451957/pexels-photo-7451957.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::38::creme-de-leite-nestle-200g':
+    'https://images.pexels.com/photos/6804191/pexels-photo-6804191.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::39::milho-verde-quero-200g':
+    'https://images.pexels.com/photos/3859918/pexels-photo-3859918.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::mercearia::40::ervilha-quero-200g':
+    'https://images.pexels.com/photos/5870328/pexels-photo-5870328.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::90::ovos-brancos-mantiqueira-12un':
+    'https://images.pexels.com/photos/6845799/pexels-photo-6845799.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::91::ovos-caipiras-mantiqueira-10un':
+    'https://images.pexels.com/photos/6294154/pexels-photo-6294154.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::92::margarina-qualy-500g':
+    'https://images.pexels.com/photos/3821252/pexels-photo-3821252.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::93::achocolatado-nescau-2-0-400g':
+    'https://images.pexels.com/photos/7034135/pexels-photo-7034135.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::94::aveia-quaker-em-flocos-200g':
+    'https://images.pexels.com/photos/6845651/pexels-photo-6845651.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::ovos-basicos::95::geleia-queensberry-morango-320g':
+    'https://images.pexels.com/photos/7804967/pexels-photo-7804967.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::66::pao-de-forma-pullman-artesano':
+    'https://images.pexels.com/photos/6375551/pexels-photo-6375551.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::67::bisnaguinha-seven-boys-300g':
+    'https://images.pexels.com/photos/3752087/pexels-photo-3752087.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::68::pao-de-hot-dog-panco-6un':
+    'https://images.pexels.com/photos/4518638/pexels-photo-4518638.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::69::biscoito-oreo-original-90g':
+    'https://images.pexels.com/photos/7451962/pexels-photo-7451962.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::70::biscoito-maizena-vitarella-400g':
+    'https://images.pexels.com/photos/5878306/pexels-photo-5878306.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::71::cream-cracker-piraque-200g':
+    'https://images.pexels.com/photos/6480844/pexels-photo-6480844.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::72::torrada-bauducco-integral-160g':
+    'https://images.pexels.com/photos/3872371/pexels-photo-3872371.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::padaria-biscoitos::73::bolo-pullman-chocolate-250g':
+    'https://images.pexels.com/photos/2144200/pexels-photo-2144200.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::74::batata-lays-classica-96g':
+    'https://images.pexels.com/photos/4061441/pexels-photo-4061441.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::75::doritos-queijo-nacho-96g':
+    'https://images.pexels.com/photos/479628/pexels-photo-479628.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::76::cheetos-requeijao-45g':
+    'https://images.pexels.com/photos/7033942/pexels-photo-7033942.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::77::amendoim-japones-dori-200g':
+    'https://images.pexels.com/photos/5386465/pexels-photo-5386465.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::78::chocolate-lacta-ao-leite-90g':
+    'https://images.pexels.com/photos/6167340/pexels-photo-6167340.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::79::chocolate-bis-lacta-126g':
+    'https://images.pexels.com/photos/2272761/pexels-photo-2272761.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::80::bala-fini-dentadura-80g':
+    'https://images.pexels.com/photos/7196444/pexels-photo-7196444.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::81::pacoca-amor-30un':
+    'https://images.pexels.com/photos/6549199/pexels-photo-6549199.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::snacks-guloseimas::82::pipoca-de-micro-ondas-yoki-manteiga-100g':
+    'https://images.pexels.com/photos/7110152/pexels-photo-7110152.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::117::catchup-heinz-397g':
+    'https://images.pexels.com/photos/5779367/pexels-photo-5779367.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::118::mostarda-heinz-215g':
+    'https://images.pexels.com/photos/4628430/pexels-photo-4628430.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::119::maionese-hellmanns-500g':
+    'https://images.pexels.com/photos/1443934/pexels-photo-1443934.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::120::molho-de-soja-sakura-150ml':
+    'https://images.pexels.com/photos/3763799/pexels-photo-3763799.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::121::tempero-sazon-legumes-60g':
+    'https://images.pexels.com/photos/6476384/pexels-photo-6476384.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::122::pimenta-do-reino-kitano-40g':
+    'https://images.pexels.com/photos/5056827/pexels-photo-5056827.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::temperos-molhos::123::alho-triturado-arisco-200g':
+    'https://images.pexels.com/photos/1392585/pexels-photo-1392585.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::105::carvao-vegetal-3kg':
+    'https://images.pexels.com/photos/1857726/pexels-photo-1857726.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::106::gelo-em-cubo-3kg':
+    'https://images.pexels.com/photos/4686938/pexels-photo-4686938.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::107::copos-descartaveis-300ml-50un':
+    'https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::108::guardanapo-snob-50-folhas':
+    'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::109::pilha-duracell-aa-4un':
+    'https://images.pexels.com/photos/7019805/pexels-photo-7019805.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::110::isqueiro-bic-maxi':
+    'https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'mercadinho::utilidades::111::fosforo-fiat-lux-cx-longa':
+    'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::21::bolo-de-chocolate-fatia':
+    'https://images.pexels.com/photos/3840200/pexels-photo-3840200.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::22::bolo-de-cenoura-com-chocolate':
+    'https://images.pexels.com/photos/5860730/pexels-photo-5860730.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::23::bolo-de-fuba-cremoso':
+    'https://images.pexels.com/photos/6565740/pexels-photo-6565740.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::24::torta-de-limao-fatia':
+    'https://images.pexels.com/photos/7337103/pexels-photo-7337103.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::25::torta-de-morango-fatia':
+    'https://images.pexels.com/photos/1359323/pexels-photo-1359323.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::26::bolo-de-laranja':
+    'https://images.pexels.com/photos/998237/pexels-photo-998237.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::27::bolo-integral-banana-e-aveia':
+    'https://images.pexels.com/photos/6612694/pexels-photo-6612694.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::bolos-tortas::28::bolo-inteiro-chocolate-1-2kg':
+    'https://images.pexels.com/photos/7687526/pexels-photo-7687526.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::37::cafe-expresso':
+    'https://images.pexels.com/photos/189188/pexels-photo-189188.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::38::cappuccino':
+    'https://images.pexels.com/photos/894696/pexels-photo-894696.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::39::cafe-com-leite':
+    'https://images.pexels.com/photos/302897/pexels-photo-302897.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::40::chocolate-quente':
+    'https://images.pexels.com/photos/5178322/pexels-photo-5178322.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::41::suco-de-laranja-natural-500ml':
+    'https://images.pexels.com/photos/6249449/pexels-photo-6249449.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::42::cha-de-camomila':
+    'https://images.pexels.com/photos/2752031/pexels-photo-2752031.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::43::smoothie-de-morango-400ml':
+    'https://images.pexels.com/photos/36656035/pexels-photo-36656035.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::cafe-bebidas::44::limonada-suica-500ml':
+    'https://images.pexels.com/photos/7262359/pexels-photo-7262359.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::29::brigadeiro-gourmet-unid':
+    'https://images.pexels.com/photos/7103712/pexels-photo-7103712.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::30::sonho-de-creme':
+    'https://images.pexels.com/photos/3301907/pexels-photo-3301907.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::31::berlim-de-doce-de-leite':
+    'https://images.pexels.com/photos/35981910/pexels-photo-35981910.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::32::carolina-recheada-3un':
+    'https://images.pexels.com/photos/4662037/pexels-photo-4662037.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::33::churros-doce-de-leite':
+    'https://images.pexels.com/photos/5638531/pexels-photo-5638531.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::34::palmier-amanteigado-4un':
+    'https://images.pexels.com/photos/2498936/pexels-photo-2498936.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::35::pudim-de-leite-fatia':
+    'https://images.pexels.com/photos/128399/pexels-photo-128399.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::doces-sobremesas::36::quindim':
+    'https://images.pexels.com/photos/5995770/pexels-photo-5995770.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::encomendas::56::bolo-decorado-festa-2kg':
+    'https://images.pexels.com/photos/433527/pexels-photo-433527.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::encomendas::57::kit-100-salgados-sortidos':
+    'https://images.pexels.com/photos/3856046/pexels-photo-3856046.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::encomendas::58::kit-200-salgados-sortidos':
+    'https://images.pexels.com/photos/4842865/pexels-photo-4842865.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::encomendas::59::torta-salgada-inteira-1-5kg':
+    'https://images.pexels.com/photos/6643739/pexels-photo-6643739.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::encomendas::60::kit-cafe-da-manha-especial':
+    'https://images.pexels.com/photos/28445830/pexels-photo-28445830.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::frios-laticinios::51::queijo-minas-frescal-300g':
+    'https://images.pexels.com/photos/6004121/pexels-photo-6004121.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::frios-laticinios::52::presunto-magro-fatiado-200g':
+    'https://images.pexels.com/photos/5491285/pexels-photo-5491285.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::frios-laticinios::53::manteiga-da-casa-200g':
+    'https://images.pexels.com/photos/6957153/pexels-photo-6957153.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::frios-laticinios::54::iogurte-natural-artesanal-500ml':
+    'https://images.pexels.com/photos/4080532/pexels-photo-4080532.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::frios-laticinios::55::requeijao-caseiro-300g':
+    'https://images.pexels.com/photos/36442795/pexels-photo-36442795.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::45::misto-quente':
+    'https://images.pexels.com/photos/4394139/pexels-photo-4394139.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::46::bauru-no-pao-frances':
+    'https://images.pexels.com/photos/6432076/pexels-photo-6432076.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::47::sanduiche-natural-de-frango':
+    'https://images.pexels.com/photos/5122952/pexels-photo-5122952.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::48::croissant-de-presunto-e-queijo':
+    'https://images.pexels.com/photos/5639299/pexels-photo-5639299.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::49::wrap-de-frango-caesar':
+    'https://images.pexels.com/photos/5639371/pexels-photo-5639371.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::lanches::50::tostex-de-queijo-e-tomate':
+    'https://images.pexels.com/photos/6004145/pexels-photo-6004145.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::1::pao-frances-unid':
+    'https://images.pexels.com/photos/6810737/pexels-photo-6810737.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::10::focaccia-de-alecrim':
+    'https://images.pexels.com/photos/36605452/pexels-photo-36605452.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::2::pao-de-queijo-grande':
+    'https://images.pexels.com/photos/4279102/pexels-photo-4279102.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::3::pao-de-queijo-pequeno-3un':
+    'https://images.pexels.com/photos/4279110/pexels-photo-4279110.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::4::pao-integral-fatiado':
+    'https://images.pexels.com/photos/36353181/pexels-photo-36353181.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::5::pao-de-fermentacao-natural':
+    'https://images.pexels.com/photos/6202270/pexels-photo-6202270.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::6::ciabatta':
+    'https://images.pexels.com/photos/7568493/pexels-photo-7568493.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::7::croissant-de-manteiga':
+    'https://images.pexels.com/photos/6152263/pexels-photo-6152263.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::8::pao-de-alho-4un':
+    'https://images.pexels.com/photos/5213899/pexels-photo-5213899.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::paes::9::broa-de-milho':
+    'https://images.pexels.com/photos/1287277/pexels-photo-1287277.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::11::coxinha-de-frango':
+    'https://images.pexels.com/photos/5639754/pexels-photo-5639754.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::12::esfiha-de-carne':
+    'https://images.pexels.com/photos/5740627/pexels-photo-5740627.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::13::esfiha-de-queijo':
+    'https://images.pexels.com/photos/7368049/pexels-photo-7368049.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::14::empada-de-frango':
+    'https://images.pexels.com/photos/5706417/pexels-photo-5706417.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::15::empada-de-palmito':
+    'https://images.pexels.com/photos/5662167/pexels-photo-5662167.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::16::pastel-de-forno-carne':
+    'https://images.pexels.com/photos/5881018/pexels-photo-5881018.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::17::quiche-de-alho-poro':
+    'https://images.pexels.com/photos/3856043/pexels-photo-3856043.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::18::pao-de-batata-recheado':
+    'https://images.pexels.com/photos/7776547/pexels-photo-7776547.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::19::enroladinho-de-salsicha':
+    'https://images.pexels.com/photos/5864610/pexels-photo-5864610.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'padaria::salgados::20::bolinha-de-queijo-6un':
+    'https://images.pexels.com/photos/166031/pexels-photo-166031.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::42::coleira-regulavel-caes-p':
+    'https://images.pexels.com/photos/5732505/pexels-photo-5732505.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::43::coleira-regulavel-caes-m':
+    'https://images.pexels.com/photos/170325/pexels-photo-170325.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::44::guia-retratil-5m':
+    'https://images.pexels.com/photos/6682225/pexels-photo-6682225.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::45::peitoral-anti-puxao-m':
+    'https://images.pexels.com/photos/5255612/pexels-photo-5255612.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::46::comedouro-inox-500ml':
+    'https://images.pexels.com/photos/4432260/pexels-photo-4432260.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::47::bebedouro-inox-1l':
+    'https://images.pexels.com/photos/5822458/pexels-photo-5822458.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::48::cama-pet-retangular-m':
+    'https://images.pexels.com/photos/6207406/pexels-photo-6207406.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::49::cama-pet-retangular-g':
+    'https://images.pexels.com/photos/6768918/pexels-photo-6768918.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::50::caixa-de-transporte-n3':
+    'https://images.pexels.com/photos/2132710/pexels-photo-2132710.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::acessorios::51::focinheira-de-nylon-m':
+    'https://images.pexels.com/photos/796584/pexels-photo-796584.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::59::areia-higienica-pipicat-classica-12kg':
+    'https://images.pexels.com/photos/33424745/pexels-photo-33424745.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::60::areia-higienica-viva-verde-4kg':
+    'https://images.pexels.com/photos/7009334/pexels-photo-7009334.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::61::granulado-sanitario-tofu-6l':
+    'https://images.pexels.com/photos/7009334/pexels-photo-7009334.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::62::tapete-higienico-30un':
+    'https://images.pexels.com/photos/6000304/pexels-photo-6000304.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::63::tapete-higienico-60un':
+    'https://images.pexels.com/photos/3908817/pexels-photo-3908817.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::64::pa-coletora-para-areia':
+    'https://images.pexels.com/photos/3869255/pexels-photo-3869255.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::65::caixa-de-areia-fechada':
+    'https://images.pexels.com/photos/5088844/pexels-photo-5088844.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::areia-tapetes::66::saco-cata-caca-biodegradavel-4-rolos':
+    'https://images.pexels.com/photos/4453132/pexels-photo-4453132.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::35::bolinha-de-tenis-para-caes-3un':
+    'https://images.pexels.com/photos/16111908/pexels-photo-16111908.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::36::corda-interativa-para-caes':
+    'https://images.pexels.com/photos/1739093/pexels-photo-1739093.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::37::brinquedo-de-borracha-resistente':
+    'https://images.pexels.com/photos/35893693/pexels-photo-35893693.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::38::ratinho-de-pelucia-para-gatos':
+    'https://images.pexels.com/photos/7725609/pexels-photo-7725609.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::39::varinha-com-pena-para-gatos':
+    'https://images.pexels.com/photos/5939304/pexels-photo-5939304.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::40::bola-com-guizo-para-gatos':
+    'https://images.pexels.com/photos/137049/pexels-photo-137049.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::brinquedos::41::arranhador-de-papelao-para-gatos':
+    'https://images.pexels.com/photos/7725602/pexels-photo-7725602.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::52::antipulgas-frontline-plus-caes-10-20kg':
+    'https://images.pexels.com/photos/4432261/pexels-photo-4432261.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::53::antipulgas-frontline-plus-gatos':
+    'https://images.pexels.com/photos/7224648/pexels-photo-7224648.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::54::vermifugo-drontal-plus-caes':
+    'https://images.pexels.com/photos/5482826/pexels-photo-5482826.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::55::spray-antisseptico-100ml':
+    'https://images.pexels.com/photos/4177223/pexels-photo-4177223.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::56::suplemento-vitaminico-organnact-120ml':
+    'https://images.pexels.com/photos/2352276/pexels-photo-2352276.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::57::colirio-ocular-pet-10ml':
+    'https://images.pexels.com/photos/129965/pexels-photo-129965.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::farmacia-pet::58::limpa-ouvido-pet-100ml':
+    'https://images.pexels.com/photos/6235650/pexels-photo-6235650.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::27::shampoo-sanol-neutro-500ml':
+    'https://images.pexels.com/photos/485294/pexels-photo-485294.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::28::shampoo-antipulgas-sanol-500ml':
+    'https://images.pexels.com/photos/485294/pexels-photo-485294.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::29::condicionador-sanol-revitalizante-500ml':
+    'https://images.pexels.com/photos/6801177/pexels-photo-6801177.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::30::perfume-pet-clean-120ml':
+    'https://images.pexels.com/photos/6801177/pexels-photo-6801177.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::31::escova-rasqueadeira-dupla':
+    'https://images.pexels.com/photos/6235233/pexels-photo-6235233.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::32::cortador-de-unha-pet':
+    'https://images.pexels.com/photos/6568950/pexels-photo-6568950.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::33::toalha-absorvente-para-pets':
+    'https://images.pexels.com/photos/6235233/pexels-photo-6235233.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::higiene-banho::34::lenco-umedecido-pet-50un':
+    'https://images.pexels.com/photos/4210360/pexels-photo-4210360.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::19::bifinho-pedigree-carne-60g':
+    'https://images.pexels.com/photos/36186523/pexels-photo-36186523.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::20::ossinho-pedigree-rodeo-70g':
+    'https://images.pexels.com/photos/36446733/pexels-photo-36446733.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::21::petisco-dreamies-gatos-frango-40g':
+    'https://images.pexels.com/photos/5201246/pexels-photo-5201246.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::22::osso-natural-bovino-un':
+    'https://images.pexels.com/photos/7788682/pexels-photo-7788682.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::23::palito-mastigavel-caes-5un':
+    'https://images.pexels.com/photos/3299906/pexels-photo-3299906.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::24::bifinhos-premier-caes-60g':
+    'https://images.pexels.com/photos/4445456/pexels-photo-4445456.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::25::petisco-golden-cookie-caes-350g':
+    'https://images.pexels.com/photos/36446733/pexels-photo-36446733.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::petiscos::26::petisco-purina-cat-chow-gatos-40g':
+    'https://images.pexels.com/photos/205975/pexels-photo-205975.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::1::racao-golden-caes-adultos-carne-15kg':
+    'https://images.pexels.com/photos/7310128/pexels-photo-7310128.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::10::racao-hills-science-diet-adult-12kg':
+    'https://images.pexels.com/photos/7309473/pexels-photo-7309473.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::2::racao-golden-caes-filhotes-frango-15kg':
+    'https://images.pexels.com/photos/7309448/pexels-photo-7309448.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::3::racao-premier-caes-adultos-frango-12kg':
+    'https://images.pexels.com/photos/3737642/pexels-photo-3737642.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::4::racao-royal-canin-medium-adult-15kg':
+    'https://images.pexels.com/photos/18764148/pexels-photo-18764148.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::5::racao-royal-canin-mini-indoor-7-5kg':
+    'https://images.pexels.com/photos/3735174/pexels-photo-3735174.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::6::racao-pedigree-carne-adulto-10-1kg':
+    'https://images.pexels.com/photos/230785/pexels-photo-230785.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::7::racao-n-d-caes-adultos-frango-10-1kg':
+    'https://images.pexels.com/photos/7309473/pexels-photo-7309473.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::8::racao-gran-plus-caes-adultos-15kg':
+    'https://images.pexels.com/photos/5842509/pexels-photo-5842509.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-caes::9::sache-dog-chow-adultos-100g':
+    'https://images.pexels.com/photos/7310128/pexels-photo-7310128.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::11::racao-golden-gatos-adultos-carne-10-1kg':
+    'https://images.pexels.com/photos/7258493/pexels-photo-7258493.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::12::racao-whiskas-gatos-adultos-carne-10-1kg':
+    'https://images.pexels.com/photos/7258498/pexels-photo-7258498.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::13::racao-royal-canin-indoor-27-7-5kg':
+    'https://images.pexels.com/photos/6529678/pexels-photo-6529678.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::14::racao-premier-gatos-adultos-frango-7-5kg':
+    'https://images.pexels.com/photos/4061388/pexels-photo-4061388.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::15::racao-n-d-gatos-adultos-peixe-7-5kg':
+    'https://images.pexels.com/photos/3622598/pexels-photo-3622598.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::16::sache-whiskas-gatos-adultos-85g':
+    'https://images.pexels.com/photos/4422098/pexels-photo-4422098.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::17::racao-cat-chow-gatos-castrados-10-1kg':
+    'https://images.pexels.com/photos/7309465/pexels-photo-7309465.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'petshop::racao-gatos::18::sache-sheba-gatos-adultos-85g':
+    'https://images.pexels.com/photos/7309465/pexels-photo-7309465.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::36::coca-cola-2l':
+    'https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::37::guarana-antarctica-2l':
+    'https://images.pexels.com/photos/2260561/pexels-photo-2260561.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::38::coca-cola-lata-350ml':
+    'https://images.pexels.com/photos/6151210/pexels-photo-6151210.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::39::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/5639546/pexels-photo-5639546.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::40::suco-natural-1l':
+    'https://images.pexels.com/photos/1082343/pexels-photo-1082343.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::41::heineken-long-neck-330ml':
+    'https://images.pexels.com/photos/3343622/pexels-photo-3343622.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bebidas::42::agua-mineral-1-5l':
+    'https://images.pexels.com/photos/6223177/pexels-photo-6223177.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bordas-recheadas::32::borda-de-catupiry':
+    'https://images.pexels.com/photos/36374388/pexels-photo-36374388.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bordas-recheadas::33::borda-de-cheddar':
+    'https://images.pexels.com/photos/6111951/pexels-photo-6111951.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bordas-recheadas::34::borda-de-bacon-com-cheddar':
+    'https://images.pexels.com/photos/1460874/pexels-photo-1460874.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::bordas-recheadas::35::borda-de-chocolate':
+    'https://images.pexels.com/photos/6697495/pexels-photo-6697495.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::26::calzone-de-calabresa':
+    'https://images.pexels.com/photos/3682837/pexels-photo-3682837.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::27::calzone-quatro-queijos':
+    'https://images.pexels.com/photos/4562970/pexels-photo-4562970.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::28::calzone-de-frango-com-catupiry':
+    'https://images.pexels.com/photos/7175422/pexels-photo-7175422.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::29::esfiha-de-carne-6un':
+    'https://images.pexels.com/photos/5848286/pexels-photo-5848286.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::30::esfiha-de-queijo-6un':
+    'https://images.pexels.com/photos/5848246/pexels-photo-5848246.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::calzones-esfihas::31::esfiha-de-frango-6un':
+    'https://images.pexels.com/photos/5903378/pexels-photo-5903378.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::43::combo-pizza-media-refri-2l':
+    'https://images.pexels.com/photos/365459/pexels-photo-365459.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::44::combo-2-pizzas-medias':
+    'https://images.pexels.com/photos/7813575/pexels-photo-7813575.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::45::combo-familia':
+    'https://images.pexels.com/photos/5848275/pexels-photo-5848275.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::46::combo-broto-refri':
+    'https://images.pexels.com/photos/5903276/pexels-photo-5903276.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::47::combo-meio-a-meio-refri':
+    'https://images.pexels.com/photos/6493565/pexels-photo-6493565.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::combos::48::combo-esfihas-12un-refri':
+    'https://images.pexels.com/photos/5903111/pexels-photo-5903111.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::20::chocolate-com-morango':
+    'https://images.pexels.com/photos/7770711/pexels-photo-7770711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::21::romeu-e-julieta':
+    'https://images.pexels.com/photos/3915854/pexels-photo-3915854.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::22::banana-com-canela':
+    'https://images.pexels.com/photos/4662037/pexels-photo-4662037.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::23::prestigio':
+    'https://images.pexels.com/photos/5903173/pexels-photo-5903173.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::24::nutella-com-morango':
+    'https://images.pexels.com/photos/5639261/pexels-photo-5639261.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-doces::25::chocolate-branco-com-ovomaltine':
+    'https://images.pexels.com/photos/5903164/pexels-photo-5903164.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::12::quatro-queijos':
+    'https://images.pexels.com/photos/7813580/pexels-photo-7813580.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::13::pepperoni':
+    'https://images.pexels.com/photos/3944308/pexels-photo-3944308.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::14::margherita':
+    'https://images.pexels.com/photos/6605191/pexels-photo-6605191.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::15::strogonoff':
+    'https://images.pexels.com/photos/1082342/pexels-photo-1082342.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::16::cheddar-com-bacon':
+    'https://images.pexels.com/photos/6223200/pexels-photo-6223200.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::17::camarao':
+    'https://images.pexels.com/photos/7813579/pexels-photo-7813579.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::18::lombo-canadense':
+    'https://images.pexels.com/photos/6147987/pexels-photo-6147987.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-especiais::19::a-moda-da-casa':
+    'https://images.pexels.com/photos/7813578/pexels-photo-7813578.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::1::calabresa':
+    'https://images.pexels.com/photos/5903452/pexels-photo-5903452.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::10::escarola-com-bacon':
+    'https://images.pexels.com/photos/7098658/pexels-photo-7098658.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::11::aliche':
+    'https://images.pexels.com/photos/5903274/pexels-photo-5903274.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::2::mussarela':
+    'https://images.pexels.com/photos/3731423/pexels-photo-3731423.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::3::portuguesa':
+    'https://images.pexels.com/photos/5640011/pexels-photo-5640011.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::4::frango-com-catupiry':
+    'https://images.pexels.com/photos/3915855/pexels-photo-3915855.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::5::napolitana':
+    'https://images.pexels.com/photos/6605223/pexels-photo-6605223.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::6::bacon':
+    'https://images.pexels.com/photos/6223183/pexels-photo-6223183.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::7::atum':
+    'https://images.pexels.com/photos/6424962/pexels-photo-6424962.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::8::palmito':
+    'https://images.pexels.com/photos/1049626/pexels-photo-1049626.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'pizzaria::pizzas-tradicionais::9::milho-com-bacon':
+    'https://images.pexels.com/photos/7362684/pexels-photo-7362684.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::acompanhamentos::27::arroz-branco':
+    'https://images.pexels.com/photos/36740211/pexels-photo-36740211.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::acompanhamentos::28::feijao':
+    'https://images.pexels.com/photos/3004798/pexels-photo-3004798.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::acompanhamentos::29::farofa-de-bacon':
+    'https://images.pexels.com/photos/5041477/pexels-photo-5041477.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::acompanhamentos::30::salada-fresca-do-dia':
+    'https://images.pexels.com/photos/15554391/pexels-photo-15554391.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::acompanhamentos::31::pirao-de-peixe':
+    'https://images.pexels.com/photos/6754328/pexels-photo-6754328.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::combos-promocoes::48::combo-executivo-suco':
+    'https://images.pexels.com/photos/5264809/pexels-photo-5264809.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::combos-promocoes::49::combo-casal':
+    'https://images.pexels.com/photos/6091046/pexels-photo-6091046.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::combos-promocoes::50::combo-familia':
+    'https://images.pexels.com/photos/35541048/pexels-photo-35541048.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::combos-promocoes::51::combo-marmitao-refri':
+    'https://images.pexels.com/photos/35990239/pexels-photo-35990239.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::combos-promocoes::52::combo-parmegiana-completo':
+    'https://images.pexels.com/photos/5227690/pexels-photo-5227690.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::16::marmita-tradicional-p':
+    'https://images.pexels.com/photos/90893/pexels-photo-90893.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::17::marmita-tradicional-g':
+    'https://images.pexels.com/photos/4929677/pexels-photo-4929677.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::18::marmita-fitness':
+    'https://images.pexels.com/photos/4929706/pexels-photo-4929706.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::19::marmita-low-carb':
+    'https://images.pexels.com/photos/4929675/pexels-photo-4929675.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::20::marmitao-familia-4-pessoas':
+    'https://images.pexels.com/photos/24012421/pexels-photo-24012421.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::marmitas-marmitex::21::marmita-de-peixe':
+    'https://images.pexels.com/photos/4929671/pexels-photo-4929671.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::10::moqueca-caicara-de-peixe':
+    'https://images.pexels.com/photos/4871185/pexels-photo-4871185.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::11::moqueca-de-camarao':
+    'https://images.pexels.com/photos/8321980/pexels-photo-8321980.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::12::camarao-a-paulista':
+    'https://images.pexels.com/photos/5855235/pexels-photo-5855235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::13::peixe-frito-com-pirao':
+    'https://images.pexels.com/photos/7627414/pexels-photo-7627414.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::14::file-de-robalo-grelhado':
+    'https://images.pexels.com/photos/4603275/pexels-photo-4603275.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::15::casquinha-de-siri':
+    'https://images.pexels.com/photos/19677933/pexels-photo-19677933.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::peixes-frutos-do-mar::9::tilapia-grelhada-na-manteiga':
+    'https://images.pexels.com/photos/6046671/pexels-photo-6046671.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::porcoes::22::porcao-de-batata-frita':
+    'https://images.pexels.com/photos/36292352/pexels-photo-36292352.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::porcoes::23::porcao-de-mandioca-frita':
+    'https://images.pexels.com/photos/700558/pexels-photo-700558.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::porcoes::24::porcao-de-polenta-frita':
+    'https://images.pexels.com/photos/6428247/pexels-photo-6428247.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::porcoes::25::porcao-de-isca-de-peixe':
+    'https://images.pexels.com/photos/7419517/pexels-photo-7419517.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::porcoes::26::porcao-de-frango-a-passarinha':
+    'https://images.pexels.com/photos/284273/pexels-photo-284273.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::1::executivo-do-dia':
+    'https://images.pexels.com/photos/5894767/pexels-photo-5894767.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::2::file-de-frango-grelhado':
+    'https://images.pexels.com/photos/6046747/pexels-photo-6046747.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::3::bife-acebolado':
+    'https://images.pexels.com/photos/1314041/pexels-photo-1314041.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::4::strogonoff-de-frango':
+    'https://images.pexels.com/photos/105588/pexels-photo-105588.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::5::picanha-na-chapa':
+    'https://images.pexels.com/photos/36720626/pexels-photo-36720626.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::6::file-a-parmegiana':
+    'https://images.pexels.com/photos/29631422/pexels-photo-29631422.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::7::frango-a-parmegiana':
+    'https://images.pexels.com/photos/29631422/pexels-photo-29631422.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::pratos-executivos::8::feijoada-completa':
+    'https://images.pexels.com/photos/6936981/pexels-photo-6936981.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::42::coca-cola-lata-350ml':
+    'https://images.pexels.com/photos/2325307/pexels-photo-2325307.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::43::coca-cola-2l':
+    'https://images.pexels.com/photos/29306497/pexels-photo-29306497.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::44::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/5741238/pexels-photo-5741238.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::45::guarana-antarctica-2l':
+    'https://images.pexels.com/photos/36740206/pexels-photo-36740206.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::46::agua-mineral-500ml':
+    'https://images.pexels.com/photos/3115006/pexels-photo-3115006.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::refrigerantes-agua::47::cafe-coado':
+    'https://images.pexels.com/photos/33371809/pexels-photo-33371809.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sobremesas::32::pudim-de-leite':
+    'https://images.pexels.com/photos/7190365/pexels-photo-7190365.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sobremesas::33::mousse-de-maracuja':
+    'https://images.pexels.com/photos/4089455/pexels-photo-4089455.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sobremesas::34::bolo-caseiro-do-dia':
+    'https://images.pexels.com/photos/20847544/pexels-photo-20847544.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sobremesas::35::cocada-cremosa':
+    'https://images.pexels.com/photos/2733337/pexels-photo-2733337.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sobremesas::36::sorvete-2-bolas':
+    'https://images.pexels.com/photos/5535554/pexels-photo-5535554.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sucos-naturais::37::suco-de-laranja-500ml':
+    'https://images.pexels.com/photos/6416553/pexels-photo-6416553.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sucos-naturais::38::suco-de-limao-c-hortela-500ml':
+    'https://images.pexels.com/photos/6174870/pexels-photo-6174870.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sucos-naturais::39::suco-de-maracuja-500ml':
+    'https://images.pexels.com/photos/36366987/pexels-photo-36366987.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sucos-naturais::40::suco-de-abacaxi-c-hortela-500ml':
+    'https://images.pexels.com/photos/34704679/pexels-photo-34704679.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'restaurante::sucos-naturais::41::agua-de-coco-natural-500ml':
+    'https://images.pexels.com/photos/35960767/pexels-photo-35960767.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::acai-bowls::38::acai-300ml':
+    'https://images.pexels.com/photos/3034638/pexels-photo-3034638.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::acai-bowls::39::acai-500ml':
+    'https://images.pexels.com/photos/7367952/pexels-photo-7367952.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::acai-bowls::40::acai-700ml':
+    'https://images.pexels.com/photos/5864795/pexels-photo-5864795.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::acai-bowls::41::bowl-de-pitaya':
+    'https://images.pexels.com/photos/6927641/pexels-photo-6927641.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::acai-bowls::42::bowl-tropical':
+    'https://images.pexels.com/photos/5535557/pexels-photo-5535557.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::casquinhas-copoes::33::casquinha-simples-1-bola':
+    'https://images.pexels.com/photos/367191/pexels-photo-367191.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::casquinhas-copoes::34::casquinha-dupla-2-bolas':
+    'https://images.pexels.com/photos/675439/pexels-photo-675439.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::casquinhas-copoes::35::copao-300ml-2-sabores':
+    'https://images.pexels.com/photos/5108030/pexels-photo-5108030.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::casquinhas-copoes::36::copao-500ml-3-sabores':
+    'https://images.pexels.com/photos/684968/pexels-photo-684968.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::casquinhas-copoes::37::copao-premium-700ml':
+    'https://images.pexels.com/photos/1352245/pexels-photo-1352245.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::43::calda-extra-chocolate-morango-caramelo':
+    'https://images.pexels.com/photos/5108033/pexels-photo-5108033.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::44::chantilly-extra':
+    'https://images.pexels.com/photos/126790/pexels-photo-126790.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::45::granola-extra':
+    'https://images.pexels.com/photos/4725722/pexels-photo-4725722.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::46::leite-ninho-extra':
+    'https://images.pexels.com/photos/1352249/pexels-photo-1352249.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::47::frutas-frescas-extra':
+    'https://images.pexels.com/photos/5060943/pexels-photo-5060943.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::48::nutella-extra':
+    'https://images.pexels.com/photos/1352251/pexels-photo-1352251.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::49::castanhas-e-amendoim':
+    'https://images.pexels.com/photos/4947220/pexels-photo-4947220.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::complementos::50::confete-granulado':
+    'https://images.pexels.com/photos/5108031/pexels-photo-5108031.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::27::milkshake-chocolate-500ml':
+    'https://images.pexels.com/photos/2559025/pexels-photo-2559025.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::28::milkshake-morango-500ml':
+    'https://images.pexels.com/photos/6544066/pexels-photo-6544066.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::29::milkshake-ovomaltine-500ml':
+    'https://images.pexels.com/photos/2693404/pexels-photo-2693404.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::30::milkshake-nutella-500ml':
+    'https://images.pexels.com/photos/7463310/pexels-photo-7463310.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::31::milkshake-ninho-com-morango-500ml':
+    'https://images.pexels.com/photos/7091585/pexels-photo-7091585.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::milkshakes::32::milkshake-doce-de-leite-500ml':
+    'https://images.pexels.com/photos/3908198/pexels-photo-3908198.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::13::picole-de-chocolate':
+    'https://images.pexels.com/photos/684968/pexels-photo-684968.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::14::picole-de-morango':
+    'https://images.pexels.com/photos/749102/pexels-photo-749102.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::15::picole-de-coco-queimado':
+    'https://images.pexels.com/photos/4725707/pexels-photo-4725707.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::16::picole-de-maracuja':
+    'https://images.pexels.com/photos/4725699/pexels-photo-4725699.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::17::picole-de-acai-com-banana':
+    'https://images.pexels.com/photos/2173772/pexels-photo-2173772.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::18::picole-limao-com-raspas':
+    'https://images.pexels.com/photos/5657399/pexels-photo-5657399.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::19::picole-abacaxi-com-hortela':
+    'https://images.pexels.com/photos/4725719/pexels-photo-4725719.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::picoles::20::picole-de-doce-de-leite':
+    'https://images.pexels.com/photos/4725704/pexels-photo-4725704.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::1::sorvete-chocolate-belga-1-bola':
+    'https://images.pexels.com/photos/684968/pexels-photo-684968.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::10::sorvete-limao-siciliano-1-bola':
+    'https://images.pexels.com/photos/5061019/pexels-photo-5061019.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::11::pote-500ml-2-sabores':
+    'https://images.pexels.com/photos/4916023/pexels-photo-4916023.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::12::pote-1l-3-sabores':
+    'https://images.pexels.com/photos/5060289/pexels-photo-5060289.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::2::sorvete-morango-1-bola':
+    'https://images.pexels.com/photos/6752845/pexels-photo-6752845.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::3::sorvete-creme-1-bola':
+    'https://images.pexels.com/photos/1352244/pexels-photo-1352244.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::4::sorvete-flocos-1-bola':
+    'https://images.pexels.com/photos/5060895/pexels-photo-5060895.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::5::sorvete-pistache-1-bola':
+    'https://images.pexels.com/photos/5060292/pexels-photo-5060292.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::6::sorvete-doce-de-leite-1-bola':
+    'https://images.pexels.com/photos/5060898/pexels-photo-5060898.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::7::sorvete-maracuja-1-bola':
+    'https://images.pexels.com/photos/5060378/pexels-photo-5060378.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::8::sorvete-coco-1-bola':
+    'https://images.pexels.com/photos/5060458/pexels-photo-5060458.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sorvetes-de-massa::9::sorvete-ninho-com-nutella-1-bola':
+    'https://images.pexels.com/photos/5060457/pexels-photo-5060457.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::21::sundae-de-chocolate':
+    'https://images.pexels.com/photos/4875225/pexels-photo-4875225.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::22::sundae-de-morango':
+    'https://images.pexels.com/photos/5914459/pexels-photo-5914459.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::23::sundae-de-caramelo':
+    'https://images.pexels.com/photos/6025811/pexels-photo-6025811.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::24::banana-split':
+    'https://images.pexels.com/photos/1352282/pexels-photo-1352282.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::25::taca-especial-da-casa':
+    'https://images.pexels.com/photos/1362534/pexels-photo-1362534.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sorveteria::sundaes-tacas::26::petit-gateau-com-sorvete':
+    'https://images.pexels.com/photos/5163948/pexels-photo-5163948.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::1::coca-cola-lata-350ml':
+    'https://images.pexels.com/photos/4113625/pexels-photo-4113625.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::2::coca-cola-600ml':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::3::coca-cola-1l':
+    'https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::4::coca-cola-2l':
+    'https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::5::coca-cola-zero-lata-350ml':
+    'https://images.pexels.com/photos/4113668/pexels-photo-4113668.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::6::coca-cola-zero-2l':
+    'https://images.pexels.com/photos/4113632/pexels-photo-4113632.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::7::guarana-antarctica-lata-350ml':
+    'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::10::fanta-laranja-2l':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::11::fanta-uva-lata-350ml':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::13::sprite-2l':
+    'https://images.pexels.com/photos/4113632/pexels-photo-4113632.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::14::kuat-guarana-lata-350ml':
+    'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::15::pepsi-lata-350ml':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::16::pepsi-2l':
+    'https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::17::dolly-guarana-2l':
+    'https://images.pexels.com/photos/39720/pexels-photo-39720.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::18::schweppes-citrus-lata-350ml':
+    'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::19::soda-limonada-antarctica-2l':
+    'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::20::tubaina-lata-350ml':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::21::agua-mineral-500ml':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::22::agua-mineral-1-5l':
+    'https://images.pexels.com/photos/593099/pexels-photo-593099.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::23::agua-mineral-5l':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::24::agua-com-gas-500ml':
+    'https://images.pexels.com/photos/7509048/pexels-photo-7509048.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::27::suco-del-valle-uva-1l':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::28::suco-del-valle-laranja-1l':
+    'https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::29::suco-del-valle-pessego-1l':
+    'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::30::suco-del-valle-manga-1l':
+    'https://images.pexels.com/photos/2531196/pexels-photo-2531196.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::31::suco-natural-one-laranja-900ml':
+    'https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::32::suco-tang-laranja-25g':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::33::suco-tang-uva-25g':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::34::suco-tang-maracuja-25g':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::35::suco-ades-maca-200ml':
+    'https://images.pexels.com/photos/2693404/pexels-photo-2693404.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::36::red-bull-energy-drink-250ml':
+    'https://images.pexels.com/photos/3684971/pexels-photo-3684971.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::37::red-bull-sugar-free-250ml':
+    'https://images.pexels.com/photos/3684971/pexels-photo-3684971.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::38::monster-energy-473ml':
+    'https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::39::monster-mango-loco-473ml':
+    'https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::40::tnt-energy-drink-473ml':
+    'https://images.pexels.com/photos/4386022/pexels-photo-4386022.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::41::gatorade-limao-500ml':
+    'https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::42::gatorade-laranja-500ml':
+    'https://images.pexels.com/photos/6412584/pexels-photo-6412584.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::43::powerade-frutas-citricas-500ml':
+    'https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::44::cha-leao-pessego-450ml':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::45::cha-leao-limao-450ml':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::46::cha-matte-leao-natural-300ml':
+    'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::47::ice-tea-limao-lipton-340ml':
+    'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::48::starbucks-frappuccino-mocha-281ml':
+    'https://images.pexels.com/photos/4869293/pexels-photo-4869293.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::63::agua-tonica-schweppes-350ml':
+    'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::64::suco-em-caixa-maguary-caju-200ml':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::65::suco-em-caixa-maguary-goiaba-200ml':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::66::refrigerante-guarana-jesus-lata-350ml':
+    'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::67::cha-verde-leao-250ml':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::70::coca-cola-lata-pack-12un':
+    'https://images.pexels.com/photos/4113625/pexels-photo-4113625.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::71::guarana-antarctica-pack-12-latas':
+    'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::72::agua-mineral-pack-6un-500ml':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas::77::isotonico-gatorade-morango-500ml':
+    'https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1084::cha-preto-english-breakfast-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1085::cha-earl-grey-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1086::cha-boldo-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1087::cha-hortela-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1088::cha-cidreira-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1089::cha-gengibre-e-limao-20un':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1094::chai-latte-em-po-200g':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1095::matcha-em-po-30g':
+    'https://images.pexels.com/photos/6763235/pexels-photo-6763235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-quentes::1096::cha-mate-tostado-250g':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::importados-gourmet::1199::agua-com-gas-perrier-330ml':
+    'https://images.pexels.com/photos/7509048/pexels-photo-7509048.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::snacks-doces::1388::trail-mix-energetico-150g':
+    'https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1274::refrigerante-regional-guarana-2l':
+    'https://images.pexels.com/photos/39720/pexels-photo-39720.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1275::refrigerante-regional-laranja-2l':
+    'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1276::suco-verde-detox-500ml':
+    'https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1277::suco-pink-lemonade-500ml':
+    'https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1278::kombucha-350ml':
+    'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1279::suco-de-uva-integral-1l':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1280::suco-de-caju-integral-1l':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1281::suco-de-goiaba-integral-1l':
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1282::suco-de-manga-integral-1l':
+    'https://images.pexels.com/photos/2531196/pexels-photo-2531196.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1284::energetico-vibe-473ml':
+    'https://images.pexels.com/photos/6662994/pexels-photo-6662994.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1285::energetico-reign-473ml':
+    'https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1286::agua-mineral-galao-10l':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1287::agua-mineral-galao-20l':
+    'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1292::refrigerante-schweppes-tonica-2l':
+    'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1298::cha-mate-pronto-1-5l':
+    'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1299::energetico-c4-473ml':
+    'https://images.pexels.com/photos/4386022/pexels-photo-4386022.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'minimercado::bebidas-extras::1304::suco-organico-laranja-1l':
+    'https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::41::coca-cola-350ml':
+    'https://images.pexels.com/photos/4113656/pexels-photo-4113656.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::42::guarana-antarctica-350ml':
+    'https://images.pexels.com/photos/4109193/pexels-photo-4109193.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::43::cha-gelado':
+    'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::44::sake-azuma-kirin-370ml':
+    'https://images.pexels.com/photos/6168933/pexels-photo-6168933.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::45::cerveja-sapporo-350ml':
+    'https://images.pexels.com/photos/1267151/pexels-photo-1267151.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::bebidas::46::agua-mineral-500ml':
+    'https://images.pexels.com/photos/4916536/pexels-photo-4916536.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::12::combo-15-pecas':
+    'https://images.pexels.com/photos/7719913/pexels-photo-7719913.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::13::combo-25-pecas':
+    'https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::14::combo-salmao-20-pecas':
+    'https://images.pexels.com/photos/6025655/pexels-photo-6025655.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::15::combo-premium-30-pecas':
+    'https://images.pexels.com/photos/36317040/pexels-photo-36317040.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::16::combo-familia-50-pecas':
+    'https://images.pexels.com/photos/7719911/pexels-photo-7719911.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::combinados::17::combo-festa-60-pecas':
+    'https://images.pexels.com/photos/36317038/pexels-photo-36317038.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::1::harumaki-6un':
+    'https://images.pexels.com/photos/4985525/pexels-photo-4985525.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::2::gyoza-6un':
+    'https://images.pexels.com/photos/35873825/pexels-photo-35873825.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::3::sunomono':
+    'https://images.pexels.com/photos/6327666/pexels-photo-6327666.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::4::edamame':
+    'https://images.pexels.com/photos/3985872/pexels-photo-3985872.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::5::shimeji-na-manteiga':
+    'https://images.pexels.com/photos/6157039/pexels-photo-6157039.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::entradas::6::tempura-de-legumes-8un':
+    'https://images.pexels.com/photos/3622477/pexels-photo-3622477.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::niguiris::30::niguiri-salmao-2un':
+    'https://images.pexels.com/photos/2098143/pexels-photo-2098143.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::niguiris::31::niguiri-atum-2un':
+    'https://images.pexels.com/photos/4725633/pexels-photo-4725633.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::niguiris::32::niguiri-camarao-2un':
+    'https://images.pexels.com/photos/2098134/pexels-photo-2098134.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::niguiris::33::niguiri-de-salmao-macaricado-2un':
+    'https://images.pexels.com/photos/4725638/pexels-photo-4725638.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::34::yakissoba-tradicional':
+    'https://images.pexels.com/photos/5602458/pexels-photo-5602458.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::35::yakissoba-de-camarao':
+    'https://images.pexels.com/photos/4518665/pexels-photo-4518665.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::36::lamen-de-chashu':
+    'https://images.pexels.com/photos/5774092/pexels-photo-5774092.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::37::lamen-picante':
+    'https://images.pexels.com/photos/7490494/pexels-photo-7490494.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::38::tempura-de-camarao-8un':
+    'https://images.pexels.com/photos/6144970/pexels-photo-6144970.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::39::yakimeshi':
+    'https://images.pexels.com/photos/7138913/pexels-photo-7138913.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::pratos-quentes::40::donburi-de-salmao':
+    'https://images.pexels.com/photos/36481289/pexels-photo-36481289.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::23::hot-philadelphia-10un':
+    'https://images.pexels.com/photos/6531075/pexels-photo-6531075.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::24::uramaki-salmao-8un':
+    'https://images.pexels.com/photos/7353389/pexels-photo-7353389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::25::philadelphia-roll-8un':
+    'https://images.pexels.com/photos/5208235/pexels-photo-5208235.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::26::dragon-roll-8un':
+    'https://images.pexels.com/photos/5208237/pexels-photo-5208237.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::27::rainbow-roll-8un':
+    'https://images.pexels.com/photos/6249504/pexels-photo-6249504.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::28::joe-de-salmao-4un':
+    'https://images.pexels.com/photos/3147493/pexels-photo-3147493.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::rolls-uramakis::29::joe-de-camarao-4un':
+    'https://images.pexels.com/photos/684965/pexels-photo-684965.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::sashimis::10::tataki-de-salmao':
+    'https://images.pexels.com/photos/4162869/pexels-photo-4162869.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::sashimis::11::carpaccio-de-salmao':
+    'https://images.pexels.com/photos/6140621/pexels-photo-6140621.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::sashimis::7::sashimi-de-salmao-5-fatias':
+    'https://images.pexels.com/photos/6788945/pexels-photo-6788945.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::sashimis::8::sashimi-de-atum-5-fatias':
+    'https://images.pexels.com/photos/1683545/pexels-photo-1683545.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::sashimis::9::sashimi-misto-10-fatias':
+    'https://images.pexels.com/photos/5860652/pexels-photo-5860652.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::temakis::18::temaki-salmao':
+    'https://images.pexels.com/photos/4353085/pexels-photo-4353085.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::temakis::19::temaki-salmao-skin':
+    'https://images.pexels.com/photos/5643190/pexels-photo-5643190.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::temakis::20::temaki-atum':
+    'https://images.pexels.com/photos/5113069/pexels-photo-5113069.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::temakis::21::temaki-camarao-empanado':
+    'https://images.pexels.com/photos/6646372/pexels-photo-6646372.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'sushi::temakis::22::temaki-california':
+    'https://images.pexels.com/photos/5364228/pexels-photo-5364228.jpeg?auto=compress&cs=tinysrgb&w=800',
+}

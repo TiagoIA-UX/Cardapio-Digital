@@ -1,5 +1,8 @@
 import type { TemplateSampleProduct } from '@/lib/domains/marketing/templates-config'
-import { getCategoryFallbackImage, getProductFallbackImage } from '@/lib/domains/marketing/templates-config'
+import {
+  getCategoryFallbackImage,
+  getProductFallbackImage,
+} from '@/lib/domains/marketing/templates-config'
 import { TEMPLATE_PRODUCT_IMAGE_URLS } from '@/lib/domains/image/generated-template-product-images'
 
 type GeneratedImageIndex = Record<string, string>
@@ -36,6 +39,262 @@ const LEGACY_TEMPLATE_CATEGORY_ALIASES: Record<string, Record<string, string[]>>
 
 const LEGACY_TEMPLATE_SLUG_ALIASES: Record<string, string[]> = {
   minimercado: ['mercadinho'],
+}
+
+function normalizeForMatch(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function pickDeterministicUrl(seed: string, options: string[]) {
+  if (options.length === 0) return undefined
+  let hash = 0
+  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0
+  return options[hash % options.length]
+}
+
+function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): string | undefined {
+  const categoria = normalizeKeyPart(product.categoria)
+  const nome = normalizeForMatch(product.nome)
+  const seed = `${categoria}::${nome}`
+
+  if (categoria === 'bebidas' || categoria === 'bebidas-extras') {
+    if (/red bull/.test(nome)) {
+      return 'https://images.pexels.com/photos/3684971/pexels-photo-3684971.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/monster|reign/.test(nome)) {
+      return 'https://images.pexels.com/photos/4758134/pexels-photo-4758134.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/energet|\btnt\b|\bc4\b|vibe/.test(nome)) {
+      return 'https://images.pexels.com/photos/4386022/pexels-photo-4386022.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/agua mineral|galao/.test(nome)) {
+      return pickDeterministicUrl(seed, [
+        'https://images.pexels.com/photos/4113683/pexels-photo-4113683.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/593099/pexels-photo-593099.jpeg?auto=compress&cs=tinysrgb&w=800',
+      ])
+    }
+    if (/agua com gas|perrier/.test(nome)) {
+      return 'https://images.pexels.com/photos/7509048/pexels-photo-7509048.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/tonica|schweppes/.test(nome)) {
+      return 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/suco|del valle|maguary|tang|ades|detox|integral|pink lemonade/.test(nome)) {
+      return pickDeterministicUrl(seed, [
+        'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/7655906/pexels-photo-7655906.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800',
+      ])
+    }
+    if (/gatorade|powerade|isoton/.test(nome)) {
+      return pickDeterministicUrl(seed, [
+        'https://images.pexels.com/photos/7259047/pexels-photo-7259047.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/6412584/pexels-photo-6412584.jpeg?auto=compress&cs=tinysrgb&w=800',
+      ])
+    }
+    if (/cha|tea|kombucha|matcha|mate/.test(nome)) {
+      return pickDeterministicUrl(seed, [
+        'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+      ])
+    }
+    if (/coca|cola/.test(nome)) {
+      return pickDeterministicUrl(seed, [
+        'https://images.pexels.com/photos/4113625/pexels-photo-4113625.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/1003711/pexels-photo-1003711.jpeg?auto=compress&cs=tinysrgb&w=800',
+      ])
+    }
+    if (/guarana|kuat|jesus|dolly|tubaina/.test(nome)) {
+      return 'https://images.pexels.com/photos/5860659/pexels-photo-5860659.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    if (/fanta|sprite|pepsi|refrigerante|soda/.test(nome)) {
+      return 'https://images.pexels.com/photos/7001005/pexels-photo-7001005.jpeg?auto=compress&cs=tinysrgb&w=800'
+    }
+    return 'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800'
+  }
+
+  if (categoria === 'cervejas-destilados') {
+    if (/vodka|smirnoff|grey goose/.test(nome))
+      return 'https://images.pexels.com/photos/4433107/pexels-photo-4433107.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/gin|tanqueray|beefeater|gordon|hendrick/.test(nome))
+      return 'https://images.pexels.com/photos/1277203/pexels-photo-1277203.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/whisky|whiskey|johnnie|jack daniels|chivas|ballantine|macallan/.test(nome))
+      return 'https://images.pexels.com/photos/6103842/pexels-photo-6103842.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/rum|bacardi/.test(nome))
+      return 'https://images.pexels.com/photos/2360578/pexels-photo-2360578.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/tequila|patron|cuervo/.test(nome))
+      return 'https://images.pexels.com/photos/3023237/pexels-photo-3023237.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/cachaca|ypioca|catuaba/.test(nome))
+      return 'https://images.pexels.com/photos/3084623/pexels-photo-3084623.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/vinho tinto|malbec|casillero|concha y toro/.test(nome))
+      return 'https://images.pexels.com/photos/7564984/pexels-photo-7564984.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/vinho branco/.test(nome))
+      return 'https://images.pexels.com/photos/3244133/pexels-photo-3244133.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/rose|ros[eé]/.test(nome))
+      return 'https://images.pexels.com/photos/5732808/pexels-photo-5732808.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/espumante|chandon|freixenet/.test(nome))
+      return 'https://images.pexels.com/photos/2454122/pexels-photo-2454122.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/licor|amarula|campari|aperol|sangria|sake/.test(nome))
+      return 'https://images.pexels.com/photos/35925508/pexels-photo-35925508.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/carvao/.test(nome))
+      return 'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800'
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/5538231/pexels-photo-5538231.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5538166/pexels-photo-5538166.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'laticinios-frios') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/7407295/pexels-photo-7407295.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5946723/pexels-photo-5946723.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'mercearia' || categoria === 'mercearia-suplementar') {
+    if (/arroz/.test(nome))
+      return 'https://images.pexels.com/photos/3737694/pexels-photo-3737694.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/feijao/.test(nome))
+      return 'https://images.pexels.com/photos/4716798/pexels-photo-4716798.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/macarrao|miojo|noodles/.test(nome))
+      return 'https://images.pexels.com/photos/4431588/pexels-photo-4431588.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/oleo|azeite|vinagre/.test(nome))
+      return 'https://images.pexels.com/photos/4910159/pexels-photo-4910159.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/acucar|adocante/.test(nome))
+      return 'https://images.pexels.com/photos/5590955/pexels-photo-5590955.jpeg?auto=compress&cs=tinysrgb&w=800'
+    if (/cafe|capuccino/.test(nome))
+      return 'https://images.pexels.com/photos/4829072/pexels-photo-4829072.jpeg?auto=compress&cs=tinysrgb&w=800'
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/5951182/pexels-photo-5951182.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5908226/pexels-photo-5908226.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4198019/pexels-photo-4198019.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'congelados' || categoria === 'congelados-extras') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/5946723/pexels-photo-5946723.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5796721/pexels-photo-5796721.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'snacks-doces' || categoria === 'snacks-extras') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/6349943/pexels-photo-6349943.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/3803490/pexels-photo-3803490.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'padaria-matinal') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7440414/pexels-photo-7440414.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4676413/pexels-photo-4676413.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'hortifruti') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/5009732/pexels-photo-5009732.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/2912621/pexels-photo-2912621.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5629821/pexels-photo-5629821.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'higiene-pessoal' || categoria === 'bebe-infantil') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/6690197/pexels-photo-6690197.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7262987/pexels-photo-7262987.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7428095/pexels-photo-7428095.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/7120503/pexels-photo-7120503.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/6849576/pexels-photo-6849576.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'limpeza' || categoria === 'utilidades' || categoria === 'papelaria') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/159751/book-address-book-learning-learn-159751.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'kits-combos' || categoria === 'kits-suplementares') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/983297/pexels-photo-983297.jpeg?auto=compress&cs=tinysrgb&w=600',
+      'https://images.pexels.com/photos/4109132/pexels-photo-4109132.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4676413/pexels-photo-4676413.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4109136/pexels-photo-4109136.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'molhos-especiais') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/4910159/pexels-photo-4910159.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5951182/pexels-photo-5951182.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5908226/pexels-photo-5908226.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'bebidas-quentes') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/4829072/pexels-photo-4829072.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/2763380/pexels-photo-2763380.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4985535/pexels-photo-4985535.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5590955/pexels-photo-5590955.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'pet-animais') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/796584/pexels-photo-796584.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5731866/pexels-photo-5731866.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/6568941/pexels-photo-6568941.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4587997/pexels-photo-4587997.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'tabacaria-conveniencia') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/2544989/pexels-photo-2544989.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4167778/pexels-photo-4167778.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  if (categoria === 'importados-gourmet' || categoria === 'fitness-saude' || categoria === 'pratos-prontos') {
+    return pickDeterministicUrl(seed, [
+      'https://images.pexels.com/photos/4198019/pexels-photo-4198019.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/3737694/pexels-photo-3737694.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5908226/pexels-photo-5908226.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/5951182/pexels-photo-5951182.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4910159/pexels-photo-4910159.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ])
+  }
+
+  return pickDeterministicUrl(seed, [
+    'https://images.pexels.com/photos/4113653/pexels-photo-4113653.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/3737694/pexels-photo-3737694.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/5908226/pexels-photo-5908226.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/5951182/pexels-photo-5951182.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/4198019/pexels-photo-4198019.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/7440414/pexels-photo-7440414.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/4815064/pexels-photo-4815064.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/5009732/pexels-photo-5009732.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/5217889/pexels-photo-5217889.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
+  ])
 }
 
 const TEMPLATE_PRODUCT_IMAGE_BY_NAME: GeneratedImageIndex = Object.entries(
@@ -78,8 +337,9 @@ function getCompatibleGeneratedImageUrl(
   const normalizedCategory = normalizeKeyPart(product.categoria)
   const normalizedName = normalizeKeyPart(product.nome)
   const aliasTemplates = LEGACY_TEMPLATE_SLUG_ALIASES[normalizedTemplateSlug] ?? []
-  const aliasCategories =
-    LEGACY_TEMPLATE_CATEGORY_ALIASES[normalizedTemplateSlug]?.[normalizedCategory] ?? [normalizedCategory]
+  const aliasCategories = LEGACY_TEMPLATE_CATEGORY_ALIASES[normalizedTemplateSlug]?.[
+    normalizedCategory
+  ] ?? [normalizedCategory]
 
   for (const aliasTemplate of aliasTemplates) {
     for (const aliasCategory of aliasCategories) {
@@ -107,7 +367,8 @@ export function resolveTemplateProductImage(params: {
 }): { url: string; source: TemplateProductImageSource } {
   const { templateSlug, product, fallbackTemplateImageUrl } = params
   const key = getTemplateProductImageKey(templateSlug, product)
-  const generatedUrl = TEMPLATE_PRODUCT_IMAGE_URLS[key] ?? getCompatibleGeneratedImageUrl(templateSlug, product)
+  const generatedUrl =
+    TEMPLATE_PRODUCT_IMAGE_URLS[key] ?? getCompatibleGeneratedImageUrl(templateSlug, product)
   if (generatedUrl) {
     return {
       url: generatedUrl,
@@ -119,6 +380,16 @@ export function resolveTemplateProductImage(params: {
     return {
       url: product.imagem_url,
       source: 'product-image',
+    }
+  }
+
+  if (normalizeKeyPart(templateSlug) === 'minimercado') {
+    const smartFallback = getMinimercadoSmartFallbackImage(product)
+    if (smartFallback) {
+      return {
+        url: smartFallback,
+        source: 'product-fallback',
+      }
     }
   }
 
@@ -143,4 +414,3 @@ export function resolveTemplateProductImage(params: {
     source: 'template-fallback',
   }
 }
-

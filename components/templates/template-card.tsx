@@ -120,7 +120,8 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
             <span className="text-muted-foreground text-sm">no PIX</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            PIX no menor valor · outros meios via Mercado Pago · crédito até 12x
+            PIX no menor valor · outros meios via Mercado Pago · parcelamento conforme condições do
+            checkout
           </p>
           <p className="text-foreground/70 text-sm">
             Depois:{' '}

@@ -982,7 +982,7 @@ function ProductCard({ product, restaurant, onAdd }: ProductCardProps) {
             src={product.imagem_url}
             alt={product.nome}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 64px, 200px"
           />
         </div>

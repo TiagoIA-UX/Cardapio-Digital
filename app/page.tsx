@@ -634,11 +634,11 @@ export default function Home() {
                   Por que a Zairyx AI criou esta seção?
                 </p>
                 <p className="mx-auto mt-3 max-w-3xl text-sm leading-relaxed text-zinc-700">
-                  Muitos donos de delivery acham que o iFood é &quot;marketing&quot;. Não é. iFood é
-                  um <strong>canal de conversão</strong> que cobra caro. O marketing real —
-                  descoberta gratuita com alta intenção de compra — está no{' '}
-                  <strong>Google Meu Negócio</strong>. Quando você entende isso, para de depender
-                  100% do marketplace e constrói um canal próprio que gera margem de verdade.
+                  Muitos donos de delivery confundem os papéis dos canais. O iFood funciona como um{' '}
+                  <strong>canal de conversão</strong>, enquanto o marketing de descoberta local
+                  acontece com força no <strong>Google Meu Negócio</strong>. Quando você combina os
+                  dois com estratégia e fortalece seu canal próprio, reduz dependência e melhora sua
+                  margem com previsibilidade.
                 </p>
               </div>
             </div>

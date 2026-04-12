@@ -15,8 +15,7 @@ import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
 
 export const metadata = {
   title: 'Funcionalidades | Zairyx — Pagamento Digital para Delivery',
-  description:
-    `Veja como o Zairyx oferece checkout online via Mercado Pago, QR Code Pix e confirmação de pagamento por webhook. ${COMMERCIAL_COPY.noPlatformCommission}. Controle para o operador.`,
+  description: `Veja como o Zairyx oferece checkout online via Mercado Pago, QR Code Pix e confirmação de pagamento por webhook. ${COMMERCIAL_COPY.noPlatformCommission}. Controle para o operador.`,
 }
 
 export default function FuncionalidadesPage() {
@@ -54,13 +53,12 @@ export default function FuncionalidadesPage() {
             Pagamento digital nativo
           </div>
           <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
-            Seu cliente paga{' '}
-            <span className="text-primary">direto no cardápio</span>
+            Seu cliente paga <span className="text-primary">direto no cardápio</span>
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
-            O Zairyx já tem integração nativa com Mercado Pago. Seu cliente finaliza o pedido e
-            paga com cartão, PIX ou parcelado — tudo sem sair do cardápio. {COMMERCIAL_COPY.noPlatformCommission}.
-            Confirmação quando o gateway aprova o pagamento.
+            O Zairyx já tem integração nativa com Mercado Pago. Seu cliente finaliza o pedido e paga
+            com cartão, PIX ou parcelado — tudo sem sair do cardápio.{' '}
+            {COMMERCIAL_COPY.noPlatformCommission}. Confirmação quando o gateway aprova o pagamento.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -165,16 +163,16 @@ export default function FuncionalidadesPage() {
                 Integração completa com Mercado Pago
               </h2>
               <p className="text-muted-foreground mb-6">
-                Quando o operador ativa o pagamento online, o cardápio exibe o botão de pagamento
-                no checkout. O cliente é redirecionado para o ambiente seguro do Mercado Pago e
-                pode pagar com:
+                Quando o operador ativa o pagamento online, o cardápio exibe o botão de pagamento no
+                checkout. O cliente é redirecionado para o ambiente seguro do Mercado Pago e pode
+                pagar com:
               </p>
               <ul className="space-y-2">
                 {[
                   'Cartão de crédito (Visa, Mastercard, Elo e outros)',
                   'Cartão de débito',
                   'PIX instantâneo',
-                  'Parcelamento em até 12x',
+                  'Parcelamento conforme condições no checkout',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
                     <CheckCircle className="text-primary h-4 w-4 shrink-0" />

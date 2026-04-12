@@ -1,12 +1,28 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createAdminClient } from '@/lib/shared/supabase/admin'
 
-function disabledResponse() {
-  return NextResponse.json(
-    { error: 'Programa de afiliados desativado neste ciclo do produto.' },
-    { status: 410 }
-  )
-}
+export async function GET(request: NextRequest) {
+  const db = createAdminClient()
+  const cidade = request.nextUrl.searchParams.get('cidade')?.trim()
 
-export async function GET() {
-  return disabledResponse()
+  let query = db.from('affiliate_ranking').select('*').limit(100)
+
+  if (cidade) {
+    query = query.ilike('city', cidade)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    // Fallback seguro para não quebrar navegação pública caso o ranking esteja indisponível.
+    return NextResponse.json(
+      {
+        ranking: [],
+        warning: 'Ranking indisponível no momento. Tente novamente em instantes.',
+      },
+      { status: 200 }
+    )
+  }
+
+  return NextResponse.json({ ranking: data ?? [] }, { status: 200 })
 }
