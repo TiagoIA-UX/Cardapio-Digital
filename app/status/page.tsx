@@ -10,6 +10,7 @@ function StatusContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const checkout = searchParams.get('checkout')
+  const [checkoutInput, setCheckoutInput] = useState('')
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<{
     steps?: Array<{ key: string; label: string; done: boolean; current: boolean }>
@@ -22,7 +23,7 @@ function StatusContent() {
   useEffect(() => {
     if (!checkout) {
       setLoading(false)
-      setError('Informe o número do pedido na URL: /status?checkout=SEU_PEDIDO')
+      setError('')
       return
     }
 
@@ -46,10 +47,56 @@ function StatusContent() {
     void fetchStatus()
   }, [checkout, router])
 
+  const handleTrackOrder = () => {
+    const normalizedCheckout = checkoutInput.trim()
+    if (!normalizedCheckout) return
+    router.push(`/status?checkout=${encodeURIComponent(normalizedCheckout)}`)
+  }
+
   if (loading) {
     return (
       <div className="bg-background flex min-h-screen items-center justify-center">
         <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!checkout) {
+    return (
+      <div className="bg-background flex min-h-screen items-center justify-center p-4">
+        <div className="bg-card border-border w-full max-w-md rounded-2xl border p-6 shadow-sm">
+          <h1 className="text-foreground text-xl font-semibold">Consultar status do pedido</h1>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Informe seu numero de checkout para acompanhar a producao do seu canal digital.
+          </p>
+
+          <div className="mt-5 space-y-3">
+            <label htmlFor="checkout" className="text-foreground text-sm font-medium">
+              Numero do pedido
+            </label>
+            <input
+              id="checkout"
+              type="text"
+              value={checkoutInput}
+              onChange={(event) => setCheckoutInput(event.target.value)}
+              placeholder="Ex: CHK-12345"
+              className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleTrackOrder}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold"
+            >
+              Acompanhar pedido
+            </button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <Link href="/" className="text-primary text-sm font-medium hover:underline">
+              Voltar para a pagina inicial
+            </Link>
+          </div>
+        </div>
       </div>
     )
   }
