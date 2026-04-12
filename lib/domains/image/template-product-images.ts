@@ -34,6 +34,15 @@ const LEGACY_TEMPLATE_CATEGORY_ALIASES: Record<string, Record<string, string[]>>
     'snacks-doces': ['snacks-guloseimas'],
     'snacks-extras': ['snacks-guloseimas'],
     utilidades: ['utilidades'],
+    'bebe-infantil': ['higiene-pessoal', 'laticinios-frios'],
+    'carnes-acougue': ['congelados', 'mercearia'],
+    'farmacia-basica': ['higiene-pessoal', 'utilidades'],
+    'fitness-saude': ['matinais-cereais', 'mercearia', 'hortifruti-basico'],
+    'sorvetes-sobremesas': ['congelados', 'snacks-guloseimas'],
+    'pratos-prontos': ['congelados', 'mercearia'],
+    'importados-gourmet': ['mercearia', 'temperos-molhos'],
+    'tabacaria-conveniencia': ['utilidades'],
+    papelaria: ['utilidades'],
   },
 }
 
@@ -55,10 +64,37 @@ function pickDeterministicUrl(seed: string, options: string[]) {
   return options[hash % options.length]
 }
 
+const GENERATED_URLS_BY_CATEGORY: Record<string, string[]> = Object.entries(
+  TEMPLATE_PRODUCT_IMAGE_URLS
+).reduce<Record<string, string[]>>((acc, [key, url]) => {
+  const [, categoria] = key.split('::')
+  if (!categoria) return acc
+
+  const normalizedCategory = normalizeKeyPart(categoria)
+  const current = acc[normalizedCategory] ?? []
+  if (!current.includes(url)) current.push(url)
+  acc[normalizedCategory] = current
+  return acc
+}, {})
+
+function getMinimercadoAliasPool(category: string): string[] {
+  const normalizedCategory = normalizeKeyPart(category)
+  const aliases =
+    LEGACY_TEMPLATE_CATEGORY_ALIASES.minimercado?.[normalizedCategory] ?? [normalizedCategory]
+
+  const pool = new Set<string>()
+  for (const alias of aliases) {
+    for (const url of GENERATED_URLS_BY_CATEGORY[alias] ?? []) pool.add(url)
+  }
+
+  return [...pool]
+}
+
 function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): string | undefined {
   const categoria = normalizeKeyPart(product.categoria)
   const nome = normalizeForMatch(product.nome)
   const seed = `${categoria}::${nome}`
+  const aliasPool = getMinimercadoAliasPool(categoria)
 
   if (categoria === 'bebidas' || categoria === 'bebidas-extras') {
     if (/red bull/.test(nome)) {
@@ -250,6 +286,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'hortifruti') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     return pickDeterministicUrl(seed, [
       'https://images.pexels.com/photos/5009732/pexels-photo-5009732.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/1093837/pexels-photo-1093837.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -259,6 +296,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'higiene-pessoal' || categoria === 'bebe-infantil') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     if (categoria === 'bebe-infantil') {
       if (/fralda|lenco umedecido|assadura|pomada/.test(nome)) {
         return pickDeterministicUrl(seed, [
@@ -302,6 +340,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'kits-combos' || categoria === 'kits-suplementares') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     return pickDeterministicUrl(seed, [
       'https://images.pexels.com/photos/983297/pexels-photo-983297.jpeg?auto=compress&cs=tinysrgb&w=600',
       'https://images.pexels.com/photos/4109132/pexels-photo-4109132.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -345,6 +384,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'importados-gourmet' || categoria === 'fitness-saude' || categoria === 'pratos-prontos') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     if (categoria === 'fitness-saude') {
       return pickDeterministicUrl(seed, [
         'https://images.pexels.com/photos/6707445/pexels-photo-6707445.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -372,6 +412,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'farmacia-basica') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     return pickDeterministicUrl(seed, [
       'https://images.pexels.com/photos/6690197/pexels-photo-6690197.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/7262987/pexels-photo-7262987.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -386,6 +427,7 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
   }
 
   if (categoria === 'sorvetes-sobremesas') {
+    if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     return pickDeterministicUrl(seed, [
       'https://images.pexels.com/photos/5796721/pexels-photo-5796721.jpeg?auto=compress&cs=tinysrgb&w=800',
       'https://images.pexels.com/photos/4021931/pexels-photo-4021931.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -420,6 +462,16 @@ const TEMPLATE_PRODUCT_IMAGE_BY_NAME: GeneratedImageIndex = Object.entries(
   return index
 }, {})
 
+const TEMPLATE_PRODUCT_IMAGE_BY_ORDER: GeneratedImageIndex = Object.entries(
+  TEMPLATE_PRODUCT_IMAGE_URLS
+).reduce<GeneratedImageIndex>((index, [key, url]) => {
+  const [templateSlug, categoria, ordem] = key.split('::')
+  if (!templateSlug || !categoria || !ordem) return index
+
+  index[`${templateSlug}::${categoria}::${ordem}`] = url
+  return index
+}, {})
+
 function normalizeKeyPart(value: string) {
   return value
     .trim()
@@ -449,6 +501,7 @@ function getCompatibleGeneratedImageUrl(
   const normalizedTemplateSlug = normalizeKeyPart(templateSlug)
   const normalizedCategory = normalizeKeyPart(product.categoria)
   const normalizedName = normalizeKeyPart(product.nome)
+  const normalizedOrder = String(product.ordem ?? 0)
   const aliasTemplates = LEGACY_TEMPLATE_SLUG_ALIASES[normalizedTemplateSlug] ?? []
   const aliasCategories = LEGACY_TEMPLATE_CATEGORY_ALIASES[normalizedTemplateSlug]?.[
     normalizedCategory
@@ -459,6 +512,10 @@ function getCompatibleGeneratedImageUrl(
       const compatibleKey = `${aliasTemplate}::${aliasCategory}::${normalizedName}`
       const compatibleUrl = TEMPLATE_PRODUCT_IMAGE_BY_NAME[compatibleKey]
       if (compatibleUrl) return compatibleUrl
+
+      const compatibleOrderKey = `${aliasTemplate}::${aliasCategory}::${normalizedOrder}`
+      const compatibleOrderUrl = TEMPLATE_PRODUCT_IMAGE_BY_ORDER[compatibleOrderKey]
+      if (compatibleOrderUrl) return compatibleOrderUrl
     }
   }
 
