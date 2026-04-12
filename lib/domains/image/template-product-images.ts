@@ -94,8 +94,9 @@ const GENERATED_URLS_BY_CATEGORY: Record<string, string[]> = Object.entries(
 
 function getMinimercadoAliasPool(category: string): string[] {
   const normalizedCategory = normalizeKeyPart(category)
-  const aliases =
-    LEGACY_TEMPLATE_CATEGORY_ALIASES.minimercado?.[normalizedCategory] ?? [normalizedCategory]
+  const aliases = LEGACY_TEMPLATE_CATEGORY_ALIASES.minimercado?.[normalizedCategory] ?? [
+    normalizedCategory,
+  ]
 
   const pool = new Set<string>()
   for (const alias of aliases) {
@@ -321,7 +322,9 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
           'https://images.pexels.com/photos/6294154/pexels-photo-6294154.jpeg?auto=compress&cs=tinysrgb&w=800',
         ])
       }
-      if (/mamadeira|chupeta|mordedor|copo transicao|colher|babador|kit higiene|escova/.test(nome)) {
+      if (
+        /mamadeira|chupeta|mordedor|copo transicao|colher|babador|kit higiene|escova/.test(nome)
+      ) {
         return pickDeterministicUrl(seed, [
           'https://images.pexels.com/photos/4587997/pexels-photo-4587997.jpeg?auto=compress&cs=tinysrgb&w=800',
           'https://images.pexels.com/photos/4038653/pexels-photo-4038653.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -401,7 +404,11 @@ function getMinimercadoSmartFallbackImage(product: TemplateSampleProduct): strin
     ])
   }
 
-  if (categoria === 'importados-gourmet' || categoria === 'fitness-saude' || categoria === 'pratos-prontos') {
+  if (
+    categoria === 'importados-gourmet' ||
+    categoria === 'fitness-saude' ||
+    categoria === 'pratos-prontos'
+  ) {
     if (aliasPool.length >= 8) return pickDeterministicUrl(seed, aliasPool)
     if (categoria === 'fitness-saude') {
       return pickDeterministicUrl(seed, [
@@ -591,7 +598,10 @@ export function resolveTemplateProductImage(params: {
   }
 
   const categoryFallbackUrl = getCategoryFallbackImage(product.categoria)
-  if (categoryFallbackUrl && !(isMinimercado && isBlockedMinimercadoImageUrl(categoryFallbackUrl))) {
+  if (
+    categoryFallbackUrl &&
+    !(isMinimercado && isBlockedMinimercadoImageUrl(categoryFallbackUrl))
+  ) {
     return {
       url: categoryFallbackUrl,
       source: 'category-fallback',
