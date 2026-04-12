@@ -57,6 +57,7 @@ interface OrderFormState {
 interface CardapioClientProps {
   restaurant: CardapioRestaurant
   products: CardapioProduct[]
+  isDemoPreview?: boolean
 }
 
 function normalizePhoneDigits(phone: string): string {
@@ -112,7 +113,11 @@ function createInitialOrderForm(isTableOrder: boolean): OrderFormState {
   }
 }
 
-export default function CardapioClient({ restaurant, products }: CardapioClientProps) {
+export default function CardapioClient({
+  restaurant,
+  products,
+  isDemoPreview = false,
+}: CardapioClientProps) {
   const searchParams = useSearchParams()
   const { toast } = useToast()
   const supabase = createClient()
@@ -485,6 +490,18 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
     setError(null)
 
     try {
+      if (isDemoPreview) {
+        const message = buildWhatsAppMessage()
+        openWhatsApp(message)
+
+        setCart([])
+        setOrderForm(createInitialOrderForm(isTableOrder))
+        setIsCartOpen(false)
+        setSuccess(true)
+        setTimeout(() => setSuccess(false), 3000)
+        return
+      }
+
       const payload = {
         restaurant_id: restaurant.id,
         items: cart.map((item) => ({
@@ -861,6 +878,15 @@ export default function CardapioClient({ restaurant, products }: CardapioClientP
       )}
 
       <WatermarkBadge show={restaurantPlanSlug === 'semente'} />
+
+      {isDemoPreview && (
+        <div className="mx-auto mt-2 max-w-5xl px-4 sm:px-6">
+          <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            Modo demonstracao: o pedido e simulado e enviado direto para o WhatsApp, sem gravar na
+            base.
+          </div>
+        </div>
+      )}
 
       {/* Botão flutuante do carrinho - abre o drawer de pedido */}
       {!isCartOpen && totalItems > 0 && (

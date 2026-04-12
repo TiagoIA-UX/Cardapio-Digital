@@ -56,7 +56,11 @@ export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) 
           </div>
         }
       >
-        <CardapioClient restaurant={preview.restaurant} products={preview.products} />
+        <CardapioClient
+          restaurant={preview.restaurant}
+          products={preview.products}
+          isDemoPreview
+        />
       </Suspense>
     </div>
   )
