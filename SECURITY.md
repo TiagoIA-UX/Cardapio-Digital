@@ -11,7 +11,7 @@
 
 Se você descobriu uma vulnerabilidade de segurança, **não abra uma issue pública**.
 
-Envie um email para **tiago@tiagoia.dev** com:
+Envie um email para **[tiago@tiagoia.dev](mailto:tiago@tiagoia.dev)** com:
 
 1. Descrição da vulnerabilidade
 2. Passos para reproduzir
@@ -52,4 +52,4 @@ Envie um email para **tiago@tiagoia.dev** com:
 
 ## Escopo
 
-Esta política cobre o código-fonte do repositório e a instância de produção em https://zairyx.com.br. Não cobre serviços de terceiros (Supabase, Vercel, Mercado Pago, Cloudflare).
+Esta política cobre o código-fonte do repositório e a instância de produção em [https://zairyx.com.br](https://zairyx.com.br). Não cobre serviços de terceiros (Supabase, Vercel, Mercado Pago, Cloudflare).

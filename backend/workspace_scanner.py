@@ -15,6 +15,7 @@ import os
 import re
 import tempfile
 import asyncio
+import subprocess
 from dataclasses import dataclass, field
 from typing import Any
 from pathlib import Path
@@ -25,6 +26,8 @@ GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 GITHUB_API = "https://api.github.com"
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
+FORGE_GITHUB_PAT: str = os.getenv("FORGE_GITHUB_PAT", "")
+_CACHED_GITHUB_TOKEN: str = ""
 
 # Padrões adicionais por persona
 UX_PATTERNS = [
@@ -94,6 +97,47 @@ QUALITY_PATTERNS = [
     (r"\.catch\s*\(\s*\)", "catch vazio — erro silenciado"),
     (r"setTimeout.*0\b", "setTimeout(fn, 0) — anti-pattern de timing"),
 ]
+
+
+def _get_gh_cli_token() -> str:
+    """Tenta obter token autenticado do GitHub CLI sem logar segredos."""
+    try:
+        result = subprocess.run(
+            ["gh", "auth", "token"],
+            capture_output=True,
+            text=True,
+            timeout=8,
+            check=False,
+        )
+    except (FileNotFoundError, subprocess.SubprocessError):
+        return ""
+
+    if result.returncode != 0:
+        return ""
+    return result.stdout.strip()
+
+
+def resolve_github_token(explicit_token: str | None = None) -> str:
+    """Resolve token em cadeia para todos os fluxos de auditoria."""
+    global _CACHED_GITHUB_TOKEN
+
+    if explicit_token:
+        return explicit_token.strip()
+
+    if _CACHED_GITHUB_TOKEN:
+        return _CACHED_GITHUB_TOKEN
+
+    env_token = FORGE_GITHUB_PAT or GITHUB_TOKEN
+    if env_token:
+        _CACHED_GITHUB_TOKEN = env_token.strip()
+        return _CACHED_GITHUB_TOKEN
+
+    gh_token = _get_gh_cli_token()
+    if gh_token:
+        _CACHED_GITHUB_TOKEN = gh_token
+        return _CACHED_GITHUB_TOKEN
+
+    return ""
 
 
 @dataclass
@@ -316,9 +360,12 @@ async def scan_repository(
             - marketing_legal_auditor: copy, compliance e ortografia
             - copy_editor: revisão de ortografia e acentuação
     """
-    resolved_token = token or GITHUB_TOKEN
+    resolved_token = resolve_github_token(token)
     if not resolved_token:
-        raise ValueError("GITHUB_TOKEN não configurado e nenhum token foi fornecido.")
+        raise ValueError(
+            "Token GitHub não configurado. Configure FORGE_GITHUB_PAT/GITHUB_TOKEN "
+            "ou autentique o GitHub CLI com 'gh auth login'."
+        )
 
     report = ScanReport(owner=owner, repo=repo, ref=ref)
 

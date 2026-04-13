@@ -151,18 +151,18 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
             Testar demonstração
           </Link>
           <Link
-            href={`/comprar/${template.slug}?plano=self-service`}
+            href={`/comprar/${template.slug}?plano=self-service&capacidade=basico`}
             className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors"
           >
             <Zap className="h-4 w-4" />
-            Você configura
+            Você configura · até 60 produtos
           </Link>
           <Link
-            href={`/comprar/${template.slug}?plano=feito-pra-voce`}
+            href={`/comprar/${template.slug}?plano=feito-pra-voce&capacidade=pro`}
             className="border-border hover:bg-muted inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors"
           >
             <Sparkles className="h-4 w-4" />
-            Equipe configura
+            Equipe configura · até 200 produtos
           </Link>
         </div>
       </div>

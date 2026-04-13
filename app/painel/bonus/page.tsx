@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, BookOpen, Download, ExternalLink, Gift, Star } from 'lucide-react'
+import { ArrowLeft, BookOpen, Download, ExternalLink, Gift, Star, Workflow } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Seus Bônus Exclusivos | Zairyx AI',
@@ -189,6 +189,27 @@ export default function BonusPage() {
             Tudo isso <strong className="text-foreground">100% GRÁTIS</strong> como agradecimento
             por ser assinante Zairyx AI 🎉
           </p>
+        </div>
+
+        <div className="border-border bg-card mt-6 rounded-2xl border p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-foreground mb-1 flex items-center gap-2 text-lg font-bold">
+                <Workflow className="text-primary h-5 w-5" />
+                Central de Scripts Essenciais
+              </h3>
+              <p className="text-foreground/80 text-sm">
+                Acompanhe em tempo real os scripts e automações críticas do seu SaaS.
+              </p>
+            </div>
+
+            <Link
+              href="/painel/scripts"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold"
+            >
+              Abrir Central
+            </Link>
+          </div>
         </div>
       </main>
     </div>

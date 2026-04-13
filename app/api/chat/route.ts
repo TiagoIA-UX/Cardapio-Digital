@@ -16,6 +16,22 @@ import { ChatRequestSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 import { checkIsOpen } from '@/lib/shared/check-is-open'
 import type { HorarioFuncionamento } from '@/types/database'
 import { buildBusinessTypeGuidance } from '@/lib/domains/marketing/chat-business-guidance'
+import {
+  buildSeoPracticalChecklistReply,
+  isSeoGuidanceRequest,
+} from '@/lib/domains/marketing/chat-seo-guidance'
+import {
+  buildCanonicalPricingAndLimitsReply,
+  hasCommercialHallucinationRisk,
+  isPricingOrLimitQuestion,
+} from '@/lib/domains/marketing/chat-commercial-guard'
+import { resolveChatPageContext } from '@/lib/domains/marketing/chat-page-context'
+import {
+  buildSiteOnlyFallbackReply,
+  buildSiteOnlyGroundingPrompt,
+  hasOutsideSiteClaimRisk,
+} from '@/lib/domains/marketing/chat-site-grounding'
+import { notify } from '@/lib/shared/notifications'
 
 const CHAT_HISTORY_LIMIT = 20
 const CHAT_TIMEOUT_MS = 8_000
@@ -147,6 +163,41 @@ function buildPanelFallbackReply() {
   return 'Posso te orientar no painel em passos curtos. Me diga o que você quer fazer agora: editar canal, cadastrar produtos, ajustar categorias, QR Code, pedidos ou configurações.'
 }
 
+function buildOperationalGuardPrompt() {
+  return `## Guardrails operacionais obrigatórios
+- Você NÃO executa ações por conta própria para o cliente.
+- Você NÃO cria conta, NÃO faz cadastro, NÃO ativa plano, NÃO fecha pagamento e NÃO aplica cupom automaticamente.
+- Você apenas orienta, mostra dados reais e direciona o próximo passo.
+- Nunca diga que já fez algo pelo cliente (ex: "já criei", "já ativei", "já apliquei").
+- Se perguntarem sobre desconto/cupom, informe opções disponíveis e oriente como aplicar no campo de cupom.
+- Se não houver dado real no contexto, diga com transparência que precisa da confirmação do cliente.
+`
+}
+
+function applyOperationalReplyGuard(reply: string): string {
+  const normalized = reply
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+
+  const forbiddenPatterns = [
+    /ja\s+(criei|cadastrei|fiz\s+o\s+cadastro)/,
+    /conta\s+(criada|ativada|aberta)/,
+    /ja\s+(ativei|configurei|publiquei|finalizei)/,
+    /ja\s+apliquei\s+(o\s+)?cupom/,
+    /cupom\s+(aplicado|ativado)\s+automaticamente/,
+  ]
+
+  const hasForbiddenClaim = forbiddenPatterns.some((pattern) => pattern.test(normalized))
+  if (!hasForbiddenClaim) return reply
+
+  return [
+    'Eu não executo ações no seu lugar.',
+    'Posso te orientar passo a passo com dados reais para você concluir com segurança.',
+    'Se quiser, me diga em que etapa você está (cadastro, pagamento ou cupom) que eu te guio agora.',
+  ].join(' ')
+}
+
 function buildCompletionTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null
 
@@ -161,6 +212,24 @@ function buildCompletionTimeout<T>(promise: Promise<T>, timeoutMs: number): Prom
       clearTimeout(timeoutHandle)
     }
   }) as Promise<T>
+}
+
+function emitForgeOpsAiEvent(input: {
+  severity: 'info' | 'warning'
+  title: string
+  body: string
+  metadata?: Record<string, unknown>
+}) {
+  void notify({
+    severity: input.severity,
+    channel: 'system',
+    title: input.title,
+    body: input.body,
+    metadata: {
+      source: 'forgeops-ai-chat',
+      ...(input.metadata || {}),
+    },
+  })
 }
 
 async function loadRestaurantContext(
@@ -242,15 +311,41 @@ export async function POST(req: NextRequest) {
       return zodErrorResponse(parsed.error)
     }
     const { messages: rawMessages, context, cart } = parsed.data
+    const pathResolvedContext = resolveChatPageContext(context?.pathname ?? null)
+    const effectiveContext = {
+      ...context,
+      pathname: pathResolvedContext?.pathname ?? context?.pathname,
+      pageType: pathResolvedContext?.pageType ?? context?.pageType,
+      templateSlug: pathResolvedContext?.templateSlug ?? context?.templateSlug,
+      restaurantSlug: pathResolvedContext?.restaurantSlug ?? context?.restaurantSlug,
+    }
+
+    if (
+      context?.pageType &&
+      pathResolvedContext?.pageType &&
+      context.pageType !== pathResolvedContext.pageType
+    ) {
+      emitForgeOpsAiEvent({
+        severity: 'info',
+        title: 'ForgeOps AI: contexto de pagina normalizado',
+        body: 'PageType recebido foi ajustado para refletir pathname real do site.',
+        metadata: {
+          requestId,
+          providedPageType: context.pageType,
+          resolvedPageType: pathResolvedContext.pageType,
+          pathname: context.pathname ?? null,
+        },
+      })
+    }
 
     console.log(
       '[CHAT_START]',
       JSON.stringify({
         requestId,
-        restaurantId: context?.restaurantId ?? null,
-        restaurantSlug: context?.restaurantSlug ?? null,
-        templateSlug: context?.templateSlug ?? null,
-        pageType: context?.pageType ?? null,
+        restaurantId: effectiveContext?.restaurantId ?? null,
+        restaurantSlug: effectiveContext?.restaurantSlug ?? null,
+        templateSlug: effectiveContext?.templateSlug ?? null,
+        pageType: effectiveContext?.pageType ?? null,
         messageCount: rawMessages.length,
       })
     )
@@ -267,7 +362,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (context?.restaurantId || context?.restaurantSlug) {
+    if (effectiveContext?.restaurantId || effectiveContext?.restaurantSlug) {
       const db = createAdminClient()
 
       const query = db
@@ -276,9 +371,9 @@ export async function POST(req: NextRequest) {
           'id, slug, nome, template_slug, ativo, status_pagamento, suspended, customizacao, delivery_mode, telefone, whatsapp, horario_funcionamento, tempo_entrega_min, pedido_minimo, raio_entrega_km'
         )
 
-      const restaurantResult = context.restaurantId
-        ? await query.eq('id', context.restaurantId).maybeSingle()
-        : await query.eq('slug', context.restaurantSlug || '').maybeSingle()
+      const restaurantResult = effectiveContext.restaurantId
+        ? await query.eq('id', effectiveContext.restaurantId).maybeSingle()
+        : await query.eq('slug', effectiveContext.restaurantSlug || '').maybeSingle()
 
       const restaurant = restaurantResult.data as ChatRestaurantRow | null
 
@@ -315,7 +410,7 @@ export async function POST(req: NextRequest) {
             .slice(0, 30)
         : []
 
-      const systemPrompt = buildDeliveryAssistantSystemPrompt({
+      const baseSystemPrompt = buildDeliveryAssistantSystemPrompt({
         restaurantName: restaurant.nome,
         templateSlug: restaurant.template_slug,
         mode: aiSettings.scope === 'sales' ? 'sales' : 'support',
@@ -334,6 +429,11 @@ export async function POST(req: NextRequest) {
           cart: safeCart,
         },
       })
+      const groundingPrompt = buildSiteOnlyGroundingPrompt(
+        effectiveContext.pageType ?? 'delivery',
+        effectiveContext.pathname
+      )
+      const systemPrompt = `${baseSystemPrompt}\n\n${buildOperationalGuardPrompt()}\n\n${groundingPrompt}`
 
       try {
         const completion = await buildCompletionTimeout(
@@ -346,8 +446,41 @@ export async function POST(req: NextRequest) {
           CHAT_TIMEOUT_MS
         )
 
-        const reply =
+        const rawReply =
           completion.choices[0]?.message?.content?.trim() || buildFallbackReply(restaurant.nome)
+        const withCommercialGuard = hasCommercialHallucinationRisk(rawReply)
+          ? buildCanonicalPricingAndLimitsReply()
+          : rawReply
+        const withOperationalGuard = applyOperationalReplyGuard(withCommercialGuard)
+        const reply = hasOutsideSiteClaimRisk(withOperationalGuard)
+          ? buildSiteOnlyFallbackReply()
+          : withOperationalGuard
+
+        if (withCommercialGuard !== rawReply) {
+          emitForgeOpsAiEvent({
+            severity: 'warning',
+            title: 'ForgeOps AI: guardrail comercial acionado',
+            body: 'Resposta do chat foi normalizada para tabela canonica de planos.',
+            metadata: {
+              requestId,
+              restaurantId: restaurant.id,
+              pageType: effectiveContext.pageType ?? 'delivery',
+            },
+          })
+        }
+
+        if (reply !== withOperationalGuard) {
+          emitForgeOpsAiEvent({
+            severity: 'warning',
+            title: 'ForgeOps AI: grounding de site acionado',
+            body: 'Resposta com indicio de fonte externa foi substituida por fallback seguro.',
+            metadata: {
+              requestId,
+              restaurantId: restaurant.id,
+              pageType: effectiveContext.pageType ?? 'delivery',
+            },
+          })
+        }
 
         const restaurantPhone = restaurant.whatsapp || restaurant.telefone || null
         const canOrder =
@@ -410,13 +543,18 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const isDemoRequest = context?.pageType === 'demo' || context?.pathname?.startsWith('/demo')
-    const isPanelRequest = context?.pageType === 'panel' || context?.pathname?.startsWith('/painel')
-    const isDeliveryRequest = context?.pageType === 'delivery' || context?.pathname?.startsWith('/r/')
+    const isDemoRequest =
+      effectiveContext?.pageType === 'demo' || effectiveContext?.pathname?.startsWith('/demo')
+    const isPanelRequest =
+      effectiveContext?.pageType === 'panel' || effectiveContext?.pathname?.startsWith('/painel')
+    const isDeliveryRequest =
+      effectiveContext?.pageType === 'delivery' || effectiveContext?.pathname?.startsWith('/r/')
     const isTemplatePreviewRequest =
-      context?.pageType === 'template-preview' || context?.pathname?.startsWith('/templates/')
+      effectiveContext?.pageType === 'template-preview' ||
+      effectiveContext?.pathname?.startsWith('/templates/')
     const isCheckoutRequest =
-      context?.pageType === 'checkout' || context?.pathname?.startsWith('/comprar/')
+      effectiveContext?.pageType === 'checkout' ||
+      effectiveContext?.pathname?.startsWith('/comprar/')
     const isMarketingRequest =
       !isDemoRequest &&
       !isPanelRequest &&
@@ -424,26 +562,46 @@ export async function POST(req: NextRequest) {
       !isTemplatePreviewRequest &&
       !isCheckoutRequest
 
-    const lastUserMessage = [...safeMessages].reverse().find((message) => message.role === 'user')?.content
+    const lastUserMessage = [...safeMessages]
+      .reverse()
+      .find((message) => message.role === 'user')?.content
+
+    if (lastUserMessage && isSeoGuidanceRequest(lastUserMessage)) {
+      return NextResponse.json(
+        { reply: buildSeoPracticalChecklistReply(), fallback: false },
+        { headers: rateLimit.headers }
+      )
+    }
+
+    if (lastUserMessage && isPricingOrLimitQuestion(lastUserMessage)) {
+      return NextResponse.json(
+        { reply: buildCanonicalPricingAndLimitsReply(), fallback: false },
+        { headers: rateLimit.headers }
+      )
+    }
+
     const businessTypeGuidance = lastUserMessage
       ? buildBusinessTypeGuidance({
           message: lastUserMessage,
-          pageType: context?.pageType,
-          currentTemplateSlug: context?.templateSlug,
+          pageType: effectiveContext?.pageType,
+          currentTemplateSlug: effectiveContext?.templateSlug,
         })
       : null
 
-    if (businessTypeGuidance && (isMarketingRequest || isTemplatePreviewRequest || isCheckoutRequest)) {
+    if (
+      businessTypeGuidance &&
+      (isMarketingRequest || isTemplatePreviewRequest || isCheckoutRequest)
+    ) {
       return NextResponse.json(
         { reply: businessTypeGuidance, fallback: false },
         { headers: rateLimit.headers }
       )
     }
 
-    const fallbackPrompt = isDemoRequest
+    const basePrompt = isDemoRequest
       ? buildDemoAssistantSystemPrompt()
       : isPanelRequest
-        ? buildPanelAssistantSystemPrompt({ pathname: context?.pathname })
+        ? buildPanelAssistantSystemPrompt({ pathname: effectiveContext?.pathname })
         : isDeliveryRequest
           ? buildDeliveryAssistantSystemPrompt({
               restaurantName: 'atendimento geral da Zairyx',
@@ -456,11 +614,17 @@ export async function POST(req: NextRequest) {
                 isOpenNow: null,
               },
             })
-        : isTemplatePreviewRequest
-          ? buildTemplatePreviewAssistantSystemPrompt({ templateSlug: context?.templateSlug })
-          : isCheckoutRequest
-            ? buildCheckoutAssistantSystemPrompt({ templateSlug: context?.templateSlug })
-            : buildMarketingAssistantSystemPrompt()
+          : isTemplatePreviewRequest
+            ? buildTemplatePreviewAssistantSystemPrompt({
+                templateSlug: effectiveContext?.templateSlug,
+              })
+            : isCheckoutRequest
+              ? buildCheckoutAssistantSystemPrompt({ templateSlug: effectiveContext?.templateSlug })
+              : buildMarketingAssistantSystemPrompt()
+    const fallbackPrompt = `${basePrompt}\n\n${buildOperationalGuardPrompt()}\n\n${buildSiteOnlyGroundingPrompt(
+      effectiveContext?.pageType ?? 'marketing',
+      effectiveContext?.pathname
+    )}`
 
     const resolvedMode = isDemoRequest
       ? 'demo'
@@ -468,13 +632,13 @@ export async function POST(req: NextRequest) {
         ? 'panel'
         : isDeliveryRequest
           ? 'support'
-        : isTemplatePreviewRequest
-          ? 'template-preview'
-          : isCheckoutRequest
-            ? 'checkout'
-            : isMarketingRequest
-              ? 'marketing'
-              : 'support'
+          : isTemplatePreviewRequest
+            ? 'template-preview'
+            : isCheckoutRequest
+              ? 'checkout'
+              : isMarketingRequest
+                ? 'marketing'
+                : 'support'
 
     try {
       const completion = await buildCompletionTimeout(
@@ -487,9 +651,40 @@ export async function POST(req: NextRequest) {
         CHAT_TIMEOUT_MS
       )
 
-      const reply =
+      const rawReply =
         completion.choices[0]?.message?.content?.trim() ||
         (isPanelRequest ? buildPanelFallbackReply() : buildFallbackReply(null))
+      const withCommercialGuard = hasCommercialHallucinationRisk(rawReply)
+        ? buildCanonicalPricingAndLimitsReply()
+        : rawReply
+      const withOperationalGuard = applyOperationalReplyGuard(withCommercialGuard)
+      const reply = hasOutsideSiteClaimRisk(withOperationalGuard)
+        ? buildSiteOnlyFallbackReply()
+        : withOperationalGuard
+
+      if (withCommercialGuard !== rawReply) {
+        emitForgeOpsAiEvent({
+          severity: 'warning',
+          title: 'ForgeOps AI: guardrail comercial acionado',
+          body: 'Resposta do chat publico foi normalizada para tabela canonica de planos.',
+          metadata: {
+            requestId,
+            pageType: effectiveContext?.pageType ?? 'marketing',
+          },
+        })
+      }
+
+      if (reply !== withOperationalGuard) {
+        emitForgeOpsAiEvent({
+          severity: 'warning',
+          title: 'ForgeOps AI: grounding de site acionado',
+          body: 'Resposta com indicio de fonte externa foi substituida por fallback seguro.',
+          metadata: {
+            requestId,
+            pageType: effectiveContext?.pageType ?? 'marketing',
+          },
+        })
+      }
 
       console.log(
         '[CHAT_OK]',

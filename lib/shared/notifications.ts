@@ -71,14 +71,13 @@ export async function notify(payload: NotifyPayload) {
     await sendEmailAlert(payload)
   }
 
-  // 3. Telegram direto (funciona no Vercel — sem servidor externo)
+  // 3. Entrega de alerta em canal único para evitar notificações duplicadas.
+  // Prioridade: Dev Agent (quando configurado). Fallback: Telegram direto.
   if (payload.severity !== 'info') {
-    void sendTelegramAlert(payload)
-  }
-
-  // 4. Disparar para o Zairyx Dev Agent (Python) se configurado localmente
-  if (payload.severity !== 'info') {
-    void sendToPythonAgent(payload)
+    const deliveredByAgent = await sendToPythonAgent(payload)
+    if (!deliveredByAgent) {
+      void sendTelegramAlert(payload)
+    }
   }
 
   // 5. Log estruturado (sempre aparece nos logs da Vercel)
@@ -121,9 +120,9 @@ async function sendTelegramAlert(payload: NotifyPayload) {
 }
 
 // ── Zairyx Dev Agent (Python) ────────────────────────────────────────────────
-async function sendToPythonAgent(payload: NotifyPayload) {
+async function sendToPythonAgent(payload: NotifyPayload): Promise<boolean> {
   const agentUrl = process.env.ALERT_WEBHOOK_URL
-  if (!agentUrl) return // Agente não configurado — ignora silenciosamente
+  if (!agentUrl) return false // Agente não configurado — usa fallback
 
   const secret = process.env.INTERNAL_API_SECRET ?? ''
 
@@ -148,9 +147,11 @@ async function sendToPythonAgent(payload: NotifyPayload) {
     })
 
     clearTimeout(timeout)
+    return true
   } catch (err) {
     // Timeout ou agente offline — não quebra o fluxo principal
     console.warn('[notify] Dev Agent indisponível:', (err as Error).message)
+    return false
   }
 }
 

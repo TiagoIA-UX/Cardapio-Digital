@@ -230,15 +230,21 @@ function ComprarContent() {
       } catch {
         window.localStorage.removeItem(purchaseDraftKey)
       }
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession()
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-
-      syncSession(session?.user)
-
-      if (mounted) {
-        setLoadingSession(false)
+        syncSession(session?.user)
+      } catch {
+        if (!mounted) return
+        // Falha de rede/auth não pode travar o checkout.
+        setIsAuthenticated(false)
+        setAccountEmail('')
+      } finally {
+        if (mounted) {
+          setLoadingSession(false)
+        }
       }
     }
 
@@ -261,6 +267,39 @@ function ComprarContent() {
 
   const pricing = useMemo(() => getTemplatePricing(templateSlug ?? 'restaurante'), [templateSlug])
   const selectedCatalogCapacity = getCatalogCapacityOption(selectedCapacityPlan)
+  const capacityOptions =
+    CATALOG_CAPACITY_OPTIONS.length > 0
+      ? CATALOG_CAPACITY_OPTIONS
+      : [
+          {
+            slug: 'semente' as SubscriptionPlanSlug,
+            title: 'Começo rápido',
+            description: 'Operação enxuta para iniciar canal digital com catálogo menor.',
+            maxProducts: 15,
+            monthlyPrice: 14.9,
+          },
+          {
+            slug: 'basico' as SubscriptionPlanSlug,
+            title: 'Operação local',
+            description: 'Ideal para deliverys com cardápio completo e rotina diária.',
+            maxProducts: 60,
+            monthlyPrice: 147,
+          },
+          {
+            slug: 'pro' as SubscriptionPlanSlug,
+            title: 'Crescimento acelerado',
+            description: 'Para expandir variedade, combos e sazonalidades.',
+            maxProducts: 200,
+            monthlyPrice: 197,
+          },
+          {
+            slug: 'premium' as SubscriptionPlanSlug,
+            title: 'Catálogo de alto volume',
+            description: 'Para operações com grande mix de produtos e alta escala.',
+            maxProducts: 1200,
+            monthlyPrice: 297,
+          },
+        ]
 
   if (!templateSlug || !template) {
     return (
@@ -484,12 +523,18 @@ function ComprarContent() {
             </div>
             <span className="text-foreground font-semibold">{template.nome}</span>
           </div>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-700">
+            Capacidade selecionada: até {selectedCatalogCapacity.maxProducts} produtos
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Coluna Esquerda - Escolha do Plano */}
           <div className="space-y-4 lg:col-span-2">
             <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-700">
+                Etapa obrigatória
+              </div>
               <h2 className="text-foreground mb-2 text-xl font-bold">
                 Defina a capacidade do seu catalogo
               </h2>
@@ -498,7 +543,7 @@ function ComprarContent() {
                 templates reais e orienta a configuracao comercial do seu canal.
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
-                {CATALOG_CAPACITY_OPTIONS.map((option) => {
+                {capacityOptions.map((option) => {
                   const selected = selectedCapacityPlan === option.slug
                   return (
                     <button
@@ -974,7 +1019,9 @@ function ComprarContent() {
                       {contractSummary.initialChargeLabel} via {contractSummary.paymentMethodLabel}.
                     </p>
                     <p>
-                      <span className="text-foreground font-semibold">Mensalidade após ativação:</span>{' '}
+                      <span className="text-foreground font-semibold">
+                        Mensalidade após ativação:
+                      </span>{' '}
                       {contractSummary.monthlyChargeLabel}.
                     </p>
                     <p>
@@ -994,7 +1041,9 @@ function ComprarContent() {
                       {contractSummary.withdrawalPolicy}
                     </p>
                     <p>
-                      <span className="text-foreground font-semibold">Escopo desta contratação:</span>{' '}
+                      <span className="text-foreground font-semibold">
+                        Escopo desta contratação:
+                      </span>{' '}
                       {contractSummary.scopeLabel}
                     </p>
                   </div>
@@ -1033,6 +1082,9 @@ function ComprarContent() {
                   <span className="text-foreground font-medium">
                     Ate {selectedCatalogCapacity.maxProducts} produtos
                   </span>
+                </div>
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3 py-2 text-xs text-emerald-700">
+                  Quantidade de produtos confirmada no checkout.
                 </div>
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Implantação inicial</span>
@@ -1104,7 +1156,7 @@ function ComprarContent() {
               <button
                 type="submit"
                 form="purchase-form"
-                disabled={processing || loadingSession}
+                disabled={processing}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 font-semibold transition-all disabled:opacity-50"
               >
                 {processing ? (
@@ -1114,7 +1166,11 @@ function ComprarContent() {
                   </>
                 ) : (
                   <>
-                    {isAuthenticated ? 'Ir para o Mercado Pago' : 'Entrar para continuar a compra'}
+                    {isAuthenticated
+                      ? 'Ir para o Mercado Pago'
+                      : loadingSession
+                        ? 'Carregando sessão...'
+                        : 'Entrar para continuar a compra'}
                   </>
                 )}
               </button>

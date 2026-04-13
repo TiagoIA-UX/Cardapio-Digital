@@ -221,7 +221,7 @@ export default function PrecosPage() {
                       </td>
                       <td className="px-4 py-4">
                         <Link
-                          href={`/comprar/${slug}`}
+                          href={`/comprar/${slug}?plano=self-service&capacidade=basico`}
                           className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
                         >
                           Comprar

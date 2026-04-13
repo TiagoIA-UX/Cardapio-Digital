@@ -1,0 +1,56 @@
+name: Blog Sync Receiver
+
+on:
+  repository_dispatch:
+    types: [blog_sync_request]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-blog-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout app repository
+        uses: actions/checkout@v4
+
+      - name: Resolve payload
+        id: payload
+        shell: bash
+        run: |
+          echo "blog_repo=${{ github.event.client_payload.blogRepository || secrets.BLOG_REPO }}" >> $GITHUB_OUTPUT
+          echo "blog_ref=${{ github.event.client_payload.branch || secrets.BLOG_REF || 'main' }}" >> $GITHUB_OUTPUT
+          echo "blog_path=${{ github.event.client_payload.pathPrefix || secrets.BLOG_CONTENT_PATH || 'content/blog' }}" >> $GITHUB_OUTPUT
+          echo "app_path=${{ secrets.APP_CONTENT_PATH || github.event.client_payload.pathPrefix || 'content/blog' }}" >> $GITHUB_OUTPUT
+
+      - name: Checkout blog source repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.payload.outputs.blog_repo }}
+          ref: ${{ steps.payload.outputs.blog_ref }}
+          path: __blog_source
+
+      - name: Sync content directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ steps.payload.outputs.app_path }}"
+          rm -rf "${{ steps.payload.outputs.app_path }}"/*
+          cp -R "__blog_source/${{ steps.payload.outputs.blog_path }}/." "${{ steps.payload.outputs.app_path }}/"
+
+      - name: Create pull request with synced content
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(blog): sync content via repository_dispatch"
+          title: "chore(blog): sync content from source repository"
+          body: |
+            Sincronizacao automatica de conteudo de blog via GitHub App.
+
+            - Event: `${{ github.event.action }}`
+            - Source repo: `${{ steps.payload.outputs.blog_repo }}`
+            - Source ref: `${{ steps.payload.outputs.blog_ref }}`
+            - Source path: `${{ steps.payload.outputs.blog_path }}`
+            - Target path: `${{ steps.payload.outputs.app_path }}`
+          branch: "automation/blog-sync-${{ github.run_id }}"
+          delete-branch: true

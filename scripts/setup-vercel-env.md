@@ -3,7 +3,7 @@
 ## 📋 Checklist de Variáveis Obrigatórias
 
 Configure estas variáveis diretamente no painel da Vercel:
-**https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables**
+**[https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables](https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables)**
 
 ### 🔴 CRÍTICAS (sem estas, o sistema NÃO funciona)
 
@@ -67,7 +67,7 @@ Estas variáveis ficam APENAS no `.env.local` (localhost):
 
 ### Opção 1: Painel Web (Recomendado)
 
-1. Acesse: https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables
+1. Acesse: [https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables](https://vercel.com/tiago-aureliano-da-rochas-projects/cardapio-digital/settings/environment-variables)
 2. Para cada variável da lista CRÍTICA:
    - Clique em "Add New"
    - Name: nome da variável (ex: `GROQ_API_KEY`)
@@ -75,6 +75,7 @@ Estas variáveis ficam APENAS no `.env.local` (localhost):
    - Environment: selecione **Production** (e Preview se necessário)
    - Clique "Save"
 3. Após adicionar todas, faça um novo deploy:
+
    ```bash
    git commit --allow-empty -m "trigger deploy with new env vars"
    git push origin main

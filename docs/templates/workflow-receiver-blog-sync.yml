@@ -1,0 +1,25 @@
+name: Blog Sync Receiver
+
+on:
+  repository_dispatch:
+    types: [blog_sync_request]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  receive-blog-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout app repository
+        uses: actions/checkout@v4
+
+      - name: Debug payload
+        run: |
+          echo "event: ${{ github.event.action }}"
+          echo "payload: ${{ toJson(github.event.client_payload) }}"
+
+      - name: Placeholder for sync implementation
+        run: |
+          echo "Implementar: baixar conteudo do blog e abrir PR de atualizacao"

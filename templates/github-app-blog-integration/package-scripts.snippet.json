@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "github:app:token": "node scripts/github-app-token.mjs",
+    "github:app:grant": "node scripts/github-app-grant-repo-access.mjs",
+    "github:app:dispatch:blog": "node scripts/github-app-dispatch-blog-sync.mjs"
+  }
+}

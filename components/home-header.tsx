@@ -24,6 +24,7 @@ import { createClient } from '@/lib/shared/supabase/client'
 const NAV_LINKS = [
   { href: '#beneficios', label: 'Benefícios' },
   { href: '#como-funciona', label: 'Como funciona' },
+  { href: 'https://blog.zairyx.com.br', label: 'Blog' },
   { href: '/precos', label: 'Preços' },
 ] as const
 
@@ -158,7 +159,7 @@ export function HomeHeader() {
     <header className="border-border/80 bg-background/95 sticky top-0 z-50 border-b backdrop-blur-md">
       <div className="container-premium flex items-center justify-between py-4">
         <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
-          <div className="relative h-10 w-10 overflow-hidden rounded-2xl shadow-lg shadow-orange-500/20 ring-1 ring-orange-500/20">
+          <div className="relative h-10 w-10 overflow-hidden rounded-2xl shadow-lg ring-1 shadow-orange-500/20 ring-orange-500/20">
             <Image src="/icon.png" alt="Zairyx AI" fill className="object-cover" sizes="40px" />
           </div>
           <div>
@@ -177,6 +178,8 @@ export function HomeHeader() {
               <Link
                 key={link.href}
                 href={link.href}
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+                rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className={`text-sm font-medium transition-colors ${
                   isActive
                     ? 'text-foreground border-b-2 border-orange-500 pb-0.5'
@@ -310,6 +313,8 @@ export function HomeHeader() {
               <Link
                 key={link.href}
                 href={link.href}
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+                rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 onClick={closeMenu}
                 className="text-foreground hover:text-foreground rounded-2xl px-1 py-2 text-sm font-medium transition-colors"
               >

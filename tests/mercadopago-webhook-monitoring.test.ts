@@ -15,12 +15,24 @@ test('buildMercadoPagoWebhookIncidentPayload gera título, corpo e metadata rast
 
   assert.equal(payload.title, 'Falha crítica no webhook Mercado Pago')
   assert.equal(payload.taskType, 'investigate-payment-webhook-failure')
+  assert.equal(
+    payload.metadata.correlation_id,
+    'payment_123_payment|payment:123|req-abc|process_onboarding_payment'
+  )
   assert.equal(payload.metadata.event_id, 'payment_123_payment')
   assert.equal(payload.metadata.payment_id, '123')
   assert.equal(payload.metadata.stage, 'process_onboarding_payment')
   assert.match(payload.body, /Falha detectada no webhook Mercado Pago\./)
+  assert.match(
+    payload.body,
+    /Correlation ID: payment_123_payment\|payment:123\|req-abc\|process_onboarding_payment/
+  )
   assert.match(payload.body, /Erro: Falha ao provisionar delivery/)
   assert.equal(payload.taskInput.source, 'mercadopago-webhook')
+  assert.equal(
+    payload.taskInput.correlation_id,
+    'payment_123_payment|payment:123|req-abc|process_onboarding_payment'
+  )
 })
 
 test('buildMercadoPagoWebhookIncidentPayload tolera campos opcionais ausentes', () => {
@@ -31,5 +43,7 @@ test('buildMercadoPagoWebhookIncidentPayload tolera campos opcionais ausentes', 
   assert.equal(payload.metadata.event_id, null)
   assert.equal(payload.metadata.payment_id, null)
   assert.equal(payload.metadata.stage, null)
+  assert.equal(payload.metadata.correlation_id, 'event:none|payment:none|request:none|stage:none')
+  assert.match(payload.body, /Correlation ID: event:none\|payment:none\|request:none\|stage:none/)
   assert.match(payload.body, /Erro: Erro desconhecido no processamento/)
 })

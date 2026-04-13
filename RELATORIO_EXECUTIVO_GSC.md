@@ -74,7 +74,7 @@ Foi implementada, do zero, a integração completa do **Google Search Console (G
 
 ### Variáveis de Ambiente Configuradas
 
-```
+```env
 GOOGLE_SERVICE_ACCOUNT_EMAIL=gsc-reader@cardapio-digital-seo.iam.gserviceaccount.com
 GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...(configurado no .env.local)
 GOOGLE_SITE_URL=https://www.zairyx.com.br
@@ -145,7 +145,7 @@ Após isso, os dados do GSC começarão a aparecer no dashboard em até 48h (lat
 
 ## 8. Arquitetura Final
 
-```
+```text
 ┌─────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
 │  Admin Dashboard │────▶│  API /admin/seo       │────▶│  Google Search   │
 │  (page.tsx)      │     │  (route.ts)           │     │  Console API     │
@@ -168,4 +168,6 @@ Após isso, os dados do GSC começarão a aparecer no dashboard em até 48h (lat
 
 ---
 
-_Relatório gerado automaticamente — Zairyx_
+## Relatório Gerado Automaticamente
+
+Zairyx

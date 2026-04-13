@@ -569,6 +569,26 @@ export default function Home() {
                         pedidos sem comissão. Use o iFood{' '}
                         <strong>só para captar clientes novos</strong>, depois migre pro seu canal.
                       </p>
+
+                      <div className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+                        <p className="text-sm font-semibold text-green-800">
+                          Dica prática diária para deliverys
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-green-700">
+                          No Blog da Zairyx você recebe 1 insight por dia de marketing local,
+                          cardápio e conversão para fortalecer seu canal próprio sem depender de
+                          marketplace.
+                        </p>
+                        <a
+                          href="https://blog.zairyx.com.br"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-green-800 underline decoration-green-400 underline-offset-3 hover:text-green-900"
+                        >
+                          Acessar Blog da Zairyx
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
 
@@ -1222,7 +1242,7 @@ export default function Home() {
                           Ver modelo
                         </Link>
                         <Link
-                          href={`/comprar/${template.slug}`}
+                          href={`/comprar/${template.slug}?plano=self-service&capacidade=basico`}
                           data-testid={`template-buy-${template.slug}`}
                           className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-orange-500 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-orange-600"
                         >

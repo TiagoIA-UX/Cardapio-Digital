@@ -262,23 +262,30 @@ export default function AdminUsuariosPage() {
                     <td className="px-4 py-3">
                       {u.trial_days_left !== null && u.trial_days_left >= 0 ? (
                         <div className="w-20">
-                          <div className="mb-0.5 text-xs text-zinc-400">
-                            {u.trial_days_left}d restantes
-                          </div>
-                          <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800">
-                            <div
-                              className={`h-full rounded-full transition-all ${
-                                u.trial_days_left <= 1
-                                  ? 'bg-red-500'
-                                  : u.trial_days_left <= 3
-                                    ? 'bg-yellow-500'
-                                    : 'bg-green-500'
-                              }`}
-                              style={{
-                                width: `${Math.min(100, (u.trial_days_left / u.trial_days) * 100)}%`,
-                              }}
-                            />
-                          </div>
+                          {(() => {
+                            const trialPercent = Math.min(
+                              100,
+                              (u.trial_days_left / u.trial_days) * 100
+                            )
+                            return (
+                              <>
+                                <div className="mb-0.5 text-xs text-zinc-400">
+                                  {u.trial_days_left}d restantes
+                                </div>
+                                <progress
+                                  value={trialPercent}
+                                  max={100}
+                                  className={`h-1.5 w-full overflow-hidden rounded-full [&::-moz-progress-bar]:rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-zinc-800 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:transition-all ${
+                                    u.trial_days_left <= 1
+                                      ? '[&::-moz-progress-bar]:bg-red-500 [&::-webkit-progress-value]:bg-red-500'
+                                      : u.trial_days_left <= 3
+                                        ? '[&::-moz-progress-bar]:bg-yellow-500 [&::-webkit-progress-value]:bg-yellow-500'
+                                        : '[&::-moz-progress-bar]:bg-green-500 [&::-webkit-progress-value]:bg-green-500'
+                                  }`}
+                                />
+                              </>
+                            )
+                          })()}
                         </div>
                       ) : (
                         <span className="text-zinc-600">—</span>

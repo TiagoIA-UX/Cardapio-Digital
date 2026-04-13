@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { ArrowLeft, Eye, Loader2, Sparkles, Zap } from 'lucide-react'
 import CardapioClient from '@/app/r/[slug]/cardapio-client'
 import { getTemplatePricing } from '@/lib/domains/marketing/pricing'
-import { buildTemplateDemoData, getRestaurantTemplateConfig } from '@/lib/domains/marketing/templates-config'
+import {
+  buildTemplateDemoData,
+  getRestaurantTemplateConfig,
+} from '@/lib/domains/marketing/templates-config'
 import type { RestaurantTemplateSlug } from '@/lib/domains/core/restaurant-customization'
 
 export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) {
@@ -30,19 +33,19 @@ export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) 
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
             <Link
-              href={`/comprar/${template.slug}?plano=self-service`}
+              href={`/comprar/${template.slug}?plano=self-service&capacidade=basico`}
               className="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors"
             >
               <Zap className="h-4 w-4" />
-              Você configura · hoje R$ {pricing.selfService.pix} · depois R${' '}
+              Você configura (até 60) · hoje R$ {pricing.selfService.pix} · depois R${' '}
               {pricing.selfService.monthly}/mês
             </Link>
             <Link
-              href={`/comprar/${template.slug}?plano=feito-pra-voce`}
+              href={`/comprar/${template.slug}?plano=feito-pra-voce&capacidade=pro`}
               className="border-border bg-background hover:bg-muted inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors"
             >
               <Sparkles className="h-4 w-4" />
-              Equipe configura · hoje R$ {pricing.feitoPraVoce.pix} · depois R${' '}
+              Equipe configura (até 200) · hoje R$ {pricing.feitoPraVoce.pix} · depois R${' '}
               {pricing.feitoPraVoce.monthly}/mês
             </Link>
           </div>
@@ -56,11 +59,7 @@ export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) 
           </div>
         }
       >
-        <CardapioClient
-          restaurant={preview.restaurant}
-          products={preview.products}
-          isDemoPreview
-        />
+        <CardapioClient restaurant={preview.restaurant} products={preview.products} isDemoPreview />
       </Suspense>
     </div>
   )

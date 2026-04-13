@@ -32,6 +32,14 @@
     {
       "path": "/api/cron/sentinel",
       "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/newsletter-weekly",
+      "schedule": "0 14 * * 1"
+    },
+    {
+      "path": "/api/cron/scripts-readiness-alert",
+      "schedule": "30 14 * * *"
     }
   ],
   "headers": [
