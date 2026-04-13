@@ -476,7 +476,7 @@ function ComprarContent() {
           </Link>
           <div className="flex items-center gap-2">
             <Store className="text-primary h-5 w-5" />
-            <span className="text-foreground font-semibold">Zairyx AI — Canal Digital</span>
+            <span className="text-foreground font-semibold">Zairyx — Canal Digital</span>
           </div>
         </div>
       </header>

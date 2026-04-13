@@ -399,7 +399,7 @@ export default function FuncionalidadesPage() {
                       zairyxGood: true,
                     },
                     {
-                      feature: 'IA de atendimento 24h',
+                      feature: 'Pedido organizado no próprio canal',
                       zairyx: '✓ incluso em todos os planos',
                       ifood: '✗',
                       dd: '✗',

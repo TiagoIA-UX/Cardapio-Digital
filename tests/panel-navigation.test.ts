@@ -1,7 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { resolvePanelCapabilities } from '@/lib/domains/core/panel/capabilities'
-import { getGroupedNavigationItems, getPanelNavigationItems } from '@/lib/domains/core/panel/navigation'
+import {
+  getGroupedNavigationItems,
+  getPanelNavigationItems,
+  isNavigationItemActive,
+} from '@/lib/domains/core/panel/navigation'
 
 test('panel navigation scopes painel routes to the active restaurant', () => {
   const capabilities = resolvePanelCapabilities({
@@ -46,4 +50,21 @@ test('dashboard matching stays exact and métricas appears in overview', () => {
 
   assert.deepEqual(dashboard?.matchPrefixes, ['/painel/'])
   assert.ok(overview?.items.some((item) => item.id === 'metricas'))
+})
+
+test('conta expõe o atalho Minha Conta com escopo do delivery ativo', () => {
+  const capabilities = resolvePanelCapabilities({
+    activePurchasesCount: 1,
+    approvedOrdersCount: 1,
+    restaurantsCount: 1,
+  })
+
+  const items = getPanelNavigationItems(capabilities, 'rest_123')
+  const groups = getGroupedNavigationItems(capabilities, 'rest_123')
+  const accountItem = items.find((item) => item.id === 'minha-conta')
+  const accountGroup = groups.find((group) => group.id === 'conta')
+
+  assert.equal(accountItem?.href, '/painel/conta?restaurant=rest_123')
+  assert.ok(accountGroup?.items.some((item) => item.id === 'minha-conta'))
+  assert.equal(isNavigationItemActive(accountItem!, '/painel/conta'), true)
 })

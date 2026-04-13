@@ -11,6 +11,7 @@ import {
   Settings,
   ShoppingBag,
   Store,
+  User,
   Users,
   BarChart3,
 } from 'lucide-react'
@@ -142,6 +143,15 @@ const PANEL_NAVIGATION_REGISTRY: PanelNavigationItem[] = [
   },
 
   // ── Conta
+  {
+    id: 'minha-conta',
+    href: '/painel/conta',
+    icon: User,
+    label: 'Minha Conta',
+    matchPrefixes: ['/painel/conta'],
+    requires: ['canManageSettings'],
+    groupId: 'conta',
+  },
   {
     id: 'planos',
     href: '/painel/planos',

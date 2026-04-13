@@ -19,6 +19,7 @@ import {
   Settings,
   QrCode,
   FlaskConical,
+  User,
 } from 'lucide-react'
 import Link from 'next/link'
 import { getPaymentModeBadgeLabel, isPublicSandboxMode } from '@/lib/domains/core/payment-mode'
@@ -390,6 +391,16 @@ export default function DashboardPage() {
               <p className="text-foreground text-sm font-semibold">3. Compartilhe e teste</p>
               <p className="text-muted-foreground mt-1 text-xs">
                 Gere QR das mesas, copie o link e faça um pedido de conferência.
+              </p>
+            </Link>
+            <Link
+              href={getRestaurantScopedHref('/painel/conta', restaurant?.id)}
+              className="border-border hover:bg-secondary/40 rounded-xl border p-4 transition-colors"
+            >
+              <User className="text-primary mb-2 h-5 w-5" />
+              <p className="text-foreground text-sm font-semibold">4. Revise conta e assinatura</p>
+              <p className="text-muted-foreground mt-1 text-xs">
+                Veja seus dados de acesso e cancele a renovação automática com clareza, se precisar.
               </p>
             </Link>
           </div>

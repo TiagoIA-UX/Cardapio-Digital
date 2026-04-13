@@ -401,7 +401,7 @@ export default function MeusTemplatesPage() {
                           <>
                             <span className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white">
                               <AlertCircle className="h-4 w-4" />
-                              Revisão já encaminhada pela Zai
+                              Revisão já encaminhada pela equipe
                             </span>
                             <button
                               onClick={() => {
@@ -443,7 +443,7 @@ export default function MeusTemplatesPage() {
                           </>
                         ) : (
                           <Link
-                            href={`/painel/criar-restaurante?template=${purchase.templateSlug}`}
+                            href={`/painel/criar-delivery?template=${purchase.templateSlug}`}
                             className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                           >
                             <Settings className="h-4 w-4" />

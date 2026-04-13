@@ -18,7 +18,10 @@ import type {
   InlineTextField,
   PreviewDataBlock,
 } from '@/components/template-editor/cardapio-editor-preview'
-import { getRestaurantPresentation, type HeroSloganPresetId } from '@/lib/domains/core/restaurant-customization'
+import {
+  getRestaurantPresentation,
+  type HeroSloganPresetId,
+} from '@/lib/domains/core/restaurant-customization'
 import { validateImageUrl } from '@/lib/domains/image/image-validation'
 import { getActiveRestaurantForUser } from '@/lib/domains/core/active-restaurant'
 import {
@@ -327,6 +330,23 @@ export function useEditorState() {
       const preco = parseFloat(draft.preco.replace(',', '.'))
       if (!Number.isFinite(preco)) return
       if (!restaurant) return
+
+      // ✅ SUBSCRIPTION GUARD: Check if restaurant can edit before saving
+      const { data: accessCheck, error: accessError } = await supabase.rpc('can_edit_restaurant', {
+        p_restaurant_id: restaurant.id,
+      })
+
+      const accessStatus = Array.isArray(accessCheck) ? accessCheck[0] : accessCheck
+
+      if (accessError || !accessStatus?.can_edit) {
+        setProductSaveState((prev) => ({ ...prev, [productId]: 'error' }))
+        toast({
+          title: 'Edição bloqueada',
+          description: accessStatus?.reason || 'Sua assinatura não permite edições no momento.',
+          variant: 'destructive',
+        })
+        return
+      }
 
       setProductSaveState((prev) => ({ ...prev, [productId]: 'saving' }))
 

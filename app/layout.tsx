@@ -4,8 +4,8 @@ import { Outfit, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CookieBanner } from '@/components/cookie-banner'
 import { CartDrawer } from '@/components/cart/cart-drawer'
+import { FloatingWhatsAppButton } from '@/components/floating-whatsapp-button'
 import { Toaster } from '@/components/ui/toaster'
-import { ChatWidget } from '@/components/chat-widget'
 import './globals.css'
 import { getSiteUrl } from '@/lib/shared/site-url'
 
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'google1a0b3e572aae5f34',
   },
-  title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
+  title: 'Zairyx Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
   description:
-    'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
+    'Zairyx Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
   keywords: [
     'canal digital',
     'canal online',
@@ -47,11 +47,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
+    title: 'Zairyx Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
     description:
-      'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
+      'Zairyx Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
     url: siteUrl,
-    siteName: 'Zairyx AI Canais Digitais',
+    siteName: 'Zairyx Canais Digitais',
     locale: 'pt_BR',
     type: 'website',
     images: [
@@ -59,15 +59,15 @@ export const metadata: Metadata = {
         url: `${siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Zairyx AI Canais Digitais',
+        alt: 'Zairyx Canais Digitais',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Zairyx AI Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
+    title: 'Zairyx Canais Digitais | Sem Comissão por Pedido. Mais Margem. Mais Controle.',
     description:
-      'Zairyx AI Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
+      'Zairyx Canais Digitais — Pare de perder margem para intermediários. Venda no seu canal, receba no WhatsApp e opere com zero comissão por pedido.',
     images: [`${siteUrl}/og-image.jpg`],
   },
   robots: {
@@ -101,10 +101,10 @@ export default function RootLayout({
         className={`${outfit.variable} ${dmSans.variable} min-w-0 overflow-x-hidden font-sans antialiased`}
       >
         {children}
+        <FloatingWhatsAppButton />
         <Toaster />
         <CartDrawer />
         <CookieBanner />
-        <ChatWidget />
         <Analytics />
         <script
           type="application/ld+json"
@@ -112,7 +112,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
-              name: 'Zairyx AI — Canal Digital',
+              name: 'Zairyx — Canal Digital',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               url: siteUrl,

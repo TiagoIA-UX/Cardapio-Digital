@@ -24,8 +24,14 @@ import {
   getRestaurantUnitBadgeLabel,
   setStoredActiveRestaurantId,
 } from '@/lib/domains/core/active-restaurant'
-import { resolvePanelCapabilities, type PanelCapabilities } from '@/lib/domains/core/panel/capabilities'
-import { getGroupedNavigationItems, isNavigationItemActive } from '@/lib/domains/core/panel/navigation'
+import {
+  resolvePanelCapabilities,
+  type PanelCapabilities,
+} from '@/lib/domains/core/panel/capabilities'
+import {
+  getGroupedNavigationItems,
+  isNavigationItemActive,
+} from '@/lib/domains/core/panel/navigation'
 import { PanelAccessProvider } from '@/lib/domains/core/panel/panel-context'
 
 // ========================================
@@ -56,7 +62,8 @@ function PainelLayoutContent({ children }: { children: React.ReactNode }) {
   const isSandboxMode = isPublicSandboxMode()
   const paymentBadge = getPaymentModeBadgeLabel()
 
-  const isCreatePage = pathname === '/painel/criar-restaurante'
+  const isCreatePage =
+    pathname === '/painel/criar-delivery' || pathname === '/painel/criar-pizzaria'
   useEffect(() => {
     const checkRestaurant = async () => {
       // SEGURANÇA: getUser() valida o JWT com o servidor Supabase.
@@ -108,7 +115,7 @@ function PainelLayoutContent({ children }: { children: React.ReactNode }) {
           return
         }
 
-        router.replace('/painel/criar-restaurante')
+        router.replace('/painel/criar-delivery')
         return
       }
 

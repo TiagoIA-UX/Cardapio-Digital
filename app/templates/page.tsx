@@ -5,9 +5,18 @@ import Link from 'next/link'
 import { ArrowRight, Eye, Sparkles, FlaskConical } from 'lucide-react'
 import { TemplateCard } from '@/components/templates/template-card'
 import { getTemplateCatalog } from '@/lib/domains/marketing/templates-config'
+import {
+  decorateTemplateCatalog,
+  TEMPLATE_FAMILIES,
+  TEMPLATE_FAMILY_ORDER,
+} from '@/lib/domains/marketing/template-public-meta'
 import { createClient } from '@/lib/shared/supabase/client'
 
-const templates = getTemplateCatalog()
+const templates = decorateTemplateCatalog(getTemplateCatalog())
+const groupedTemplates = TEMPLATE_FAMILY_ORDER.map((familyId) => ({
+  ...TEMPLATE_FAMILIES[familyId],
+  items: templates.filter((template) => template.publicFamily === familyId),
+})).filter((group) => group.items.length > 0)
 const showDevUnlock =
   process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ALLOW_DEV_UNLOCK === 'true'
 
@@ -62,14 +71,14 @@ export default function TemplatesPage() {
         <div className="mx-auto max-w-4xl text-center">
           <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
             <Sparkles className="h-4 w-4" />
-            15 Templates Profissionais
+            16 nichos prontos para ativar
           </div>
           <h1 className="text-foreground mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
-            Escolha o Template Perfeito
+            Escolha o nicho certo para o seu delivery
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
-            Cada demo abaixo reutiliza o mesmo template que você recebe no onboarding. Perfeito para
-            delivery, pizzarias, hamburguerias e negócios alimentícios.
+            Escolha pelo tipo de operação e siga para o checkout. Os nomes públicos estão mais
+            claros e o template interno continua o mesmo na ativação.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -98,8 +107,8 @@ export default function TemplatesPage() {
           {/* Stats */}
           <div className="mb-8 flex flex-wrap justify-center gap-8 text-center">
             <div>
-              <div className="text-foreground text-2xl font-bold">15</div>
-              <div className="text-muted-foreground text-sm">Templates</div>
+              <div className="text-foreground text-2xl font-bold">16</div>
+              <div className="text-muted-foreground text-sm">Nichos</div>
             </div>
             <div>
               <div className="text-foreground text-2xl font-bold">0%</div>
@@ -111,9 +120,21 @@ export default function TemplatesPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {templates.map((template) => (
-              <TemplateCard key={template.id} template={template} />
+          <div className="space-y-10">
+            {groupedTemplates.map((group) => (
+              <div key={group.id}>
+                <div className="mb-5">
+                  <div>
+                    <h2 className="text-foreground text-2xl font-bold">{group.label}</h2>
+                    <p className="text-muted-foreground max-w-2xl text-sm">{group.description}</p>
+                  </div>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {group.items.map((template) => (
+                    <TemplateCard key={template.id} template={template} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -123,11 +144,11 @@ export default function TemplatesPage() {
       <section className="bg-primary/5 px-4 py-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-foreground mb-4 text-2xl font-bold">
-            Implantação inicial com template liberado e plano mensal correspondente
+            Implantação inicial com nome claro e plano mensal correspondente
           </h2>
           <p className="text-muted-foreground mb-6">
-            Escolha o nicho, confira a implantação inicial e o plano mensal correspondente, e o
-            sistema libera seu canal digital e o painel após a confirmação do pagamento.
+            Você escolhe o nicho e segue para o checkout. No próximo passo, decide se quer
+            configurar sozinho ou mandar o material para a equipe.
           </p>
           <Link
             href="/precos"

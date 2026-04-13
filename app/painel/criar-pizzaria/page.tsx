@@ -77,12 +77,48 @@ const BORDAS_PADRAO = [
 
 // Cores predefinidas
 const CORES_PRESET = [
-  { nome: 'Vermelho Clássico', primary: '#DC2626', secondary: '#FEF2F2' },
-  { nome: 'Laranja Quente', primary: '#EA580C', secondary: '#FFF7ED' },
-  { nome: 'Verde Italiano', primary: '#16A34A', secondary: '#F0FDF4' },
-  { nome: 'Azul Moderno', primary: '#2563EB', secondary: '#EFF6FF' },
-  { nome: 'Roxo Premium', primary: '#7C3AED', secondary: '#F5F3FF' },
-  { nome: 'Dourado', primary: '#CA8A04', secondary: '#FEFCE8' },
+  {
+    nome: 'Vermelho Clássico',
+    primary: '#DC2626',
+    secondary: '#FEF2F2',
+    swatchClassName: 'bg-red-600',
+    previewClassName: 'bg-red-600',
+  },
+  {
+    nome: 'Laranja Quente',
+    primary: '#EA580C',
+    secondary: '#FFF7ED',
+    swatchClassName: 'bg-orange-600',
+    previewClassName: 'bg-orange-600',
+  },
+  {
+    nome: 'Verde Italiano',
+    primary: '#16A34A',
+    secondary: '#F0FDF4',
+    swatchClassName: 'bg-green-600',
+    previewClassName: 'bg-green-600',
+  },
+  {
+    nome: 'Azul Moderno',
+    primary: '#2563EB',
+    secondary: '#EFF6FF',
+    swatchClassName: 'bg-blue-600',
+    previewClassName: 'bg-blue-600',
+  },
+  {
+    nome: 'Roxo Premium',
+    primary: '#7C3AED',
+    secondary: '#F5F3FF',
+    swatchClassName: 'bg-violet-600',
+    previewClassName: 'bg-violet-600',
+  },
+  {
+    nome: 'Dourado',
+    primary: '#CA8A04',
+    secondary: '#FEFCE8',
+    swatchClassName: 'bg-yellow-600',
+    previewClassName: 'bg-yellow-600',
+  },
 ]
 
 interface FormData {
@@ -670,7 +706,7 @@ export default function CriarPizzariaPage() {
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="mb-2 h-8 rounded-md" style={{ backgroundColor: cor.primary }} />
+                    <div className={`mb-2 h-8 rounded-md ${cor.swatchClassName}`} />
                     <span className="text-xs text-gray-600">{cor.nome}</span>
                   </button>
                 ))}
@@ -681,8 +717,7 @@ export default function CriarPizzariaPage() {
             <div className="mt-6 rounded-lg border p-4">
               <p className="mb-3 text-sm text-gray-500">Preview do seu site:</p>
               <div
-                className="rounded-lg p-4 text-white"
-                style={{ backgroundColor: CORES_PRESET[formData.corPreset].primary }}
+                className={`rounded-lg p-4 text-white ${CORES_PRESET[formData.corPreset].previewClassName}`}
               >
                 <div className="flex items-center gap-2">
                   <PizzaIcon className="h-6 w-6" />

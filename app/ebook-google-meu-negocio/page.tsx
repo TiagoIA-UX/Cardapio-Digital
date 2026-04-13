@@ -23,7 +23,7 @@ export default function EbookGoogleMeuNegocioPage() {
           </Link>
           <div className="text-right">
             <p className="text-xs font-bold tracking-[0.18em] text-zinc-500 uppercase">
-              Grupo Zairyx AI
+              Grupo Zairyx
             </p>
             <p className="text-sm font-semibold text-zinc-900">Litoral Conecta Canais Digitais</p>
           </div>

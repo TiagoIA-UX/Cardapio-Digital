@@ -24,8 +24,8 @@ import { COMPANY_CNPJ, COMPANY_NAME } from '@/lib/shared/brand'
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
 
 export const metadata = {
-  title: 'Benefícios | Zairyx — Canal próprio com IA e pagamento online',
-  description: `Pare de depender só dos marketplaces. Com a Zairyx você tem canal próprio, IA 24h, pagamento online via Mercado Pago e mensalidade fixa ${COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}.`,
+  title: 'Benefícios | Zairyx — Canal próprio e pagamento online',
+  description: `Pare de depender só dos marketplaces. Com a Zairyx você tem canal próprio, pedido organizado, pagamento online via Mercado Pago e mensalidade fixa ${COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}.`,
 }
 
 export default function BeneficiosPage() {
@@ -69,8 +69,9 @@ export default function BeneficiosPage() {
           </h1>
           <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
             Dono de delivery que usa iFood, Rappi ou Uber Eats financia o app, não o próprio
-            negócio. A Zairyx devolve o controle para você: canal próprio, IA 24h, pagamento online
-            e mensalidade fixa {COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}.
+            negócio. A Zairyx devolve o controle para você: canal próprio, pedido organizado,
+            pagamento online e mensalidade fixa {COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}
+            .
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -131,7 +132,7 @@ export default function BeneficiosPage() {
                   'Seu cliente, seus dados, seu relacionamento',
                   'Seu canal funciona 24h no dia, 7 dias na semana',
                   'Você controla os preços e promoções',
-                  'IA responde clientes em segundos — mesmo de madrugada',
+                  'Pedido chega organizado no WhatsApp ou no painel',
                   'Você é a única opção no seu próprio cardápio',
                   'Histórico completo de pedidos e preferências',
                 ].map((item) => (
@@ -365,7 +366,7 @@ export default function BeneficiosPage() {
                 {
                   step: '4',
                   title: 'Gerencie tudo pela Zairyx',
-                  desc: 'Quando o cliente pedir pelo seu canal, o pedido chega organizado no WhatsApp ou no painel, sem comissao da Zairyx por pedido e com IA de atendimento 24h.',
+                  desc: 'Quando o cliente pedir pelo seu canal, o pedido chega organizado no WhatsApp ou no painel, sem comissao da Zairyx por pedido e sem depender de app intermediário.',
                 },
               ].map(({ step, title, desc }) => (
                 <div key={step} className="flex flex-col gap-3">
@@ -415,12 +416,11 @@ export default function BeneficiosPage() {
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500 text-white">
                 <Sparkles className="h-5 w-5" />
               </div>
-              <h3 className="mb-2 text-lg font-bold">IA que atende 24h — sem custo extra</h3>
+              <h3 className="mb-2 text-lg font-bold">Pedido mais simples para o cliente</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                O Cadu, nosso assistente de IA, está dentro do seu cardápio o tempo todo. Responde
-                dúvidas sobre cardápio, horário, entrega e ingredientes. Ajuda o cliente a montar o
-                pedido e só chama você no WhatsApp quando é realmente necessário. Tudo incluso no
-                plano — sem cobrar por mensagem.
+                O cliente encontra produto, categoria e observação num fluxo direto. Isso reduz
+                dúvida, evita conversa picada e faz o pedido chegar no WhatsApp da operação de um
+                jeito mais claro para a equipe atender.
               </p>
             </div>
 
@@ -499,9 +499,9 @@ export default function BeneficiosPage() {
               </div>
               <h3 className="mb-2 text-lg font-bold">Pronto em menos de 30 minutos</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Escolha o template do seu nicho (pizzaria, hamburgueria, açaíteria, mercadinho e
-                mais 11 opções), troque os produtos e preços, publique o link. Tudo em menos de meia
-                hora — sem precisar de programador, designer ou agência.
+                Escolha o template do seu nicho (pizzaria, lanches e burgers, açaí e cremes,
+                conveniência e outros modelos), troque os produtos e preços, publique o link. Tudo
+                em menos de meia hora — sem precisar de programador, designer ou agência.
               </p>
             </div>
           </div>
@@ -611,10 +611,10 @@ export default function BeneficiosPage() {
                     zairyxGood: true,
                   },
                   {
-                    feature: 'IA de atendimento 24h',
-                    zairyx: '✓ inclusa',
+                    feature: 'Pedido organizado no canal próprio',
+                    zairyx: '✓ incluso',
                     ifood: '✗',
-                    outros: 'Raramente inclusa',
+                    outros: 'Varia por plataforma',
                     zairyxGood: true,
                   },
                   {
@@ -647,7 +647,7 @@ export default function BeneficiosPage() {
                   },
                   {
                     feature: 'Templates por nicho',
-                    zairyx: '15 templates prontos',
+                    zairyx: '16 nichos prontos',
                     ifood: '✗',
                     outros: 'Raramente',
                     zairyxGood: true,

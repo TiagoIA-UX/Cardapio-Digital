@@ -52,10 +52,10 @@ interface Subscription {
 const TEMPLATES = [
   { slug: 'restaurante', name: 'Restaurante' },
   { slug: 'pizzaria', name: 'Pizzaria' },
-  { slug: 'lanchonete', name: 'Lanchonete' },
+  { slug: 'lanchonete', name: 'Lanches e Burgers' },
   { slug: 'bar', name: 'Bar' },
   { slug: 'cafeteria', name: 'Cafeteria' },
-  { slug: 'acai', name: 'Açaíteria' },
+  { slug: 'acai', name: 'Açaí e Cremes' },
   { slug: 'sushi', name: 'Sushi' },
 ]
 

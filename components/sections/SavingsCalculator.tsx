@@ -196,7 +196,7 @@ export default function SavingsCalculator() {
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-white/5"
                 >
                   <MessageCircle className="h-5 w-5 text-green-400" />
-                  Quero falar primeiro com a Zai
+                  Quero ver os modelos primeiro
                 </Link>
               </div>
             </div>

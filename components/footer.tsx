@@ -29,7 +29,7 @@ const NAV = {
   parceiros: [{ label: 'Meu painel', href: '/painel' }],
   contato: [
     { label: 'zairyx.ai@gmail.com', href: 'mailto:zairyx.ai@gmail.com' },
-    { label: 'Atendimento inicial com a Zai', href: '/templates' },
+    { label: 'Escolher meu modelo', href: '/templates' },
   ],
   legal: [
     { label: 'Termos de uso', href: '/termos' },
@@ -69,7 +69,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-zinc-800 bg-zinc-950">
-      {/* ── CTA com IA ──────────────────────────────────────────────── */}
+      {/* ── CTA principal ───────────────────────────────────────────── */}
       <div className="bg-linear-to-b from-zinc-900 to-zinc-950">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-4 py-14 text-center sm:px-6">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10">
@@ -79,7 +79,9 @@ export function Footer() {
             Pronto para transformar seu delivery?
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-zinc-300">
-            Monte seu cardápio digital em minutos com ajuda da nossa IA. {COMMERCIAL_COPY.noPlatformCommission}, com mensalidade previsível.
+            Monte seu cardápio digital em minutos com catálogo pronto, painel simples e pedidos
+            organizados no seu canal. {COMMERCIAL_COPY.noPlatformCommission}, com mensalidade
+            previsível.
           </p>
           <Link
             href="/templates"

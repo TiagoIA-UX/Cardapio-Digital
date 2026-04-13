@@ -79,24 +79,6 @@ function formatPhoneMask(phone: string): string {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
-async function reportAiDevAlert(input: {
-  restaurantId?: string
-  restaurantSlug?: string
-  source: string
-  error: string
-  context?: Record<string, unknown>
-}) {
-  try {
-    await fetch('/api/ai/dev-alert', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
-    })
-  } catch {
-    // Falha de alerta nunca deve quebrar a experiência do cliente.
-  }
-}
-
 function createInitialOrderForm(isTableOrder: boolean): OrderFormState {
   return {
     customerName: '',
@@ -142,7 +124,6 @@ export default function CardapioClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [isGeneratingAiNotes, setIsGeneratingAiNotes] = useState(false)
   const [receiptUploading, setReceiptUploading] = useState(false)
   const [receiptUploadError, setReceiptUploadError] = useState<string | null>(null)
   const [sessionAccessToken, setSessionAccessToken] = useState<string | null>(null)
@@ -383,88 +364,6 @@ export default function CardapioClient({
       setReceiptUploadError(message)
     } finally {
       setReceiptUploading(false)
-    }
-  }
-
-  const generateAiNotesSuggestion = async () => {
-    if (!restaurant?.id) {
-      return
-    }
-
-    setIsGeneratingAiNotes(true)
-
-    try {
-      const itemsSummary = cart.map((item) => `${item.quantity}x ${item.product.nome}`).join(', ')
-      const orderContext = [
-        `Tipo de atendimento: ${orderForm.fulfillment}`,
-        `Itens: ${itemsSummary || 'não informado'}`,
-        orderForm.notes.trim() ? `Observação bruta do cliente: ${orderForm.notes.trim()}` : null,
-      ]
-        .filter(Boolean)
-        .join('\n')
-
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          context: {
-            restaurantId: restaurant.id,
-            restaurantSlug: restaurant.slug,
-            pageType: 'delivery',
-            pathname: `/r/${restaurant.slug}`,
-            templateSlug: restaurant.template_slug,
-          },
-          messages: [
-            {
-              role: 'user',
-              content:
-                `Você é a Zai, atendente virtual do pedido. ` +
-                `Escreva somente o texto final para o campo de observações do pedido no WhatsApp. ` +
-                `Protocolo ético obrigatório: não adicionar item, não aumentar valor, não presumir compra extra, ` +
-                `não incentivar gasto maior e não prometer algo que não esteja no pedido. ` +
-                `Seu foco é organizar o que já foi pedido e, quando útil, sugerir apenas remoção/ajuste de preferência. ` +
-                `Se perceber que faltou uma bebida ou um complemento natural para acompanhar o pedido, ` +
-                `primeiro pergunte permissão em 1 frase curta (ex: "Posso sugerir uma bebida para acompanhar?") ` +
-                `sem incluir bebida no pedido e sem pressionar a compra. ` +
-                `Resposta em pt-BR, no máximo 4 linhas, sem markdown, sem saudação longa.\n\n${orderContext}`,
-            },
-          ],
-        }),
-      })
-
-      const data = await response.json().catch(() => ({}))
-
-      if (!response.ok || typeof data?.reply !== 'string' || !data.reply.trim()) {
-        throw new Error(data?.error || 'IA indisponível para observações neste momento.')
-      }
-
-      updateOrderForm('notes', data.reply.trim())
-      toast({
-        title: 'Zai preparou sua observação',
-        description: 'Revise e edite antes de enviar o pedido.',
-      })
-    } catch (aiError) {
-      await reportAiDevAlert({
-        restaurantId: restaurant.id,
-        restaurantSlug: restaurant.slug,
-        source: 'public-cart-ai-notes',
-        error: aiError instanceof Error ? aiError.message : 'Falha desconhecida na Zai',
-        context: {
-          cartSize: cart.length,
-          fulfillment: orderForm.fulfillment,
-        },
-      })
-
-      toast({
-        title: 'Zai está indisponível agora',
-        description:
-          'Já avisamos o desenvolvedor Tiago para normalizar o sistema. Se preferir, escreva sua observação manualmente e continue o pedido.',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsGeneratingAiNotes(false)
     }
   }
 
@@ -1303,19 +1202,6 @@ function CartDrawer({
                 <label className="text-foreground mb-2 block text-sm font-semibold">
                   Observações do pedido
                 </label>
-                <div className="mb-3 rounded-xl border border-emerald-500/20 bg-emerald-500/8 p-3">
-                  <div className="flex items-start gap-2">
-                    <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                    <div>
-                      <p className="text-foreground text-sm font-semibold">Atendimento com a Zai</p>
-                      <p className="text-muted-foreground mt-1 text-xs leading-5">
-                        A Zai cuida do seu pedido aqui no carrinho, organiza cada detalhe com mais
-                        carinho e ajuda você a deixar tudo do seu jeito, sem precisar sair da sua
-                        experiência.
-                      </p>
-                    </div>
-                  </div>
-                </div>
                 <textarea
                   rows={4}
                   value={orderForm.notes}
@@ -1323,25 +1209,9 @@ function CartDrawer({
                   placeholder="Ex: sem cebola, ponto da carne, retirar embalagem, tocar campainha, ponto de referência para entrega..."
                   className="border-border bg-background text-foreground focus:ring-primary w-full rounded-xl border px-4 py-3 focus:border-transparent focus:ring-2"
                 />
-
-                <button
-                  type="button"
-                  onClick={onGenerateAiNotes}
-                  disabled={isGeneratingAiNotes || cart.length === 0}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {isGeneratingAiNotes ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <MessageCircle className="h-4 w-4" />
-                  )}
-                  {isGeneratingAiNotes
-                    ? 'Zai está escrevendo...'
-                    : 'Precisa de algo? Converse com a Zai'}
-                </button>
                 <p className="text-muted-foreground mt-2 text-xs">
-                  A Zai organiza sua observação com ética: sem adicionar item, sem aumentar gasto e
-                  sem te mandar para atendimento humano no WhatsApp durante o pedido.
+                  Se precisar, escreva aqui preferências, ponto de preparo, retirada de ingredientes
+                  ou referência de entrega antes de enviar o pedido.
                 </p>
 
                 <div className="space-y-2">

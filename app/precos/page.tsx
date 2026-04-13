@@ -1,54 +1,23 @@
 import Link from 'next/link'
 import { ArrowRight, Calculator, Check, Shield, Store, TrendingUp } from 'lucide-react'
-import {
-  TEMPLATE_PRESETS,
-  type RestaurantTemplateSlug,
-} from '@/lib/domains/core/restaurant-customization'
-import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
 import { TEMPLATE_PRICING } from '@/lib/domains/marketing/pricing'
+import {
+  getTemplatePlans,
+  getTemplatePlanCheckoutHref,
+} from '@/lib/domains/marketing/template-plans'
+import {
+  TEMPLATE_FAMILIES,
+  TEMPLATE_FAMILY_ORDER,
+  TEMPLATE_PUBLIC_ORDER,
+  getPublicTemplateMeta,
+} from '@/lib/domains/marketing/template-public-meta'
 
-const TEMPLATE_ORDER: RestaurantTemplateSlug[] = [
-  'lanchonete',
-  'acai',
-  'restaurante',
-  'cafeteria',
-  'bar',
-  'pizzaria',
-  'sushi',
-  'adega',
-  'mercadinho',
-  'minimercado',
-  'padaria',
-  'sorveteria',
-  'acougue',
-  'hortifruti',
-  'petshop',
-  'doceria',
-]
-
-function getSalesTerm(slug: RestaurantTemplateSlug) {
-  return TEMPLATE_PRICING[slug].nomeCanal
-}
-
-function getValuesByProductTier(tipo: 'selfService' | 'feitoPraVoce') {
-  const pricing = Object.values(TEMPLATE_PRICING)
-
-  const getValueForComplexity = (complexidade: 1 | 2 | 3) => {
-    const match = pricing.find((item) => item.complexidade === complexidade)
-    return match?.[tipo].pix ?? 0
-  }
-
-  return {
-    ate40: getValueForComplexity(1),
-    ate80: getValueForComplexity(2),
-    ate200: getValueForComplexity(3),
-  }
-}
+const FAMILY_SECTIONS = TEMPLATE_FAMILY_ORDER.map((familyId) => ({
+  ...TEMPLATE_FAMILIES[familyId],
+  slugs: TEMPLATE_PUBLIC_ORDER.filter((slug) => getPublicTemplateMeta(slug).family === familyId),
+})).filter((section) => section.slugs.length > 0)
 
 export default function PrecosPage() {
-  const selfServiceValues = getValuesByProductTier('selfService')
-  const feitoPraVoceValues = getValuesByProductTier('feitoPraVoce')
-
   return (
     <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* Header */}
@@ -72,230 +41,179 @@ export default function PrecosPage() {
         <div className="mb-12 text-center">
           <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
             <Calculator className="h-4 w-4" />
-            Precos claros para cada segmento
+            Escolha pelo tamanho real do catálogo
           </div>
           <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
-            Precos por volume de produtos
+            Preços mais claros para cada operação
           </h1>
           <p className="text-foreground/90 mx-auto max-w-2xl text-lg">
-            O valor depende da quantidade de produtos que seu negocio costuma ter. Quanto mais itens
-            no catalogo, maior o trabalho de implantacao.
+            São 16 nichos com 3 faixas de catálogo. Você escolhe pela quantidade de itens que
+            realmente pretende vender, sem adivinhar plano por nome.
           </p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
             <Check className="h-4 w-4" />
             Zero taxa por pedido ou venda direta no seu canal
           </div>
-          <div className="mt-5 flex justify-center">
-            <Link
-              href="/comecar-gratis"
-              className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100"
-            >
-              <Shield className="h-4 w-4" />
-              Conhecer Plano Começo para microoperações
-            </Link>
-          </div>
-          <p className="text-foreground/80 mt-3 text-sm">
-            A partir de <strong className="text-foreground">menos de R$&nbsp;5 por dia</strong> para
-            manter seu canal digital no ar, com total controle da operacao.
-          </p>
-          <p className="text-foreground/75 mt-1 text-xs">
-            Marketplaces e intermediarios comem margem em cada venda. Aqui o checkout mostra a
-            implantacao inicial e a referencia do plano mensal correspondente, enquanto o cliente
-            compra direto de voce.
-          </p>
-        </div>
-
-        {/* Bônus Exclusivo */}
-        <div className="mb-12 overflow-hidden rounded-2xl border-2 border-purple-200 bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50 p-8 shadow-lg dark:border-purple-800 dark:from-purple-950/50 dark:via-blue-950/50 dark:to-indigo-950/50">
-          <div className="flex flex-col items-center gap-6 md:flex-row md:gap-8">
-            <div className="flex flex-col items-center gap-4 md:w-1/3">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-indigo-600 text-5xl shadow-xl">
-                🎁
-              </div>
-              <div className="rounded-full border-2 border-purple-300 bg-white px-4 py-1.5 text-sm font-bold text-purple-700 dark:border-purple-700 dark:bg-purple-900 dark:text-purple-100">
-                VALOR: R$ 197
-              </div>
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-purple-900 md:text-3xl dark:text-purple-100">
-                Bônus Exclusivo Incluído
-              </h2>
-              <p className="mb-4 text-lg font-semibold text-purple-800 dark:text-purple-200">
-                E-book: Google Meu Negócio — Guia Completo de Configuração Profissional
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
+              <p className="text-sm font-semibold text-zinc-500 uppercase">16 nichos</p>
+              <p className="mt-2 text-2xl font-bold text-zinc-950">Vitrine organizada</p>
+              <p className="mt-2 text-sm text-zinc-600">
+                Nomes públicos mais claros para reduzir confusão entre modelos parecidos.
               </p>
-              <ul className="space-y-2 text-sm text-purple-900/90 dark:text-purple-100/90">
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
-                  <span>
-                    <strong>92 páginas</strong> de conteúdo prático e passo a passo
-                  </span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
-                  <span>
-                    Economize <strong>R$ 350-800</strong> fazendo setup você mesmo
-                  </span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
-                  <span>
-                    Dados oficiais do Google: <strong>46%, 76%, 28%</strong> de conversão
-                  </span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
-                  <span>Modelos prontos de respostas a avaliações + checklist completo</span>
-                </li>
-              </ul>
-              <div className="mt-4 rounded-xl border border-amber-300 bg-amber-100 p-3 text-sm font-semibold text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
-                ✨ <strong>100% GRÁTIS</strong> para quem adquirir qualquer plano abaixo
-              </div>
+            </div>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
+              <p className="text-sm font-semibold text-zinc-500 uppercase">3 faixas</p>
+              <p className="mt-2 text-2xl font-bold text-zinc-950">Essencial, Operação, Escala</p>
+              <p className="mt-2 text-sm text-zinc-600">
+                A faixa define o tamanho do catálogo. O modo de implantação você decide no checkout.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
+              <p className="text-sm font-semibold text-zinc-500 uppercase">Compra direta</p>
+              <p className="mt-2 text-2xl font-bold text-zinc-950">0% por pedido</p>
+              <p className="mt-2 text-sm text-zinc-600">
+                Checkout próprio, pedidos no seu canal e mensalidade fixa conforme capacidade.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Tabela de preços */}
-        <div className="border-border bg-card mb-16 overflow-hidden rounded-2xl border shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-160">
-              <thead>
-                <tr className="border-border bg-muted/30 border-b">
-                  <th className="text-foreground px-4 py-4 text-left text-sm font-semibold">
-                    Template
-                  </th>
-                  <th className="text-foreground px-4 py-4 text-center text-sm font-semibold">
-                    Volume de produtos
-                  </th>
-                  <th className="text-foreground px-4 py-4 text-center text-sm font-semibold">
-                    Voce configura
-                  </th>
-                  <th className="text-foreground px-4 py-4 text-center text-sm font-semibold">
-                    Voce envia, a gente monta
-                  </th>
-                  <th className="px-4 py-4"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {TEMPLATE_ORDER.map((slug) => {
-                  const p = TEMPLATE_PRICING[slug]
-                  const preset = TEMPLATE_PRESETS[slug]
+        <div className="space-y-12">
+          {FAMILY_SECTIONS.map((section) => (
+            <section
+              key={section.id}
+              className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm md:p-8"
+            >
+              <div className="mb-6">
+                <div>
+                  <p className="text-sm font-semibold tracking-[0.18em] text-orange-600 uppercase">
+                    {section.label}
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-zinc-950 md:text-3xl">
+                    Mesmo padrão de compra
+                  </h2>
+                  <p className="mt-2 max-w-3xl text-sm text-zinc-600">{section.description}</p>
+                </div>
+              </div>
+
+              <div className="grid gap-5 lg:grid-cols-2">
+                {section.slugs.map((slug) => {
+                  const meta = getPublicTemplateMeta(slug)
+                  const pricing = TEMPLATE_PRICING[slug]
+                  const plans = getTemplatePlans(slug)
+
                   return (
-                    <tr
+                    <article
                       key={slug}
-                      className="border-border hover:bg-muted/20 border-b transition-colors last:border-0"
+                      className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"
                     >
-                      <td className="px-4 py-4">
+                      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                         <div>
-                          <span className="text-foreground font-medium">{preset.label}</span>
-                          <p className="text-foreground/80 mt-1 text-xs">
-                            {p.nomeCanal} · {p.mediaProdutos} itens
-                          </p>
+                          <h3 className="text-xl font-bold text-zinc-950">{meta.publicName}</h3>
+                          <p className="mt-1 text-sm text-zinc-600">{meta.summary}</p>
                         </div>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className="bg-muted text-foreground/90 rounded-full px-2.5 py-0.5 text-xs font-medium">
-                          {p.faixaLabel}
+                        <div className="rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-right text-xs text-zinc-600">
+                          <p className="font-semibold text-zinc-900">{pricing.nomeCanal}</p>
+                          <p>Mix típico: {pricing.mediaProdutos} produtos</p>
+                        </div>
+                      </div>
+
+                      <div className="mb-4 flex flex-wrap gap-2">
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-700">
+                          {meta.categoryLabel}
                         </span>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <div className="text-sm">
-                          <span className="text-foreground font-semibold">
-                            R$ {p.selfService.pix}
-                          </span>
-                          <span className="text-foreground/85"> hoje</span>
-                        </div>
-                        <div className="text-foreground/85 text-xs">
-                          depois R$ {p.selfService.monthly}/mês
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <div className="text-sm">
-                          <span className="text-primary font-semibold">
-                            R$ {p.feitoPraVoce.pix}
-                          </span>
-                          <span className="text-foreground/85"> hoje</span>
-                        </div>
-                        <div className="text-foreground/85 text-xs">
-                          depois R$ {p.feitoPraVoce.monthly}/mês
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <Link
-                          href={`/comprar/${slug}?plano=self-service&capacidade=basico`}
-                          className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                        >
-                          Comprar
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </td>
-                    </tr>
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-700">
+                          {meta.productProfile}
+                        </span>
+                      </div>
+
+                      <div className="grid gap-3 md:grid-cols-3">
+                        {plans.map((plan) => (
+                          <div
+                            key={plan.id}
+                            className={`rounded-2xl border p-4 ${plan.popular ? 'border-orange-300 bg-orange-50' : 'border-zinc-200 bg-white'}`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <h4 className="font-semibold text-zinc-950">{plan.displayName}</h4>
+                                <p className="mt-1 text-xs text-zinc-600">{plan.description}</p>
+                              </div>
+                              {plan.popular ? (
+                                <span className="rounded-full bg-orange-500 px-2 py-1 text-[10px] font-bold text-white uppercase">
+                                  Mais pedido
+                                </span>
+                              ) : null}
+                            </div>
+
+                            <p className="mt-4 text-2xl font-bold text-zinc-950">
+                              {plan.maxProducts}
+                            </p>
+                            <p className="text-xs text-zinc-500">produtos no catálogo</p>
+
+                            <p className="mt-3 text-sm font-medium text-zinc-800">
+                              Mensalidade correspondente: R$ {plan.priceMonthly}/mês
+                            </p>
+                            <p className="text-xs text-zinc-500">
+                              Plano anual: R$ {plan.priceAnnual}
+                            </p>
+
+                            <div className="mt-3 rounded-xl bg-zinc-50 p-3 text-xs text-zinc-600">
+                              <p>{meta.productProfile}</p>
+                              <p className="mt-1">Faixa correspondente: {plan.capacitySlug}</p>
+                            </div>
+
+                            <div className="mt-4 flex flex-col gap-2">
+                              <Link
+                                href={getTemplatePlanCheckoutHref(slug, plan.name, 'self-service')}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                              >
+                                Você configura
+                                <ArrowRight className="h-4 w-4" />
+                              </Link>
+                              <Link
+                                href={getTemplatePlanCheckoutHref(
+                                  slug,
+                                  plan.name,
+                                  'feito-pra-voce'
+                                )}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-100"
+                              >
+                                Equipe configura
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
                   )
                 })}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            </section>
+          ))}
         </div>
 
-        {/* Análise */}
-        <section className="border-border bg-card mb-16 rounded-2xl border p-6 md:p-8">
+        <section className="border-border bg-card mt-16 mb-16 rounded-2xl border p-6 md:p-8">
           <h2 className="text-foreground mb-4 flex items-center gap-2 text-xl font-bold">
             <TrendingUp className="text-primary h-5 w-5" />
-            Por que os precos variam?
+            Como ler a nova régua comercial
           </h2>
-          <p className="text-foreground/90 mb-6 text-sm">
-            O valor da implantacao depende da{' '}
-            <strong>quantidade de produtos que voce vai listar no catalogo digital</strong> — e nao
-            do estoque fisico da loja. No delivery, o dono seleciona os itens mais vendidos e com
-            melhor margem. Mais itens no catalogo = mais trabalho para cadastrar, organizar e
-            configurar.
-          </p>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="border-border bg-muted/20 rounded-xl border p-4">
-              <h3 className="text-foreground mb-2 font-semibold">Voce configura</h3>
+              <h3 className="text-foreground mb-2 font-semibold">1. Escolha a faixa do catálogo</h3>
               <p className="text-foreground/90 text-sm">
-                Voce mesmo cadastra os produtos no painel. {COMMERCIAL_COPY.moreAutonomy}.
+                Essencial atende entrada enxuta. Operação cobre o dia a dia equilibrado. Escala é
+                para mix mais largo, sazonalidade e expansão.
               </p>
-              <ul className="text-foreground/90 mt-3 space-y-1 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-green-500" />
-                  Ate 40 produtos: R$ {selfServiceValues.ate40} (ex: lanchonete, acaiteria, doceria)
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-green-500" />
-                  Ate 80 produtos: R$ {selfServiceValues.ate80} (ex: restaurante, padaria, bar)
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-green-500" />
-                  120+ produtos: a partir de R$ {selfServiceValues.ate200} (ex: pizzaria, sushi,
-                  hortifruti, petshop)
-                </li>
-              </ul>
             </div>
             <div className="border-border bg-primary/5 rounded-xl border p-4">
-              <h3 className="text-foreground mb-2 font-semibold">Voce envia, a gente monta</h3>
+              <h3 className="text-foreground mb-2 font-semibold">
+                2. No checkout, escolha a implantação
+              </h3>
               <p className="text-foreground/90 text-sm">
-                <strong>Voce envia as fotos e dados dos produtos por WhatsApp ou e-mail.</strong>{' '}
-                Nossa equipe organiza tudo no seu canal e deixa pronto para publicar.
+                Você pode configurar sozinho ou mandar as fotos e dados para a equipe montar tudo. A
+                capacidade do catálogo continua sendo preservada em ambos os modos.
               </p>
-              <ul className="text-foreground/90 mt-3 space-y-1 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary h-4 w-4 shrink-0" />
-                  Ate 40 produtos: R$ {feitoPraVoceValues.ate40} (implantacao + organizacao)
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary h-4 w-4 shrink-0" />
-                  Ate 80 produtos: R$ {feitoPraVoceValues.ate80} (mais categorias e variações)
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary h-4 w-4 shrink-0" />
-                  120+ produtos: a partir de R$ {feitoPraVoceValues.ate200} (catalogos extensos)
-                </li>
-              </ul>
-              <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
-                <strong>Como funciona:</strong> assim como o iFood, Rappi e todas as grandes
-                plataformas, quem fornece as fotos dos produtos e voce, dono do estabelecimento.
-                Voce envia pelo WhatsApp ou e-mail e nossa equipe cuida do resto.
-              </div>
             </div>
           </div>
         </section>
@@ -304,8 +222,7 @@ export default function PrecosPage() {
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="text-foreground/90 flex items-center gap-2">
             <Shield className="h-5 w-5 text-green-500" />
-            Pagamento claro por template: implantacao inicial, plano mensal correspondente e canal
-            proprio para vender direto.
+            Faixa clara, checkout sem surpresa e canal próprio para vender direto.
           </div>
           <Link
             href="/templates"

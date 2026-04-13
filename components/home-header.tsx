@@ -24,7 +24,6 @@ import { createClient } from '@/lib/shared/supabase/client'
 const NAV_LINKS = [
   { href: '#beneficios', label: 'Benefícios' },
   { href: '#como-funciona', label: 'Como funciona' },
-  { href: 'https://blog.zairyx.com.br', label: 'Blog' },
   { href: '/precos', label: 'Preços' },
 ] as const
 
@@ -160,11 +159,11 @@ export function HomeHeader() {
       <div className="container-premium flex items-center justify-between py-4">
         <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
           <div className="relative h-10 w-10 overflow-hidden rounded-2xl shadow-lg ring-1 shadow-orange-500/20 ring-orange-500/20">
-            <Image src="/icon.png" alt="Zairyx AI" fill className="object-cover" sizes="40px" />
+            <Image src="/icon.png" alt="Zairyx" fill className="object-cover" sizes="40px" />
           </div>
           <div>
             <span className="text-foreground block text-sm font-semibold tracking-[0.18em] uppercase">
-              Zairyx AI
+              Zairyx
             </span>
             <span className="block text-base font-semibold">Sem comissão por pedido</span>
           </div>

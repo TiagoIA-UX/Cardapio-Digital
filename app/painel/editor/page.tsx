@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Loader2, ShieldAlert } from 'lucide-react'
+import { Loader2, ShieldAlert, Clock } from 'lucide-react'
 import { CardapioEditorPreview } from '@/components/template-editor/cardapio-editor-preview'
 import { EditorHeader } from '@/components/template-editor/editor-header'
 import { EditorInspector } from '@/components/template-editor/editor-inspector'
@@ -9,21 +9,50 @@ import { cn } from '@/lib/shared/utils'
 import { getRestaurantScopedHref } from '@/lib/domains/core/active-restaurant'
 import { useEditorState } from '@/lib/domains/core/editor/use-editor-state'
 import { usePanelAccess } from '@/lib/domains/core/panel/panel-context'
+import { useSubscriptionCheck } from '@/lib/domains/core/editor/use-subscription-check'
 import { getMaxProducts } from '@/lib/domains/marketing/pricing'
 import type { FormState } from '@/lib/domains/core/editor/types'
 
 export default function EditorVisualPage() {
   const { capabilities } = usePanelAccess()
   const editor = useEditorState()
+  const subscriptionCheck = useSubscriptionCheck(editor.restaurant?.id ?? null)
 
   const handleFormChange = (patch: Partial<FormState>) => {
     editor.setForm((prev) => ({ ...prev, ...patch }))
   }
 
-  if (editor.loading) {
+  if (editor.loading || subscriptionCheck.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (subscriptionCheck.isBlocked) {
+    const blockInfo = subscriptionCheck.blockInfo
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6">
+        <Clock className="h-12 w-12 text-yellow-600" />
+        <h2 className="text-xl font-bold">Seu cardápio está bloqueado</h2>
+        <div className="max-w-md space-y-2 text-center">
+          <p className="text-muted-foreground">
+            {blockInfo?.reason ||
+              'Sua assinatura expirou. Por favor, renove para continuar editando.'}
+          </p>
+          {blockInfo?.daysUntilBlock && blockInfo.daysUntilBlock > 0 && (
+            <p className="text-sm font-medium text-yellow-700">
+              Você tem {blockInfo.daysUntilBlock} dia(s) para resolver isso.
+            </p>
+          )}
+        </div>
+        <Link
+          href={getRestaurantScopedHref('/painel')}
+          className="text-primary mt-4 hover:underline"
+        >
+          Voltar ao painel
+        </Link>
       </div>
     )
   }

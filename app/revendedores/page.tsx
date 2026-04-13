@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
 
-const WA_REVENDEDOR = 'mailto:zairyx.ai@gmail.com?subject=Parceria%20comercial%20Zairyx%20AI'
+const WA_REVENDEDOR = 'mailto:zairyx.ai@gmail.com?subject=Parceria%20comercial%20Zairyx'
 
 const DIFERENCAS = [
   {
@@ -25,12 +25,12 @@ const DIFERENCAS = [
   {
     icon: LayoutDashboard,
     afiliado: 'Painel de afiliado individual',
-    revendedor: 'Conduz a carteira comercial com apoio operacional da Zairyx AI',
+    revendedor: 'Conduz a carteira comercial com apoio operacional da Zairyx',
   },
   {
     icon: BadgeCheck,
     afiliado: '30% de comissão recorrente',
-    revendedor: 'Modelo de precificação combinado com a Zairyx AI',
+    revendedor: 'Modelo de precificação combinado com a Zairyx',
   },
   {
     icon: Users,
@@ -53,22 +53,22 @@ const BENEFICIOS = [
   {
     icon: LayoutDashboard,
     title: 'Operação assistida',
-    desc: 'Você conduz a venda e o relacionamento comercial com apoio da equipe Zairyx AI na implantação e no suporte técnico.',
+    desc: 'Você conduz a venda e o relacionamento comercial com apoio da equipe Zairyx na implantação e no suporte técnico.',
   },
   {
     icon: ShieldCheck,
-    title: 'Suporte da Zairyx AI',
-    desc: 'Você tem suporte técnico da equipe Zairyx AI para atender seus clientes com confiança.',
+    title: 'Suporte da Zairyx',
+    desc: 'Você tem suporte técnico da equipe Zairyx para atender seus clientes com confiança.',
   },
   {
     icon: Crown,
     title: 'Sua marca no atendimento',
-    desc: 'Apresente o produto ao cliente final usando a identidade da sua agência ou empresa — a Zairyx AI opera nos bastidores.',
+    desc: 'Apresente o produto ao cliente final usando a identidade da sua agência ou empresa — a Zairyx opera nos bastidores.',
   },
   {
     icon: MessageCircle,
     title: 'Canal exclusivo',
-    desc: `Acesso direto ao time de parceiros Zairyx AI para negociações e ${COMMERCIAL_COPY.prioritizedSupport.toLowerCase()}.`,
+    desc: `Acesso direto ao time de parceiros Zairyx para negociações e ${COMMERCIAL_COPY.prioritizedSupport.toLowerCase()}.`,
   },
 ]
 
@@ -86,7 +86,7 @@ export default function Revendedores() {
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-foreground/60 hidden text-sm sm:block">
-              Parceria comercial Zairyx AI
+              Parceria comercial Zairyx
             </span>
             <a
               href={WA_REVENDEDOR}
@@ -108,7 +108,7 @@ export default function Revendedores() {
             </div>
 
             <h1 className="text-foreground mb-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
-              Revenda o Zairyx AI Canais Digitais{' '}
+              Revenda o Zairyx Canais Digitais{' '}
               <span className="text-primary">para seus clientes</span>
             </h1>
 
@@ -253,7 +253,7 @@ export default function Revendedores() {
               <Briefcase className="mx-auto mb-4 h-10 w-10 text-white/70" />
               <h2 className="mb-3 text-3xl font-bold">Vamos conversar?</h2>
               <p className="mb-8 text-lg text-white/80">
-                Fale com a equipe Zairyx AI e descubra como estruturar a parceria para o seu negócio.
+                Fale com a equipe Zairyx e descubra como estruturar a parceria para o seu negócio.
               </p>
               <a
                 href={WA_REVENDEDOR}

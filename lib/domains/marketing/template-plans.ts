@@ -1,13 +1,18 @@
-/**
- * 📊 ESTRUTURA DE PLANOS POR TEMPLATE - PhD Level Analysis
- *
- * Baseado em análise de mercado brasileiro e dados reais de estabelecimentos
- * Cada template possui 3 planos integrados baseados na quantidade mínima de produtos
- */
+import type { RestaurantTemplateSlug } from '@/lib/domains/core/restaurant-customization'
+import {
+  PLAN_LIMITS,
+  PUBLIC_SUBSCRIPTION_PRICES,
+  type OnboardingPlanSlug,
+  type SubscriptionPlanSlug,
+} from '@/lib/domains/marketing/pricing'
+import {
+  TEMPLATE_PUBLIC_META,
+  TEMPLATE_PUBLIC_ORDER,
+} from '@/lib/domains/marketing/template-public-meta'
 
 export interface TemplatePlan {
   id: string
-  name: string
+  name: 'essencial' | 'operacao' | 'escala'
   displayName: string
   description: string
   maxProducts: number
@@ -16,389 +21,141 @@ export interface TemplatePlan {
   priceAnnual: number
   recommended: boolean
   popular?: boolean
+  capacitySlug: SubscriptionPlanSlug
 }
 
-export interface TemplatePlans {
-  [templateSlug: string]: TemplatePlan[]
+export type TemplatePlans = Record<RestaurantTemplateSlug, TemplatePlan[]>
+
+const TEMPLATE_PLAN_BLUEPRINTS: Record<
+  RestaurantTemplateSlug,
+  { essencial: number; operacao: number; escala: number }
+> = {
+  lanchonete: { essencial: 15, operacao: 35, escala: 60 },
+  acai: { essencial: 12, operacao: 25, escala: 45 },
+  restaurante: { essencial: 20, operacao: 40, escala: 80 },
+  cafeteria: { essencial: 15, operacao: 35, escala: 60 },
+  bar: { essencial: 20, operacao: 40, escala: 80 },
+  pizzaria: { essencial: 18, operacao: 30, escala: 60 },
+  sushi: { essencial: 25, operacao: 50, escala: 100 },
+  adega: { essencial: 35, operacao: 80, escala: 160 },
+  mercadinho: { essencial: 30, operacao: 70, escala: 140 },
+  minimercado: { essencial: 80, operacao: 200, escala: 600 },
+  padaria: { essencial: 20, operacao: 45, escala: 90 },
+  sorveteria: { essencial: 15, operacao: 30, escala: 60 },
+  acougue: { essencial: 20, operacao: 45, escala: 90 },
+  hortifruti: { essencial: 25, operacao: 60, escala: 120 },
+  petshop: { essencial: 25, operacao: 50, escala: 100 },
+  doceria: { essencial: 15, operacao: 30, escala: 60 },
 }
 
-/**
- * 🎯 DEFINIÇÃO DE PLANOS POR TEMPLATE
- *
- * Lógica baseada em dados reais do mercado brasileiro:
- * - Essencial: Quantidade mínima para sobreviver (15-40 produtos)
- * - Profissional: Cardápio completo para operação regular (25-80 produtos)
- * - Empresarial: Sortimento completo para grandes operações (40-120+ produtos)
- */
-export const TEMPLATE_PLANS: TemplatePlans = {
-  // 🍽️ RESTAURANTE - Foco em pratos executivos e marmitas
-  restaurante: [
-    {
-      id: 'restaurante-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para restaurantes iniciantes - pratos principais + básicos',
-      maxProducts: 25,
-      features: [
-        'Até 25 produtos',
-        'Pratos executivos básicos',
-        '2 categorias principais',
-        'Suporte básico',
-        'Relatórios simples',
-      ],
-      priceMonthly: 97,
-      priceAnnual: 970,
-      recommended: true,
-    },
-    {
-      id: 'restaurante-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Cardápio completo para restaurantes estabelecidos',
-      maxProducts: 40,
-      features: [
-        'Até 40 produtos',
-        'Cardápio completo',
-        'Peixes e frutos do mar',
-        'Marmitas fitness',
-        'Combos promocionais',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 147,
-      priceAnnual: 1470,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'restaurante-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes e operações de grande porte',
-      maxProducts: 52,
-      features: [
-        'Até 52 produtos',
-        'Sortimento completo',
-        'Todas as categorias',
-        'Análises avançadas',
-        'Suporte 24/7',
-        'API personalizada',
-      ],
-      priceMonthly: 247,
-      priceAnnual: 2470,
-      recommended: false,
-    },
-  ],
-
-  // 🍕 PIZZARIA - Foco em sabores e combinações
-  pizzaria: [
-    {
-      id: 'pizzaria-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para pizzarias pequenas - sabores básicos',
-      maxProducts: 18,
-      features: [
-        'Até 18 produtos',
-        'Sabores tradicionais',
-        '2 tamanhos',
-        'Bebidas básicas',
-        'Suporte básico',
-      ],
-      priceMonthly: 97,
-      priceAnnual: 970,
-      recommended: true,
-    },
-    {
-      id: 'pizzaria-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Pizzaria completa com variações',
-      maxProducts: 30,
-      features: [
-        'Até 30 produtos',
-        'Linha completa',
-        'Esfihas e calzones',
-        'Combos família',
-        'Bordas recheadas',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 147,
-      priceAnnual: 1470,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'pizzaria-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes de pizzaria',
-      maxProducts: 48,
-      features: [
-        'Até 48 produtos',
-        'Catálogo premium',
-        'Pizzas doces',
-        'Programa de fidelidade',
-        'Análises avançadas',
-        'Suporte 24/7',
-      ],
-      priceMonthly: 247,
-      priceAnnual: 2470,
-      recommended: false,
-    },
-  ],
-
-  // 🍔 LANCHONETE - Foco em sanduíches e porções
-  lanchonete: [
-    {
-      id: 'lanchonete-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para lanchonetes pequenas',
-      maxProducts: 20,
-      features: [
-        'Até 20 produtos',
-        'Sanduíches básicos',
-        'Porções simples',
-        'Bebidas',
-        'Suporte básico',
-      ],
-      priceMonthly: 97,
-      priceAnnual: 970,
-      recommended: true,
-    },
-    {
-      id: 'lanchonete-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Lanchonete completa',
-      maxProducts: 35,
-      features: [
-        'Até 35 produtos',
-        'Cardápio variado',
-        'Combos promocionais',
-        'Porções especiais',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 147,
-      priceAnnual: 1470,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'lanchonete-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes de lanchonetes',
-      maxProducts: 46,
-      features: [
-        'Até 46 produtos',
-        'Sortimento completo',
-        'Programa fidelidade',
-        'Análises avançadas',
-        'Suporte 24/7',
-      ],
-      priceMonthly: 247,
-      priceAnnual: 2470,
-      recommended: false,
-    },
-  ],
-
-  // 🍨 AÇAÍ/SORVETERIA - Foco em variações e toppings
-  acai: [
-    {
-      id: 'acai-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para pontos de açaí pequenos',
-      maxProducts: 12,
-      features: ['Até 12 produtos', 'Açaí básico', '2-3 acompanhamentos', 'Suporte básico'],
-      priceMonthly: 77,
-      priceAnnual: 770,
-      recommended: true,
-    },
-    {
-      id: 'acai-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Açaí completo com variações',
-      maxProducts: 25,
-      features: [
-        'Até 25 produtos',
-        'Linha completa',
-        'Toppings variados',
-        'Combos',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 127,
-      priceAnnual: 1270,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'acai-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes de açaí',
-      maxProducts: 38,
-      features: [
-        'Até 38 produtos',
-        'Catálogo premium',
-        'Frutas especiais',
-        'Programa fidelidade',
-        'Análises avançadas',
-      ],
-      priceMonthly: 197,
-      priceAnnual: 1970,
-      recommended: false,
-    },
-  ],
-
-  // 🛒 MERCADINHO - Foco em itens essenciais
-  mercadinho: [
-    {
-      id: 'mercadinho-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para mercadinhos pequenos',
-      maxProducts: 50,
-      features: ['Até 50 produtos', 'Itens básicos', 'Conveniência', 'Suporte básico'],
-      priceMonthly: 127,
-      priceAnnual: 1270,
-      recommended: true,
-    },
-    {
-      id: 'mercadinho-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Mercadinho completo',
-      maxProducts: 90,
-      features: [
-        'Até 90 produtos',
-        'Sortimento médio',
-        'Produtos frescos',
-        'Combos promocionais',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 197,
-      priceAnnual: 1970,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'mercadinho-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes de varejo',
-      maxProducts: 128,
-      features: [
-        'Até 128 produtos',
-        'Sortimento completo',
-        'Programa fidelidade',
-        'Análises avançadas',
-        'Suporte 24/7',
-        'Integração ERP',
-      ],
-      priceMonthly: 297,
-      priceAnnual: 2970,
-      recommended: false,
-    },
-  ],
-
-  // 🐕 PETSHOP - Foco em produtos para animais
-  petshop: [
-    {
-      id: 'petshop-essencial',
-      name: 'essencial',
-      displayName: 'Essencial',
-      description: 'Para petshops pequenos',
-      maxProducts: 25,
-      features: ['Até 25 produtos', 'Ração básica', 'Petiscos', 'Suporte básico'],
-      priceMonthly: 97,
-      priceAnnual: 970,
-      recommended: true,
-    },
-    {
-      id: 'petshop-profissional',
-      name: 'profissional',
-      displayName: 'Profissional',
-      description: 'Petshop completo',
-      maxProducts: 45,
-      features: [
-        'Até 45 produtos',
-        'Linha completa',
-        'Acessórios',
-        'Higiene',
-        'Suporte prioritário',
-      ],
-      priceMonthly: 147,
-      priceAnnual: 1470,
-      recommended: false,
-      popular: true,
-    },
-    {
-      id: 'petshop-empresarial',
-      name: 'empresarial',
-      displayName: 'Empresarial',
-      description: 'Para redes de petshop',
-      maxProducts: 66,
-      features: [
-        'Até 66 produtos',
-        'Catálogo premium',
-        'Programa fidelidade',
-        'Análises avançadas',
-        'Suporte 24/7',
-      ],
-      priceMonthly: 247,
-      priceAnnual: 2470,
-      recommended: false,
-    },
-  ],
+function resolveCapacitySlug(maxProducts: number): SubscriptionPlanSlug {
+  if (maxProducts <= PLAN_LIMITS.semente.maxProducts) return 'semente'
+  if (maxProducts <= PLAN_LIMITS.basico.maxProducts) return 'basico'
+  if (maxProducts <= PLAN_LIMITS.pro.maxProducts) return 'pro'
+  return 'premium'
 }
 
-/**
- * 🔍 UTILITÁRIOS PARA PLANOS
- */
+function buildPlan(
+  templateSlug: RestaurantTemplateSlug,
+  name: TemplatePlan['name'],
+  maxProducts: number
+): TemplatePlan {
+  const meta = TEMPLATE_PUBLIC_META[templateSlug]
+  const capacitySlug = resolveCapacitySlug(maxProducts)
+  const priceMonthly = PUBLIC_SUBSCRIPTION_PRICES[capacitySlug].monthly
+  const priceAnnual = PUBLIC_SUBSCRIPTION_PRICES[capacitySlug].annual
+
+  const planLabels: Record<TemplatePlan['name'], { displayName: string; description: string }> = {
+    essencial: {
+      displayName: 'Essencial',
+      description: `Para validar ${meta.shortName.toLowerCase()} com o mix principal.`,
+    },
+    operacao: {
+      displayName: 'Operação',
+      description: `Para rodar o dia a dia com variedade saudável e catálogo estável.`,
+    },
+    escala: {
+      displayName: 'Escala',
+      description: `Para ampliar mix, sazonalidade, kits e categorias sem travar a leitura.`,
+    },
+  }
+
+  return {
+    id: `${templateSlug}-${name}`,
+    name,
+    displayName: planLabels[name].displayName,
+    description: planLabels[name].description,
+    maxProducts,
+    features: [
+      `Até ${maxProducts} produtos no catálogo`,
+      meta.productProfile,
+      `Faixa pública alinhada ao plano ${PLAN_LIMITS[capacitySlug].label}`,
+      'Troca de fotos, preços e categorias no painel',
+    ],
+    priceMonthly,
+    priceAnnual,
+    recommended: name === 'operacao',
+    popular: name === 'operacao',
+    capacitySlug,
+  }
+}
+
+export const TEMPLATE_PLANS: TemplatePlans = TEMPLATE_PUBLIC_ORDER.reduce((acc, templateSlug) => {
+  const blueprint = TEMPLATE_PLAN_BLUEPRINTS[templateSlug]
+  acc[templateSlug] = [
+    buildPlan(templateSlug, 'essencial', blueprint.essencial),
+    buildPlan(templateSlug, 'operacao', blueprint.operacao),
+    buildPlan(templateSlug, 'escala', blueprint.escala),
+  ]
+  return acc
+}, {} as TemplatePlans)
+
 export function getTemplatePlans(templateSlug: string): TemplatePlan[] {
-  return TEMPLATE_PLANS[templateSlug] || []
+  return TEMPLATE_PLANS[templateSlug as RestaurantTemplateSlug] || []
 }
 
 export function getPlanById(templateSlug: string, planId: string): TemplatePlan | undefined {
-  const plans = getTemplatePlans(templateSlug)
-  return plans.find((plan) => plan.id === planId)
+  return getTemplatePlans(templateSlug).find((plan) => plan.id === planId)
 }
 
 export function getRecommendedPlan(templateSlug: string): TemplatePlan | undefined {
-  const plans = getTemplatePlans(templateSlug)
-  return plans.find((plan) => plan.recommended)
+  return getTemplatePlans(templateSlug).find((plan) => plan.recommended)
 }
 
 export function getPopularPlan(templateSlug: string): TemplatePlan | undefined {
-  const plans = getTemplatePlans(templateSlug)
-  return plans.find((plan) => plan.popular)
+  return getTemplatePlans(templateSlug).find((plan) => plan.popular)
 }
 
-/**
- * 📊 MÉTRICAS DE PLANOS
- */
+export function getEntryPlan(templateSlug: string): TemplatePlan | undefined {
+  return getTemplatePlans(templateSlug)[0]
+}
+
+export function getTemplatePlanCheckoutHref(
+  templateSlug: string,
+  planName: TemplatePlan['name'],
+  onboardingPlan: OnboardingPlanSlug = 'self-service'
+): string {
+  const selectedPlan = getTemplatePlans(templateSlug).find((plan) => plan.name === planName)
+  const capacitySlug = selectedPlan?.capacitySlug ?? 'basico'
+  return `/comprar/${templateSlug}?plano=${onboardingPlan}&capacidade=${capacitySlug}`
+}
+
 export const PLAN_METRICS = {
   totalTemplates: Object.keys(TEMPLATE_PLANS).length,
   totalPlans: Object.values(TEMPLATE_PLANS).reduce((sum, plans) => sum + plans.length, 0),
   avgProductsEssential: Math.round(
     Object.values(TEMPLATE_PLANS)
       .map((plans) => plans.find((p) => p.name === 'essencial')?.maxProducts || 0)
-      .filter((count) => count > 0)
       .reduce((sum, count, _, arr) => sum + count / arr.length, 0)
   ),
-  avgProductsProfessional: Math.round(
+  avgProductsOperation: Math.round(
     Object.values(TEMPLATE_PLANS)
-      .map((plans) => plans.find((p) => p.name === 'profissional')?.maxProducts || 0)
-      .filter((count) => count > 0)
+      .map((plans) => plans.find((p) => p.name === 'operacao')?.maxProducts || 0)
       .reduce((sum, count, _, arr) => sum + count / arr.length, 0)
   ),
-  avgProductsEnterprise: Math.round(
+  avgProductsScale: Math.round(
     Object.values(TEMPLATE_PLANS)
-      .map((plans) => plans.find((p) => p.name === 'empresarial')?.maxProducts || 0)
-      .filter((count) => count > 0)
+      .map((plans) => plans.find((p) => p.name === 'escala')?.maxProducts || 0)
       .reduce((sum, count, _, arr) => sum + count / arr.length, 0)
   ),
 } as const

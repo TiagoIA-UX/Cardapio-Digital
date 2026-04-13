@@ -3,7 +3,7 @@ import { createClient } from '@/lib/shared/supabase/server'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { requireAdmin } from '@/lib/domains/auth/admin-auth'
 
-/** Seed dos 15 templates — usado se a tabela estiver vazia */
+/** Seed dos 16 templates — usado se a tabela estiver vazia */
 const TEMPLATES_SEED = [
   {
     slug: 'restaurante',
@@ -43,9 +43,9 @@ const TEMPLATES_SEED = [
   },
   {
     slug: 'lanchonete',
-    name: 'Hamburgueria / Lanchonete',
+    name: 'Lanches e Burgers',
     description:
-      'Cardápio para lanchonetes e hamburguerias artesanais. Com adicionais e combos personalizados.',
+      'Cardápio para operações de lanches, burgers e combos personalizados com leitura rápida no celular.',
     price: 247,
     original_price: 297,
     category: 'lanchonete',
@@ -97,9 +97,9 @@ const TEMPLATES_SEED = [
   },
   {
     slug: 'acai',
-    name: 'Açaíteria',
+    name: 'Açaí e Cremes',
     description:
-      'Cardápio para açaíterias e lanchonetes naturais. Com tigelas, copos e adicionais.',
+      'Cardápio para açaí, cremes, tigelas, copos e adicionais com personalização simples.',
     price: 247,
     original_price: 297,
     category: 'acai',
@@ -297,7 +297,7 @@ const TEMPLATES_SEED = [
 /**
  * POST /api/dev/unlock-all-templates
  * Libera todos os templates para o usuário logado (como se tivesse pago todos).
- * Se a tabela templates estiver vazia, insere os 15 templates padrão antes.
+ * Se a tabela templates estiver vazia, insere os 16 templates padrão antes.
  * Também define status_pagamento = 'ativo' no restaurante do usuário, se existir.
  */
 export async function POST(req: NextRequest) {
@@ -322,7 +322,7 @@ export async function POST(req: NextRequest) {
 
     const admin = createAdminClient()
 
-    // Garantir que os 15 templates padrão existam mesmo se o banco estiver parcialmente seedado.
+    // Garantir que os 16 templates padrão existam mesmo se o banco estiver parcialmente seedado.
     for (const row of TEMPLATES_SEED) {
       const { error: insertError } = await admin
         .from('templates')
@@ -347,7 +347,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            'Nenhum template encontrado no sistema. A sincronização dos 15 templates falhou e precisa ser revisada no banco.',
+            'Nenhum template encontrado no sistema. A sincronização dos 16 templates falhou e precisa ser revisada no banco.',
         },
         { status: 500 }
       )

@@ -669,8 +669,8 @@ export default function ComparativoPage() {
               <p className="text-3xl font-bold text-orange-600">16</p>
               <p className="mt-1 text-sm font-bold text-zinc-800">Catálogos prontos por nicho</p>
               <p className="mt-2 text-xs text-zinc-600">
-                Pizzaria, hamburgueria, bar, cafeteria, açaíteria, mercadinho e mais. Já vem com
-                produtos — só editar.
+                Pizzaria, lanches e burgers, bar e petiscos, cafeteria e brunch, conveniência e
+                mais. Já vem com produtos — só editar.
               </p>
             </div>
             <div className="rounded-2xl border-2 border-green-200 bg-green-50 p-6 text-center">

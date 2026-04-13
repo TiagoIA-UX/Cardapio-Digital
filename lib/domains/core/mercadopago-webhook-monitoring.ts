@@ -23,6 +23,13 @@ export interface MercadoPagoWebhookIncidentPayload {
 export function buildMercadoPagoWebhookIncidentPayload(
   input: MercadoPagoWebhookIncidentInput
 ): MercadoPagoWebhookIncidentPayload {
+  const correlationId = [
+    input.eventId || 'event:none',
+    input.paymentId ? `payment:${input.paymentId}` : 'payment:none',
+    input.requestId || 'request:none',
+    input.stage || 'stage:none',
+  ].join('|')
+
   const metadata = {
     event_id: input.eventId || null,
     event_type: input.eventType || null,
@@ -30,6 +37,7 @@ export function buildMercadoPagoWebhookIncidentPayload(
     external_reference: input.externalReference || null,
     request_id: input.requestId || null,
     stage: input.stage || null,
+    correlation_id: correlationId,
     error_message: input.errorMessage,
     stack: input.stack || null,
   }
@@ -42,6 +50,7 @@ export function buildMercadoPagoWebhookIncidentPayload(
     input.paymentId ? `Pagamento: ${input.paymentId}` : null,
     input.externalReference ? `Referência externa: ${input.externalReference}` : null,
     input.requestId ? `Request ID: ${input.requestId}` : null,
+    `Correlation ID: ${correlationId}`,
     `Erro: ${input.errorMessage}`,
   ]
     .filter(Boolean)

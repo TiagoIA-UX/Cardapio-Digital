@@ -16,6 +16,7 @@ import {
   TEMPLATE_PRESETS,
   type RestaurantTemplateSlug,
 } from '@/lib/domains/core/restaurant-customization'
+import { getPublicTemplateName } from '@/lib/domains/marketing/template-public-meta'
 
 const TEMPLATE_OPTIONS: RestaurantTemplateSlug[] = [
   'lanchonete',
@@ -118,8 +119,8 @@ export default function ComecarGratisPage() {
                 <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
                   <p className="flex items-start gap-2">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" /> Se você precisa de
-                    pizzaria, sushi, restaurante, adega ou catálogo grande, pule direto para o plano
-                    profissional.
+                    Pizzaria, Sushi e Japonês, Restaurante e Marmita, Adega e Bebidas ou catálogo
+                    grande, pule direto para o plano profissional.
                   </p>
                 </div>
               </div>
@@ -244,7 +245,7 @@ export default function ComecarGratisPage() {
                 >
                   {TEMPLATE_OPTIONS.map((slug) => (
                     <option key={slug} value={slug}>
-                      {TEMPLATE_PRESETS[slug].label}
+                      {getPublicTemplateName(slug) || TEMPLATE_PRESETS[slug].label}
                     </option>
                   ))}
                 </select>

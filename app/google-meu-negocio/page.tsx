@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle, Eye, MapPin, Sparkles, Star } from 'lucide-reac
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
 
 export const metadata: Metadata = {
-  title: 'Grupo Zairyx AI | Litoral Conecta Canais Digitais',
+  title: 'Grupo Zairyx | Litoral Conecta Canais Digitais',
   description: `Aprenda ou contrate a configuração do Google Meu Negócio com clareza comercial. O cadastro no Google é gratuito; o link do cardápio digital depende de um canal ativo contratado à parte na Zairyx.`,
 }
 
@@ -32,7 +32,7 @@ export default function GoogleMeuNegocioPage() {
         <div className="mb-16 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
             <Eye className="h-4 w-4" />
-            Grupo Zairyx AI | Litoral Conecta Canais Digitais
+            Grupo Zairyx | Litoral Conecta Canais Digitais
           </div>
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
             Você já está no <span className="text-blue-600">Google Meu Negócio</span>?

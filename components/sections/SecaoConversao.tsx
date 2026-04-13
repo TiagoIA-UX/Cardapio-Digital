@@ -39,7 +39,7 @@ const COMPARISON_ROWS = [
   },
   {
     antes: 'Sem atendimento fora do horário comercial',
-    depois: 'IA assistente 24h dentro do cardápio',
+    depois: 'Pedido pronto para cair direto no seu WhatsApp',
   },
   {
     antes: 'Cancelamento burocrático e suporte lento',

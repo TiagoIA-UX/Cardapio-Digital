@@ -26,19 +26,17 @@ const FAQ_ITEMS = [
       'O cliente navega pelo catálogo no celular, monta o pedido e conclui direto no cardápio digital. O pedido chega organizado com itens, quantidades e observações — sem confusão.',
   },
   {
-    question: 'O que é a IA assistente? Preciso pagar a mais?',
+    question: 'Tem atendimento humano? Preciso pagar a mais?',
     answer:
-      'É a Zai, agente de IA que vai de brinde no seu canal digital. Ela responde dúvidas, organiza o pedido e faz sugestões leves para vender melhor, sem forçar a compra. Se perceber que uma bebida ficou para trás, por exemplo, ela pode sugerir isso com inteligência para ajudar o delivery a faturar mais.',
+      'Sim. Você pode contratar o canal e tocar a operação pelo painel sem depender de bot. Quando precisar de apoio, o atendimento é feito pela equipe, sem taxa extra para liberar o uso básico do produto.',
   },
   {
     question: 'Quanto custa? Tem taxa por pedido?',
-    answer:
-      `R$ 147/mês fixo. ${COMMERCIAL_COPY.noPlatformCommission}. Diferente de apps que cobram percentual sobre cada venda, aqui o plano é fixo. Taxas de gateway de pagamento e logística, quando existirem, continuam separadas.`,
+    answer: `R$ 147/mês fixo. ${COMMERCIAL_COPY.noPlatformCommission}. Diferente de apps que cobram percentual sobre cada venda, aqui o plano é fixo. Taxas de gateway de pagamento e logística, quando existirem, continuam separadas.`,
   },
   {
     question: 'E se eu não gostar? Tem contrato?',
-    answer:
-      `Sem contrato de fidelidade. ${COMMERCIAL_COPY.withdrawalExplainer} Depois disso, valem as regras de cancelamento descritas nos termos vigentes.`,
+    answer: `Sem contrato de fidelidade. ${COMMERCIAL_COPY.withdrawalExplainer} Depois disso, valem as regras de cancelamento descritas nos termos vigentes.`,
   },
   {
     question: 'Posso aceitar pagamento online (PIX)?',
@@ -48,7 +46,7 @@ const FAQ_ITEMS = [
   {
     question: 'E se eu já uso iFood, Rappi ou outro app?',
     answer:
-      'Não precisa sair. Use o iFood para atrair cliente novo e traga o cliente fiel para o seu canal digital. Em um exemplo conservador, 100 pedidos por mês de clientes fiéis com ticket de R$ 50 representam algo perto de R$ 750 em comissão recuperada. Tirando a assinatura de R$ 147, ainda sobra ganho real no caixa, fora o faturamento extra que a Zai pode gerar com upsell leve, como sugerir uma bebida quando percebe uma oportunidade natural no pedido.',
+      'Não precisa sair. Use o iFood para atrair cliente novo e traga o cliente fiel para o seu canal digital. Em um exemplo conservador, 100 pedidos por mês de clientes fiéis com ticket de R$ 50 representam algo perto de R$ 750 em comissão recuperada. Tirando a assinatura de R$ 147, ainda sobra ganho real no caixa.',
   },
 ] as const
 

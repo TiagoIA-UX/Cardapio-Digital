@@ -64,8 +64,9 @@ export default function DevUnlockPage() {
           {status === 'idle' && (
             <>
               <p className="text-muted-foreground text-center text-sm">
-                Clique no botão abaixo para liberar todos os 15 templates (Pizzaria, Restaurante,
-                Lanchonete, Adega, Mercadinho, Padaria, Petshop, etc.) para sua conta.
+                Clique no botão abaixo para liberar todos os 16 templates de teste (Pizzaria,
+                Restaurante, Lanches e Burgers, Adega, Conveniência, Mercado de Bairro, Padaria,
+                Petshop e outros) para sua conta.
               </p>
               <Button
                 onClick={handleUnlock}

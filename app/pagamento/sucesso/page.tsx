@@ -21,7 +21,10 @@ import {
   PAYMENT_DESCRIPTOR_NOTE,
 } from '@/lib/shared/brand'
 import { POST_PURCHASE_OFFERS } from '@/lib/domains/marketing/pricing'
-import { getRestaurantScopedHref, setStoredActiveRestaurantId } from '@/lib/domains/core/active-restaurant'
+import {
+  getRestaurantScopedHref,
+  setStoredActiveRestaurantId,
+} from '@/lib/domains/core/active-restaurant'
 
 const ACELERACAO_VENDAS_OFFER = POST_PURCHASE_OFFERS.aceleracaoVendas7Dias
 // Oferta pós-compra desativada por padrão para evitar exposição não planejada.
@@ -390,7 +393,7 @@ function PagamentoSucessoContent() {
               href={painelHref}
               className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors"
             >
-              Seguir com a Zai no painel
+              Seguir com a equipe no painel
               <ArrowRight className="h-4 w-4" />
             </Link>
             <p className="text-muted-foreground mt-2 text-[11px]">

@@ -5,6 +5,11 @@ import Link from 'next/link'
 import { Zap, Eye, Sparkles, TrendingUp } from 'lucide-react'
 import { StarRatingCompact } from '@/components/shared/star-rating'
 import { getTemplatePricing } from '@/lib/domains/marketing/pricing'
+import {
+  getEntryPlan,
+  getPopularPlan,
+  getTemplatePlanCheckoutHref,
+} from '@/lib/domains/marketing/template-plans'
 import { cn } from '@/lib/shared/utils'
 
 interface TemplateCardProps {
@@ -33,6 +38,8 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
   const detailedPricing = getTemplatePricing(
     template.slug as Parameters<typeof getTemplatePricing>[0]
   )
+  const entryPlan = getEntryPlan(template.slug)
+  const popularPlan = getPopularPlan(template.slug)
 
   return (
     <div
@@ -151,18 +158,30 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
             Testar demonstração
           </Link>
           <Link
-            href={`/comprar/${template.slug}?plano=self-service&capacidade=basico`}
+            href={
+              entryPlan
+                ? getTemplatePlanCheckoutHref(template.slug, entryPlan.name, 'self-service')
+                : `/comprar/${template.slug}?plano=self-service&capacidade=basico`
+            }
             className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors"
           >
             <Zap className="h-4 w-4" />
-            Você configura · até 60 produtos
+            {entryPlan
+              ? `${entryPlan.displayName} · até ${entryPlan.maxProducts} produtos`
+              : 'Você configura · até 60 produtos'}
           </Link>
           <Link
-            href={`/comprar/${template.slug}?plano=feito-pra-voce&capacidade=pro`}
+            href={
+              popularPlan
+                ? getTemplatePlanCheckoutHref(template.slug, popularPlan.name, 'feito-pra-voce')
+                : `/comprar/${template.slug}?plano=feito-pra-voce&capacidade=pro`
+            }
             className="border-border hover:bg-muted inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors"
           >
             <Sparkles className="h-4 w-4" />
-            Equipe configura · até 200 produtos
+            {popularPlan
+              ? `${popularPlan.displayName} · equipe configura`
+              : 'Equipe configura · até 200 produtos'}
           </Link>
         </div>
       </div>

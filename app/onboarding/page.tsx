@@ -15,17 +15,20 @@ import {
   Trash2,
 } from 'lucide-react'
 import { StatusPedido } from '@/components/status-pedido'
-import { getRestaurantScopedHref, setStoredActiveRestaurantId } from '@/lib/domains/core/active-restaurant'
+import {
+  getRestaurantScopedHref,
+  setStoredActiveRestaurantId,
+} from '@/lib/domains/core/active-restaurant'
 
 const TIPOS_NEGOCIO = [
   'Delivery',
   'Pizzaria',
-  'Hamburgueria',
+  'Lanches e Burgers',
   'Lanchonete',
   'Restaurante',
   'Bar / Pub',
   'Cafeteria',
-  'Açaíteria',
+  'Açaí e Cremes',
   'Doceria',
   'Outro',
 ] as const

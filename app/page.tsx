@@ -104,8 +104,8 @@ export default function Home() {
               <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
                 <strong className="text-white">Seu cardápio digital pronto em 30 minutos.</strong>{' '}
                 Zero comissão por pedido — nunca cobramos % sobre suas vendas.{' '}
-                <strong className="text-green-400">Pedidos direto no WhatsApp.</strong> IA que
-                atende 24h.{' '}
+                <strong className="text-green-400">Pedidos direto no WhatsApp.</strong> Fluxo
+                simples para o cliente pedir sem atrito.{' '}
                 <span className="text-zinc-300">
                   O iFood traz gente nova — o SEU cardápio fideliza.
                 </span>
@@ -572,22 +572,13 @@ export default function Home() {
 
                       <div className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
                         <p className="text-sm font-semibold text-green-800">
-                          Dica prática diária para deliverys
+                          Dica prática para fortalecer seu canal próprio
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-green-700">
-                          No Blog da Zairyx você recebe 1 insight por dia de marketing local,
-                          cardápio e conversão para fortalecer seu canal próprio sem depender de
-                          marketplace.
+                          Mantenha Google Meu Negócio atualizado, divulgue seu link direto no
+                          WhatsApp e capture recorrência no seu próprio canal para reduzir
+                          dependência de marketplace.
                         </p>
-                        <a
-                          href="https://blog.zairyx.com.br"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-green-800 underline decoration-green-400 underline-offset-3 hover:text-green-900"
-                        >
-                          Acessar Blog da Zairyx
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -651,7 +642,7 @@ export default function Home() {
               <div className="mt-10 rounded-3xl border-2 border-orange-200 bg-orange-50 p-8 text-center">
                 <p className="text-lg font-bold text-zinc-900">
                   <Sparkles className="mr-2 inline h-5 w-5 text-orange-500" />
-                  Por que a Zairyx AI criou esta seção?
+                  Por que a Zairyx criou esta seção?
                 </p>
                 <p className="mx-auto mt-3 max-w-3xl text-sm leading-relaxed text-zinc-700">
                   Muitos donos de delivery confundem os papéis dos canais. O iFood funciona como um{' '}
@@ -671,7 +662,7 @@ export default function Home() {
         <section data-testid="proof-section" className="border-b border-zinc-100 bg-zinc-50 py-8">
           <div className="container-premium">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              <ProofStat value="0%" label="de comissao da Zairyx AI por pedido" highlight />
+              <ProofStat value="0%" label="de comissao da Zairyx por pedido" highlight />
               <ProofStat value="16" label="nichos com modelo pronto" />
               <ProofStat value="30 min" label="e seu cardápio está no ar" />
               <ProofStat
@@ -865,7 +856,8 @@ export default function Home() {
                 </p>
                 <p className="mt-2 text-sm text-zinc-600">
                   Seu sistema já vem organizado com produtos estratégicos para aumentar suas vendas.
-                  Categorias pensadas, sugestões inteligentes e uma IA que ajuda a vender mais.
+                  Categorias pensadas, leitura rápida no celular e pedido organizado para o cliente
+                  concluir sem confusão.
                 </p>
               </div>
             </div>
@@ -905,7 +897,7 @@ export default function Home() {
                   step="01"
                   icon={<Sparkles className="h-6 w-6" />}
                   title="Escolha o modelo do seu nicho"
-                  description="15 templates profissionais: Pizzaria, Hamburgueria, Bar, Cafeteria, Açaíteria e mais. Já vêm com produtos reais de exemplo — só trocar."
+                  description="16 nichos prontos: Pizzaria, Lanches e Burgers, Bar e Petiscos, Cafeteria e Brunch, Açaí e Cremes e mais. Já vêm com produtos reais de exemplo — só trocar."
                 />
                 <StepCard
                   step="02"
@@ -917,7 +909,7 @@ export default function Home() {
                   step="03"
                   icon={<Send className="h-6 w-6" />}
                   title="Publique e comece a lucrar"
-                  description="Envie seu link por WhatsApp, Instagram e QR Code. Pedidos chegam organizados. O valor do pedido entra no seu canal, sem comissao da Zairyx AI por venda."
+                  description="Envie seu link por WhatsApp, Instagram e QR Code. Pedidos chegam organizados. O valor do pedido entra no seu canal, sem comissao da Zairyx por venda."
                 />
               </div>
 
@@ -989,8 +981,8 @@ export default function Home() {
                 />
                 <BenefitCard
                   icon={<Sparkles className="h-5 w-5" />}
-                  title="IA que atende 24h"
-                  text="Assistente inteligente direto no cardápio. Responde dúvidas, sugere combos e fecha pedidos — inclusive de madrugada. Vai de brinde."
+                  title="Pedido simples para o cliente"
+                  text="O cliente encontra categoria, escolhe item, ajusta observação e envia tudo organizado. Menos atrito para pedir, menos retrabalho para atender."
                 />
                 <BenefitCard
                   icon={<CheckCircle className="h-5 w-5" />}
@@ -1000,7 +992,7 @@ export default function Home() {
                 <BenefitCard
                   icon={<Shield className="h-5 w-5" />}
                   title={`Mensalidade fixa, ${COMMERCIAL_COPY.noPlatformCommission.toLowerCase()}`}
-                  text="Vendeu R$ 1.000 ou R$ 100.000? A mensalidade da Zairyx AI nao muda. Taxas de pagamento e entrega, quando existirem, seguem separadas."
+                  text="Vendeu R$ 1.000 ou R$ 100.000? A mensalidade da Zairyx nao muda. Taxas de pagamento e entrega, quando existirem, seguem separadas."
                 />
                 <BenefitCard
                   icon={<ShieldCheck className="h-5 w-5" />}
@@ -1064,7 +1056,7 @@ export default function Home() {
         <TestimonialsSection />
 
         {/* ═══════════════════════════════════════════════════════════════
-            PRODUTO — Screenshots reais + IA destaque
+          PRODUTO — Screenshots reais + destaques do canal
         ═══════════════════════════════════════════════════════════════ */}
         <ScrollReveal>
           <section
@@ -1074,84 +1066,58 @@ export default function Home() {
             <div className="container-premium">
               <div className="mb-14 text-center">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  O produto que reduz dependencia do app
+                  O produto que reduz dependência do app
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                   Painel profissional.{' '}
-                  <span className="text-orange-500">Leitura impecavel no celular.</span>
+                  <span className="text-orange-500">Leitura impecável no celular.</span>
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-zinc-700">
-                  O objetivo nao e so ter um painel bonito. E fazer voce editar rapido, publicar sem
-                  travar e entregar um canal proprio que o cliente consiga usar no celular sem
-                  friccao.
+                  O objetivo não é só ter um painel bonito. É fazer você editar rápido, publicar sem
+                  travar e entregar um canal próprio que o cliente consiga usar no celular sem
+                  fricção.
                 </p>
               </div>
 
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+              <div className="grid gap-6 lg:grid-cols-2">
                 <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)]">
-                  <div className="flex flex-col gap-2 border-b border-zinc-100 bg-[linear-gradient(135deg,#fff7ed,white)] px-5 py-4 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <span className="text-sm font-semibold text-zinc-900">
-                        Editor visual para publicar sem depender de equipe tecnica
-                      </span>
-                      <p className="mt-1 text-sm text-zinc-600">
-                        Ajuste banner, nome, WhatsApp, categorias e vitrine com leitura fluida.
-                      </p>
-                    </div>
-                    <span className="inline-flex w-fit items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
-                      Edicao ao vivo
+                  <div className="flex flex-col gap-2 border-b border-zinc-100 bg-zinc-50 px-5 py-4">
+                    <span className="text-sm font-semibold text-zinc-900">
+                      Prova real de leitura no celular
                     </span>
+                    <p className="text-sm text-zinc-600">
+                      O cliente navega categorias e produtos com clareza, sem aperto visual.
+                    </p>
                   </div>
-                  <div className="relative aspect-4/3 bg-zinc-100 p-2 sm:p-3 lg:aspect-16/10">
+                  <div className="relative aspect-10/14 bg-zinc-100 p-2 sm:p-3">
                     <Image
-                      src="/screenshots/painel-editor.png"
-                      alt="Editor visual intuitivo do cardápio digital Zairyx AI"
+                      src="/screenshots/painel-editor-tablet.png"
+                      alt="Versão em tela menor mostrando edição responsiva do cardápio digital"
                       fill
                       className="object-contain object-top"
-                      sizes="(max-width: 1024px) 100vw, 58vw"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                   </div>
                 </div>
 
-                <div className="grid gap-6">
-                  <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)]">
-                    <div className="flex flex-col gap-2 border-b border-zinc-100 bg-zinc-50 px-5 py-4">
-                      <span className="text-sm font-semibold text-zinc-900">
-                        Dashboard para bater o olho e decidir rapido
-                      </span>
-                      <p className="text-sm text-zinc-600">
-                        Produtos, pedidos e faturamento visiveis sem telas confusas.
-                      </p>
-                    </div>
-                    <div className="relative aspect-4/3 bg-zinc-100 p-2 sm:p-3">
-                      <Image
-                        src="/screenshots/painel-dashboard.png"
-                        alt="Dashboard completo do painel Zairyx AI com métricas de vendas"
-                        fill
-                        className="object-contain object-top"
-                        sizes="(max-width: 1024px) 100vw, 42vw"
-                      />
-                    </div>
+                <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)]">
+                  <div className="flex flex-col gap-2 border-b border-zinc-100 bg-zinc-50 px-5 py-4">
+                    <span className="text-sm font-semibold text-zinc-900">
+                      Dashboard para bater o olho e decidir rápido
+                    </span>
+                    <p className="text-sm text-zinc-600">
+                      Visão geral do negócio, próximos passos e operação publicada sem telas
+                      confusas.
+                    </p>
                   </div>
-
-                  <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)]">
-                    <div className="flex flex-col gap-2 border-b border-zinc-100 bg-zinc-50 px-5 py-4">
-                      <span className="text-sm font-semibold text-zinc-900">
-                        Prova real de leitura no celular
-                      </span>
-                      <p className="text-sm text-zinc-600">
-                        O cliente navega categorias e produtos com clareza, sem aperto visual.
-                      </p>
-                    </div>
-                    <div className="relative aspect-10/14 bg-zinc-100 p-2 sm:p-3">
-                      <Image
-                        src="/screenshots/painel-editor-tablet.png"
-                        alt="Versão em tela menor mostrando edição responsiva do cardápio digital"
-                        fill
-                        className="object-contain object-top"
-                        sizes="(max-width: 1024px) 100vw, 42vw"
-                      />
-                    </div>
+                  <div className="relative aspect-9/14 overflow-hidden bg-white p-2 sm:p-3">
+                    <Image
+                      src="/screenshots/painel-dashboard-20260413.png"
+                      alt="Dashboard do painel com visão geral do negócio e próximos passos"
+                      fill
+                      className="object-contain object-top"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
                   </div>
                 </div>
               </div>
@@ -1160,9 +1126,9 @@ export default function Home() {
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl border border-zinc-200 bg-white p-5 text-center">
                   <Sparkles className="mx-auto mb-2 h-6 w-6 text-orange-500" />
-                  <p className="text-sm font-bold text-zinc-900">IA Assistente 24h</p>
+                  <p className="text-sm font-bold text-zinc-900">Pedido direto e organizado</p>
                   <p className="mt-1 text-xs text-zinc-600">
-                    Responde e vende mesmo quando você dorme
+                    O cliente monta tudo no cardápio e envia sem conversa picada
                   </p>
                 </div>
                 <div className="rounded-xl border border-zinc-200 bg-white p-5 text-center">
@@ -1287,7 +1253,7 @@ export default function Home() {
             <div className="container-premium">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                  Para quem é a Zairyx AI
+                  Para quem é a Zairyx
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                   Seu canal próprio. <span className="text-orange-500">Suas regras.</span>
@@ -1315,12 +1281,12 @@ export default function Home() {
                     <p className="text-2xl font-bold text-green-600">✓</p>
                     <p className="mt-2 text-sm font-bold text-zinc-900">Quer sua própria marca</p>
                     <p className="mt-1 text-xs text-zinc-500">
-                      Cardápio com sua identidade, IA assistente e QR Code
+                      Cardápio com sua identidade, QR Code e pedido organizado
                     </p>
                   </div>
                 </div>
                 <p className="mt-6 text-xs text-zinc-400">
-                  A Zairyx AI é ideal para deliverys, mini mercados, bares, cafeterias e qualquer
+                  A Zairyx é ideal para deliverys, mini mercados, bares, cafeterias e qualquer
                   negócio que queira vender online com praticidade e autonomia.
                 </p>
               </div>
@@ -1370,7 +1336,7 @@ export default function Home() {
                         WhatsApp informal
                       </th>
                       <th className="bg-green-50 px-5 py-4 text-center font-bold text-green-700">
-                        Zairyx AI
+                        Zairyx
                       </th>
                     </tr>
                   </thead>
@@ -1460,7 +1426,9 @@ export default function Home() {
                       </td>
                     </tr>
                     <tr>
-                      <td className="px-5 py-4 font-semibold text-zinc-900">IA assistente 24h</td>
+                      <td className="px-5 py-4 font-semibold text-zinc-900">
+                        Pedido direto no próprio canal
+                      </td>
                       <td className="px-5 py-4 text-center text-red-400">
                         <X className="mx-auto h-4 w-4" />
                       </td>
@@ -1511,7 +1479,7 @@ export default function Home() {
               </p>
               <p className="mt-3 text-center text-xs text-zinc-400">
                 *Plano Básico iFood (entrega própria): 12% + 3,2% online + R$&nbsp;110/mês. O Plano
-                Entrega (motoboy do iFood) cobra até 27%, mas inclui logística que a Zairyx AI não
+                Entrega (motoboy do iFood) cobra até 27%, mas inclui logística que a Zairyx não
                 oferece. Fonte: blog-parceiros.ifood.com.br (consulta em abr/2026).
               </p>
 
@@ -1534,7 +1502,7 @@ export default function Home() {
                       <th className="px-4 py-4 text-center font-bold text-zinc-600">Saipos</th>
                       <th className="px-4 py-4 text-center font-bold text-zinc-600">Kyte</th>
                       <th className="bg-green-50 px-4 py-4 text-center font-bold text-green-700">
-                        Zairyx AI
+                        Zairyx
                       </th>
                     </tr>
                   </thead>
@@ -1671,7 +1639,7 @@ export default function Home() {
                   A estratégia inteligente
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">
-                  Use o iFood para captar. Use a Zairyx AI para lucrar.
+                  Use o iFood para captar. Use a Zairyx para lucrar.
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-zinc-700">
                   Marketplaces são ótimos para aquisição: seu delivery aparece para milhares de
@@ -1696,7 +1664,7 @@ export default function Home() {
                     </p>
                     <p className="mt-1 text-sm leading-6 text-zinc-600">
                       QR Code na embalagem, link no Instagram, mensagem pós-venda. Traga o cliente
-                      para pedir direto no seu cardápio Zairyx AI.
+                      para pedir direto no seu cardápio Zairyx.
                     </p>
                   </div>
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
@@ -1733,7 +1701,7 @@ export default function Home() {
 
               <div className="mt-8 rounded-3xl border border-zinc-200 bg-zinc-50 p-6 md:p-8">
                 <p className="text-sm font-bold tracking-[0.18em] text-zinc-600 uppercase">
-                  Por que donos de delivery escolhem a Zairyx AI
+                  Por que donos de delivery escolhem a Zairyx
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">
                   Produto pronto + editor intuitivo + WhatsApp = vendas desde o primeiro dia.
@@ -1759,11 +1727,12 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="rounded-2xl bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-zinc-800">3. IA que vende por você</p>
+                    <p className="text-sm font-semibold text-zinc-800">
+                      3. Pedido claro para fechar mais
+                    </p>
                     <p className="mt-2 text-sm leading-6 text-zinc-600">
-                      A Zai é uma IA que fica no seu cardápio digital. Ela responde dúvidas, sugere
-                      combos e ajuda o cliente a fechar o pedido — 24 horas por dia, sem custo
-                      extra.
+                      O cliente navega com clareza, escolhe item, ajusta observação e envia tudo
+                      organizado. Menos atrito para pedir, menos retrabalho para atender.
                     </p>
                   </div>
                 </div>
@@ -1822,7 +1791,7 @@ export default function Home() {
                   plano.
                 </p>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Tudo incluído: 16 modelos de nicho, IA 24h, editor mobile, QR Code e suporte.
+                  Tudo incluído: 16 modelos de nicho, editor mobile, QR Code e suporte.
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-3 text-sm text-zinc-600">
                   <span className="flex items-center gap-1.5">
@@ -1832,7 +1801,7 @@ export default function Home() {
                     <CheckCircle className="h-4 w-4 text-green-500" /> Editor visual completo
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-green-500" /> IA assistente 24h
+                    <CheckCircle className="h-4 w-4 text-green-500" /> Pedido direto no WhatsApp
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle className="h-4 w-4 text-green-500" /> Pedidos por WhatsApp
@@ -1878,8 +1847,8 @@ export default function Home() {
                       <span className="text-orange-400">Você só edita e começa a vender.</span>
                     </h2>
                     <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-200">
-                      Catálogo completo, editor visual, IA assistente 24h, pedidos pelo WhatsApp e
-                      16 modelos de nicho. Tudo pronto.{' '}
+                      Catálogo completo, editor visual, pedidos pelo WhatsApp e 16 modelos de nicho.
+                      Tudo pronto.{' '}
                       <strong className="text-white">{COMMERCIAL_COPY.withdrawalExplainer}</strong>
                     </p>
                     <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-zinc-300">

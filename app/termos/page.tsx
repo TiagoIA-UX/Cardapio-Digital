@@ -53,7 +53,7 @@ export default function TermosPage() {
             <h2 className="mt-8 mb-4 text-xl font-semibold">2. Descrição do Serviço</h2>
             <p>
               O Canal Digital oferece templates profissionais e painel de gestão para restaurantes,
-              pizzarias, hamburguerias e outros negócios alimentícios.
+              pizzarias, operações de lanches e burgers e outros negócios alimentícios.
             </p>
             <ul className="list-disc space-y-2 pl-6">
               <li>Publicar um canal digital com sua marca</li>

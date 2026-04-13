@@ -196,6 +196,8 @@ Antes de qualquer commit, verifique:
 - [ ] `requireAdmin()` presente em toda nova rota admin
 - [ ] Validação Zod presente em todo novo endpoint POST
 - [ ] Rate limiting presente em endpoints públicos
+- [ ] Problems do workspace verificados e zerados antes de commit/push
+- [ ] Alterações no código fonte revisadas (`git diff` / arquivos alterados) antes de commit/push
 - [ ] Testes passando (`npm test`)
 
 ---
