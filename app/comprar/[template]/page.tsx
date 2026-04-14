@@ -489,9 +489,6 @@ function ComprarContent() {
             </div>
             <span className="text-foreground font-semibold">{template.nome}</span>
           </div>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-700">
-            Capacidade selecionada: até {selectedCatalogCapacity.maxProducts} produtos
-          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
@@ -561,11 +558,6 @@ function ComprarContent() {
                   : 'border-border hover:border-primary/50'
               }`}
             >
-              <div className="absolute -top-3 left-4">
-                <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-bold">
-                  RECOMENDADO
-                </span>
-              </div>
               <div className="mt-2 flex items-start gap-4">
                 <div className={`rounded-xl p-3 ${PLAN_META['feito-pra-voce'].corIcone}`}>
                   <Sparkles className="h-6 w-6" />
@@ -674,10 +666,6 @@ function ComprarContent() {
               className="border-border bg-card space-y-4 rounded-2xl border p-6"
             >
               <div>
-                <div className="bg-primary/10 text-primary mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold">
-                  <Shield className="h-3.5 w-3.5" />
-                  Compra segura com liberação após confirmação do pagamento
-                </div>
                 <h3 className="text-foreground text-xl font-bold">Dados para liberar o painel</h3>
                 <p className="text-foreground/75 mt-1 text-sm">
                   O template será liberado na conta logada após a confirmação do pagamento.
