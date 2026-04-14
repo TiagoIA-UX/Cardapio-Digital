@@ -267,40 +267,6 @@ function ComprarContent() {
 
   const pricing = useMemo(() => getTemplatePricing(templateSlug ?? 'restaurante'), [templateSlug])
   const selectedCatalogCapacity = getCatalogCapacityOption(selectedCapacityPlan)
-  const capacityOptions =
-    CATALOG_CAPACITY_OPTIONS.length > 0
-      ? CATALOG_CAPACITY_OPTIONS
-      : [
-          {
-            slug: 'semente' as SubscriptionPlanSlug,
-            title: 'Começo rápido',
-            description: 'Operação enxuta para iniciar canal digital com catálogo menor.',
-            maxProducts: 15,
-            monthlyPrice: 14.9,
-          },
-          {
-            slug: 'basico' as SubscriptionPlanSlug,
-            title: 'Operação local',
-            description: 'Ideal para deliverys com cardápio completo e rotina diária.',
-            maxProducts: 60,
-            monthlyPrice: 147,
-          },
-          {
-            slug: 'pro' as SubscriptionPlanSlug,
-            title: 'Crescimento acelerado',
-            description: 'Para expandir variedade, combos e sazonalidades.',
-            maxProducts: 200,
-            monthlyPrice: 197,
-          },
-          {
-            slug: 'premium' as SubscriptionPlanSlug,
-            title: 'Catálogo de alto volume',
-            description: 'Para operações com grande mix de produtos e alta escala.',
-            maxProducts: 1200,
-            monthlyPrice: 297,
-          },
-        ]
-
   if (!templateSlug || !template) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
@@ -531,54 +497,6 @@ function ComprarContent() {
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Coluna Esquerda - Escolha do Plano */}
           <div className="space-y-4 lg:col-span-2">
-            <div className="border-border bg-card rounded-2xl border p-5">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-700">
-                Etapa obrigatória
-              </div>
-              <h2 className="text-foreground mb-2 text-xl font-bold">
-                Defina a capacidade do seu catalogo
-              </h2>
-              <p className="text-muted-foreground mb-4 text-sm">
-                Escolha abaixo ate quantos produtos voce quer operar. Isso vale para todos os
-                templates reais e orienta a configuracao comercial do seu canal.
-              </p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {capacityOptions.map((option) => {
-                  const selected = selectedCapacityPlan === option.slug
-                  return (
-                    <button
-                      key={option.slug}
-                      type="button"
-                      onClick={() => setSelectedCapacityPlan(option.slug)}
-                      className={`rounded-xl border-2 p-4 text-left transition-all ${
-                        selected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/40'
-                      }`}
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="text-foreground text-sm font-semibold">
-                          {option.title}
-                        </span>
-                        {selected ? <Check className="text-primary h-4 w-4" /> : null}
-                      </div>
-                      <p className="text-muted-foreground text-xs leading-5">
-                        {option.description}
-                      </p>
-                      <p className="text-foreground mt-2 text-sm font-medium">
-                        Ate {option.maxProducts} produtos
-                      </p>
-                    </button>
-                  )
-                })}
-              </div>
-              <p className="text-muted-foreground mt-3 text-xs">
-                Referencia mensal da capacidade escolhida:{' '}
-                {formatCurrency(selectedCatalogCapacity.monthlyPrice)}
-                /mes.
-              </p>
-            </div>
-
             <h2 className="text-foreground mb-4 text-xl font-bold">Escolha o plano</h2>
 
             {/* Plano Self-Service */}
@@ -617,7 +535,7 @@ function ComprarContent() {
                     </span>
                   </div>
                   <p className="text-foreground/70 mt-2 text-sm">
-                    Mensalidade após ativação: {formatCurrency(pricing.selfService.monthly)}/mês
+                    Mensalidade apos ativacao: {monthlyPriceLabel}
                   </p>
                 </div>
               </div>
@@ -674,7 +592,7 @@ function ComprarContent() {
                     </span>
                   </div>
                   <p className="text-foreground/70 mt-2 text-sm">
-                    Mensalidade após ativação: {formatCurrency(pricing.feitoPraVoce.monthly)}/mês
+                    Mensalidade apos ativacao: {monthlyPriceLabel}
                   </p>
                 </div>
               </div>
