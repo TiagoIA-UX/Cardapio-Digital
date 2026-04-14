@@ -11,11 +11,23 @@ import {
   TEMPLATE_PUBLIC_ORDER,
   getPublicTemplateMeta,
 } from '@/lib/domains/marketing/template-public-meta'
+import { PLAN_LIMITS } from '@/lib/domains/marketing/pricing'
 
 const FAMILY_SECTIONS = TEMPLATE_FAMILY_ORDER.map((familyId) => ({
   ...TEMPLATE_FAMILIES[familyId],
   slugs: TEMPLATE_PUBLIC_ORDER.filter((slug) => getPublicTemplateMeta(slug).family === familyId),
 })).filter((section) => section.slugs.length > 0)
+
+function formatBRL(value: number): string {
+  return value.toLocaleString('pt-BR', {
+    minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+function getCapacityLabel(capacitySlug: keyof typeof PLAN_LIMITS): string {
+  return PLAN_LIMITS[capacitySlug].label
+}
 
 export default function PrecosPage() {
   return (
@@ -52,7 +64,7 @@ export default function PrecosPage() {
           </p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
             <Check className="h-4 w-4" />
-            Zero taxa por pedido ou venda direta no seu canal
+            Zero taxa por pedido, com venda direta no seu canal
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
@@ -129,11 +141,17 @@ export default function PrecosPage() {
                       </div>
 
                       <div className="grid gap-3 md:grid-cols-3">
-                        {plans.map((plan) => (
-                          <div
-                            key={plan.id}
-                            className={`rounded-2xl border p-4 ${plan.popular ? 'border-orange-300 bg-orange-50' : 'border-zinc-200 bg-white'}`}
-                          >
+                        {plans.map((plan, index) => {
+                          const previousPlan = index > 0 ? plans[index - 1] : null
+                          const repeatedCapacity =
+                            previousPlan?.capacitySlug === plan.capacitySlug && index > 0
+                          const capacityLabel = getCapacityLabel(plan.capacitySlug)
+
+                          return (
+                            <div
+                              key={plan.id}
+                              className={`rounded-2xl border p-4 ${plan.popular ? 'border-orange-300 bg-orange-50' : 'border-zinc-200 bg-white'}`}
+                            >
                             <div className="flex items-start justify-between gap-3">
                               <div>
                                 <h4 className="font-semibold text-zinc-950">{plan.displayName}</h4>
@@ -152,15 +170,18 @@ export default function PrecosPage() {
                             <p className="text-xs text-zinc-500">produtos no catálogo</p>
 
                             <p className="mt-3 text-sm font-medium text-zinc-800">
-                              Mensalidade correspondente: R$ {plan.priceMonthly}/mês
+                              Mensalidade da faixa: R$ {formatBRL(plan.priceMonthly)}/mês
                             </p>
                             <p className="text-xs text-zinc-500">
-                              Plano anual: R$ {plan.priceAnnual}
+                              Plano anual: R$ {formatBRL(plan.priceAnnual)}
                             </p>
 
                             <div className="mt-3 rounded-xl bg-zinc-50 p-3 text-xs text-zinc-600">
                               <p>{meta.productProfile}</p>
-                              <p className="mt-1">Faixa correspondente: {plan.capacitySlug}</p>
+                              <p className="mt-1">
+                                Faixa correspondente: {capacityLabel}
+                                {repeatedCapacity ? ` (mesma faixa comercial da ${previousPlan?.displayName})` : ''}
+                              </p>
                             </div>
 
                             <div className="mt-4 flex flex-col gap-2">
@@ -183,7 +204,8 @@ export default function PrecosPage() {
                               </Link>
                             </div>
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </article>
                   )

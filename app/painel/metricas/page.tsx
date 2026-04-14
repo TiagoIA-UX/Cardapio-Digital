@@ -294,13 +294,34 @@ export default function MetricasPage() {
             {metrics.pedidosPorDia.map((dia) => {
               const maxQtd = Math.max(...metrics.pedidosPorDia.map((d) => d.quantidade), 1)
               const altura = (dia.quantidade / maxQtd) * 100
+              const barHeight = Math.max(altura, 8)
+              const gradientId = `metric-bar-${dia.data.replace(/[^a-zA-Z0-9-]/g, '')}`
               return (
                 <div key={dia.data} className="flex flex-1 flex-col items-center gap-2">
                   <span className="text-foreground text-sm font-semibold">{dia.quantidade}</span>
-                  <div
-                    className="w-full rounded-t-lg bg-linear-to-t from-orange-500 to-orange-400 transition-all"
-                    style={{ height: `${Math.max(altura, 8)}%` }}
-                  />
+                  <div className="h-full w-full">
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      className="h-full w-full"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient id={gradientId} x1="0" y1="1" x2="0" y2="0">
+                          <stop offset="0%" stopColor="rgb(249 115 22)" />
+                          <stop offset="100%" stopColor="rgb(251 146 60)" />
+                        </linearGradient>
+                      </defs>
+                      <rect
+                        x="0"
+                        y={100 - barHeight}
+                        width="100"
+                        height={barHeight}
+                        rx="8"
+                        fill={`url(#${gradientId})`}
+                      />
+                    </svg>
+                  </div>
                   <span className="text-muted-foreground text-xs">{dia.data}</span>
                 </div>
               )

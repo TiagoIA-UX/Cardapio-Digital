@@ -96,8 +96,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className="overflow-x-hidden">
+    <html lang="pt-BR" className="overflow-x-hidden" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${outfit.variable} ${dmSans.variable} min-w-0 overflow-x-hidden font-sans antialiased`}
       >
         {children}

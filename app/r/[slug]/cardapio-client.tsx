@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import {
@@ -115,6 +115,23 @@ function hasDemoPrefix(value: string | null | undefined): boolean {
   return value.startsWith('demo-') || value.startsWith('preview-')
 }
 
+function normalizeOrderApiErrorMessage(value: string): string {
+  const message = value.trim()
+  const lowered = message.toLowerCase()
+
+  if (
+    lowered.includes('issue') ||
+    lowered.includes('issues') ||
+    lowered.includes('zod') ||
+    lowered.includes('invalid') ||
+    lowered.includes('payload')
+  ) {
+    return 'Não foi possível registrar seu pedido agora. Revise os dados e tente novamente.'
+  }
+
+  return message || 'Não foi possível registrar seu pedido agora. Tente novamente.'
+}
+
 export default function CardapioClient({
   restaurant,
   products,
@@ -149,6 +166,7 @@ export default function CardapioClient({
   const [sessionAccessToken, setSessionAccessToken] = useState<string | null>(null)
   const [orderForm, setOrderForm] = useState<OrderFormState>(createInitialOrderForm(isTableOrder))
   const [activeCategory, setActiveCategory] = useState<string | null>(categories[0] || null)
+  const submitInFlightRef = useRef(false)
   const mapLinks = useMemo(
     () =>
       buildGoogleMapsLinks({
@@ -266,12 +284,20 @@ export default function CardapioClient({
       (!!orderForm.addressStreet.trim() && !!orderForm.addressDistrict.trim())) &&
     !!orderForm.formaPagamentoNaEntrega
 
-  const buildWhatsAppMessage = (orderNumber?: number) => {
+  const buildWhatsAppMessage = (
+    data: {
+      cart: CartItem[]
+      totalPrice: number
+      orderForm: OrderFormState
+    },
+    orderNumber?: number
+  ) => {
+    const { cart: cartData, totalPrice: totalPriceData, orderForm: orderFormData } = data
     const orderOriginLabel = isTableOrder ? `Mesa ${tableNumber}` : 'Online'
     const attendanceLabel =
-      orderForm.fulfillment === 'entrega'
+      orderFormData.fulfillment === 'entrega'
         ? presentation.deliveryLabel
-        : orderForm.fulfillment === 'retirada'
+        : orderFormData.fulfillment === 'retirada'
           ? presentation.pickupLabel
           : presentation.dineInLabel
 
@@ -288,40 +314,41 @@ export default function CardapioClient({
       message += `🪑 *Mesa:* ${tableNumber}\n`
     }
 
-    if (orderForm.customerName.trim()) {
-      message += `👤 *Cliente:* ${orderForm.customerName.trim()}\n`
+    if (orderFormData.customerName.trim()) {
+      message += `👤 *Cliente:* ${orderFormData.customerName.trim()}\n`
     }
 
-    if (orderForm.customerPhone.trim()) {
-      message += `📱 *Telefone:* ${orderForm.customerPhone.trim()}\n`
+    if (orderFormData.customerPhone.trim()) {
+      message += `📱 *Telefone:* ${orderFormData.customerPhone.trim()}\n`
     }
 
-    if (orderForm.fulfillment === 'entrega') {
-      message += `🏠 *Endereço:* ${orderForm.addressStreet.trim()} - ${orderForm.addressDistrict.trim()}\n`
+    if (orderFormData.fulfillment === 'entrega') {
+      message += `🏠 *Endereço:* ${orderFormData.addressStreet.trim()} - ${orderFormData.addressDistrict.trim()}\n`
 
-      if (orderForm.addressComplement.trim()) {
-        message += `📌 *Complemento:* ${orderForm.addressComplement.trim()}\n`
+      if (orderFormData.addressComplement.trim()) {
+        message += `📌 *Complemento:* ${orderFormData.addressComplement.trim()}\n`
       }
     }
 
     message += `\n*Itens:*\n`
 
-    cart.forEach((item, index) => {
+    cartData.forEach((item, index) => {
       const itemTotal = item.product.preco * item.quantity
       message += `${index + 1}. ${item.quantity}x ${item.product.nome} - ${formatCurrency(itemTotal)}\n`
     })
 
-    message += `\n*Total:* ${formatCurrency(totalPrice)}\n`
+    message += `\n*Total:* ${formatCurrency(totalPriceData)}\n`
 
-    if (orderForm.formaPagamentoNaEntrega) {
+    if (orderFormData.formaPagamentoNaEntrega) {
       const formas: Record<string, string> = {
         dinheiro: '💵 Dinheiro',
         pix: '📱 PIX',
         cartao: '💳 Cartão (débito/crédito)',
       }
-      let pagamento = formas[orderForm.formaPagamentoNaEntrega] || orderForm.formaPagamentoNaEntrega
-      if (orderForm.formaPagamentoNaEntrega === 'dinheiro' && orderForm.trocoPara.trim()) {
-        const troco = parseFloat(orderForm.trocoPara.replace(',', '.'))
+      let pagamento =
+        formas[orderFormData.formaPagamentoNaEntrega] || orderFormData.formaPagamentoNaEntrega
+      if (orderFormData.formaPagamentoNaEntrega === 'dinheiro' && orderFormData.trocoPara.trim()) {
+        const troco = parseFloat(orderFormData.trocoPara.replace(',', '.'))
         if (!isNaN(troco) && troco > 0) {
           pagamento += ` (Troco para ${formatCurrency(troco)})`
         }
@@ -329,12 +356,12 @@ export default function CardapioClient({
       message += `\n💳 *Pagamento:* ${pagamento}\n`
     }
 
-    if (orderForm.formaPagamentoNaEntrega === 'pix' && orderForm.comprovanteUrl) {
-      message += `\n📎 *Comprovante:* ${orderForm.comprovanteUrl}\n`
+    if (orderFormData.formaPagamentoNaEntrega === 'pix' && orderFormData.comprovanteUrl) {
+      message += `\n📎 *Comprovante:* ${orderFormData.comprovanteUrl}\n`
     }
 
-    if (orderForm.notes.trim()) {
-      message += `\n📝 *Observações:* ${orderForm.notes.trim()}\n`
+    if (orderFormData.notes.trim()) {
+      message += `\n📝 *Observações:* ${orderFormData.notes.trim()}\n`
     }
 
     return message
@@ -347,7 +374,15 @@ export default function CardapioClient({
 
     const encodedMessage = encodeURIComponent(message)
     const appUrl = `whatsapp://send?phone=${whatsappPhone}&text=${encodedMessage}`
+    const fallbackUrl = `https://wa.me/${whatsappPhone}?text=${encodedMessage}`
+
+    // Primeiro tenta abrir o app nativo; se não houver handler, cai no wa.me.
     window.location.href = appUrl
+    window.setTimeout(() => {
+      if (document.visibilityState !== 'hidden') {
+        window.location.href = fallbackUrl
+      }
+    }, 900)
   }
 
   const uploadPixReceipt = async (file: File) => {
@@ -411,123 +446,139 @@ export default function CardapioClient({
   }
 
   const submitOrder = async () => {
+    if (submitInFlightRef.current) {
+      return
+    }
+
+    submitInFlightRef.current = true
+
     if (!restaurant?.id || !whatsappPhone) {
       setError(
         'Este cardápio não foi encontrado ou não está disponível no momento. Atualize a página e tente novamente.'
       )
+      submitInFlightRef.current = false
       return
     }
 
     if (!canSubmit) {
       setError('Preencha os dados necessários para enviar o pedido.')
+      submitInFlightRef.current = false
       return
     }
 
     if (orderForm.customerPhone.trim() && !isValidBrazilPhone(orderForm.customerPhone)) {
       setError('Digite um telefone válido com DDD para continuar.')
+      submitInFlightRef.current = false
       return
     }
 
     setIsSubmitting(true)
     setError(null)
 
+    const cartSnapshot = cart.map((item) => ({
+      product_id: item.product.id,
+      quantidade: item.quantity,
+    }))
+    const cartItemsSnapshot = cart.map((item) => ({ ...item }))
+    const orderFormSnapshot = { ...orderForm }
+    const totalPriceSnapshot = totalPrice
+    const itemsCountSnapshot = cart.length
     try {
-      if (shouldUseDemoCheckout) {
-        const message = buildWhatsAppMessage()
-        openWhatsApp(message)
+      let createdOrderNumber: number | undefined
+      let persistenceSkippedByNotFound = false
 
-        setCart([])
-        setOrderForm(createInitialOrderForm(isTableOrder))
-        setIsCartOpen(false)
-        setSuccess(true)
-        setTimeout(() => setSuccess(false), 3000)
-        return
-      }
-
-      const payload = {
-        restaurant_id: restaurant.id,
-        items: cart.map((item) => ({
-          product_id: item.product.id,
-          quantidade: item.quantity,
-        })),
-        cliente_nome: orderForm.customerName.trim() || undefined,
-        cliente_telefone: orderForm.customerPhone.trim() || undefined,
-        tipo_entrega: orderForm.fulfillment === 'entrega' ? 'delivery' : 'retirada',
-        endereco_rua:
-          orderForm.fulfillment === 'entrega'
-            ? orderForm.addressStreet.trim() || undefined
+      if (!shouldUseDemoCheckout) {
+        const payload = {
+          restaurant_id: restaurant.id,
+          items: cartSnapshot,
+          cliente_nome: orderFormSnapshot.customerName.trim() || undefined,
+          cliente_telefone: orderFormSnapshot.customerPhone.trim() || undefined,
+          tipo_entrega: orderFormSnapshot.fulfillment === 'entrega' ? 'delivery' : 'retirada',
+          endereco_rua:
+            orderFormSnapshot.fulfillment === 'entrega'
+              ? orderFormSnapshot.addressStreet.trim() || undefined
+              : undefined,
+          endereco_bairro:
+            orderFormSnapshot.fulfillment === 'entrega'
+              ? orderFormSnapshot.addressDistrict.trim() || undefined
+              : undefined,
+          endereco_complemento:
+            orderFormSnapshot.fulfillment === 'entrega'
+              ? orderFormSnapshot.addressComplement.trim() || undefined
+              : undefined,
+          observacoes: orderFormSnapshot.notes.trim() || undefined,
+          order_origin: isTableOrder ? 'mesa' : 'online',
+          table_number: isTableOrder ? tableNumber || undefined : undefined,
+          forma_pagamento: orderFormSnapshot.formaPagamentoNaEntrega
+            ? orderFormSnapshot.formaPagamentoNaEntrega
             : undefined,
-        endereco_bairro:
-          orderForm.fulfillment === 'entrega'
-            ? orderForm.addressDistrict.trim() || undefined
-            : undefined,
-        endereco_complemento:
-          orderForm.fulfillment === 'entrega'
-            ? orderForm.addressComplement.trim() || undefined
-            : undefined,
-        observacoes: orderForm.notes.trim() || undefined,
-        order_origin: isTableOrder ? 'mesa' : 'online',
-        table_number: isTableOrder ? tableNumber || undefined : undefined,
-        forma_pagamento: orderForm.formaPagamentoNaEntrega
-          ? orderForm.formaPagamentoNaEntrega
-          : undefined,
-        troco_para:
-          orderForm.formaPagamentoNaEntrega === 'dinheiro' && orderForm.trocoPara.trim()
-            ? (() => {
-                const v = parseFloat(orderForm.trocoPara.replace(',', '.'))
-                return !isNaN(v) && v > 0 ? v : undefined
-              })()
-            : undefined,
-        comprovante_url: orderForm.comprovanteUrl || undefined,
-        comprovante_key: orderForm.comprovanteKey || undefined,
-      }
-
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        const apiErrorMessage =
-          typeof result?.error === 'string' ? result.error : 'Erro ao salvar pedido'
-
-        if (
-          response.status === 404 &&
-          apiErrorMessage.toLowerCase().includes('delivery não encontrado')
-        ) {
-          const message = buildWhatsAppMessage()
-          openWhatsApp(message)
-
-          setCart([])
-          setOrderForm(createInitialOrderForm(isTableOrder))
-          setIsCartOpen(false)
-          setSuccess(true)
-          setTimeout(() => setSuccess(false), 3000)
-          toast({
-            title: 'Pedido enviado via WhatsApp',
-            description:
-              'Não foi possível registrar no sistema agora, mas o pedido já foi enviado ao delivery.',
-            duration: 3500,
-          })
-          return
+          troco_para:
+            orderFormSnapshot.formaPagamentoNaEntrega === 'dinheiro' &&
+            orderFormSnapshot.trocoPara.trim()
+              ? (() => {
+                  const v = parseFloat(orderFormSnapshot.trocoPara.replace(',', '.'))
+                  return !isNaN(v) && v > 0 ? v : undefined
+                })()
+              : undefined,
+          comprovante_url: orderFormSnapshot.comprovanteUrl || undefined,
+          comprovante_key: orderFormSnapshot.comprovanteKey || undefined,
         }
 
-        throw new Error(apiErrorMessage)
+        const response = await fetch('/api/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+
+        const result = await response.json().catch(() => null)
+        if (!response.ok) {
+          const apiError =
+            result && typeof result === 'object' && 'error' in result
+              ? String((result as { error?: unknown }).error || '')
+              : ''
+
+          if (response.status === 404 && apiError.toLowerCase().includes('delivery não encontrado')) {
+            persistenceSkippedByNotFound = true
+          } else {
+            throw new Error(normalizeOrderApiErrorMessage(apiError))
+          }
+        }
+
+        if (!persistenceSkippedByNotFound) {
+          createdOrderNumber =
+            result && typeof result === 'object' && 'numero_pedido' in result
+              ? Number((result as { numero_pedido?: unknown }).numero_pedido) || undefined
+              : undefined
+        }
+
+        if (!persistenceSkippedByNotFound) {
+          trackEvent('order_placed', {
+            restaurant_id: restaurant.id,
+            total:
+              result && typeof result === 'object' && 'total' in result
+                ? Number((result as { total?: unknown }).total) || totalPriceSnapshot
+                : totalPriceSnapshot,
+            items_count: itemsCountSnapshot,
+          })
+        } else {
+          console.warn('[order:persist] Delivery não encontrado no POST /api/orders', {
+            restaurantId: restaurant.id,
+            restaurantSlug: restaurant.slug,
+          })
+        }
       }
 
-      const message = buildWhatsAppMessage(result?.numero_pedido)
+      const message = buildWhatsAppMessage(
+        {
+          cart: cartItemsSnapshot,
+          totalPrice: totalPriceSnapshot,
+          orderForm: orderFormSnapshot,
+        },
+        createdOrderNumber
+      )
       openWhatsApp(message)
-
-      trackEvent('order_placed', {
-        restaurant_id: restaurant.id,
-        total: result?.total ?? 0,
-        items_count: cart.length,
-      })
 
       setCart([])
       setOrderForm(createInitialOrderForm(isTableOrder))
@@ -542,6 +593,7 @@ export default function CardapioClient({
       )
     } finally {
       setIsSubmitting(false)
+      submitInFlightRef.current = false
     }
   }
 

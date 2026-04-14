@@ -91,6 +91,113 @@ const EMOJI_MAP: Record<string, string> = {
   Combos: '🎁',
 }
 
+const THEME_COLOR_PRESETS = {
+  red: {
+    hex: '#dc2626',
+    fromClass: 'from-red-600',
+    toClass: 'to-red-500',
+    textClass: 'text-red-600',
+  },
+  orange: {
+    hex: '#ea580c',
+    fromClass: 'from-orange-600',
+    toClass: 'to-orange-500',
+    textClass: 'text-orange-600',
+  },
+  amber: {
+    hex: '#d97706',
+    fromClass: 'from-amber-600',
+    toClass: 'to-amber-500',
+    textClass: 'text-amber-600',
+  },
+  green: {
+    hex: '#16a34a',
+    fromClass: 'from-green-600',
+    toClass: 'to-green-500',
+    textClass: 'text-green-600',
+  },
+  emerald: {
+    hex: '#059669',
+    fromClass: 'from-emerald-600',
+    toClass: 'to-emerald-500',
+    textClass: 'text-emerald-600',
+  },
+  cyan: {
+    hex: '#0891b2',
+    fromClass: 'from-cyan-600',
+    toClass: 'to-cyan-500',
+    textClass: 'text-cyan-600',
+  },
+  blue: {
+    hex: '#2563eb',
+    fromClass: 'from-blue-600',
+    toClass: 'to-blue-500',
+    textClass: 'text-blue-600',
+  },
+  indigo: {
+    hex: '#4f46e5',
+    fromClass: 'from-indigo-600',
+    toClass: 'to-indigo-500',
+    textClass: 'text-indigo-600',
+  },
+  violet: {
+    hex: '#7c3aed',
+    fromClass: 'from-violet-600',
+    toClass: 'to-violet-500',
+    textClass: 'text-violet-600',
+  },
+  pink: {
+    hex: '#db2777',
+    fromClass: 'from-pink-600',
+    toClass: 'to-pink-500',
+    textClass: 'text-pink-600',
+  },
+  rose: {
+    hex: '#e11d48',
+    fromClass: 'from-rose-600',
+    toClass: 'to-rose-500',
+    textClass: 'text-rose-600',
+  },
+} as const
+
+type ThemeColorPreset = (typeof THEME_COLOR_PRESETS)[keyof typeof THEME_COLOR_PRESETS]
+
+function parseHexColor(hex: string): { r: number; g: number; b: number } | null {
+  const normalized = hex.trim().replace('#', '')
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
+    return null
+  }
+  return {
+    r: Number.parseInt(normalized.slice(0, 2), 16),
+    g: Number.parseInt(normalized.slice(2, 4), 16),
+    b: Number.parseInt(normalized.slice(4, 6), 16),
+  }
+}
+
+function resolveThemePreset(hexColor: string): ThemeColorPreset {
+  const parsed = parseHexColor(hexColor)
+  if (!parsed) {
+    return THEME_COLOR_PRESETS.orange
+  }
+
+  let bestPreset: ThemeColorPreset = THEME_COLOR_PRESETS.orange
+  let bestDistance = Number.POSITIVE_INFINITY
+
+  for (const preset of Object.values(THEME_COLOR_PRESETS)) {
+    const base = parseHexColor(preset.hex)
+    if (!base) continue
+
+    const distance = (parsed.r - base.r) ** 2 + (parsed.g - base.g) ** 2 + (parsed.b - base.b) ** 2
+
+    if (distance < bestDistance) {
+      bestDistance = distance
+      bestPreset = preset
+    }
+  }
+
+  return bestPreset
+}
+
 // ─── Página principal ─────────────────────────────────────────────────────────
 
 export default function DemoEditorPage() {
@@ -338,34 +445,25 @@ function LeftPanel({
         <div className="flex gap-4">
           <div>
             <label className="text-muted-foreground mb-1 block text-xs">Primária</label>
-            <label className="relative block h-9 w-16 cursor-pointer overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
-              <div className="h-full w-full" style={{ backgroundColor: restaurant.cor_primaria }} />
-              <input
-                type="color"
-                aria-label="Cor primária"
-                title="Cor primária"
-                value={restaurant.cor_primaria}
-                onChange={(e) => onChange({ cor_primaria: e.target.value })}
-                className="absolute inset-0 cursor-pointer opacity-0"
-              />
-            </label>
+            <input
+              type="color"
+              aria-label="Cor primária"
+              title="Cor primária"
+              value={restaurant.cor_primaria}
+              onChange={(e) => onChange({ cor_primaria: e.target.value })}
+              className="h-9 w-16 cursor-pointer rounded-lg border border-zinc-200 bg-transparent p-1 shadow-sm transition-transform hover:scale-105"
+            />
           </div>
           <div>
             <label className="text-muted-foreground mb-1 block text-xs">Secundária</label>
-            <label className="relative block h-9 w-16 cursor-pointer overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
-              <div
-                className="h-full w-full"
-                style={{ backgroundColor: restaurant.cor_secundaria }}
-              />
-              <input
-                type="color"
-                aria-label="Cor secundária"
-                title="Cor secundária"
-                value={restaurant.cor_secundaria}
-                onChange={(e) => onChange({ cor_secundaria: e.target.value })}
-                className="absolute inset-0 cursor-pointer opacity-0"
-              />
-            </label>
+            <input
+              type="color"
+              aria-label="Cor secundária"
+              title="Cor secundária"
+              value={restaurant.cor_secundaria}
+              onChange={(e) => onChange({ cor_secundaria: e.target.value })}
+              className="h-9 w-16 cursor-pointer rounded-lg border border-zinc-200 bg-transparent p-1 shadow-sm transition-transform hover:scale-105"
+            />
           </div>
         </div>
       </section>
@@ -571,15 +669,9 @@ function MapsBlock({
   const linkUrl = mapsUrl || `https://www.google.com/maps/search/?api=1&query=${query}`
 
   return (
-    <div
-      className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/20"
-      style={{ background: '#111827' }}
-    >
+    <div className="overflow-hidden rounded-2xl bg-[#111827] shadow-xl ring-1 ring-black/20">
       {/* Cabeçalho escuro */}
-      <div
-        className="flex items-center justify-between border-b border-white/10 px-4 py-3"
-        style={{ background: '#0f172a' }}
-      >
+      <div className="flex items-center justify-between border-b border-white/10 bg-[#0f172a] px-4 py-3">
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-blue-400" />
           <span className="text-sm font-semibold text-white">Localização</span>
@@ -604,23 +696,10 @@ function MapsBlock({
         aria-label="Ver localização no Google Maps"
       >
         {/* Fundo escuro estilo mapa noturno */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(135deg, #1a2230 0%, #1e2d3d 35%, #162130 65%, #1a2840 100%)',
-          }}
-        />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#1a2230_0%,#1e2d3d_35%,#162130_65%,#1a2840_100%)]" />
 
         {/* Grade sutil clara */}
-        <div
-          className="absolute inset-0 opacity-15"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(99,179,237,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.4) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(99,179,237,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(99,179,237,0.4)_1px,transparent_1px)] bg-size-[40px_40px] opacity-15" />
 
         {/* Linhas decorativas */}
         <div className="absolute inset-0 opacity-20">
@@ -656,10 +735,7 @@ function MapsBlock({
       </a>
 
       {/* Endereço */}
-      <div
-        className="flex items-center gap-2 border-t border-white/10 px-4 py-3"
-        style={{ background: '#0f172a' }}
-      >
+      <div className="flex items-center gap-2 border-t border-white/10 bg-[#0f172a] px-4 py-3">
         <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
         <span className="text-sm text-slate-300">{endereco || 'Endereço não informado'}</span>
       </div>
@@ -762,6 +838,9 @@ function EditorCanvas({
   onCloneCategory: (catName: string) => void
   onDeleteCategory: (catName: string) => void
 }) {
+  const primaryTheme = resolveThemePreset(restaurant.cor_primaria)
+  const secondaryTheme = resolveThemePreset(restaurant.cor_secundaria)
+
   const bannerInputRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -777,10 +856,7 @@ function EditorCanvas({
           />
         ) : (
           <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(135deg, ${restaurant.cor_primaria}, ${restaurant.cor_secundaria})`,
-            }}
+            className={`absolute inset-0 bg-linear-to-br ${primaryTheme.fromClass} ${secondaryTheme.toClass}`}
           />
         )}
         {/* Gradiente escuro sobre a capa */}
@@ -953,6 +1029,8 @@ function ProductCard({
   onUpdate: (id: string, patch: Partial<EditProduct>) => void
   onImageChange: (id: string, file: File) => void
 }) {
+  const theme = resolveThemePreset(primaryColor)
+
   const imgRef = useRef<HTMLInputElement>(null)
   const [editingField, setEditingField] = useState<'nome' | 'descricao' | 'preco' | null>(null)
   const [draft, setDraft] = useState('')
@@ -1082,7 +1160,7 @@ function ProductCard({
               className="flex items-center gap-1"
               title="Editar preço"
             >
-              <span className="text-sm font-bold" style={{ color: primaryColor }}>
+              <span className={`text-sm font-bold ${theme.textClass}`}>
                 {product.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </span>
               <Pencil className="h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100" />

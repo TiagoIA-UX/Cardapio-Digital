@@ -97,5 +97,6 @@
   },
   "[powershell]": {
     "editor.defaultFormatter": "ms-vscode.powershell"
-  }
+  },
+  "editor.codeActions.triggerOnFocusChange": true
 }
