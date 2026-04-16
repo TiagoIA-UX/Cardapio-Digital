@@ -6,7 +6,11 @@ import {
   ONBOARDING_PLAN_CONFIG,
   slugifyRestaurantName,
 } from '@/lib/domains/core/restaurant-onboarding'
-import { TEMPLATE_PRESETS, normalizeTemplateSlug } from '@/lib/domains/core/restaurant-customization'
+import {
+  TEMPLATE_PRESETS,
+  normalizeTemplateSlug,
+} from '@/lib/domains/core/restaurant-customization'
+import { AFFILIATE_REFERRAL_ONBOARDING_CONFLICT_TARGET } from '@/lib/domains/core/affiliate-referral-idempotency'
 import { notifyPaymentRejected, notifyPaymentApproved } from '@/lib/shared/notifications'
 import { prepareFiscalInvoiceMetadata } from '@/lib/domains/core/fiscal'
 import { dispatchFiscalInvoice } from '@/lib/domains/core/fiscal-dispatch'
@@ -20,8 +24,12 @@ import {
   ONBOARDING_STALE_PROVISIONING_MS,
   resolveOnboardingProvisioningDecision,
 } from '@/lib/domains/core/onboarding-provisioning'
+import { createDomainLogger } from '@/lib/shared/domain-logger'
+import { syncFinancialTruthForTenant } from '@/lib/domains/core/financial-truth'
 
 type AdminClient = ReturnType<typeof createAdminClient>
+
+const log = createDomainLogger('core')
 
 export interface MercadoPagoOnboardingPaymentInput {
   id?: number | null
@@ -401,6 +409,7 @@ async function provisionRestaurantForOrder(
     metadata: unknown
   },
   payment: {
+    id?: number | null
     transaction_amount?: number | null
     date_approved?: string | null
   },
@@ -509,6 +518,26 @@ async function provisionRestaurantForOrder(
     payment.date_approved || null
   )
 
+  try {
+    await syncFinancialTruthForTenant(admin, {
+      tenantId: restaurantId,
+      source: 'payment',
+      sourceId: payment.id?.toString() || order.id,
+      lastEventAt: approvedAt,
+      rawSnapshot: {
+        payment_status: 'approved',
+        order_id: order.id,
+        transaction_amount: payment.transaction_amount || 0,
+      },
+    })
+  } catch (truthErr) {
+    log.warn('Financial truth sync failed after onboarding provisioning', {
+      tenant_id: restaurantId,
+      order_id: order.id,
+      error: String(truthErr),
+    })
+  }
+
   await ensureActivationEvent(admin, {
     userId: owner.id,
     restaurantId,
@@ -548,6 +577,7 @@ async function provisionRestaurantForOrder(
 
       if (affiliate) {
         const valorAssinatura = payment.transaction_amount || 0
+        const referenciaMes = new Date().toISOString().slice(0, 7)
         const { data: affData } = await admin
           .from('affiliates')
           .select('commission_rate')
@@ -560,25 +590,57 @@ async function provisionRestaurantForOrder(
           ? Math.round(valorAssinatura * 0.1 * 100) / 100
           : null
 
-        await admin.from('affiliate_referrals').insert({
-          affiliate_id: affiliate.id,
-          tenant_id: restaurantId,
-          plano: subscriptionPlanSlug,
-          valor_assinatura: valorAssinatura,
-          comissao,
-          referencia_mes: new Date().toISOString().slice(0, 7),
-          status: 'pendente',
-          lider_id: affiliate.lider_id || null,
-          lider_comissao: liderComissao,
-          lider_status: affiliate.lider_id ? 'pendente' : null,
-        })
+        const { data: insertedReferral, error: referralInsertError } = await admin
+          .from('affiliate_referrals')
+          .insert(
+            {
+              affiliate_id: affiliate.id,
+              tenant_id: restaurantId,
+              plano: subscriptionPlanSlug,
+              valor_assinatura: valorAssinatura,
+              comissao,
+              referencia_mes: referenciaMes,
+              status: 'pendente',
+              lider_id: affiliate.lider_id || null,
+              lider_comissao: liderComissao,
+              lider_status: affiliate.lider_id ? 'pendente' : null,
+            },
+            {
+              onConflict: AFFILIATE_REFERRAL_ONBOARDING_CONFLICT_TARGET,
+              ignoreDuplicates: true,
+            }
+          )
+          .select('id')
+          .maybeSingle()
 
-        console.log(
-          `[webhook-mp] REFERRAL_CREATED: affiliate=${affiliate.id} restaurant=${restaurantId} comissao=R$${comissao}`
-        )
+        if (referralInsertError) {
+          log.error('Affiliate referral creation failed', referralInsertError, {
+            affiliate_id: affiliate.id,
+            tenant_id: restaurantId,
+            referencia_mes: referenciaMes,
+            subscription_plan_slug: subscriptionPlanSlug,
+          })
+        } else if (insertedReferral) {
+          log.info('Affiliate referral created', {
+            affiliate_id: affiliate.id,
+            tenant_id: restaurantId,
+            referencia_mes: referenciaMes,
+            comissao,
+            lider_comissao: liderComissao,
+          })
+        } else {
+          log.warn('Affiliate referral duplicate ignored', {
+            affiliate_id: affiliate.id,
+            tenant_id: restaurantId,
+            referencia_mes: referenciaMes,
+          })
+        }
       }
     } catch (refErr) {
-      console.error('[webhook-mp] Error creating affiliate referral:', refErr)
+      log.error('Affiliate referral creation flow failed', refErr, {
+        tenant_id: restaurantId,
+        affiliate_ref: String(metadata.aff_ref),
+      })
     }
   }
 
@@ -636,7 +698,10 @@ export async function processOnboardingPayment(
     metadata: orderMetadata,
   })
 
-  orderMetadata = withCheckoutSessionSyncState(baseMetadata, initialCheckoutSessionSync.errorMessage)
+  orderMetadata = withCheckoutSessionSyncState(
+    baseMetadata,
+    initialCheckoutSessionSync.errorMessage
+  )
 
   if (samePaymentAlreadyProcessed && metadata.provisioned_restaurant_id) {
     if (initialCheckoutSessionSync.errorMessage) {
