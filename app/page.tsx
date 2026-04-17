@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import dynamic from 'next/dynamic'
+import nextDynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -33,16 +33,16 @@ import { HeroBadge, HeroHeading } from '@/components/hero-ab'
 import { GuaranteeBadge } from '@/components/guarantee-badge'
 import { HomeHeroAnimation } from '@/components/home-hero-animation'
 
-const Footer = dynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })), {
+const Footer = nextDynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })), {
   loading: () => null,
 })
-const FaqSection = dynamic(() => import('@/components/sections/FaqSection'), {
+const FaqSection = nextDynamic(() => import('@/components/sections/FaqSection'), {
   loading: () => null,
 })
-const SavingsCalculator = dynamic(() => import('@/components/sections/SavingsCalculator'), {
+const SavingsCalculator = nextDynamic(() => import('@/components/sections/SavingsCalculator'), {
   loading: () => null,
 })
-const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'), {
+const TestimonialsSection = nextDynamic(() => import('@/components/sections/TestimonialsSection'), {
   loading: () => null,
 })
 
