@@ -125,14 +125,12 @@ export default function TestimonialsSection() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           role="region"
-          aria-roledescription="carousel"
           aria-label="Cenários de uso do Zairyx"
         >
           {/* Card */}
           <div
             className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-lg md:p-10"
             role="group"
-            aria-roledescription="slide"
             aria-label={`Cenário ${current + 1} de ${SCENARIOS.length}`}
           >
             {/* Niche badge */}
@@ -163,16 +161,18 @@ export default function TestimonialsSection() {
 
           {/* Navigation arrows */}
           <button
+            type="button"
             onClick={prev}
             aria-label="Cenário anterior"
-            className="absolute top-1/2 -left-4 -translate-y-1/2 rounded-full border border-zinc-200 bg-white p-2.5 shadow-md transition-colors hover:bg-zinc-50 md:-left-6"
+            className="absolute top-1/2 -left-4 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-md transition-colors hover:bg-zinc-50 md:-left-6"
           >
             <ChevronLeft className="h-5 w-5 text-zinc-700" />
           </button>
           <button
+            type="button"
             onClick={next}
             aria-label="Próximo cenário"
-            className="absolute top-1/2 -right-4 -translate-y-1/2 rounded-full border border-zinc-200 bg-white p-2.5 shadow-md transition-colors hover:bg-zinc-50 md:-right-6"
+            className="absolute top-1/2 -right-4 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-md transition-colors hover:bg-zinc-50 md:-right-6"
           >
             <ChevronRight className="h-5 w-5 text-zinc-700" />
           </button>
@@ -186,13 +186,21 @@ export default function TestimonialsSection() {
             {SCENARIOS.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={() => goTo(i)}
                 aria-current={i === current ? 'true' : undefined}
                 aria-label={`Cenário ${i + 1}`}
-                className={`h-2.5 rounded-full transition-all ${
-                  i === current ? 'w-8 bg-orange-500' : 'w-2.5 bg-zinc-300 hover:bg-zinc-400'
-                }`}
-              />
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block rounded-full transition-all ${
+                    i === current
+                      ? 'h-2.5 w-8 bg-orange-500'
+                      : 'h-2.5 w-2.5 bg-zinc-300 hover:bg-zinc-400'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

@@ -1,6 +1,4 @@
-'use client'
-
-import { Suspense, useEffect } from 'react'
+import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,50 +31,30 @@ import { ScrollReveal } from '@/components/scroll-reveal'
 import { TrackedLink } from '@/components/tracked-link'
 import { HeroBadge, HeroHeading } from '@/components/hero-ab'
 import { GuaranteeBadge } from '@/components/guarantee-badge'
+import { HomeHeroAnimation } from '@/components/home-hero-animation'
 
-const Footer = dynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })))
-const FaqSection = dynamic(() => import('@/components/sections/FaqSection'))
-const SavingsCalculator = dynamic(() => import('@/components/sections/SavingsCalculator'))
-const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'))
+const Footer = dynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })), {
+  loading: () => null,
+})
+const FaqSection = dynamic(() => import('@/components/sections/FaqSection'), {
+  loading: () => null,
+})
+const SavingsCalculator = dynamic(() => import('@/components/sections/SavingsCalculator'), {
+  loading: () => null,
+})
+const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'), {
+  loading: () => null,
+})
 
 const TOP_TEMPLATES = HOME_TEMPLATE_CARDS
 
+export const dynamic = 'force-static'
+
 export default function Home() {
-  // Hero GIF animation
-  useEffect(() => {
-    const track = document.querySelector('.hero-track') as HTMLElement | null
-    const frames = document.querySelectorAll('.hero-frame')
-    if (!track || !frames.length) return
-
-    let currentFrame = 0
-    const totalFrames = frames.length
-    let timeoutId: ReturnType<typeof setTimeout> | null = null
-
-    // Frame timings (in milliseconds) - Otimizado para demonstração do produto
-    const frameTimings = [2500, 2500, 3500, 2500, 2500, 4000] // Total: ~20s loop
-
-    const showFrame = (frameIndex: number) => {
-      track.style.transform = `translateX(-${frameIndex * 100}%)`
-    }
-
-    const nextFrame = () => {
-      showFrame(currentFrame)
-      const delay = frameTimings[currentFrame] || 2000
-      currentFrame = (currentFrame + 1) % totalFrames
-      timeoutId = setTimeout(nextFrame, delay)
-    }
-
-    showFrame(0)
-    timeoutId = setTimeout(nextFrame, frameTimings[0])
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, [])
-
   return (
     <>
       <main className="min-h-screen bg-white text-zinc-900">
+        <HomeHeroAnimation />
         <Suspense fallback={null}>
           <HomeHeader />
         </Suspense>
@@ -101,17 +79,12 @@ export default function Home() {
                 <HeroHeading />
               </h1>
 
-              <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
+              <p className="contain-layout mx-auto mt-5 max-w-2xl text-base leading-relaxed text-zinc-100 md:text-lg">
                 <strong className="text-white">Seu cardápio digital pronto em 30 minutos.</strong>{' '}
-                Zero comissão por pedido — nunca cobramos % sobre suas vendas.{' '}
-                <strong className="text-green-400">Pedidos direto no WhatsApp.</strong> Fluxo
-                simples para o cliente pedir sem atrito.{' '}
-                <span className="text-zinc-300">
-                  O iFood traz gente nova — o SEU cardápio fideliza.
-                </span>
+                Zero comissão por pedido e pedidos direto no WhatsApp.
               </p>
 
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300">
                 Estimativas de economia dependem do seu faturamento, percentual vindo do app e
                 adesão do cliente ao canal próprio.
               </p>
@@ -176,7 +149,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-zinc-200 bg-white px-4 py-14 md:py-20">
+        <section className="cv-auto border-b border-zinc-200 bg-white px-4 py-14 md:py-20">
           <div className="container-premium">
             <div className="mb-8 max-w-3xl">
               <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
@@ -213,6 +186,8 @@ export default function Home() {
                             src="/hero-frames/frame-1.png"
                             alt="Frame 1: Painel já logado"
                             fill
+                            priority
+                            fetchPriority="high"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />
@@ -222,6 +197,8 @@ export default function Home() {
                             src="/hero-frames/frame-2.png"
                             alt="Frame 2: Catálogo já vem pronto"
                             fill
+                            loading="lazy"
+                            fetchPriority="low"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />
@@ -231,6 +208,8 @@ export default function Home() {
                             src="/hero-frames/frame-3.png"
                             alt="Frame 3: Navegação para produtos"
                             fill
+                            loading="lazy"
+                            fetchPriority="low"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />
@@ -240,6 +219,8 @@ export default function Home() {
                             src="/hero-frames/frame-4.png"
                             alt="Frame 4: Edição instantânea"
                             fill
+                            loading="lazy"
+                            fetchPriority="low"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />
@@ -249,6 +230,8 @@ export default function Home() {
                             src="/hero-frames/frame-5.png"
                             alt="Frame 5: Publicação bem-sucedida"
                             fill
+                            loading="lazy"
+                            fetchPriority="low"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />
@@ -258,6 +241,8 @@ export default function Home() {
                             src="/hero-frames/frame-6.png"
                             alt="Frame 6: Cardápio online e canal próprio"
                             fill
+                            loading="lazy"
+                            fetchPriority="low"
                             sizes="(max-width: 640px) 100vw, 360px"
                             className="object-contain object-top"
                           />

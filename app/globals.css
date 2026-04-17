@@ -280,6 +280,16 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
+  /* Defere layout/paint de blocos abaixo da dobra para reduzir main-thread inicial */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px;
+  }
+
+  .contain-layout {
+    contain: layout style;
+  }
+
   /* Scrollbar Premium (webkit) */
   .scrollbar-premium::-webkit-scrollbar {
     width: 8px;

@@ -9,19 +9,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        disallow: [
-          '/painel',
-          '/admin',
-          '/api',
-          '/dev',
-          '/auth',
-          '/onboarding',
-          '/status',
-        ],
+        disallow: ['/painel', '/admin', '/api', '/dev', '/auth', '/onboarding', '/status'],
         allow: ['/', '/templates', '/precos'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
   }
 }

@@ -13,13 +13,15 @@ const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-heading',
   display: 'swap',
-  weight: ['500', '600', '700'],
+  preload: true,
+  weight: ['600', '700'],
 })
 const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['400', '500', '700'],
+  preload: true,
+  weight: ['400', '700'],
 })
 
 const siteUrl = getSiteUrl()
