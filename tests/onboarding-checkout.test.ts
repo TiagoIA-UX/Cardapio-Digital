@@ -6,6 +6,8 @@ import {
   createCheckoutNumber,
   sanitizeAffiliateRef,
 } from '@/lib/domains/core/onboarding-checkout'
+import { OnboardingCheckoutSchema } from '@/lib/domains/core/schemas'
+import { resolveRestaurantTemplateSlug } from '@/lib/domains/core/restaurant-customization'
 
 test('sanitizeAffiliateRef accepts only safe affiliate codes', () => {
   assert.equal(sanitizeAffiliateRef(' vendedor_01 '), 'vendedor_01')
@@ -43,4 +45,23 @@ test('buildOnboardingOrderMetadata centralizes checkout metadata fields', () => 
   assert.equal(metadata.mp_preference_id, 'pref-123')
   assert.equal(metadata.checkout_session_sync_failed, true)
   assert.equal(metadata.customer_document, '61699939000180')
+})
+
+test('OnboardingCheckoutSchema rejects invalid template slug', () => {
+  const parsed = OnboardingCheckoutSchema.safeParse({
+    template: 'template-invalido-xyz',
+    plan: 'self-service',
+    paymentMethod: 'pix',
+    restaurantName: 'Delivery Centro',
+    customerName: 'Tiago',
+    phone: '11999999999',
+    acceptedTerms: true,
+    acceptedTermsVersion: '2026-04-06.v1',
+  })
+
+  assert.equal(parsed.success, false)
+})
+
+test('resolveRestaurantTemplateSlug returns null for unknown slugs', () => {
+  assert.equal(resolveRestaurantTemplateSlug('template-invalido-xyz'), null)
 })
