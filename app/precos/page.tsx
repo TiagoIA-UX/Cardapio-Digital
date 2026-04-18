@@ -1,22 +1,33 @@
 import Link from 'next/link'
-import { ArrowRight, Calculator, Check, Shield, Store, TrendingUp } from 'lucide-react'
-import { TEMPLATE_PRICING } from '@/lib/domains/marketing/pricing'
-import {
-  getTemplatePlans,
-  getTemplatePlanCheckoutHref,
-} from '@/lib/domains/marketing/template-plans'
-import {
-  TEMPLATE_FAMILIES,
-  TEMPLATE_FAMILY_ORDER,
-  TEMPLATE_PUBLIC_ORDER,
-  getPublicTemplateMeta,
-} from '@/lib/domains/marketing/template-public-meta'
-import { PLAN_LIMITS } from '@/lib/domains/marketing/pricing'
+import { ArrowRight, Check, Shield, Store, Zap } from 'lucide-react'
+import { PUBLIC_SUBSCRIPTION_PRICES, PLAN_LIMITS } from '@/lib/domains/marketing/pricing'
 
-const FAMILY_SECTIONS = TEMPLATE_FAMILY_ORDER.map((familyId) => ({
-  ...TEMPLATE_FAMILIES[familyId],
-  slugs: TEMPLATE_PUBLIC_ORDER.filter((slug) => getPublicTemplateMeta(slug).family === familyId),
-})).filter((section) => section.slugs.length > 0)
+const PLANS = [
+  {
+    slug: 'semente' as const,
+    name: 'Começo',
+    audience: 'Quem está começando',
+    highlight: false,
+  },
+  {
+    slug: 'basico' as const,
+    name: 'Operação',
+    audience: 'Dia a dia rodando',
+    highlight: true,
+  },
+  {
+    slug: 'pro' as const,
+    name: 'Escala',
+    audience: 'Mix amplo e crescimento',
+    highlight: false,
+  },
+  {
+    slug: 'premium' as const,
+    name: 'Rede',
+    audience: 'Catálogo extenso ou múltiplas unidades',
+    highlight: false,
+  },
+]
 
 function formatBRL(value: number): string {
   return value.toLocaleString('pt-BR', {
@@ -25,216 +36,128 @@ function formatBRL(value: number): string {
   })
 }
 
-function getCapacityLabel(capacitySlug: keyof typeof PLAN_LIMITS): string {
-  return PLAN_LIMITS[capacitySlug].label
-}
-
 export default function PrecosPage() {
   return (
-    <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <Store className="text-primary h-6 w-6" />
-            <span className="text-foreground text-xl font-bold">Zairyx</span>
+            <Store className="h-6 w-6 text-orange-600" />
+            <span className="text-xl font-bold text-zinc-950">Zairyx</span>
           </Link>
           <Link
             href="/templates"
-            className="text-foreground hover:text-foreground text-sm font-medium transition-colors"
+            className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
           >
             Ver templates
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-12">
+      <main className="mx-auto max-w-5xl px-4 py-16">
         {/* Hero */}
-        <div className="mb-12 text-center">
-          <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
-            <Calculator className="h-4 w-4" />
-            Escolha pelo tamanho real do catálogo
-          </div>
-          <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
-            Preços mais claros para cada operação
+        <div className="mb-16 text-center">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-zinc-950 md:text-5xl">
+            Planos simples, sem taxa por pedido
           </h1>
-          <p className="text-foreground/90 mx-auto max-w-2xl text-lg">
-            São 16 nichos com 3 faixas de catálogo. Você escolhe pela quantidade de itens que
-            realmente pretende vender, sem adivinhar plano por nome.
+          <p className="mx-auto max-w-xl text-lg text-zinc-600">
+            Você paga apenas pela capacidade do seu catálogo. O template você escolhe separado.
           </p>
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
             <Check className="h-4 w-4" />
-            Zero taxa por pedido, com venda direta no seu canal
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
-              <p className="text-sm font-semibold text-zinc-500 uppercase">16 nichos</p>
-              <p className="mt-2 text-2xl font-bold text-zinc-950">Vitrine organizada</p>
-              <p className="mt-2 text-sm text-zinc-600">
-                Nomes públicos mais claros para reduzir confusão entre modelos parecidos.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
-              <p className="text-sm font-semibold text-zinc-500 uppercase">3 faixas</p>
-              <p className="mt-2 text-2xl font-bold text-zinc-950">Essencial, Operação, Escala</p>
-              <p className="mt-2 text-sm text-zinc-600">
-                A faixa define o tamanho do catálogo. O modo de implantação você decide no checkout.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
-              <p className="text-sm font-semibold text-zinc-500 uppercase">Compra direta</p>
-              <p className="mt-2 text-2xl font-bold text-zinc-950">0% por pedido</p>
-              <p className="mt-2 text-sm text-zinc-600">
-                Checkout próprio, pedidos no seu canal e mensalidade fixa conforme capacidade.
-              </p>
-            </div>
+            0% de comissão por pedido — venda direto no seu canal
           </div>
         </div>
 
-        <div className="space-y-12">
-          {FAMILY_SECTIONS.map((section) => (
-            <section
-              key={section.id}
-              className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm md:p-8"
-            >
-              <div className="mb-6">
-                <div>
-                  <p className="text-sm font-semibold tracking-[0.18em] text-orange-600 uppercase">
-                    {section.label}
-                  </p>
-                  <h2 className="mt-2 text-2xl font-bold text-zinc-950 md:text-3xl">
-                    Mesmo padrão de compra
-                  </h2>
-                  <p className="mt-2 max-w-3xl text-sm text-zinc-600">{section.description}</p>
+        {/* Cards */}
+        <div className="mb-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {PLANS.map((plan) => {
+            const prices = PUBLIC_SUBSCRIPTION_PRICES[plan.slug]
+            const limits = PLAN_LIMITS[plan.slug]
+
+            return (
+              <div
+                key={plan.slug}
+                className={`relative flex flex-col rounded-2xl border p-6 ${
+                  plan.highlight
+                    ? 'border-orange-300 bg-orange-50 shadow-md'
+                    : 'border-zinc-200 bg-white'
+                }`}
+              >
+                {plan.highlight && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold uppercase text-white">
+                    Mais escolhido
+                  </span>
+                )}
+
+                <h3 className="text-lg font-bold text-zinc-950">{plan.name}</h3>
+                <p className="mt-1 text-sm text-zinc-500">{plan.audience}</p>
+
+                <div className="mt-6">
+                  <span className="text-3xl font-bold text-zinc-950">
+                    R$ {formatBRL(prices.monthly)}
+                  </span>
+                  <span className="text-sm text-zinc-500">/mês</span>
                 </div>
+                <p className="mt-1 text-xs text-zinc-400">
+                  ou R$ {formatBRL(prices.annual)}/ano
+                </p>
+
+                <div className="mt-6 flex-1">
+                  <div className="rounded-xl bg-zinc-100 p-3 text-center">
+                    <p className="text-2xl font-bold text-zinc-950">{limits.maxProducts}</p>
+                    <p className="text-xs text-zinc-600">produtos no catálogo</p>
+                  </div>
+                  {'maxOrdersPerMonth' in limits && (
+                    <p className="mt-2 text-center text-xs text-zinc-500">
+                      até {limits.maxOrdersPerMonth} pedidos/mês
+                    </p>
+                  )}
+                </div>
+
+                <Link
+                  href="/templates"
+                  className={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                    plan.highlight
+                      ? 'bg-orange-600 text-white hover:bg-orange-700'
+                      : 'bg-zinc-950 text-white hover:bg-zinc-800'
+                  }`}
+                >
+                  Escolher template
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-
-              <div className="grid gap-5 lg:grid-cols-2">
-                {section.slugs.map((slug) => {
-                  const meta = getPublicTemplateMeta(slug)
-                  const pricing = TEMPLATE_PRICING[slug]
-                  const plans = getTemplatePlans(slug)
-
-                  return (
-                    <article
-                      key={slug}
-                      className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"
-                    >
-                      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-                        <div>
-                          <h3 className="text-xl font-bold text-zinc-950">{meta.publicName}</h3>
-                          <p className="mt-1 text-sm text-zinc-600">{meta.summary}</p>
-                        </div>
-                        <div className="rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-right text-xs text-zinc-600">
-                          <p className="font-semibold text-zinc-900">{pricing.nomeCanal}</p>
-                          <p>Mix típico: {pricing.mediaProdutos} produtos</p>
-                        </div>
-                      </div>
-
-                      <div className="mb-4 flex flex-wrap gap-2">
-                        <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-700">
-                          {meta.categoryLabel}
-                        </span>
-                        <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-700">
-                          {meta.productProfile}
-                        </span>
-                      </div>
-
-                      <div className="grid gap-3 md:grid-cols-3">
-                        {plans.map((plan, index) => {
-                          const previousPlan = index > 0 ? plans[index - 1] : null
-                          const repeatedCapacity =
-                            previousPlan?.capacitySlug === plan.capacitySlug && index > 0
-                          const capacityLabel = getCapacityLabel(plan.capacitySlug)
-
-                          return (
-                            <div
-                              key={plan.id}
-                              className={`rounded-2xl border p-4 ${plan.popular ? 'border-orange-300 bg-orange-50' : 'border-zinc-200 bg-white'}`}
-                            >
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <h4 className="font-semibold text-zinc-950">{plan.displayName}</h4>
-                                <p className="mt-1 text-xs text-zinc-600">{plan.description}</p>
-                              </div>
-                              {plan.popular ? (
-                                <span className="rounded-full bg-orange-500 px-2 py-1 text-[10px] font-bold text-white uppercase">
-                                  Mais pedido
-                                </span>
-                              ) : null}
-                            </div>
-
-                            <p className="mt-4 text-2xl font-bold text-zinc-950">
-                              {plan.maxProducts}
-                            </p>
-                            <p className="text-xs text-zinc-500">produtos no catálogo</p>
-
-                            <p className="mt-3 text-sm font-medium text-zinc-800">
-                              Mensalidade da faixa: R$ {formatBRL(plan.priceMonthly)}/mês
-                            </p>
-                            <p className="text-xs text-zinc-500">
-                              Plano anual: R$ {formatBRL(plan.priceAnnual)}
-                            </p>
-
-                            <div className="mt-3 rounded-xl bg-zinc-50 p-3 text-xs text-zinc-600">
-                              <p>{meta.productProfile}</p>
-                              <p className="mt-1">
-                                Faixa correspondente: {capacityLabel}
-                                {repeatedCapacity ? ` (mesma faixa comercial da ${previousPlan?.displayName})` : ''}
-                              </p>
-                            </div>
-
-                            <div className="mt-4 flex flex-col gap-2">
-                              <Link
-                                href={getTemplatePlanCheckoutHref(slug, plan.name, 'self-service')}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                              >
-                                Você configura
-                                <ArrowRight className="h-4 w-4" />
-                              </Link>
-                              <Link
-                                href={getTemplatePlanCheckoutHref(
-                                  slug,
-                                  plan.name,
-                                  'feito-pra-voce'
-                                )}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-100"
-                              >
-                                Equipe configura
-                              </Link>
-                            </div>
-                          </div>
-                          )
-                        })}
-                      </div>
-                    </article>
-                  )
-                })}
-              </div>
-            </section>
-          ))}
+            )
+          })}
         </div>
 
-        <section className="border-border bg-card mt-16 mb-16 rounded-2xl border p-6 md:p-8">
-          <h2 className="text-foreground mb-4 flex items-center gap-2 text-xl font-bold">
-            <TrendingUp className="text-primary h-5 w-5" />
-            Como ler a nova régua comercial
+        {/* Como funciona */}
+        <section className="mb-16 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 md:p-8">
+          <h2 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-950">
+            <Zap className="h-5 w-5 text-orange-600" />
+            Como funciona
           </h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="border-border bg-muted/20 rounded-xl border p-4">
-              <h3 className="text-foreground mb-2 font-semibold">1. Escolha a faixa do catálogo</h3>
-              <p className="text-foreground/90 text-sm">
-                Essencial atende entrada enxuta. Operação cobre o dia a dia equilibrado. Escala é
-                para mix mais largo, sazonalidade e expansão.
+          <div className="grid gap-6 md:grid-cols-3">
+            <div>
+              <p className="text-sm font-semibold text-orange-600">1</p>
+              <h3 className="mt-1 font-semibold text-zinc-950">Escolha o template</h3>
+              <p className="mt-1 text-sm text-zinc-600">
+                O template define o visual e o nicho do seu cardápio (pizzaria, açaí, sushi, etc.).
               </p>
             </div>
-            <div className="border-border bg-primary/5 rounded-xl border p-4">
-              <h3 className="text-foreground mb-2 font-semibold">
-                2. No checkout, escolha a implantação
-              </h3>
-              <p className="text-foreground/90 text-sm">
-                Você pode configurar sozinho ou mandar as fotos e dados para a equipe montar tudo. A
-                capacidade do catálogo continua sendo preservada em ambos os modos.
+            <div>
+              <p className="text-sm font-semibold text-orange-600">2</p>
+              <h3 className="mt-1 font-semibold text-zinc-950">O plano define a capacidade</h3>
+              <p className="mt-1 text-sm text-zinc-600">
+                Quantos produtos você pode cadastrar no catálogo. Sem limites artificiais de pedidos nos planos maiores.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-orange-600">3</p>
+              <h3 className="mt-1 font-semibold text-zinc-950">Implantação no checkout</h3>
+              <p className="mt-1 text-sm text-zinc-600">
+                Configure sozinho ou peça para a equipe montar tudo. Você decide na hora da compra.
               </p>
             </div>
           </div>
@@ -242,15 +165,15 @@ export default function PrecosPage() {
 
         {/* CTA */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="text-foreground/90 flex items-center gap-2">
+          <div className="flex items-center gap-2 text-zinc-600">
             <Shield className="h-5 w-5 text-green-500" />
-            Faixa clara, checkout sem surpresa e canal próprio para vender direto.
+            Sem surpresas no checkout. Mensalidade fixa, canal próprio.
           </div>
           <Link
             href="/templates"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-xl px-6 py-4 font-semibold transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-orange-700"
           >
-            Escolher template
+            Ver templates disponíveis
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
