@@ -51,6 +51,7 @@ _MERGEFORGE_HEALTH_STATE: dict[str, Any] = {
     "fail_streak": 0,
     "last_alert_at": None,
     "last_alert_level": None,
+    "had_incident": False,  # True quando fail_streak atingiu threshold em ciclo anterior
 }
 
 _ZAIRYX_HEALTH_STATE: dict[str, Any] = {
@@ -80,13 +81,19 @@ def _register_mergeforge_alert(level: str, now: datetime) -> None:
     _MERGEFORGE_HEALTH_STATE["last_alert_level"] = level
 
 
-def _reset_mergeforge_fail_streak() -> None:
+def _reset_mergeforge_fail_streak() -> bool:
+    """Reseta fail streak e retorna True se havia incidente ativo (recovery cross-cycle)."""
+    had = bool(_MERGEFORGE_HEALTH_STATE.get("had_incident", False))
     _MERGEFORGE_HEALTH_STATE["fail_streak"] = 0
+    _MERGEFORGE_HEALTH_STATE["had_incident"] = False
+    return had
 
 
 def _increment_mergeforge_fail_streak() -> int:
     next_fail_streak = int(_MERGEFORGE_HEALTH_STATE.get("fail_streak", 0)) + 1
     _MERGEFORGE_HEALTH_STATE["fail_streak"] = next_fail_streak
+    if next_fail_streak >= MERGEFORGE_WARNING_FAIL_STREAK:
+        _MERGEFORGE_HEALTH_STATE["had_incident"] = True
     return next_fail_streak
 
 
@@ -500,19 +507,21 @@ async def _check_mergeforge_health() -> list[dict]:
             try:
                 resp = await client.get(mergeforge_health_url, timeout=timeout)
                 if resp.status_code < 500:
-                    _reset_mergeforge_fail_streak()
-                    if failures:
+                    had_incident = _reset_mergeforge_fail_streak()
+                    if failures or had_incident:
                         if _mergeforge_alert_in_cooldown("warning", now):
                             return issues
-
+                        detail = (
+                            f"Healthcheck respondeu em /api/health apos {attempt} tentativas. "
+                            f"Falhas anteriores: {' | '.join(failures[:2])}"
+                            if failures
+                            else "MergeForge voltou ao normal apos incidente em ciclo anterior."
+                        )
                         issues.append({
                             "source": "mergeforge-backend",
                             "level": "warning",
-                            "title": "MergeForge backend respondeu apos retry",
-                            "detail": (
-                                f"Healthcheck respondeu em /api/health apos {attempt} tentativas. "
-                                f"Falhas anteriores: {' | '.join(failures[:2])}"
-                            )[:200],
+                            "title": "MergeForge recuperado",
+                            "detail": detail[:200],
                             "fix": "Monitorar cold start/deploy no Render; elevar para plano sem sleep se o padrao persistir.",
                         })
                         _register_mergeforge_alert("warning", now)
