@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { createClient as createServerClient } from '@/lib/shared/supabase/server'
 import { getRateLimitIdentifier, withRateLimit } from '@/lib/shared/rate-limit'
-import { TEMPLATE_PRESETS, normalizeTemplateSlug } from '@/lib/domains/core/restaurant-customization'
+import {
+  TEMPLATE_PRESETS,
+  resolveRestaurantTemplateSlug,
+} from '@/lib/domains/core/restaurant-customization'
 
 function getMetadata(value: unknown) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -138,7 +141,15 @@ export async function GET(request: NextRequest) {
   }
 
   if (order.payment_status === 'approved' && metadata.onboarding_status === 'ready') {
-    const templateSlug = normalizeTemplateSlug(String(metadata.template_slug || 'restaurante'))
+    const rawTemplateSlug = String(metadata.template_slug || '')
+    const templateSlug = resolveRestaurantTemplateSlug(rawTemplateSlug)
+    if (!templateSlug) {
+      return NextResponse.json(
+        { error: 'Checkout sem template válido para sincronização de compra' },
+        { status: 409, headers: rateLimit.headers }
+      )
+    }
+
     await ensurePurchaseRecord(admin, {
       userId: user.id,
       orderId: order.id,
