@@ -65,12 +65,7 @@ export default function AfiliadosPage() {
                   Quero ser afiliado
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/revendedores"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-300 bg-white px-6 py-4 text-base font-semibold text-zinc-900 transition hover:bg-zinc-50"
-                >
-                  Sou empresa, quero revender
-                </Link>
+                {/* Fluxo de revendedores pausado por decisão estratégica. Não reativar por hora. */}
               </div>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -201,8 +196,7 @@ export default function AfiliadosPage() {
                 Entre, gere seu link e acompanhe a operação no painel.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-300">
-                Se você é individual e quer ganhar por indicação, esse é o caminho. Se você tem
-                agência ou operação comercial própria, use o fluxo empresarial de revendedores.
+                Se você é individual e quer ganhar por indicação, esse é o caminho.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link

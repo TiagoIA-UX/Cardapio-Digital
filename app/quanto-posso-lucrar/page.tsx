@@ -418,12 +418,11 @@ export default function QuantoPossoLucrarPage() {
               <div className="md:col-span-2">
                 <h3 className="text-xl font-bold text-white">
                   <Zap className="mr-2 inline h-5 w-5 text-purple-400" />
-                  Multiplique com afiliados + revendedores
+                  Multiplique com afiliados
                 </h3>
                 <p className="mt-3 text-zinc-400">
                   Cada afiliado traz 5–20 novos deliverys por mês. Com 10 afiliados ativos, o MRR
-                  cresce sem você fazer nada. Revendedores locais conhecem cada praça e fecham deals
-                  que você nunca alcançaria sozinho.
+                  cresce sem você fazer nada.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   <div>
@@ -448,13 +447,7 @@ export default function QuantoPossoLucrarPage() {
                   Programa de afiliados
                   <ChevronRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/revendedores"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-5 py-3 text-sm font-bold text-zinc-300 hover:bg-zinc-700"
-                >
-                  Seja um revendedor
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
+                {/* Fluxo de revendedores pausado por decisão estratégica. Não reativar por hora. */}
               </div>
             </div>
           </div>
