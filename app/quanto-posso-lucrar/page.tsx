@@ -404,7 +404,7 @@ export default function QuantoPossoLucrarPage() {
                 {clients >= 100 && (
                   <div className="mt-3 border-t border-zinc-700 pt-3">
                     <p className="text-xs text-zinc-400">
-                      + afiliados + filiais + resellers = receita adicional
+                      + afiliados + filiais = receita adicional
                     </p>
                   </div>
                 )}

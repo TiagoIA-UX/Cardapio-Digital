@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import {
   ArrowRight,
   BadgeCheck,
@@ -73,6 +74,9 @@ const BENEFICIOS = [
 ]
 
 export default function Revendedores() {
+  // Fluxo de revendedores pausado por decisão estratégica. Não reativar por hora.
+  notFound()
+
   return (
     <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* ── Header ─────────────────────────────────────────────────────── */}
