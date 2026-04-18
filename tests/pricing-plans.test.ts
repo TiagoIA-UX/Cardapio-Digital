@@ -94,8 +94,8 @@ test('getMaxProducts("premium") → 1200', () => {
   assert.equal(getMaxProducts('premium'), 1200)
 })
 
-test('getMaxProducts(slug desconhecido) → 60 (fallback seguro)', () => {
-  assert.equal(getMaxProducts('inexistente'), 60)
+test('getMaxProducts(slug desconhecido) → throw (zero fallback)', () => {
+  assert.throws(() => getMaxProducts('inexistente'), /plano desconhecido/i)
 })
 
 test('Escada de mensalidades cresce em ordem lógica', () => {

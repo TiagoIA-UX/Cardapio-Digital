@@ -1,4 +1,5 @@
 import type { RestaurantTemplateSlug } from '@/lib/domains/core/restaurant-customization'
+import { PLAN_REGISTRY } from '@/lib/domains/core/plan-registry'
 
 export type OnboardingPlanSlug = 'self-service' | 'feito-pra-voce'
 export type PaymentMethod = 'pix' | 'card'
@@ -51,39 +52,27 @@ export function calcParcelaMensal(valor: number, parcelas: number, taxaMensal = 
 
 /**
  * Mensalidade pública simplificada por modelo.
- * A implantação varia por template; a continuidade da plataforma segue o plano escolhido.
+ * Derivado de PLAN_REGISTRY — não definir preços diretamente aqui.
  */
 export const PUBLIC_SUBSCRIPTION_PRICES = {
-  semente: {
-    monthly: 14.9,
-    annual: 149.9,
-  },
-  basico: {
-    monthly: 147,
-    annual: 1470,
-  },
-  pro: {
-    monthly: 197,
-    annual: 1970,
-  },
-  premium: {
-    monthly: 297,
-    annual: 2970,
-  },
+  semente: { monthly: PLAN_REGISTRY.semente.priceMonthly, annual: PLAN_REGISTRY.semente.priceAnnual },
+  basico: { monthly: PLAN_REGISTRY.basico.priceMonthly, annual: PLAN_REGISTRY.basico.priceAnnual },
+  pro: { monthly: PLAN_REGISTRY.pro.priceMonthly, annual: PLAN_REGISTRY.pro.priceAnnual },
+  premium: { monthly: PLAN_REGISTRY.premium.priceMonthly, annual: PLAN_REGISTRY.premium.priceAnnual },
 } as const
 
-/** Limites de cada plano — alinhado com migration_planos.sql */
+/** Limites de cada plano — derivado de PLAN_REGISTRY. */
 export const PLAN_LIMITS = {
   semente: {
-    maxProducts: 15,
-    maxOrdersPerMonth: 60,
-    activationFeePix: 19.9,
-    activationFeeCard: 24.9,
-    label: 'Começo',
+    maxProducts: PLAN_REGISTRY.semente.maxProducts,
+    maxOrdersPerMonth: PLAN_REGISTRY.semente.maxOrdersPerMonth,
+    activationFeePix: PLAN_REGISTRY.semente.activationFeePix,
+    activationFeeCard: PLAN_REGISTRY.semente.activationFeeCard,
+    label: PLAN_REGISTRY.semente.label,
   },
-  basico: { maxProducts: 60, label: 'Básico' },
-  pro: { maxProducts: 200, label: 'Profissional' },
-  premium: { maxProducts: 1200, label: 'Premium' },
+  basico: { maxProducts: PLAN_REGISTRY.basico.maxProducts, label: PLAN_REGISTRY.basico.label },
+  pro: { maxProducts: PLAN_REGISTRY.pro.maxProducts, label: PLAN_REGISTRY.pro.label },
+  premium: { maxProducts: PLAN_REGISTRY.premium.maxProducts, label: PLAN_REGISTRY.premium.label },
 } as const
 
 export const NETWORK_EXPANSION_UNIT_OPTIONS = [3, 5, 10, 20] as const
@@ -96,8 +85,8 @@ export type SubscriptionPlanSlug = keyof typeof PLAN_LIMITS
 
 export function getMaxProducts(planSlug: string): number {
   const plan = PLAN_LIMITS[planSlug as SubscriptionPlanSlug]
-  if (!plan) return 60 // slug desconhecido → fallback restritivo
-  return plan.maxProducts // 1200 no Premium
+  if (!plan) throw new Error(`getMaxProducts: plano desconhecido "${planSlug}"`)
+  return plan.maxProducts
 }
 
 export const POST_PURCHASE_OFFERS = {
@@ -349,18 +338,22 @@ export function getTemplatePrice(
   plan: OnboardingPlanSlug,
   paymentMethod: PaymentMethod
 ): number {
-  const pricing = TEMPLATE_PRICING[templateSlug] ?? TEMPLATE_PRICING.restaurante
+  const pricing = TEMPLATE_PRICING[templateSlug]
+  if (!pricing) throw new Error(`getTemplatePrice: template sem pricing "${templateSlug}"`)
   const planPrices = plan === 'feito-pra-voce' ? pricing.feitoPraVoce : pricing.selfService
   return paymentMethod === 'pix' ? planPrices.pix : planPrices.card
 }
 
 export function getTemplatePricing(templateSlug: RestaurantTemplateSlug): TemplatePricing {
-  return TEMPLATE_PRICING[templateSlug] ?? TEMPLATE_PRICING.restaurante
+  const pricing = TEMPLATE_PRICING[templateSlug]
+  if (!pricing) throw new Error(`getTemplatePricing: template sem pricing "${templateSlug}"`)
+  return pricing
 }
 
 /** Percentual a mais do Feito Pra Você sobre Faça Você Mesmo (PIX) */
 export function getFpvcMarkupPercent(templateSlug: RestaurantTemplateSlug): number {
-  const p = TEMPLATE_PRICING[templateSlug] ?? TEMPLATE_PRICING.restaurante
+  const p = TEMPLATE_PRICING[templateSlug]
+  if (!p) throw new Error(`getFpvcMarkupPercent: template sem pricing "${templateSlug}"`)
   const diy = p.selfService.pix
   const fpvc = p.feitoPraVoce.pix
   return Math.round(((fpvc - diy) / diy) * 100)

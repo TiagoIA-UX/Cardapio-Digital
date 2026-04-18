@@ -136,8 +136,10 @@ export function getTemplatePlanCheckoutHref(
   onboardingPlan: OnboardingPlanSlug = 'self-service'
 ): string {
   const selectedPlan = getTemplatePlans(templateSlug).find((plan) => plan.name === planName)
-  const capacitySlug = selectedPlan?.capacitySlug ?? 'basico'
-  return `/comprar/${templateSlug}?plano=${onboardingPlan}&capacidade=${capacitySlug}`
+  if (!selectedPlan) {
+    throw new Error(`Plano "${planName}" não encontrado para template "${templateSlug}"`)
+  }
+  return `/comprar/${templateSlug}?plano=${onboardingPlan}&capacidade=${selectedPlan.capacitySlug}`
 }
 
 export const PLAN_METRICS = {
