@@ -39,15 +39,15 @@ SITE_URL: str = os.getenv("NEXT_PUBLIC_SITE_URL", "https://zairyx.com.br")
 BASE_INTERVAL = int(os.getenv("SENTINEL_INTERVAL_SECONDS", "900"))
 MIN_INTERVAL = int(os.getenv("SENTINEL_MIN_INTERVAL_SECONDS", "600"))  # 10 min em emergência (dedup evita spam)
 MAX_INTERVAL = 3600  # 1h se tudo tranquilo
-MERGEFORGE_WARNING_FAIL_STREAK = int(os.getenv("SENTINEL_MERGEFORGE_WARNING_FAIL_STREAK", "2"))
-MERGEFORGE_CRITICAL_FAIL_STREAK = int(os.getenv("SENTINEL_MERGEFORGE_CRITICAL_FAIL_STREAK", "3"))
-MERGEFORGE_ALERT_COOLDOWN_SECONDS = int(os.getenv("SENTINEL_MERGEFORGE_ALERT_COOLDOWN_SECONDS", "600"))
+BACKEND_WARNING_FAIL_STREAK = int(os.getenv("SENTINEL_BACKEND_WARNING_FAIL_STREAK", "2"))
+BACKEND_CRITICAL_FAIL_STREAK = int(os.getenv("SENTINEL_BACKEND_CRITICAL_FAIL_STREAK", "3"))
+BACKEND_ALERT_COOLDOWN_SECONDS = int(os.getenv("SENTINEL_BACKEND_ALERT_COOLDOWN_SECONDS", "600"))
 
 ZAIRYX_WARNING_FAIL_STREAK = int(os.getenv("SENTINEL_ZAIRYX_WARNING_FAIL_STREAK", "2"))
 ZAIRYX_CRITICAL_FAIL_STREAK = int(os.getenv("SENTINEL_ZAIRYX_CRITICAL_FAIL_STREAK", "3"))
 ZAIRYX_ALERT_COOLDOWN_SECONDS = int(os.getenv("SENTINEL_ZAIRYX_ALERT_COOLDOWN_SECONDS", "600"))
 
-_MERGEFORGE_HEALTH_STATE: dict[str, Any] = {
+_BACKEND_HEALTH_STATE: dict[str, Any] = {
     "fail_streak": 0,
     "last_alert_at": None,
     "last_alert_level": None,
@@ -66,34 +66,34 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def _mergeforge_alert_in_cooldown(level: str, now: datetime) -> bool:
-    last_alert_at = _MERGEFORGE_HEALTH_STATE.get("last_alert_at")
-    last_alert_level = _MERGEFORGE_HEALTH_STATE.get("last_alert_level")
+def _backend_alert_in_cooldown(level: str, now: datetime) -> bool:
+    last_alert_at = _BACKEND_HEALTH_STATE.get("last_alert_at")
+    last_alert_level = _BACKEND_HEALTH_STATE.get("last_alert_level")
     if not isinstance(last_alert_at, datetime) or last_alert_level != level:
         return False
 
     elapsed = (now - last_alert_at).total_seconds()
-    return elapsed < MERGEFORGE_ALERT_COOLDOWN_SECONDS
+    return elapsed < BACKEND_ALERT_COOLDOWN_SECONDS
 
 
-def _register_mergeforge_alert(level: str, now: datetime) -> None:
-    _MERGEFORGE_HEALTH_STATE["last_alert_at"] = now
-    _MERGEFORGE_HEALTH_STATE["last_alert_level"] = level
+def _register_backend_alert(level: str, now: datetime) -> None:
+    _BACKEND_HEALTH_STATE["last_alert_at"] = now
+    _BACKEND_HEALTH_STATE["last_alert_level"] = level
 
 
-def _reset_mergeforge_fail_streak() -> bool:
+def _reset_backend_fail_streak() -> bool:
     """Reseta fail streak e retorna True se havia incidente ativo (recovery cross-cycle)."""
-    had = bool(_MERGEFORGE_HEALTH_STATE.get("had_incident", False))
-    _MERGEFORGE_HEALTH_STATE["fail_streak"] = 0
-    _MERGEFORGE_HEALTH_STATE["had_incident"] = False
+    had = bool(_BACKEND_HEALTH_STATE.get("had_incident", False))
+    _BACKEND_HEALTH_STATE["fail_streak"] = 0
+    _BACKEND_HEALTH_STATE["had_incident"] = False
     return had
 
 
-def _increment_mergeforge_fail_streak() -> int:
-    next_fail_streak = int(_MERGEFORGE_HEALTH_STATE.get("fail_streak", 0)) + 1
-    _MERGEFORGE_HEALTH_STATE["fail_streak"] = next_fail_streak
-    if next_fail_streak >= MERGEFORGE_WARNING_FAIL_STREAK:
-        _MERGEFORGE_HEALTH_STATE["had_incident"] = True
+def _increment_backend_fail_streak() -> int:
+    next_fail_streak = int(_BACKEND_HEALTH_STATE.get("fail_streak", 0)) + 1
+    _BACKEND_HEALTH_STATE["fail_streak"] = next_fail_streak
+    if next_fail_streak >= BACKEND_WARNING_FAIL_STREAK:
+        _BACKEND_HEALTH_STATE["had_incident"] = True
     return next_fail_streak
 
 
@@ -228,7 +228,7 @@ async def collect_platform_data(client: httpx.AsyncClient) -> PlatformReport:
         "unread_alerts": _check_unread_alerts(client),
         "recent_health": _check_recent_health(client),
         "agent_failures": _check_agent_failures(client),
-        "mergeforge_health": _check_mergeforge_health(),
+        "backend_health": _check_backend_health(),
         "zairyx_health": _check_zairyx_health(),
     }
 
@@ -490,13 +490,13 @@ async def _check_agent_failures(client: httpx.AsyncClient) -> list[dict]:
     return issues
 
 
-async def _check_mergeforge_health() -> list[dict]:
-    """Verifica saúde do backend MergeForge e taxa de falhas."""
-    mergeforge_base_url = os.getenv(
+async def _check_backend_health() -> list[dict]:
+    """Verifica saúde do backend Python/Render via /api/health."""
+    backend_base_url = os.getenv(
         "FORGEOPS_URL",
         os.getenv("MERGEFORGE_URL", "https://mergeforge-backend.onrender.com"),
     ).rstrip("/")
-    mergeforge_health_url = f"{mergeforge_base_url}/api/health"
+    backend_health_url = f"{backend_base_url}/api/health"
     timeouts = (8, 15, 25)
     failures: list[str] = []
     issues: list[dict] = []
@@ -505,26 +505,26 @@ async def _check_mergeforge_health() -> list[dict]:
     async with httpx.AsyncClient(timeout=max(timeouts)) as client:
         for attempt, timeout in enumerate(timeouts, start=1):
             try:
-                resp = await client.get(mergeforge_health_url, timeout=timeout)
+                resp = await client.get(backend_health_url, timeout=timeout)
                 if resp.status_code < 500:
-                    had_incident = _reset_mergeforge_fail_streak()
+                    had_incident = _reset_backend_fail_streak()
                     if failures or had_incident:
-                        if _mergeforge_alert_in_cooldown("warning", now):
+                        if _backend_alert_in_cooldown("warning", now):
                             return issues
                         detail = (
-                            f"Healthcheck respondeu em /api/health apos {attempt} tentativas. "
+                            f"Backend respondeu em /api/health apos {attempt} tentativas. "
                             f"Falhas anteriores: {' | '.join(failures[:2])}"
                             if failures
-                            else "MergeForge voltou ao normal apos incidente em ciclo anterior."
+                            else "Backend voltou ao normal apos incidente em ciclo anterior."
                         )
                         issues.append({
-                            "source": "mergeforge-backend",
+                            "source": "backend",
                             "level": "warning",
-                            "title": "MergeForge recuperado",
+                            "title": "Backend recuperado",
                             "detail": detail[:200],
                             "fix": "Monitorar cold start/deploy no Render; elevar para plano sem sleep se o padrao persistir.",
                         })
-                        _register_mergeforge_alert("warning", now)
+                        _register_backend_alert("warning", now)
                     return issues
 
                 failures.append(f"tentativa {attempt}: HTTP {resp.status_code}")
@@ -534,26 +534,26 @@ async def _check_mergeforge_health() -> list[dict]:
             if attempt < len(timeouts):
                 await asyncio.sleep(1)
 
-    fail_streak = _increment_mergeforge_fail_streak()
-    if fail_streak < MERGEFORGE_WARNING_FAIL_STREAK:
+    fail_streak = _increment_backend_fail_streak()
+    if fail_streak < BACKEND_WARNING_FAIL_STREAK:
         return issues
 
-    level = "critical" if fail_streak >= MERGEFORGE_CRITICAL_FAIL_STREAK else "warning"
-    if _mergeforge_alert_in_cooldown(level, now):
+    level = "critical" if fail_streak >= BACKEND_CRITICAL_FAIL_STREAK else "warning"
+    if _backend_alert_in_cooldown(level, now):
         return issues
 
     issues.append({
-        "source": "mergeforge-backend",
+        "source": "backend",
         "level": level,
-        "title": "MergeForge backend indisponivel apos retries",
+        "title": "Backend indisponivel apos retries",
         "detail": (
-            f"Healthcheck falhou em {len(timeouts)} tentativas para {mergeforge_health_url}. "
+            f"Healthcheck falhou em {len(timeouts)} tentativas para {backend_health_url}. "
             f"Fail streak atual: {fail_streak}. "
             f"Ultima falha: {failures[-1] if failures else 'desconhecida'}"
         )[:200],
         "fix": "Verificar logs e eventos de deploy no Render: https://dashboard.render.com",
     })
-    _register_mergeforge_alert(level, now)
+    _register_backend_alert(level, now)
 
     return issues
 
