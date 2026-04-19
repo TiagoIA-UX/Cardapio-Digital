@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { createClient as createServerClient } from '@/lib/shared/supabase/server'
 import { z } from 'zod'
+import { createOperationTracker } from '@/lib/shared/forgeops/operation-tracker'
 
 const produtoSchema = z.object({
   nome: z.string().min(1).max(150),
@@ -40,6 +41,13 @@ const bodySchema = z.object({
 export type OnboardingFormData = z.infer<typeof onboardingDataSchema>
 
 export async function POST(request: NextRequest) {
+  const tracker = createOperationTracker({
+    flowName: 'onboarding.submit',
+    entityType: 'onboarding_submission',
+    operationId: request.headers.get('x-operation-id'),
+    correlationId: request.headers.get('x-correlation-id') || request.headers.get('x-request-id'),
+  })
+
   try {
     const authSupabase = await createServerClient()
     const {
@@ -47,14 +55,28 @@ export async function POST(request: NextRequest) {
     } = await authSupabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Faça login para continuar' }, { status: 401 })
+      tracker.fail(new Error('onboarding.submit.unauthorized'), { statusCode: 401 })
+      return NextResponse.json(
+        { error: 'Faça login para continuar', operationId: tracker.getContext().operationId },
+        { status: 401 }
+      )
     }
+
+    tracker.toProcessing({ actorId: user.id })
 
     const raw = await request.json()
     const parsed = bodySchema.safeParse(raw)
     if (!parsed.success) {
+      tracker.fail(new Error('onboarding.submit.invalid_payload'), {
+        statusCode: 400,
+        details: parsed.error.flatten().fieldErrors,
+      })
       return NextResponse.json(
-        { error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors },
+        {
+          error: 'Dados inválidos',
+          details: parsed.error.flatten().fieldErrors,
+          operationId: tracker.getContext().operationId,
+        },
         { status: 400 }
       )
     }
@@ -73,33 +95,63 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (!order) {
-        return NextResponse.json({ error: 'Pedido não encontrado' }, { status: 404 })
+        tracker.fail(new Error('onboarding.submit.order_not_found'), { statusCode: 404 })
+        return NextResponse.json(
+          { error: 'Pedido não encontrado', operationId: tracker.getContext().operationId },
+          { status: 404 }
+        )
       }
 
       if (!order.user_id || order.user_id !== user.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+        tracker.fail(new Error('onboarding.submit.forbidden_order_owner'), { statusCode: 403 })
+        return NextResponse.json(
+          { error: 'Forbidden', operationId: tracker.getContext().operationId },
+          { status: 403 }
+        )
       }
 
       const metadata = (order.metadata || {}) as Record<string, unknown>
       if (metadata.checkout_type !== 'restaurant_onboarding') {
-        return NextResponse.json({ error: 'Pedido inválido para onboarding' }, { status: 400 })
+        tracker.fail(new Error('onboarding.submit.invalid_checkout_type'), { statusCode: 400 })
+        return NextResponse.json(
+          {
+            error: 'Pedido inválido para onboarding',
+            operationId: tracker.getContext().operationId,
+          },
+          { status: 400 }
+        )
       }
 
       if (metadata.plan_slug !== 'feito-pra-voce') {
+        tracker.fail(new Error('onboarding.submit.plan_not_allowed'), { statusCode: 400 })
         return NextResponse.json(
-          { error: 'O onboarding manual é exclusivo do plano Feito Pra Você' },
+          {
+            error: 'O onboarding manual é exclusivo do plano Feito Pra Você',
+            operationId: tracker.getContext().operationId,
+          },
           { status: 400 }
         )
       }
 
       if (order.payment_status !== 'approved') {
-        return NextResponse.json({ error: 'Pagamento ainda não confirmado' }, { status: 409 })
+        tracker.fail(new Error('onboarding.submit.payment_not_approved'), { statusCode: 409 })
+        return NextResponse.json(
+          {
+            error: 'Pagamento ainda não confirmado',
+            operationId: tracker.getContext().operationId,
+          },
+          { status: 409 }
+        )
       }
 
       const provRestaurantId = metadata.provisioned_restaurant_id as string | undefined
       if (!provRestaurantId) {
+        tracker.fail(new Error('onboarding.submit.provisioning_not_ready'), { statusCode: 409 })
         return NextResponse.json(
-          { error: 'Aguarde a confirmação do webhook antes de enviar o onboarding' },
+          {
+            error: 'Aguarde a confirmação do webhook antes de enviar o onboarding',
+            operationId: tracker.getContext().operationId,
+          },
           { status: 409 }
         )
       }
@@ -118,16 +170,30 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (!restaurant) {
-        return NextResponse.json({ error: 'Delivery não encontrado' }, { status: 404 })
+        tracker.fail(new Error('onboarding.submit.restaurant_not_found'), { statusCode: 404 })
+        return NextResponse.json(
+          { error: 'Delivery não encontrado', operationId: tracker.getContext().operationId },
+          { status: 404 }
+        )
       }
 
       if (!restaurant.user_id || restaurant.user_id !== user.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+        tracker.fail(new Error('onboarding.submit.forbidden_restaurant_owner'), {
+          statusCode: 403,
+        })
+        return NextResponse.json(
+          { error: 'Forbidden', operationId: tracker.getContext().operationId },
+          { status: 403 }
+        )
       }
     }
 
     if (!orderId && !restaurantId) {
-      return NextResponse.json({ error: 'Informe checkout ou restaurant_id' }, { status: 400 })
+      tracker.fail(new Error('onboarding.submit.missing_targets'), { statusCode: 400 })
+      return NextResponse.json(
+        { error: 'Informe checkout ou restaurant_id', operationId: tracker.getContext().operationId },
+        { status: 400 }
+      )
     }
 
     let existing: { id: string } | null = null
@@ -163,7 +229,11 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Erro ao salvar onboarding:', error)
-      return NextResponse.json({ error: 'Erro ao salvar formulário' }, { status: 500 })
+      tracker.fail(error, { statusCode: 500 })
+      return NextResponse.json(
+        { error: 'Erro ao salvar formulário', operationId: tracker.getContext().operationId },
+        { status: 500 }
+      )
     }
 
     // Notificar admin via system_alerts → Sentinel Python envia ao Telegram
@@ -193,9 +263,14 @@ export async function POST(request: NextRequest) {
           console.warn('Aviso: não foi possível criar system_alert do briefing:', alertErr.message)
       })
 
-    return NextResponse.json({ success: true })
+    tracker.toCompleted({ orderId, restaurantId, actorId: user.id })
+    return NextResponse.json({ success: true, operationId: tracker.getContext().operationId })
   } catch (err) {
     console.error('Erro no submit onboarding:', err)
-    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+    tracker.fail(err, { statusCode: 500 })
+    return NextResponse.json(
+      { error: 'Erro interno', operationId: tracker.getContext().operationId },
+      { status: 500 }
+    )
   }
 }
