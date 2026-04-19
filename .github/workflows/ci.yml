@@ -36,6 +36,9 @@ jobs:
           echo "type AppRoutes=string;type AppRouteHandlerRoutes=string;type PageRoutes=never;type LayoutRoutes=string;type RedirectRoutes=never;type RewriteRoutes=never;type Routes=string;interface ParamMap {}" > .next/types/routes.d.ts
           npx tsc --noEmit
 
+      - name: Enforce ForgeOps Contract
+        run: npm run enforce:forgeops
+
   security:
     name: Dependency Security
     runs-on: ubuntu-latest
