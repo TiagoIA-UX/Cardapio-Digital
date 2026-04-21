@@ -1,0 +1,5 @@
+{
+  "beforeDiagnosisMinutes": 120,
+  "targetDiagnosisMinutes": 48,
+  "notes": "Ajustar com base real do piloto"
+}

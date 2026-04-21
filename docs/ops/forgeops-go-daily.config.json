@@ -1,0 +1,15 @@
+{
+  "pilot": {
+    "flowName": "onboarding_submit",
+    "flowReason": "falha real de status no onboarding em piloto controlado",
+    "ownerName": "Tiago",
+    "monitorChannel": "telegram:@ForgeOpsBot",
+    "escalationContact": "globemarket7@gmail.com",
+    "responseSlaMinutes": 10
+  },
+  "evidence": {
+    "recentIncidentIds": [
+      "INC-2026-04-18-001"
+    ]
+  }
+}

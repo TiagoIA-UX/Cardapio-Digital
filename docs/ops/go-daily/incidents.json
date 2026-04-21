@@ -1,0 +1,9 @@
+[
+  {
+    "id": "INC-2026-04-18-001",
+    "flow": "onboarding_submit",
+    "detectedAt": "2026-04-19T01:37:37.708Z",
+    "status": "open",
+    "summary": "timeout real em consulta de status do onboarding durante janela controlada"
+  }
+]

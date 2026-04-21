@@ -39,6 +39,9 @@ jobs:
       - name: Enforce ForgeOps Contract
         run: npm run enforce:forgeops
 
+      - name: Enforce Zero Tolerance Rules
+        run: npm run enforce:zero-tolerance
+
   security:
     name: Dependency Security
     runs-on: ubuntu-latest
