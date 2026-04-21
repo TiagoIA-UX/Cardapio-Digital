@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
 import { createClient } from '@/lib/shared/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -37,9 +38,9 @@ const TEMPLATE_OPTIONS = [
 ]
 
 const PLAN_OPTIONS = [
-  { value: 'basico', label: 'Básico' },
-  { value: 'pro', label: 'Pro' },
-  { value: 'premium', label: 'Premium' },
+  { value: 'basico', label: getPublicPlanDisplay('basico').name },
+  { value: 'pro', label: getPublicPlanDisplay('pro').name },
+  { value: 'premium', label: getPublicPlanDisplay('premium').name },
 ]
 
 interface Resultado {

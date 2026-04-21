@@ -32,6 +32,21 @@ interface Alert {
   created_at: string
 }
 
+interface AlertAction {
+  id: string
+  label: string
+  endpoint: string
+  method: 'POST'
+  tone: 'primary' | 'warning' | 'neutral'
+  payload: Record<string, unknown>
+}
+
+interface ActionResult {
+  error?: string
+  success_message?: string
+  open_url?: string | null
+}
+
 interface Summary {
   unread_total: number
   unread_critical: number
@@ -103,10 +118,117 @@ export default function AdminAlertasPage() {
   const [stats, setStats] = useState<AlertStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+  const [processingAlertId, setProcessingAlertId] = useState<string | null>(null)
+  const [processingActionId, setProcessingActionId] = useState<string | null>(null)
+  const [actionFeedback, setActionFeedback] = useState<{
+    type: 'success' | 'error'
+    message: string
+  } | null>(null)
   const [filter, setFilter] = useState<{ severity?: string; channel?: string; unread?: boolean }>(
     {}
   )
   const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const applyResolvedAlertLocally = useCallback(
+    (alertId: string) => {
+      setAlerts((current) => current.filter((alert) => alert.id !== alertId))
+      setExpandedId((current) => (current === alertId ? null : current))
+      setSummary((current) => {
+        if (!current) return current
+
+        const target = alerts.find((alert) => alert.id === alertId)
+        if (!target) return current
+
+        return {
+          ...current,
+          unread_total: Math.max(0, current.unread_total - (target.read ? 0 : 1)),
+          unread_critical:
+            target.severity === 'critical' && !target.read
+              ? Math.max(0, current.unread_critical - 1)
+              : current.unread_critical,
+          unread_warning:
+            target.severity === 'warning' && !target.read
+              ? Math.max(0, current.unread_warning - 1)
+              : current.unread_warning,
+          unread_info:
+            target.severity === 'info' && !target.read
+              ? Math.max(0, current.unread_info - 1)
+              : current.unread_info,
+        }
+      })
+    },
+    [alerts]
+  )
+
+  const getActionSuccessMessage = (action: AlertAction) => {
+    const operation = action.payload.action
+    if (operation === 'start_trial') {
+      return 'Trial aplicado com sucesso e alerta resolvido.'
+    }
+    if (operation === 'block_until_payment') {
+      return 'Delivery bloqueado até regularização financeira e alerta resolvido.'
+    }
+    if (operation === 'resend_payment_link') {
+      return 'Link pronto para envio ao cliente e alerta resolvido.'
+    }
+    if (operation === 'mark_waiting_customer') {
+      return 'Caso marcado como aguardando cliente e alerta resolvido.'
+    }
+    return 'Caso registrado para análise manual auditada.'
+  }
+
+  const executeAlertAction = async (alertId: string, action: AlertAction) => {
+    setProcessingAlertId(alertId)
+    setProcessingActionId(action.id)
+    setActionFeedback(null)
+
+    try {
+      const response = await fetch(action.endpoint, {
+        method: action.method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...action.payload, alert_id: alertId }),
+      })
+
+      const result = (await response.json().catch(() => ({}))) as ActionResult
+
+      if (!response.ok) {
+        setActionFeedback({
+          type: 'error',
+          message: result.error || 'Não foi possível aplicar a ação selecionada.',
+        })
+        return
+      }
+
+      setActionFeedback({
+        type: 'success',
+        message: result.success_message || getActionSuccessMessage(action),
+      })
+      applyResolvedAlertLocally(alertId)
+      if (result.open_url) {
+        window.open(result.open_url, '_blank', 'noopener,noreferrer')
+      }
+      await loadData()
+    } finally {
+      setProcessingAlertId(null)
+      setProcessingActionId(null)
+    }
+  }
+
+  const getAlertActions = (alert: Alert): AlertAction[] => {
+    const rawActions = Array.isArray(alert.metadata?.actions) ? alert.metadata.actions : []
+    return rawActions.filter((value): value is AlertAction => {
+      if (!value || typeof value !== 'object') return false
+      const candidate = value as Record<string, unknown>
+      return (
+        typeof candidate.id === 'string' &&
+        typeof candidate.label === 'string' &&
+        typeof candidate.endpoint === 'string' &&
+        candidate.method === 'POST' &&
+        typeof candidate.payload === 'object' &&
+        candidate.payload !== null
+      )
+    })
+  }
 
   const loadData = useCallback(async () => {
     const params = new URLSearchParams()
@@ -151,6 +273,11 @@ export default function AdminAlertasPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action, alert_id: alertId }),
     })
+
+    if (action === 'resolve' && alertId) {
+      applyResolvedAlertLocally(alertId)
+    }
+
     await loadData()
     setActionLoading(false)
   }
@@ -187,6 +314,18 @@ export default function AdminAlertasPage() {
           )}
         </div>
       </div>
+
+      {actionFeedback && (
+        <div
+          className={`rounded-xl border px-4 py-3 text-sm ${
+            actionFeedback.type === 'success'
+              ? 'border-green-600/30 bg-green-500/10 text-green-300'
+              : 'border-red-600/30 bg-red-500/10 text-red-300'
+          }`}
+        >
+          {actionFeedback.message}
+        </div>
+      )}
 
       {/* Summary KPIs */}
       {summary && (
@@ -424,6 +563,7 @@ export default function AdminAlertasPage() {
             const cfg = SEVERITY_CONFIG[a.severity]
             const Icon = cfg.icon
             const isExpanded = expandedId === a.id
+            const alertActions = getAlertActions(a)
 
             return (
               <div
@@ -473,6 +613,45 @@ export default function AdminAlertasPage() {
                           {JSON.stringify(a.metadata, null, 2)}
                         </pre>
                       </details>
+                    )}
+                    {alertActions.length > 0 && !a.resolved && (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {alertActions.map((action) => {
+                          const toneClass =
+                            action.tone === 'primary'
+                              ? 'bg-blue-600/20 text-blue-300 hover:bg-blue-600/30'
+                              : action.tone === 'warning'
+                                ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30'
+                                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                          const isProcessingThisAlert = processingAlertId === a.id
+                          const isProcessingThisAction = processingActionId === action.id
+                          const isRecommended = action.tone === 'primary'
+
+                          return (
+                            <button
+                              key={action.id}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                executeAlertAction(a.id, action)
+                              }}
+                              disabled={actionLoading || isProcessingThisAlert}
+                              className={`rounded px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50 ${toneClass}`}
+                            >
+                              <span className="inline-flex items-center gap-1.5">
+                                {isProcessingThisAction && (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                )}
+                                <span>{action.label}</span>
+                                {isRecommended && (
+                                  <span className="rounded-full bg-blue-500/20 px-1.5 py-0.5 text-[10px] tracking-wide text-blue-200 uppercase">
+                                    Recomendado
+                                  </span>
+                                )}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
                     )}
                     <div className="flex flex-wrap gap-2">
                       {!a.read && (

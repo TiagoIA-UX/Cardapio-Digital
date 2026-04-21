@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/shared/supabase/client'
 import Link from 'next/link'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
+import type { SubscriptionPlanSlug } from '@/lib/domains/marketing/pricing'
 import {
   Search,
   Eye,
@@ -25,6 +27,18 @@ interface Restaurant {
   created_at: string
   user_id: string
   last_active_at: string | null
+}
+
+function resolvePublicPlanName(planSlug: string | null | undefined): string {
+  const normalized = planSlug?.trim().toLowerCase()
+  if (!normalized) return 'Operação'
+
+  const knownPlanSlugs: SubscriptionPlanSlug[] = ['semente', 'basico', 'pro', 'premium']
+  if (knownPlanSlugs.includes(normalized as SubscriptionPlanSlug)) {
+    return getPublicPlanDisplay(normalized as SubscriptionPlanSlug).name
+  }
+
+  return normalized.toUpperCase()
 }
 
 export default function AdminCardapiosPage() {
@@ -181,7 +195,7 @@ export default function AdminCardapiosPage() {
                             : 'bg-zinc-800 text-zinc-400'
                       }`}
                     >
-                      {r.plan_slug?.toUpperCase() || 'BÁSICO'}
+                      {resolvePublicPlanName(r.plan_slug)}
                     </span>
                   </td>
                   <td className="px-4 py-3">

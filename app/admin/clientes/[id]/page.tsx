@@ -20,6 +20,7 @@ import {
   Loader2,
   AlertTriangle,
 } from 'lucide-react'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
 
 interface Restaurant {
   id: string
@@ -60,9 +61,9 @@ const TEMPLATES = [
 ]
 
 const PLANS = [
-  { slug: 'basico', name: 'Básico', price: 49 },
-  { slug: 'pro', name: 'Profissional', price: 99 },
-  { slug: 'premium', name: 'Premium', price: 199 },
+  { slug: 'basico', name: getPublicPlanDisplay('basico').name, price: 49 },
+  { slug: 'pro', name: getPublicPlanDisplay('pro').name, price: 99 },
+  { slug: 'premium', name: getPublicPlanDisplay('premium').name, price: 199 },
 ]
 
 export default function ClienteDetailPage() {
@@ -82,6 +83,9 @@ export default function ClienteDetailPage() {
   const [selectedPlan, setSelectedPlan] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const currentPlanName = getPublicPlanDisplay(
+    (restaurant?.plan_slug as 'basico' | 'pro' | 'premium') || 'basico'
+  ).name
 
   const loadData = useCallback(async () => {
     // Verificar admin
@@ -461,8 +465,7 @@ export default function ClienteDetailPage() {
             </button>
           </div>
           <p className="text-muted-foreground mt-2 text-xs">
-            Plano atual:{' '}
-            <span className="font-medium uppercase">{restaurant.plan_slug || 'basico'}</span>
+            Plano atual: <span className="font-medium">{currentPlanName}</span>
           </p>
         </div>
 

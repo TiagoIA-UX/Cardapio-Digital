@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Image from 'next/image'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
+import type { SubscriptionPlanSlug } from '@/lib/domains/marketing/pricing'
 import {
   Users,
   Search,
@@ -59,6 +61,18 @@ const STATUS_BADGE: Record<string, { label: string; cls: string }> = {
   canceled: { label: 'Cancelado', cls: 'bg-zinc-500/20 text-zinc-400' },
   inactive: { label: 'Inativo', cls: 'bg-yellow-500/20 text-yellow-400' },
   no_restaurant: { label: 'Sem restaurante', cls: 'bg-zinc-700/50 text-zinc-500' },
+}
+
+function resolvePublicPlanName(planSlug: string | null | undefined): string {
+  const normalized = planSlug?.trim().toLowerCase()
+  if (!normalized) return '—'
+
+  const knownPlanSlugs: SubscriptionPlanSlug[] = ['semente', 'basico', 'pro', 'premium']
+  if (knownPlanSlugs.includes(normalized as SubscriptionPlanSlug)) {
+    return getPublicPlanDisplay(normalized as SubscriptionPlanSlug).name
+  }
+
+  return normalized.toUpperCase()
 }
 
 export default function AdminUsuariosPage() {
@@ -249,7 +263,7 @@ export default function AdminUsuariosPage() {
                     </td>
                     <td className="px-4 py-3">
                       <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs font-medium text-zinc-300">
-                        {u.restaurant?.plan_slug || '—'}
+                        {resolvePublicPlanName(u.restaurant?.plan_slug)}
                       </span>
                     </td>
                     <td className="px-4 py-3">

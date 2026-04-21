@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
+import type { SubscriptionPlanSlug } from '@/lib/domains/marketing/pricing'
 import { createClient } from '@/lib/shared/supabase/client'
 import Link from 'next/link'
 import {
@@ -40,6 +42,18 @@ interface DashboardData {
   avgRating: number
   nps: number
   healthStatus: 'ok' | 'degraded' | 'down' | 'unknown'
+}
+
+function resolvePublicPlanName(planSlug: string | null | undefined): string {
+  const normalized = planSlug?.trim().toLowerCase()
+  if (!normalized) return 'Operação'
+
+  const knownPlanSlugs: SubscriptionPlanSlug[] = ['semente', 'basico', 'pro', 'premium']
+  if (knownPlanSlugs.includes(normalized as SubscriptionPlanSlug)) {
+    return getPublicPlanDisplay(normalized as SubscriptionPlanSlug).name
+  }
+
+  return normalized.toUpperCase()
 }
 
 export default function AdminOverviewPage() {
@@ -214,7 +228,7 @@ export default function AdminOverviewPage() {
               return (
                 <div key={plan}>
                   <div className="mb-1 flex justify-between text-xs">
-                    <span className="text-zinc-400">{plan.toUpperCase()}</span>
+                    <span className="text-zinc-400">{resolvePublicPlanName(plan)}</span>
                     <span className="text-zinc-300">
                       {count} ({pct.toFixed(0)}%)
                     </span>
@@ -223,7 +237,7 @@ export default function AdminOverviewPage() {
                     className={`h-2 w-full overflow-hidden rounded-full [&::-moz-progress-bar]:${color} [&::-webkit-progress-bar]:bg-zinc-800 [&::-webkit-progress-value]:${color}`}
                     max={100}
                     value={pct}
-                    aria-label={`${plan.toUpperCase()} ${pct.toFixed(0)}%`}
+                    aria-label={`${resolvePublicPlanName(plan)} ${pct.toFixed(0)}%`}
                   />
                 </div>
               )
@@ -301,7 +315,7 @@ export default function AdminOverviewPage() {
                         : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
-                  {r.plan_slug?.toUpperCase() || 'BÁSICO'}
+                  {resolvePublicPlanName(r.plan_slug)}
                 </span>
                 <p className="mt-0.5 text-xs text-zinc-500">
                   {new Date(r.created_at).toLocaleDateString('pt-BR')}
