@@ -54,13 +54,17 @@ test('toda imagem local de template existe em public', () => {
 
 test('interface pública não deve hardcodear a URL de produção', () => {
   const filesToScan = [join(PROJECT_ROOT, 'app'), join(PROJECT_ROOT, 'components')]
+  // Exceção intencional: watermark-badge usa a URL como link de marketing externo (ref=semente)
+  const ALLOWED = new Set(['components\\watermark-badge.tsx', 'components/watermark-badge.tsx'])
   const matches: string[] = []
 
   for (const baseDir of filesToScan) {
     for (const filePath of walkFiles(baseDir)) {
+      const rel = relative(PROJECT_ROOT, filePath)
+      if (ALLOWED.has(rel)) continue
       const contents = readFileSync(filePath, 'utf8')
       if (!contents.includes(INTERNAL_SITE_URL)) continue
-      matches.push(relative(PROJECT_ROOT, filePath))
+      matches.push(rel)
     }
   }
 
