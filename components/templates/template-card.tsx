@@ -31,6 +31,13 @@ interface TemplateCardProps {
   variant?: 'default' | 'compact' | 'featured'
 }
 
+const monthlyPriceFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
 export function TemplateCard({ template, variant = 'default' }: TemplateCardProps) {
   const plans = getTemplatePlans(template.slug)
 
@@ -60,7 +67,7 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
 
       {/* Imagem */}
       <Link href={`/templates/${template.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+        <div className="relative aspect-4/3 overflow-hidden bg-zinc-100">
           <Image
             src={template.imageUrl}
             alt={template.name}
@@ -100,9 +107,14 @@ export function TemplateCard({ template, variant = 'default' }: TemplateCardProp
                   : 'border-zinc-200 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50'
               )}
             >
-              <span>Até {plan.maxProducts} produtos</span>
+              <span className="flex flex-col text-left leading-tight">
+                <span>{plan.displayName}</span>
+                <span className="text-xs font-normal text-zinc-500">
+                  Até {plan.maxProducts} produtos
+                </span>
+              </span>
               <span className="font-semibold text-zinc-950">
-                R$ {plan.priceMonthly % 1 === 0 ? plan.priceMonthly : plan.priceMonthly.toFixed(2).replace('.', ',')}/mês
+                {monthlyPriceFormatter.format(plan.priceMonthly)}/mês
               </span>
             </Link>
           ))}

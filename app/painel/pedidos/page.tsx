@@ -15,9 +15,57 @@ const FORMAS_PAGAMENTO: Record<string, string> = {
   vale_refeicao: 'Vale refeição',
 }
 
+const WHATSAPP_FALLBACK_DELAY_MS = 1400
+
 function formatFormaPagamento(forma?: string | null): string {
   if (!forma) return '-'
   return FORMAS_PAGAMENTO[forma] || forma
+}
+
+function openWhatsAppMessage(phone: string, message: string) {
+  const whatsappPhone = phone.replace(/\D/g, '')
+  const normalizedPhone = whatsappPhone.startsWith('55') ? whatsappPhone : `55${whatsappPhone}`
+  const encodedMessage = encodeURIComponent(message)
+  const appUrl = `whatsapp://send?phone=${normalizedPhone}&text=${encodedMessage}`
+  const fallbackUrl = `https://wa.me/${normalizedPhone}?text=${encodedMessage}`
+
+  let fallbackHandled = false
+  let fallbackTimer: number | null = null
+
+  const cleanupListeners = () => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    window.removeEventListener('pagehide', handleNavigationAway)
+    window.removeEventListener('blur', handleNavigationAway)
+    if (fallbackTimer !== null) {
+      window.clearTimeout(fallbackTimer)
+    }
+  }
+
+  const handleNavigationAway = () => {
+    fallbackHandled = true
+    cleanupListeners()
+  }
+
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      handleNavigationAway()
+    }
+  }
+
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('pagehide', handleNavigationAway, { once: true })
+  window.addEventListener('blur', handleNavigationAway, { once: true })
+
+  fallbackTimer = window.setTimeout(() => {
+    if (fallbackHandled) {
+      return
+    }
+
+    cleanupListeners()
+    window.open(fallbackUrl, '_blank', 'noopener,noreferrer')
+  }, WHATSAPP_FALLBACK_DELAY_MS)
+
+  window.location.assign(appUrl)
 }
 
 export default function PedidosPage() {
@@ -133,12 +181,7 @@ export default function PedidosPage() {
       if (order?.cliente_telefone) {
         const feedbackUrl = `${window.location.origin}/feedback/${orderId}`
         const msg = `Olá${order.cliente_nome ? `, ${order.cliente_nome}` : ''}! 🍕\n\nSeu pedido #${order.numero_pedido || order.numero} foi entregue!\n\nPoderia avaliar sua experiência? Leva 5 segundos:\n👉 ${feedbackUrl}\n\nObrigado!`
-        const phone = order.cliente_telefone.replace(/\D/g, '')
-        const whatsappPhone = phone.startsWith('55') ? phone : `55${phone}`
-        window.open(
-          `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(msg)}`,
-          '_blank'
-        )
+        openWhatsAppMessage(order.cliente_telefone, msg)
       }
     }
 

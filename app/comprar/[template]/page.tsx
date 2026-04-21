@@ -42,6 +42,7 @@ import {
   CATALOG_CAPACITY_OPTIONS,
   getCatalogCapacityOption,
 } from '@/lib/domains/marketing/checkout-catalog-capacity'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
 
 const PLAN_META = {
   'self-service': {
@@ -267,6 +268,7 @@ function ComprarContent() {
 
   const pricing = useMemo(() => getTemplatePricing(templateSlug ?? 'restaurante'), [templateSlug])
   const selectedCatalogCapacity = getCatalogCapacityOption(selectedCapacityPlan)
+  const selectedCapacityDisplay = getPublicPlanDisplay(selectedCapacityPlan)
   if (!templateSlug || !template) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
@@ -298,6 +300,7 @@ function ComprarContent() {
     templateName: template.nome,
     planSlug: selectedPlan,
     planName: planMeta.nome,
+    capacityPlanName: selectedCatalogCapacity.title,
     paymentMethod,
     installments: parcelas,
     initialChargeAmount: total,
@@ -980,8 +983,14 @@ function ComprarContent() {
                   <span className="text-foreground font-medium">{template.nome}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-foreground/75">Plano</span>
+                  <span className="text-foreground/75">Implantação</span>
                   <span className="text-foreground font-medium">{planMeta.nome}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-foreground/75">Plano mensal</span>
+                  <span className="text-foreground font-medium">
+                    {selectedCatalogCapacity.title}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Capacidade alvo</span>
@@ -990,7 +999,7 @@ function ComprarContent() {
                   </span>
                 </div>
                 <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3 py-2 text-xs text-emerald-700">
-                  Quantidade de produtos confirmada no checkout.
+                  {selectedCapacityDisplay.phase}. Quantidade de produtos confirmada no checkout.
                 </div>
                 <div className="flex justify-between">
                   <span className="text-foreground/75">Implantação inicial</span>
@@ -1047,7 +1056,8 @@ function ComprarContent() {
                   </p>
                   <p>
                     <span className="text-foreground font-semibold">Após a ativação:</span>{' '}
-                    continuidade no plano mensal de {monthlyPriceLabel}, com zero taxa por pedido.
+                    continuidade no plano mensal {selectedCatalogCapacity.title} (
+                    {monthlyPriceLabel}), com zero taxa por pedido.
                   </p>
                 </div>
 

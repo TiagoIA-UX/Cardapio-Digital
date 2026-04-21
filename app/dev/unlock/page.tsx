@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CheckCircle2, Loader2, AlertCircle, Gift, LogIn } from 'lucide-react'
 import Link from 'next/link'
+import { HOME_TEMPLATE_NICHES } from '@/lib/domains/marketing/home-template-catalog'
+
+const TOTAL_TEMPLATE_NICHES = HOME_TEMPLATE_NICHES.length
 
 export default function DevUnlockPage() {
   const showDevUnlock = process.env.NODE_ENV === 'development'
@@ -64,9 +67,9 @@ export default function DevUnlockPage() {
           {status === 'idle' && (
             <>
               <p className="text-muted-foreground text-center text-sm">
-                Clique no botão abaixo para liberar todos os 16 templates de teste (Pizzaria,
-                Restaurante, Lanches e Burgers, Adega, Conveniência, Mercado de Bairro, Padaria,
-                Petshop e outros) para sua conta.
+                Clique no botão abaixo para liberar todos os {TOTAL_TEMPLATE_NICHES} templates de
+                teste (Pizzaria, Restaurante, Lanches e Burgers, Adega, Conveniência, Mercado de
+                Bairro, Padaria, Petshop e outros) para sua conta.
               </p>
               <Button
                 onClick={handleUnlock}

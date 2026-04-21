@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { AlertCircle, Check, Clock, Loader2, Lock, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { getRestaurantScopedHref } from '@/lib/domains/core/active-restaurant'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
+import type { SubscriptionPlanSlug } from '@/lib/domains/marketing/pricing'
 import {
   formatAccessUntilLabel,
   getDaysUntilDate,
@@ -34,6 +36,18 @@ interface SubscriptionInfo {
   failed_payments?: number | null
   cancel_at?: string | null
   canceled_at?: string | null
+}
+
+function resolvePublicPlanName(planSlug: string | null | undefined): string | null {
+  const normalized = planSlug?.trim().toLowerCase()
+  if (!normalized) return null
+
+  const knownPlanSlugs: SubscriptionPlanSlug[] = ['semente', 'basico', 'pro', 'premium']
+  if (knownPlanSlugs.includes(normalized as SubscriptionPlanSlug)) {
+    return getPublicPlanDisplay(normalized as SubscriptionPlanSlug).name
+  }
+
+  return normalized.toUpperCase()
 }
 
 export function SubscriptionStatusCard({ restaurantId }: { restaurantId?: string }) {
@@ -105,6 +119,7 @@ export function SubscriptionStatusCard({ restaurantId }: { restaurantId?: string
   )
 
   const accessUntilLabel = formatAccessUntilLabel(accessUntilDate)
+  const publicPlanName = resolvePublicPlanName(subscriptionInfo?.plan_slug)
 
   const handleCancelSubscription = async () => {
     if (!restaurantId) return
@@ -249,10 +264,10 @@ export function SubscriptionStatusCard({ restaurantId }: { restaurantId?: string
             <span className="text-gray-600">Acesso liberado até:</span>
             <span className="font-medium">{accessUntilLabel}</span>
           </div>
-          {subscriptionInfo.plan_slug ? (
+          {publicPlanName ? (
             <div className="flex justify-between">
               <span className="text-gray-600">Plano:</span>
-              <span className="font-medium uppercase">{subscriptionInfo.plan_slug}</span>
+              <span className="font-medium">{publicPlanName}</span>
             </div>
           ) : null}
           {subscriptionInfo.next_payment_date && !scheduledCancellation ? (

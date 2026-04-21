@@ -25,6 +25,7 @@ import { trackEvent } from '@/lib/domains/marketing/analytics'
 import { buildCardapioViewModel } from '@/lib/domains/core/cardapio-renderer'
 import { buildGoogleMapsLinks } from '@/lib/domains/marketing/google-maps'
 import type { RestaurantPresentation } from '@/lib/domains/core/restaurant-customization'
+import { openWhatsApp } from '@/lib/domains/core/whatsapp'
 import { formatCurrency } from '@/lib/shared/format-currency'
 import { cn, formatPhone } from '@/lib/shared/utils'
 import { useToast } from '@/hooks/use-toast'
@@ -67,6 +68,88 @@ interface CardapioClientProps {
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const RECENT_ORDER_DEDUP_WINDOW_MS = 15000
+
+interface RecentOrderSubmission {
+  fingerprint: string
+  createdAt: number
+}
+
+function buildOrderSubmissionFingerprint(input: {
+  restaurantId: string
+  tableNumber: string
+  cart: Array<{ product_id: string; quantidade: number }>
+  orderForm: OrderFormState
+}) {
+  return JSON.stringify({
+    restaurantId: input.restaurantId,
+    tableNumber: input.tableNumber,
+    cart: input.cart,
+    customerName: input.orderForm.customerName.trim(),
+    customerPhone: input.orderForm.customerPhone.trim(),
+    fulfillment: input.orderForm.fulfillment,
+    addressStreet: input.orderForm.addressStreet.trim(),
+    addressDistrict: input.orderForm.addressDistrict.trim(),
+    addressComplement: input.orderForm.addressComplement.trim(),
+    notes: input.orderForm.notes.trim(),
+    paymentMethod: input.orderForm.formaPagamentoNaEntrega,
+    changeFor: input.orderForm.trocoPara.trim(),
+    receiptUrl: input.orderForm.comprovanteUrl.trim(),
+  })
+}
+
+function getRecentOrderStorageKey(restaurantId: string) {
+  return `zairyx:recent-order:${restaurantId}`
+}
+
+function readRecentOrderSubmission(restaurantId: string): RecentOrderSubmission | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const raw = window.sessionStorage.getItem(getRecentOrderStorageKey(restaurantId))
+  if (!raw) {
+    return null
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<RecentOrderSubmission>
+    if (typeof parsed.fingerprint !== 'string' || typeof parsed.createdAt !== 'number') {
+      window.sessionStorage.removeItem(getRecentOrderStorageKey(restaurantId))
+      return null
+    }
+
+    return { fingerprint: parsed.fingerprint, createdAt: parsed.createdAt }
+  } catch {
+    window.sessionStorage.removeItem(getRecentOrderStorageKey(restaurantId))
+    return null
+  }
+}
+
+function saveRecentOrderSubmission(restaurantId: string, submission: RecentOrderSubmission) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  window.sessionStorage.setItem(getRecentOrderStorageKey(restaurantId), JSON.stringify(submission))
+}
+
+function isRecentDuplicateSubmission(restaurantId: string, fingerprint: string) {
+  const recentSubmission = readRecentOrderSubmission(restaurantId)
+  if (!recentSubmission) {
+    return false
+  }
+
+  const ageMs = Date.now() - recentSubmission.createdAt
+  if (ageMs > RECENT_ORDER_DEDUP_WINDOW_MS) {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(getRecentOrderStorageKey(restaurantId))
+    }
+    return false
+  }
+
+  return recentSubmission.fingerprint === fingerprint
+}
 
 function normalizePhoneDigits(phone: string): string {
   return phone.replace(/\D/g, '').slice(0, 11)
@@ -167,6 +250,7 @@ export default function CardapioClient({
   const [orderForm, setOrderForm] = useState<OrderFormState>(createInitialOrderForm(isTableOrder))
   const [activeCategory, setActiveCategory] = useState<string | null>(categories[0] || null)
   const submitInFlightRef = useRef(false)
+  const lastSuccessfulOrderRef = useRef<RecentOrderSubmission | null>(null)
   const mapLinks = useMemo(
     () =>
       buildGoogleMapsLinks({
@@ -367,24 +451,6 @@ export default function CardapioClient({
     return message
   }
 
-  const openWhatsApp = (message: string) => {
-    if (!whatsappPhone) {
-      throw new Error('Este restaurante não configurou o WhatsApp.')
-    }
-
-    const encodedMessage = encodeURIComponent(message)
-    const appUrl = `whatsapp://send?phone=${whatsappPhone}&text=${encodedMessage}`
-    const fallbackUrl = `https://wa.me/${whatsappPhone}?text=${encodedMessage}`
-
-    // Primeiro tenta abrir o app nativo; se não houver handler, cai no wa.me.
-    window.location.href = appUrl
-    window.setTimeout(() => {
-      if (document.visibilityState !== 'hidden') {
-        window.location.href = fallbackUrl
-      }
-    }, 900)
-  }
-
   const uploadPixReceipt = async (file: File) => {
     if (
       !IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(
@@ -481,11 +547,29 @@ export default function CardapioClient({
     }))
     const cartItemsSnapshot = cart.map((item) => ({ ...item }))
     const orderFormSnapshot = { ...orderForm }
+    const submissionFingerprint = buildOrderSubmissionFingerprint({
+      restaurantId: restaurant.id,
+      tableNumber,
+      cart: cartSnapshot,
+      orderForm: orderFormSnapshot,
+    })
     const totalPriceSnapshot = totalPrice
     const itemsCountSnapshot = cart.length
+
+    if (
+      (lastSuccessfulOrderRef.current &&
+        Date.now() - lastSuccessfulOrderRef.current.createdAt <= RECENT_ORDER_DEDUP_WINDOW_MS &&
+        lastSuccessfulOrderRef.current.fingerprint === submissionFingerprint) ||
+      isRecentDuplicateSubmission(restaurant.id, submissionFingerprint)
+    ) {
+      setError('Esse pedido já foi enviado há instantes. Aguarde antes de tentar novamente.')
+      setIsSubmitting(false)
+      submitInFlightRef.current = false
+      return
+    }
+
     try {
       let createdOrderNumber: number | undefined
-      let persistenceSkippedByNotFound = false
 
       if (!shouldUseDemoCheckout) {
         const payload = {
@@ -539,35 +623,22 @@ export default function CardapioClient({
               ? String((result as { error?: unknown }).error || '')
               : ''
 
-          if (response.status === 404 && apiError.toLowerCase().includes('delivery não encontrado')) {
-            persistenceSkippedByNotFound = true
-          } else {
-            throw new Error(normalizeOrderApiErrorMessage(apiError))
-          }
+          throw new Error(normalizeOrderApiErrorMessage(apiError))
         }
 
-        if (!persistenceSkippedByNotFound) {
-          createdOrderNumber =
-            result && typeof result === 'object' && 'numero_pedido' in result
-              ? Number((result as { numero_pedido?: unknown }).numero_pedido) || undefined
-              : undefined
-        }
+        createdOrderNumber =
+          result && typeof result === 'object' && 'numero_pedido' in result
+            ? Number((result as { numero_pedido?: unknown }).numero_pedido) || undefined
+            : undefined
 
-        if (!persistenceSkippedByNotFound) {
-          trackEvent('order_placed', {
-            restaurant_id: restaurant.id,
-            total:
-              result && typeof result === 'object' && 'total' in result
-                ? Number((result as { total?: unknown }).total) || totalPriceSnapshot
-                : totalPriceSnapshot,
-            items_count: itemsCountSnapshot,
-          })
-        } else {
-          console.warn('[order:persist] Delivery não encontrado no POST /api/orders', {
-            restaurantId: restaurant.id,
-            restaurantSlug: restaurant.slug,
-          })
-        }
+        trackEvent('order_placed', {
+          restaurant_id: restaurant.id,
+          total:
+            result && typeof result === 'object' && 'total' in result
+              ? Number((result as { total?: unknown }).total) || totalPriceSnapshot
+              : totalPriceSnapshot,
+          items_count: itemsCountSnapshot,
+        })
       }
 
       const message = buildWhatsAppMessage(
@@ -578,7 +649,15 @@ export default function CardapioClient({
         },
         createdOrderNumber
       )
-      openWhatsApp(message)
+
+      const recentSubmission = {
+        fingerprint: submissionFingerprint,
+        createdAt: Date.now(),
+      }
+      lastSuccessfulOrderRef.current = recentSubmission
+      saveRecentOrderSubmission(restaurant.id, recentSubmission)
+
+      openWhatsApp(whatsappPhone, message)
 
       setCart([])
       setOrderForm(createInitialOrderForm(isTableOrder))

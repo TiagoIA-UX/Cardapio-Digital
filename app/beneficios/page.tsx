@@ -22,6 +22,9 @@ import {
 } from 'lucide-react'
 import { COMPANY_CNPJ, COMPANY_NAME } from '@/lib/shared/brand'
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
+import { HOME_TEMPLATE_NICHES } from '@/lib/domains/marketing/home-template-catalog'
+
+const TOTAL_TEMPLATE_NICHES = HOME_TEMPLATE_NICHES.length
 
 export const metadata = {
   title: 'Benefícios | Zairyx — Canal próprio e pagamento online',
@@ -29,6 +32,10 @@ export const metadata = {
 }
 
 export default function BeneficiosPage() {
+  if (TOTAL_TEMPLATE_NICHES === 0) {
+    throw new Error('Nenhum nicho público configurado para a página de benefícios.')
+  }
+
   return (
     <div className="from-background to-secondary/20 min-h-screen bg-linear-to-b">
       {/* Header */}
@@ -620,7 +627,7 @@ export default function BeneficiosPage() {
                   {
                     feature: 'Pagamento online no cardápio',
                     zairyx: '✓ Mercado Pago nativo',
-                    ifood: '✓ (mas eles ficam com %))',
+                    ifood: '✓ (mas eles ficam com %)',
                     outros: 'Alguns têm',
                     zairyxGood: true,
                   },
@@ -647,7 +654,7 @@ export default function BeneficiosPage() {
                   },
                   {
                     feature: 'Templates por nicho',
-                    zairyx: '16 nichos prontos',
+                    zairyx: `${TOTAL_TEMPLATE_NICHES} nichos prontos`,
                     ifood: '✗',
                     outros: 'Raramente',
                     zairyxGood: true,

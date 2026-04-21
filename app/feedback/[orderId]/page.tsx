@@ -272,7 +272,7 @@ export default function FeedbackPage() {
 
             <div className="space-y-3">
               <a
-                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Acabei de pedir e foi incrível! 🍕 Confere: ${shareUrl}`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`Acabei de pedir e foi incrível! 🍕 Confere: ${shareUrl}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-600"

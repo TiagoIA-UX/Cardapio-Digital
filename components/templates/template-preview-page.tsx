@@ -47,7 +47,11 @@ export function TemplatePreviewPage({ slug }: { slug: RestaurantTemplateSlug }) 
                     : 'rounded-full border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-700 transition-colors hover:bg-zinc-50'
                 }
               >
-                Até {plan.maxProducts} · R$ {plan.priceMonthly % 1 === 0 ? plan.priceMonthly : plan.priceMonthly.toFixed(2).replace('.', ',')}/mês
+                Até {plan.maxProducts} · R${' '}
+                {plan.priceMonthly % 1 === 0
+                  ? plan.priceMonthly
+                  : plan.priceMonthly.toFixed(2).replace('.', ',')}
+                /mês
               </Link>
             ))}
           </div>

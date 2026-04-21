@@ -19,6 +19,7 @@ import {
   NETWORK_EXPANSION_UNIT_OPTIONS,
   formatNetworkExpansionLabel,
 } from '@/lib/domains/marketing/pricing'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
 import {
   getActiveRestaurantForUser,
   getRestaurantScopedHref,
@@ -34,6 +35,7 @@ type PlanSlug = 'basico' | 'pro' | 'premium'
 interface UiPlan {
   slug: PlanSlug
   name: string
+  phase: string
   price: string
   description: string
   highlights: string[]
@@ -42,9 +44,10 @@ interface UiPlan {
 const PLANS: UiPlan[] = [
   {
     slug: 'basico',
-    name: PLAN_LIMITS.basico.label,
+    name: getPublicPlanDisplay('basico').name,
+    phase: getPublicPlanDisplay('basico').phase,
     price: `R$ ${PUBLIC_SUBSCRIPTION_PRICES.basico.monthly}/mês`,
-    description: 'Para começar com canal digital sem dor de cabeça.',
+    description: getPublicPlanDisplay('basico').microcopy,
     highlights: [
       `Até ${PLAN_LIMITS.basico.maxProducts} produtos`,
       'Pedidos ilimitados',
@@ -54,9 +57,10 @@ const PLANS: UiPlan[] = [
   },
   {
     slug: 'pro',
-    name: PLAN_LIMITS.pro.label,
+    name: getPublicPlanDisplay('pro').name,
+    phase: getPublicPlanDisplay('pro').phase,
     price: `R$ ${PUBLIC_SUBSCRIPTION_PRICES.pro.monthly}/mês`,
-    description: 'Para quem quer organizar pedidos e crescer.',
+    description: getPublicPlanDisplay('pro').microcopy,
     highlights: [
       `Até ${PLAN_LIMITS.pro.maxProducts} produtos`,
       'Pedidos ilimitados',
@@ -67,9 +71,10 @@ const PLANS: UiPlan[] = [
   },
   {
     slug: 'premium',
-    name: PLAN_LIMITS.premium.label,
+    name: getPublicPlanDisplay('premium').name,
+    phase: getPublicPlanDisplay('premium').phase,
     price: `R$ ${PUBLIC_SUBSCRIPTION_PRICES.premium.monthly}/mês`,
-    description: 'Para operações com catálogo maior e atendimento priorizado.',
+    description: getPublicPlanDisplay('premium').microcopy,
     highlights: [
       `Até ${PLAN_LIMITS.premium.maxProducts?.toLocaleString('pt-BR')} produtos`,
       'Templates premium',
@@ -121,6 +126,7 @@ export default function PlanosPage() {
   )
 
   const PLAN_ORDER: Record<PlanSlug, number> = { basico: 0, pro: 1, premium: 2 }
+  const currentPlanDisplay = getPublicPlanDisplay(currentPlanSlug)
 
   const handlePlanChange = async (targetPlan: PlanSlug) => {
     if (!restaurant || upgradeLoading) return
@@ -237,7 +243,7 @@ export default function PlanosPage() {
         {restaurant && (
           <div className="text-muted-foreground text-sm">
             Plano atual:{' '}
-            <span className="text-foreground font-semibold uppercase">{currentPlanSlug}</span>
+            <span className="text-foreground font-semibold">{currentPlanDisplay.name}</span>
           </div>
         )}
       </div>
@@ -265,7 +271,10 @@ export default function PlanosPage() {
               }`}
             >
               <div className="mb-2 flex items-center justify-between">
-                <h2 className="text-foreground text-lg font-semibold">{plan.name}</h2>
+                <div>
+                  <h2 className="text-foreground text-lg font-semibold">{plan.name}</h2>
+                  <p className="text-primary/80 mt-1 text-xs font-medium">{plan.phase}</p>
+                </div>
                 {isCurrent && (
                   <span className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs">
                     <CheckCircle2 className="h-3 w-3" />

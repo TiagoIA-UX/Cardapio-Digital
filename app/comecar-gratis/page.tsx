@@ -16,6 +16,7 @@ import {
   TEMPLATE_PRESETS,
   type RestaurantTemplateSlug,
 } from '@/lib/domains/core/restaurant-customization'
+import { getPublicPlanDisplay } from '@/lib/domains/marketing/plan-display'
 import { getPublicTemplateName } from '@/lib/domains/marketing/template-public-meta'
 
 const TEMPLATE_OPTIONS: RestaurantTemplateSlug[] = [
@@ -25,6 +26,9 @@ const TEMPLATE_OPTIONS: RestaurantTemplateSlug[] = [
   'sorveteria',
   'doceria',
 ]
+
+const ENTRY_PLAN_NAME = getPublicPlanDisplay('semente').name
+const NEXT_PLAN_NAME = getPublicPlanDisplay('basico').name
 
 export default function ComecarGratisPage() {
   const router = useRouter()
@@ -53,7 +57,7 @@ export default function ComecarGratisPage() {
       }
 
       if (!response.ok) {
-        setError(payload.error || 'Não foi possível ativar o Plano Começo agora.')
+        setError(payload.error || `Não foi possível ativar o plano ${ENTRY_PLAN_NAME} agora.`)
         return
       }
 
@@ -85,15 +89,15 @@ export default function ComecarGratisPage() {
           <section className="rounded-4xl border border-emerald-200 bg-white/90 p-8 shadow-[0_20px_80px_rgba(16,185,129,0.08)] backdrop-blur">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
               <Sprout className="h-4 w-4" />
-              Plano Começo
+              Plano {ENTRY_PLAN_NAME}
             </div>
             <h1 className="max-w-2xl text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
               Valide seu canal digital com entrada simbólica e suba de plano sem susto quando o
               negócio pedir.
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-zinc-700">
-              O Começo foi desenhado para microoperações com catálogo enxuto. Ele serve para validar
-              o canal, não para substituir o plano profissional do seu delivery.
+              O {ENTRY_PLAN_NAME} foi desenhado para microoperações com catálogo enxuto. Ele serve
+              para validar o canal, não para substituir o plano {NEXT_PLAN_NAME} do seu delivery.
             </p>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -120,7 +124,7 @@ export default function ComecarGratisPage() {
                   <p className="flex items-start gap-2">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" /> Se você precisa de
                     Pizzaria, Sushi e Japonês, Restaurante e Marmita, Adega e Bebidas ou catálogo
-                    grande, pule direto para o plano profissional.
+                    grande, pule direto para o plano {NEXT_PLAN_NAME}.
                   </p>
                 </div>
               </div>
@@ -146,7 +150,7 @@ export default function ComecarGratisPage() {
                   <p className="flex items-start gap-2">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" /> Se você precisar de
                     pagamento online, IA, suporte humano ou catálogo mais amplo, o plano correto já
-                    é o Básico.
+                    é o {NEXT_PLAN_NAME}.
                   </p>
                 </div>
               </div>
@@ -189,7 +193,9 @@ export default function ComecarGratisPage() {
                 <MessageCircle className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-zinc-950">Ativar meu Plano Começo</h2>
+                <h2 className="text-xl font-bold text-zinc-950">
+                  Ativar meu plano {ENTRY_PLAN_NAME}
+                </h2>
                 <p className="text-sm text-zinc-600">
                   Faça login com Google se ainda não tiver conta. A cobrança inicial é simbólica.
                 </p>

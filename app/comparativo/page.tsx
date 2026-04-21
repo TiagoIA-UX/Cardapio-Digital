@@ -16,6 +16,19 @@ import {
   X,
 } from 'lucide-react'
 import { COMMERCIAL_COPY } from '@/lib/domains/marketing/commercial-copy'
+import { HOME_TEMPLATE_NICHES } from '@/lib/domains/marketing/home-template-catalog'
+
+function formatReclameAquiScore(score: number | string, label: string) {
+  if (typeof score === 'string') {
+    return label
+  }
+
+  return `${score.toFixed(1)} ${label}`
+}
+
+function formatComplaints6m(complaints: number | string) {
+  return typeof complaints === 'number' ? String(complaints) : complaints
+}
 
 export const metadata = {
   title: 'Comparativo Real — Zairyx vs iFood, Anota AI, Consumer, Saipos e mais',
@@ -161,10 +174,10 @@ const SAAS_COMPETITORS = [
   {
     name: 'Kyte',
     clients: '40.000+',
-    reclameAquiScore: null,
+    reclameAquiScore: '—',
     reclameAquiLabel: '—',
     reclameAquiColor: 'text-zinc-400',
-    complaints6m: null,
+    complaints6m: '—',
     resolution: '—',
     wouldReturn: '—',
     responseTime: '—',
@@ -184,10 +197,9 @@ const ZAIRYX_DATA = {
   price: 'R$ 147/mês',
   commission: '0%',
   pricePublic: true,
-  reclameAquiScore: null,
   reclameAquiLabel: 'Novo no mercado',
   catalogReady: true,
-  catalogCount: 16,
+  catalogCount: HOME_TEMPLATE_NICHES.length,
   aiType: 'IA dentro do cardápio',
   cancellationEasy: true,
   cancellationDetail: 'Pelo painel, sem burocracia',
@@ -232,6 +244,12 @@ const MARKET_PAINS = [
 ] as const
 
 export default function ComparativoPage() {
+  const totalTemplateNiches = ZAIRYX_DATA.catalogCount
+
+  if (totalTemplateNiches === 0) {
+    throw new Error('Nenhum nicho público configurado para o comparativo.')
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -373,31 +391,37 @@ export default function ComparativoPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
-                {SAAS_COMPETITORS.map((c) => (
-                  <tr key={c.name} className="hover:bg-zinc-50/50">
-                    <td className="px-4 py-3 font-semibold text-zinc-900">{c.name}</td>
-                    <td className="px-4 py-3 text-center">
-                      <span className={`font-bold ${c.reclameAquiColor}`}>
-                        {c.reclameAquiScore ?? '—'} {c.reclameAquiLabel}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-zinc-600">{c.complaints6m ?? '—'}</td>
-                    <td className="px-4 py-3 text-center text-zinc-600">{c.resolution}</td>
-                    <td className="px-4 py-3 text-center">
-                      <span
-                        className={
-                          c.wouldReturn !== '—' && parseFloat(c.wouldReturn) < 50
-                            ? 'font-bold text-red-600'
-                            : 'text-zinc-600'
-                        }
-                      >
-                        {c.wouldReturn}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-zinc-600">{c.responseTime}</td>
-                    <td className="px-4 py-3 text-sm text-zinc-500">{c.topComplaint}</td>
-                  </tr>
-                ))}
+                {SAAS_COMPETITORS.map((c) => {
+                  const reclamaAquiLabel = formatReclameAquiScore(
+                    c.reclameAquiScore,
+                    c.reclameAquiLabel
+                  )
+                  const complaints6mLabel = formatComplaints6m(c.complaints6m)
+                  const hasReturnRate = c.wouldReturn !== '—'
+                  const lowReturnRate = hasReturnRate && parseFloat(c.wouldReturn) < 50
+
+                  return (
+                    <tr key={c.name} className="hover:bg-zinc-50/50">
+                      <td className="px-4 py-3 font-semibold text-zinc-900">{c.name}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={`font-bold ${c.reclameAquiColor}`}>
+                          {reclamaAquiLabel}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center text-zinc-600">{complaints6mLabel}</td>
+                      <td className="px-4 py-3 text-center text-zinc-600">{c.resolution}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span
+                          className={lowReturnRate ? 'font-bold text-red-600' : 'text-zinc-600'}
+                        >
+                          {c.wouldReturn}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center text-zinc-600">{c.responseTime}</td>
+                      <td className="px-4 py-3 text-sm text-zinc-500">{c.topComplaint}</td>
+                    </tr>
+                  )
+                })}
                 {/* Zairyx row */}
                 <tr className="bg-green-50/50">
                   <td className="px-4 py-3 font-bold text-green-700">Zairyx</td>
@@ -524,7 +548,7 @@ export default function ComparativoPage() {
                   </td>
                   <td className="bg-green-50/50 px-4 py-3 text-center">
                     <span className="inline-flex items-center gap-1 font-bold text-green-700">
-                      <CheckCircle className="h-4 w-4" /> 16 nichos
+                      <CheckCircle className="h-4 w-4" /> {totalTemplateNiches} nichos
                     </span>
                   </td>
                 </tr>
@@ -666,7 +690,7 @@ export default function ComparativoPage() {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="rounded-2xl border-2 border-orange-200 bg-orange-50 p-6 text-center">
               <Sparkles className="mx-auto mb-3 h-8 w-8 text-orange-500" />
-              <p className="text-3xl font-bold text-orange-600">16</p>
+              <p className="text-3xl font-bold text-orange-600">{totalTemplateNiches}</p>
               <p className="mt-1 text-sm font-bold text-zinc-800">Catálogos prontos por nicho</p>
               <p className="mt-2 text-xs text-zinc-600">
                 Pizzaria, lanches e burgers, bar e petiscos, cafeteria e brunch, conveniência e

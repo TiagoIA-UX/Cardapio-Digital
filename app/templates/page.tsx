@@ -20,6 +20,7 @@ const groupedTemplates = TEMPLATE_FAMILY_ORDER.map((familyId) => ({
       'publicFamily' in template && template.publicFamily === familyId
   ),
 })).filter((group) => group.items.length > 0)
+const totalNiches = templates.length
 const showDevUnlock =
   process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ALLOW_DEV_UNLOCK === 'true'
 
@@ -44,7 +45,7 @@ export default function TemplatesPage() {
   return (
     <main className="bg-background min-h-screen">
       {/* Header */}
-      <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b px-4 py-4 backdrop-blur">
+      <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-40 border-b px-4 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Link
             href="/"
@@ -74,7 +75,7 @@ export default function TemplatesPage() {
         <div className="mx-auto max-w-4xl text-center">
           <div className="bg-primary/10 text-primary mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
             <Sparkles className="h-4 w-4" />
-            16 nichos prontos para ativar
+            {totalNiches} nichos prontos para ativar
           </div>
           <h1 className="text-foreground mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
             Escolha o nicho certo para o seu delivery
@@ -110,7 +111,7 @@ export default function TemplatesPage() {
           {/* Stats */}
           <div className="mb-8 flex flex-wrap justify-center gap-8 text-center">
             <div>
-              <div className="text-foreground text-2xl font-bold">16</div>
+              <div className="text-foreground text-2xl font-bold">{totalNiches}</div>
               <div className="text-muted-foreground text-sm">Nichos</div>
             </div>
             <div>

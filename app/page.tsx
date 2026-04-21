@@ -33,29 +33,49 @@ import { HeroBadge, HeroHeading } from '@/components/hero-ab'
 import { GuaranteeBadge } from '@/components/guarantee-badge'
 import { HomeHeroAnimation } from '@/components/home-hero-animation'
 
-const Footer = nextDynamic(() => import('@/components/footer').then((m) => ({ default: m.Footer })), {
-  loading: () => null,
-})
+function SectionLoadingFallback({ label }: { label: string }) {
+  return (
+    <div className="sr-only" aria-live="polite">
+      {label}
+    </div>
+  )
+}
+
+const Footer = nextDynamic(
+  () => import('@/components/footer').then((m) => ({ default: m.Footer })),
+  {
+    loading: () => <SectionLoadingFallback label="Carregando rodapé" />,
+  }
+)
 const FaqSection = nextDynamic(() => import('@/components/sections/FaqSection'), {
-  loading: () => null,
+  loading: () => <SectionLoadingFallback label="Carregando perguntas frequentes" />,
 })
 const SavingsCalculator = nextDynamic(() => import('@/components/sections/SavingsCalculator'), {
-  loading: () => null,
+  loading: () => <SectionLoadingFallback label="Carregando calculadora" />,
 })
 const TestimonialsSection = nextDynamic(() => import('@/components/sections/TestimonialsSection'), {
-  loading: () => null,
+  loading: () => <SectionLoadingFallback label="Carregando depoimentos" />,
 })
 
 const TOP_TEMPLATES = HOME_TEMPLATE_CARDS
+const TOTAL_TEMPLATE_NICHES = HOME_TEMPLATE_NICHES.length
 
 export const dynamic = 'force-static'
 
 export default function Home() {
+  if (TOTAL_TEMPLATE_NICHES === 0) {
+    throw new Error('Nenhum nicho público configurado para a home.')
+  }
+
+  if (TOP_TEMPLATES.length === 0) {
+    throw new Error('Nenhum template configurado para a home.')
+  }
+
   return (
     <>
       <main className="min-h-screen bg-white text-zinc-900">
         <HomeHeroAnimation />
-        <Suspense fallback={null}>
+        <Suspense fallback={<SectionLoadingFallback label="Carregando navegação principal" />}>
           <HomeHeader />
         </Suspense>
 
@@ -79,7 +99,7 @@ export default function Home() {
                 <HeroHeading />
               </h1>
 
-              <p className="contain-layout mx-auto mt-5 max-w-2xl text-base leading-relaxed text-zinc-100 md:text-lg">
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-zinc-100 contain-layout md:text-lg">
                 <strong className="text-white">Seu cardápio digital pronto em 30 minutos.</strong>{' '}
                 Zero comissão por pedido e pedidos direto no WhatsApp.
               </p>
@@ -648,7 +668,7 @@ export default function Home() {
           <div className="container-premium">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               <ProofStat value="0%" label="de comissao da Zairyx por pedido" highlight />
-              <ProofStat value="16" label="nichos com modelo pronto" />
+              <ProofStat value={String(TOTAL_TEMPLATE_NICHES)} label="nichos com modelo pronto" />
               <ProofStat value="30 min" label="e seu cardápio está no ar" />
               <ProofStat
                 value="+ margem"
@@ -882,7 +902,7 @@ export default function Home() {
                   step="01"
                   icon={<Sparkles className="h-6 w-6" />}
                   title="Escolha o modelo do seu nicho"
-                  description="16 nichos prontos: Pizzaria, Lanches e Burgers, Bar e Petiscos, Cafeteria e Brunch, Açaí e Cremes e mais. Já vêm com produtos reais de exemplo — só trocar."
+                  description={`${TOTAL_TEMPLATE_NICHES} nichos prontos: Pizzaria, Lanches e Burgers, Bar e Petiscos, Cafeteria e Brunch, Açaí e Cremes e mais. Já vêm com produtos reais de exemplo — só trocar.`}
                 />
                 <StepCard
                   step="02"
@@ -1144,7 +1164,7 @@ export default function Home() {
               <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm font-bold tracking-[0.2em] text-orange-600 uppercase">
-                    16 nichos prontos — escolha o seu
+                    {TOTAL_TEMPLATE_NICHES} nichos prontos — escolha o seu
                   </p>
                   <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                     Seu concorrente já tem um. <span className="text-orange-500">E você?</span>
@@ -1155,7 +1175,7 @@ export default function Home() {
                   data-testid="templates-view-all"
                   className="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-700"
                 >
-                  Ver todos os 16 modelos
+                  Ver todos os {TOTAL_TEMPLATE_NICHES} modelos
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -1439,7 +1459,7 @@ export default function Home() {
                         <X className="mx-auto h-4 w-4" />
                       </td>
                       <td className="bg-green-50/50 px-5 py-4 text-center font-bold text-green-700">
-                        16 modelos de nicho
+                        {TOTAL_TEMPLATE_NICHES} modelos de nicho
                       </td>
                     </tr>
                     <tr>
@@ -1566,7 +1586,7 @@ export default function Home() {
                       </td>
                       <td className="bg-green-50/50 px-4 py-3 text-center">
                         <span className="inline-flex items-center gap-1 font-bold text-green-700">
-                          <CheckCircle className="h-4 w-4" /> 16 nichos prontos
+                          <CheckCircle className="h-4 w-4" /> {TOTAL_TEMPLATE_NICHES} nichos prontos
                         </span>
                       </td>
                     </tr>
@@ -1667,7 +1687,9 @@ export default function Home() {
               <div className="mt-10 grid gap-4 md:grid-cols-3">
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-6 text-center">
                   <p className="text-sm font-bold text-green-800">Catálogo pronto</p>
-                  <p className="mt-2 text-3xl font-bold text-green-700">16 nichos</p>
+                  <p className="mt-2 text-3xl font-bold text-green-700">
+                    {TOTAL_TEMPLATE_NICHES} nichos
+                  </p>
                   <p className="mt-1 text-sm text-green-600">com produtos reais — só editar</p>
                 </div>
                 <div className="rounded-2xl border-2 border-green-300 bg-green-50 p-6 text-center">
@@ -1776,11 +1798,13 @@ export default function Home() {
                   plano.
                 </p>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Tudo incluído: 16 modelos de nicho, editor mobile, QR Code e suporte.
+                  Tudo incluído: {TOTAL_TEMPLATE_NICHES} modelos de nicho, editor mobile, QR Code e
+                  suporte.
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-3 text-sm text-zinc-600">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-green-500" /> 16 modelos profissionais
+                    <CheckCircle className="h-4 w-4 text-green-500" /> {TOTAL_TEMPLATE_NICHES}{' '}
+                    modelos profissionais
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle className="h-4 w-4 text-green-500" /> Editor visual completo
@@ -1832,8 +1856,8 @@ export default function Home() {
                       <span className="text-orange-400">Você só edita e começa a vender.</span>
                     </h2>
                     <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-200">
-                      Catálogo completo, editor visual, pedidos pelo WhatsApp e 16 modelos de nicho.
-                      Tudo pronto.{' '}
+                      Catálogo completo, editor visual, pedidos pelo WhatsApp e{' '}
+                      {TOTAL_TEMPLATE_NICHES} modelos de nicho. Tudo pronto.{' '}
                       <strong className="text-white">{COMMERCIAL_COPY.withdrawalExplainer}</strong>
                     </p>
                     <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-zinc-300">
