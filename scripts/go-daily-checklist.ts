@@ -287,11 +287,11 @@ function buildChecks(config: GoDailyConfig | null) {
       label: 'IDs referenciados existem no registro',
       required: true,
       passed:
-        Boolean(config) &&
+        config !== null &&
         config.evidence.recentIncidentIds.length > 0 &&
         referencedIncidents.length === config.evidence.recentIncidentIds.length,
       details:
-        Boolean(config) &&
+        config !== null &&
         config.evidence.recentIncidentIds.length > 0 &&
         referencedIncidents.length === config.evidence.recentIncidentIds.length
           ? 'Todos os IDs do config existem no registro de incidentes.'

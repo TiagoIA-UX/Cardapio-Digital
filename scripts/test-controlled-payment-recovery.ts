@@ -7,7 +7,10 @@ import crypto from 'node:crypto'
 
 import { NextRequest } from 'next/server'
 
-import { GET as getPaymentRecoveryMetricsRoute, POST as paymentRecoveryActionRoute } from '@/app/api/admin/payment-recovery/route'
+import {
+  GET as getPaymentRecoveryMetricsRoute,
+  POST as paymentRecoveryActionRoute,
+} from '@/app/api/admin/payment-recovery/route'
 import { POST as paymentRecoveryScanRoute } from '@/app/api/ops/payment-recovery/route'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 
@@ -198,7 +201,9 @@ async function main() {
 
     const matchingAlert = (alertsAfterScan ?? []).find((alert) => {
       const haystack = `${alert.title || ''}\n${alert.body || ''}\n${stringify(alert.metadata)}`
-      return haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      return (
+        haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      )
     })
 
     if (!matchingAlert?.id) {
@@ -256,7 +261,9 @@ async function main() {
     )
 
     if (!secondScan.ok) {
-      throw new Error(`Scan pós-ação falhou: HTTP ${secondScan.status} ${stringify(secondScan.data)}`)
+      throw new Error(
+        `Scan pós-ação falhou: HTTP ${secondScan.status} ${stringify(secondScan.data)}`
+      )
     }
 
     const secondScanReport = secondScan.data.report as JsonRecord | undefined
@@ -278,11 +285,15 @@ async function main() {
 
     const repeatedAlerts = (alertsAfterSecondScan ?? []).filter((alert) => {
       const haystack = `${alert.title || ''}\n${alert.body || ''}\n${stringify(alert.metadata)}`
-      return haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      return (
+        haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      )
     })
 
     if (repeatedAlerts.length !== 1) {
-      throw new Error('O segundo scan criou novo alerta para um caso que deveria ficar em cooldown.')
+      throw new Error(
+        'O segundo scan criou novo alerta para um caso que deveria ficar em cooldown.'
+      )
     }
 
     const metricsResponse = await parseResponse(
@@ -312,7 +323,9 @@ async function main() {
       .maybeSingle()
 
     if (checkoutAfterActionError) {
-      throw new Error(`Falha ao validar checkout_session pós-ação: ${checkoutAfterActionError.message}`)
+      throw new Error(
+        `Falha ao validar checkout_session pós-ação: ${checkoutAfterActionError.message}`
+      )
     }
 
     if (
@@ -336,7 +349,9 @@ async function main() {
 
     const matchingLogs = (recentLogs ?? []).filter((log) => {
       const haystack = stringify(log.metadata)
-      return haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      return (
+        haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+      )
     })
 
     if (matchingLogs.length < 2) {
@@ -390,7 +405,11 @@ async function main() {
     const additionalAlertIds = (cleanupAlerts ?? [])
       .filter((alert) => {
         const haystack = `${alert.title || ''}\n${alert.body || ''}\n${stringify(alert.metadata)}`
-        return haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+        return (
+          haystack.includes(orderId) ||
+          haystack.includes(orderNumber) ||
+          haystack.includes(testRunId)
+        )
       })
       .map((alert) => alert.id)
 
@@ -412,7 +431,11 @@ async function main() {
     const additionalLogIds = (cleanupLogs ?? [])
       .filter((log) => {
         const haystack = stringify(log.metadata)
-        return haystack.includes(orderId) || haystack.includes(orderNumber) || haystack.includes(testRunId)
+        return (
+          haystack.includes(orderId) ||
+          haystack.includes(orderNumber) ||
+          haystack.includes(testRunId)
+        )
       })
       .map((log) => log.id)
 

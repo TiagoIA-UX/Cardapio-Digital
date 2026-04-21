@@ -22,7 +22,8 @@ const FALLBACK_GUARD_FILES = ['app/api/pagamento/status/route.ts']
 const FORBIDDEN_PATTERNS = [
   {
     rule: 'forbidden-template-fallback',
-    pattern: /normalizeTemplateSlug\(String\(metadata\.template_slug\s*\|\|\s*['"]restaurante['"]\)\)/,
+    pattern:
+      /normalizeTemplateSlug\(String\(metadata\.template_slug\s*\|\|\s*['"]restaurante['"]\)\)/,
     details:
       'Fallback silencioso de template_slug para restaurante é proibido no status de pagamento.',
   },
