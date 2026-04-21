@@ -112,3 +112,8 @@ backend/__pycache__/
 
 certificates# hook test
 
+
+# Artefatos de debug e lighthouse
+*.lighthouse-*.json
+tmp-lh-*.json
+supabase-migration-list-debug.log
