@@ -48,11 +48,20 @@ const TEMPLATE_PLAN_BLUEPRINTS: Record<
   doceria: { essencial: 15, operacao: 30, escala: 60 },
 }
 
-function resolveCapacitySlug(maxProducts: number): SubscriptionPlanSlug {
-  if (maxProducts <= PLAN_LIMITS.semente.maxProducts) return 'semente'
-  if (maxProducts <= PLAN_LIMITS.basico.maxProducts) return 'basico'
-  if (maxProducts <= PLAN_LIMITS.pro.maxProducts) return 'pro'
-  return 'premium'
+const TIER_SLUG_MAP: Record<TemplatePlan['name'], SubscriptionPlanSlug> = {
+  essencial: 'semente',
+  operacao: 'basico',
+  escala: 'pro',
+}
+
+// Mapeamento posicional: essencial→semente, operacao→basico, escala→pro.
+// Exceção: escala com blueprint acima do limite pro (ex: minimercado 600 produtos) → premium.
+function resolveCapacitySlug(
+  name: TemplatePlan['name'],
+  maxProducts: number
+): SubscriptionPlanSlug {
+  if (name === 'escala' && maxProducts > PLAN_LIMITS.pro.maxProducts) return 'premium'
+  return TIER_SLUG_MAP[name]
 }
 
 function buildPlan(
@@ -61,13 +70,14 @@ function buildPlan(
   maxProducts: number
 ): TemplatePlan {
   const meta = TEMPLATE_PUBLIC_META[templateSlug]
-  const capacitySlug = resolveCapacitySlug(maxProducts)
+  const capacitySlug = resolveCapacitySlug(name, maxProducts)
+  const planMaxProducts = PLAN_LIMITS[capacitySlug].maxProducts
   const priceMonthly = PUBLIC_SUBSCRIPTION_PRICES[capacitySlug].monthly
   const priceAnnual = PUBLIC_SUBSCRIPTION_PRICES[capacitySlug].annual
 
   const planLabels: Record<TemplatePlan['name'], { displayName: string; description: string }> = {
     essencial: {
-      displayName: 'Essencial',
+      displayName: 'Impulso',
       description: `Para validar ${meta.shortName.toLowerCase()} com o mix principal.`,
     },
     operacao: {
@@ -85,9 +95,9 @@ function buildPlan(
     name,
     displayName: planLabels[name].displayName,
     description: planLabels[name].description,
-    maxProducts,
+    maxProducts: planMaxProducts,
     features: [
-      `Até ${maxProducts} produtos no catálogo`,
+      `Até ${planMaxProducts} produtos no catálogo`,
       meta.productProfile,
       `Faixa pública alinhada ao plano ${PLAN_LIMITS[capacitySlug].label}`,
       'Troca de fotos, preços e categorias no painel',
