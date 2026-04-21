@@ -2,10 +2,28 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   buildReadinessFingerprint,
+  getForgeOpsWebhookReadinessItem,
   getReadinessStatus,
   getReadinessSeverity,
   type ScriptsReadinessReport,
 } from '@/lib/domains/ops/scripts-readiness'
+
+const originalEnv = {
+  ALERT_WEBHOOK_URL: process.env.ALERT_WEBHOOK_URL,
+  FORGEOPS_URL: process.env.FORGEOPS_URL,
+  MERGEFORGE_URL: process.env.MERGEFORGE_URL,
+}
+
+test.afterEach(() => {
+  for (const [key, value] of Object.entries(originalEnv)) {
+    if (value === undefined) {
+      delete process.env[key]
+      continue
+    }
+
+    process.env[key] = value
+  }
+})
 
 function buildReport(overrides?: Partial<ScriptsReadinessReport>): ScriptsReadinessReport {
   return {
@@ -215,4 +233,26 @@ test('fingerprint ignora item opcional quando existe pendencia acionável', () =
   })
 
   assert.equal(buildReadinessFingerprint(reportA), buildReadinessFingerprint(reportB))
+})
+
+test('readiness considera FORGEOPS_URL como alias valido do webhook', () => {
+  delete process.env.ALERT_WEBHOOK_URL
+  process.env.FORGEOPS_URL = 'https://mergeforge-backend.onrender.com'
+  delete process.env.MERGEFORGE_URL
+
+  const alertWebhook = getForgeOpsWebhookReadinessItem()
+
+  assert.equal(alertWebhook.ok, true)
+  assert.equal(alertWebhook.detail, 'Configurada via FORGEOPS_URL')
+})
+
+test('readiness considera MERGEFORGE_URL como alias valido do webhook', () => {
+  delete process.env.ALERT_WEBHOOK_URL
+  delete process.env.FORGEOPS_URL
+  process.env.MERGEFORGE_URL = 'https://mergeforge-backend.onrender.com'
+
+  const alertWebhook = getForgeOpsWebhookReadinessItem()
+
+  assert.equal(alertWebhook.ok, true)
+  assert.equal(alertWebhook.detail, 'Configurada via MERGEFORGE_URL')
 })

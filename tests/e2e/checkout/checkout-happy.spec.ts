@@ -14,6 +14,21 @@ import {
  */
 test.describe('Checkout — Happy Path', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      const assignedUrls: string[] = []
+      ;(window as Window & { __testAssignedUrls?: string[] }).__testAssignedUrls = assignedUrls
+
+      try {
+        const patchedAssign = (url: string | URL) => {
+          assignedUrls.push(String(url))
+        }
+
+        window.location.assign = patchedAssign as typeof window.location.assign
+      } catch {
+        // Se o browser não permitir monkey patch do assign, o teste cai no fallback visual.
+      }
+    })
+
     await page.goto('/templates/pizzaria')
     await page.waitForLoadState('networkidle')
     await dismissCookieBanner(page)
@@ -41,8 +56,6 @@ test.describe('Checkout — Happy Path', () => {
       .waitFor({ state: 'hidden', timeout: 5_000 })
       .catch(() => {})
 
-    // Intercept WhatsApp navigation to prevent leaving the page
-    let whatsappUrl: string | null = null
     await page.route('**/api/orders', async (route) => {
       await route.fulfill({
         status: 200,
@@ -54,19 +67,18 @@ test.describe('Checkout — Happy Path', () => {
       })
     })
 
-    await page.route('**/api.whatsapp.com/**', async (route) => {
-      whatsappUrl = route.request().url()
-      await route.abort()
-    })
-
     await btn.click({ noWaitAfter: true, force: true })
 
-    await page.waitForTimeout(1_000)
+    const assignedUrls = await page.evaluate(() => {
+      return (window as Window & { __testAssignedUrls?: string[] }).__testAssignedUrls ?? []
+    })
 
-    if (whatsappUrl) {
+    if (assignedUrls.length > 0) {
+      const whatsappUrl = assignedUrls[0]
       expect(decodeURIComponent(whatsappUrl)).toMatch(/João Silva/)
       expect(decodeURIComponent(whatsappUrl)).toMatch(/11988776655/)
       expect(decodeURIComponent(whatsappUrl)).toMatch(/Av Brasil, 500/)
+      expect(whatsappUrl).toContain('whatsapp://send')
       return
     }
 

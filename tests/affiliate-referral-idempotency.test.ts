@@ -7,10 +7,7 @@ import {
 } from '@/lib/domains/core/affiliate-referral-idempotency'
 
 test('idempotência de affiliate_referral inclui tenant, mês e plano', () => {
-  assert.equal(
-    AFFILIATE_REFERRAL_ONBOARDING_CONFLICT_TARGET,
-    'tenant_id,referencia_mes,plano'
-  )
+  assert.equal(AFFILIATE_REFERRAL_ONBOARDING_CONFLICT_TARGET, 'tenant_id,referencia_mes,plano')
 
   assert.equal(
     buildAffiliateReferralIdempotencyKey({

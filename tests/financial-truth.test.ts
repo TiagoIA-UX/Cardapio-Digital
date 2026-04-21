@@ -211,10 +211,7 @@ test('reason financeira agrega sinais auditáveis', () => {
 })
 
 test('retry de financial truth respeita backoff apenas para pending_sync elegível', () => {
-  const nextRetryAt = buildFinancialTruthSyncNextRetryAt(
-    1,
-    new Date('2026-04-16T10:00:00.000Z')
-  )
+  const nextRetryAt = buildFinancialTruthSyncNextRetryAt(1, new Date('2026-04-16T10:00:00.000Z'))
 
   assert.equal(
     shouldRetryFinancialTruthSyncJob({
