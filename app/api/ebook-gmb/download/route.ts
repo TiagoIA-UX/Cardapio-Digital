@@ -4,16 +4,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createMercadoPagoPaymentClient } from '@/lib/domains/core/mercadopago'
 import { createClient } from '@/lib/shared/supabase/server'
 
-const FILE_NAME = 'google-meu-negocio-guia-completo.md'
+const FILE_NAME = 'google-meu-negocio-guia-completo.pdf'
 const FILE_PATH = path.join(process.cwd(), 'private', 'ebooks', FILE_NAME)
 
 async function serveEbook() {
-  const content = await readFile(FILE_PATH, 'utf8')
+  const content = await readFile(FILE_PATH)
   return new NextResponse(content, {
     status: 200,
     headers: {
-      'Content-Type': 'text/markdown; charset=utf-8',
-      'Content-Disposition': 'attachment; filename="Google-Meu-Negocio-Guia-Completo-Zairyx.md"',
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="Google-Meu-Negocio-Guia-Completo-Zairyx.pdf"',
       'Cache-Control': 'private, no-store, max-age=0',
     },
   })

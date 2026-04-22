@@ -71,9 +71,7 @@ export default function PrecosPage() {
               <p className="text-sm font-bold tracking-[0.15em] text-orange-600 uppercase">
                 Bônus Exclusivo Incluído
               </p>
-              <h2 className="mt-2 text-xl font-bold text-zinc-950">
-                E-book: Google Meu Negócio
-              </h2>
+              <h2 className="mt-2 text-xl font-bold text-zinc-950">E-book: Google Meu Negócio</h2>
               <p className="mt-1 text-sm text-zinc-600">92 páginas de conteúdo prático</p>
               <div className="mt-3 flex flex-wrap gap-3 text-sm text-zinc-700">
                 <span>Economize R$ 350-800</span>

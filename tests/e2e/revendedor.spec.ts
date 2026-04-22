@@ -57,7 +57,9 @@ test.describe('Revendedor — Avaliação Comercial', () => {
     expect(hasBenefit).toBeTruthy()
 
     // Pelo menos 1 CTA visível
-    const cta = page.locator('a[href="/templates"]:visible, a:has-text("Ver modelos"):visible').first()
+    const cta = page
+      .locator('a[href="/templates"]:visible, a:has-text("Ver modelos"):visible')
+      .first()
     await expect(cta).toBeVisible({ timeout: 5_000 })
   })
 
@@ -138,13 +140,16 @@ test.describe('Revendedor — Avaliação Comercial', () => {
 
     // Deve explicar o modelo de forma simples
     const hasSimpleExplanation =
-      /comissão\s*(direta|recorrente)|indica|ganhe|ganha|por\s*venda|por\s*indicação|carteira/i.test(body || '')
+      /comissão\s*(direta|recorrente)|indica|ganhe|ganha|por\s*venda|por\s*indicação|carteira/i.test(
+        body || ''
+      )
     expect(hasSimpleExplanation).toBeTruthy()
 
     // Deve ter calculadora ou exemplo de ganhos
-    const hasEarningsExample = /R\$\s*\d+|ganho|faturamento|mês|mensal|calculadora|simulador|renda|payout|30\s*dias/i.test(
-      body || ''
-    )
+    const hasEarningsExample =
+      /R\$\s*\d+|ganho|faturamento|mês|mensal|calculadora|simulador|renda|payout|30\s*dias/i.test(
+        body || ''
+      )
     expect(hasEarningsExample).toBeTruthy()
 
     // Deve ter steps claros (Como Funciona)
