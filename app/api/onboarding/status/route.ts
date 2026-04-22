@@ -27,6 +27,28 @@ export interface StatusPedidoItem {
 }
 
 export async function GET(request: NextRequest) {
+  const checkout = request.nextUrl.searchParams.get('checkout')?.trim()
+  const rateLimit = await withRateLimit(getRateLimitIdentifier(request), {
+    limit: 20,
+    windowMs: 60000,
+  })
+  if (rateLimit.limited) {
+    return rateLimit.response
+  }
+
+  // Auth check before tracking — 401 is an expected security gate, not an operation failure
+  const authSupabase = await createServerClient()
+  const {
+    data: { user },
+  } = await authSupabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Faça login para consultar este pedido' },
+      { status: 401, headers: rateLimit.headers }
+    )
+  }
+
   const tracker = createOperationTracker({
     flowName: 'onboarding.status',
     entityType: 'template_order',
@@ -35,31 +57,6 @@ export async function GET(request: NextRequest) {
   })
 
   try {
-    const checkout = request.nextUrl.searchParams.get('checkout')?.trim()
-    const rateLimit = await withRateLimit(getRateLimitIdentifier(request), {
-      limit: 20,
-      windowMs: 60000,
-    })
-    if (rateLimit.limited) {
-      return rateLimit.response
-    }
-
-    const authSupabase = await createServerClient()
-    const {
-      data: { user },
-    } = await authSupabase.auth.getUser()
-
-    if (!user) {
-      tracker.fail(new Error('onboarding.status.unauthorized'), { statusCode: 401 })
-      return NextResponse.json(
-        {
-          error: 'Faça login para consultar este pedido',
-          operationId: tracker.getContext().operationId,
-        },
-        { status: 401, headers: rateLimit.headers }
-      )
-    }
-
     tracker.toProcessing({ actorId: user.id })
 
     if (!checkout) {

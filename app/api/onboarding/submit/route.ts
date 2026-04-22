@@ -41,6 +41,16 @@ const bodySchema = z.object({
 export type OnboardingFormData = z.infer<typeof onboardingDataSchema>
 
 export async function POST(request: NextRequest) {
+  // Auth check before tracking — 401 is an expected security gate, not an operation failure
+  const authSupabase = await createServerClient()
+  const {
+    data: { user },
+  } = await authSupabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Faça login para continuar' }, { status: 401 })
+  }
+
   const tracker = createOperationTracker({
     flowName: 'onboarding.submit',
     entityType: 'onboarding_submission',
@@ -49,19 +59,6 @@ export async function POST(request: NextRequest) {
   })
 
   try {
-    const authSupabase = await createServerClient()
-    const {
-      data: { user },
-    } = await authSupabase.auth.getUser()
-
-    if (!user) {
-      tracker.fail(new Error('onboarding.submit.unauthorized'), { statusCode: 401 })
-      return NextResponse.json(
-        { error: 'Faça login para continuar', operationId: tracker.getContext().operationId },
-        { status: 401 }
-      )
-    }
-
     tracker.toProcessing({ actorId: user.id })
 
     const raw = await request.json()
