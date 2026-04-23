@@ -76,7 +76,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Mercado Pago envia diferentes tipos de notificação
-    const { type, data, action, id, resource_id, date_created } = parsed.data
+    const { type, data, action } = parsed.data
+    const raw = parsed.data as Record<string, unknown>
+    const id = (raw.id as string | undefined) ?? null
+    const resource_id = (raw.resource_id as string | undefined) ?? null
+    const date_created = (raw.date_created as string | undefined) ?? null
     const eventId = id || null
     const resourceId = resource_id || data?.id || null
     const resourceType = type === 'subscription_authorized_payment' ? 'payment' : 'preapproval'
