@@ -56,18 +56,21 @@ export type ProvisionarInput = z.infer<typeof ProvisionarSchema>
 // ─── Onboarding Checkout ────────────────────────────────────
 
 export const OnboardingCheckoutSchema = z.object({
-  template: z
+  templateSlug: z
     .string()
     .min(1)
     .refine((value) => isRestaurantTemplateSlug(value), {
       message: 'template inválido',
     }),
-  plan: z.enum(['self-service', 'feito-pra-voce']),
+  capacityPlanSlug: z.enum(['semente', 'basico', 'pro', 'premium']),
+  onboardingPlan: z.enum(['self-service', 'feito-pra-voce']),
   paymentMethod: z.enum(['pix', 'card']),
-  restaurantName: z.string().min(3).max(120),
-  customerName: z.string().min(3).max(120),
-  phone: z.string().min(10).max(20),
-  customerDocument: z.string().max(18).optional(),
+  customerData: z.object({
+    restaurantName: z.string().min(3).max(120),
+    customerName: z.string().min(3).max(120),
+    phone: z.string().min(10).max(20),
+    customerDocument: z.string().max(18).optional(),
+  }),
   couponCode: z.string().optional(),
   acceptedTerms: z.literal(true),
   acceptedTermsVersion: z.string().min(1),
@@ -77,12 +80,21 @@ export type OnboardingCheckoutInput = z.infer<typeof OnboardingCheckoutSchema>
 
 // ─── Webhook Subscription ────────────────────────────────────
 
+const SubscriptionWebhookIdentifierSchema = z
+  .union([z.string(), z.number()])
+  .transform((value) => String(value))
+
 export const SubscriptionWebhookSchema = z.object({
+  id: SubscriptionWebhookIdentifierSchema.optional(),
   type: z.string().min(1),
   action: z.string().optional(),
+  live_mode: z.boolean().optional(),
+  date_created: z.string().optional(),
+  resource: z.string().optional(),
+  resource_id: SubscriptionWebhookIdentifierSchema.optional(),
   data: z
     .object({
-      id: z.string().optional(),
+      id: SubscriptionWebhookIdentifierSchema.optional(),
     })
     .optional(),
 })
