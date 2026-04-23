@@ -15,6 +15,7 @@ import { safeParseMercadoPagoWebhookBody } from '@/lib/domains/core/mercadopago-
 import { reportMercadoPagoWebhookIncident } from '@/lib/domains/core/mercadopago-webhook-monitoring'
 import { syncFinancialTruthForTenant } from '@/lib/domains/core/financial-truth'
 import { sendEbookDeliveryEmail } from '@/lib/domains/ebook/ebook-delivery-email'
+import { MercadoPagoConfig, Payment } from 'mercadopago'
 
 function getSupabase() {
   return createAdminClient()
@@ -48,6 +49,68 @@ function serializeUnknownError(error: unknown) {
   } catch {
     return String(error)
   }
+}
+
+function isMercadoPagoNotFoundError(error: unknown) {
+  const message = serializeUnknownError(error).toLowerCase()
+
+  return (
+    message.includes('payment not found') ||
+    message.includes('"error":"not_found"') ||
+    message.includes('"status":404') ||
+    message.includes('status: 404')
+  )
+}
+
+function getMercadoPagoCandidateTokens() {
+  const values = [
+    process.env.MERCADO_PAGO_ACCESS_TOKEN,
+    process.env.MP_ACCESS_TOKEN,
+    process.env.MERCADO_PAGO_TEST_ACCESS_TOKEN,
+  ]
+
+  return Array.from(new Set(values.map((value) => value?.trim() || '').filter(Boolean)))
+}
+
+async function fetchMercadoPagoPaymentWithFallback(
+  primaryClient: Payment,
+  paymentId: string | number
+) {
+  try {
+    return await primaryClient.get({ id: paymentId })
+  } catch (error) {
+    if (!isMercadoPagoNotFoundError(error)) {
+      throw error
+    }
+  }
+
+  const tokens = getMercadoPagoCandidateTokens()
+  let lastNotFoundError: unknown = null
+
+  for (const token of tokens) {
+    try {
+      const client = new Payment(
+        new MercadoPagoConfig({
+          accessToken: token,
+          options: { timeout: 5000 },
+        })
+      )
+      return await client.get({ id: paymentId })
+    } catch (error) {
+      if (isMercadoPagoNotFoundError(error)) {
+        lastNotFoundError = error
+        continue
+      }
+
+      throw error
+    }
+  }
+
+  if (lastNotFoundError) {
+    throw lastNotFoundError
+  }
+
+  throw new Error('mercadopago_payment_lookup_failed:no_available_tokens')
 }
 
 export async function POST(request: NextRequest) {
@@ -129,7 +192,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Buscar detalhes do pagamento
-      const payment = await mercadopago.get({ id: paymentId })
+      const payment = await fetchMercadoPagoPaymentWithFallback(mercadopago, paymentId)
 
       const externalReference = payment.external_reference
       webhookExternalReference =
