@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createMercadoPagoPreApprovalClient } from '@/lib/domains/core/mercadopago'
 import { validateMercadoPagoWebhookSignature } from '@/lib/domains/core/mercadopago-webhook'
+import {
+  fetchPreapprovalWithTimeoutAndRetry,
+  mapMercadoPagoSubscriptionStatus,
+  parseExternalReferenceDiagnostic,
+  validatePreapprovalFinancialConsistency,
+  validatePreapprovalOwnership,
+} from '@/lib/domains/core/mercadopago-webhook-processing'
 import { SubscriptionWebhookSchema, zodErrorResponse } from '@/lib/domains/core/schemas'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
-import { syncFinancialTruthForTenant } from '@/lib/domains/core/financial-truth'
 
-function getSupabaseAdmin() {
-  return createAdminClient()
-}
-
-function getMercadoPagoClient() {
-  return createMercadoPagoPreApprovalClient(10000)
-}
+const WEBHOOK_PROVIDER = 'mercadopago_subscription'
 
 // ── Log estruturado (JSON → stdout) ───────────────────────────────────────
 type SLogLevel = 'info' | 'warn' | 'error'
@@ -30,23 +29,29 @@ function logSubEvent(level: SLogLevel, event: string, data: Record<string, unkno
 
 // Marca notificação como processada na tabela de idempotência
 async function markSubscriptionWebhookProcessed(
-  admin: ReturnType<typeof getSupabaseAdmin>,
-  eventId: string
+  admin: ReturnType<typeof createAdminClient>,
+  rowId: string,
+  ignoredReason?: string | null
 ) {
-  if (!eventId) return
+  if (!rowId) return
   await admin
     .from('webhook_events')
-    .update({ status: 'processed', processed_at: new Date().toISOString() })
-    .eq('provider', 'mercadopago_subscription')
-    .eq('event_id', eventId)
+    .update({
+      status: ignoredReason ? 'skipped' : 'processed',
+      ignored_reason: ignoredReason || null,
+      applied_at: ignoredReason ? null : new Date().toISOString(),
+      processed_at: new Date().toISOString(),
+      error_message: null,
+    })
+    .eq('id', rowId)
 }
 
 async function markSubscriptionWebhookFailed(
-  admin: ReturnType<typeof getSupabaseAdmin>,
-  eventId: string,
+  admin: ReturnType<typeof createAdminClient>,
+  rowId: string,
   errorMessage: string
 ) {
-  if (!eventId) return
+  if (!rowId) return
   await admin
     .from('webhook_events')
     .update({
@@ -54,12 +59,11 @@ async function markSubscriptionWebhookFailed(
       error_message: errorMessage.slice(0, 500),
       processed_at: new Date().toISOString(),
     })
-    .eq('provider', 'mercadopago_subscription')
-    .eq('event_id', eventId)
+    .eq('id', rowId)
 }
 
 export async function POST(request: NextRequest) {
-  let currentEventId: string | null = null
+  let currentEventRowId: string | null = null
   try {
     const xSignature = request.headers.get('x-signature')
     const xRequestId = request.headers.get('x-request-id')
@@ -72,272 +76,220 @@ export async function POST(request: NextRequest) {
     }
 
     // Mercado Pago envia diferentes tipos de notificação
-    const { type, data, action } = parsed.data
+    const { type, data, action, id, resource_id, date_created } = parsed.data
+    const eventId = id || null
+    const resourceId = resource_id || data?.id || null
+    const resourceType = type === 'subscription_authorized_payment' ? 'payment' : 'preapproval'
 
-    logSubEvent('info', 'subscription_webhook_received', { type, action, data_id: data?.id })
+    logSubEvent('info', 'subscription_webhook_received', {
+      type,
+      action,
+      event_id: eventId,
+      resource_id: resourceId,
+    })
 
-    const supabaseAdmin = getSupabaseAdmin()
-    const preApproval = getMercadoPagoClient()
+    if (
+      !['subscription_preapproval', 'preapproval', 'subscription_authorized_payment'].includes(type)
+    ) {
+      return NextResponse.json({ received: true })
+    }
 
-    // Notificação de assinatura
-    if (type === 'subscription_preapproval' || type === 'preapproval') {
-      const preapprovalId = data?.id
+    if (!eventId) {
+      return NextResponse.json({ error: 'event.id ausente' }, { status: 400 })
+    }
 
-      if (!preapprovalId) {
-        return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
+    if (!resourceId) {
+      return NextResponse.json({ error: 'resource_id ausente' }, { status: 400 })
+    }
+
+    const supabaseAdmin = createAdminClient()
+    const { data: insertedEvent, error: insertError } = await supabaseAdmin
+      .from('webhook_events')
+      .upsert(
+        {
+          provider: WEBHOOK_PROVIDER,
+          event_id: eventId,
+          event_type: type,
+          resource_id: String(resourceId),
+          resource_type: resourceType,
+          provider_event_created_at: date_created || null,
+          status: 'received',
+          payload: body,
+          error_message: null,
+          processed_at: null,
+        },
+        {
+          onConflict: 'provider,event_id',
+          ignoreDuplicates: true,
+        }
+      )
+      .select('id')
+      .maybeSingle()
+
+    if (insertError) {
+      throw insertError
+    }
+
+    if (!insertedEvent?.id) {
+      logSubEvent('info', 'subscription_webhook_duplicate_skipped', { event_id: eventId })
+      return NextResponse.json({ received: true, duplicate: true })
+    }
+
+    currentEventRowId = insertedEvent.id
+
+    const webhookSecret = process.env.MP_WEBHOOK_SECRET
+    if (!webhookSecret) {
+      throw new Error('subscription_webhook_secret_missing')
+    }
+
+    const isValid = validateMercadoPagoWebhookSignature(
+      xSignature,
+      xRequestId,
+      String(resourceId),
+      webhookSecret
+    )
+
+    if (!isValid) {
+      throw new Error('subscription_webhook_signature_invalid')
+    }
+
+    if (type === 'subscription_authorized_payment') {
+      if (!currentEventRowId) {
+        throw new Error('subscription_webhook_event_row_missing')
       }
 
-      // ── Idempotência ─────────────────────────────────────────
-      const eventId = `sub_${preapprovalId}_${action || type}`
-      currentEventId = eventId
-      const { error: idempErr } = await supabaseAdmin.from('webhook_events').insert({
-        provider: 'mercadopago_subscription',
-        event_id: eventId,
-        event_type: type,
-        status: 'received',
-        payload: body,
-      })
-      if (idempErr?.code === '23505') {
-        logSubEvent('info', 'subscription_webhook_duplicate_skipped', { event_id: eventId })
-        return NextResponse.json({ received: true, duplicate: true })
-      }
-
-      const webhookSecret = process.env.MP_WEBHOOK_SECRET
-      if (!webhookSecret) {
-        logSubEvent('error', 'subscription_webhook_secret_missing', {
-          preapproval_id: preapprovalId,
-        })
-        return NextResponse.json({ error: 'Configuração de segurança ausente' }, { status: 500 })
-      }
-
-      const isValid = validateMercadoPagoWebhookSignature(
-        xSignature,
-        xRequestId,
-        preapprovalId.toString(),
-        webhookSecret
+      await markSubscriptionWebhookProcessed(
+        supabaseAdmin,
+        currentEventRowId,
+        'payment_event_not_authoritative'
       )
 
-      if (!isValid) {
-        logSubEvent('warn', 'subscription_webhook_signature_invalid', {
-          preapproval_id: preapprovalId,
-        })
-        return NextResponse.json({ error: 'Assinatura inválida' }, { status: 401 })
-      }
+      logSubEvent('info', 'subscription_payment_event_recorded', {
+        event_id: eventId,
+        resource_id: resourceId,
+      })
 
-      // Buscar detalhes da assinatura no Mercado Pago
-      const preapprovalData = await preApproval.get({ id: preapprovalId })
+      return NextResponse.json({
+        received: true,
+        ignored: 'payment_event_not_authoritative',
+      })
+    }
 
-      if (!preapprovalData) {
-        return NextResponse.json({ error: 'Assinatura não encontrada no MP' }, { status: 404 })
-      }
+    const preapproval = await fetchPreapprovalWithTimeoutAndRetry(String(resourceId))
+    const { data: subscription, error: subscriptionError } = await supabaseAdmin
+      .from('subscriptions')
+      .select(
+        'id, status, mp_preapproval_id, contract_hash, contracted_monthly_amount, billing_model'
+      )
+      .eq('mp_preapproval_id', preapproval.id)
+      .maybeSingle()
 
-      // Extrair referência externa
-      let externalRef: { restaurant_id?: string; user_id?: string; plan_slug?: string } = {}
-      try {
-        externalRef = JSON.parse(preapprovalData.external_reference || '{}')
-      } catch {
-        console.warn('Não foi possível parsear external_reference')
-      }
+    if (subscriptionError) {
+      throw subscriptionError
+    }
 
-      const mpStatus = preapprovalData.status // authorized | paused | cancelled | pending
+    if (!subscription) {
+      throw new Error('subscription_not_found')
+    }
 
-      // Mapear status do MP para nosso status
-      let ourStatus = 'pending'
-      let shouldSuspend = false
-      let shouldReactivate = false
+    const ownership = validatePreapprovalOwnership(
+      preapproval.externalReference,
+      subscription.billing_model || null
+    )
+    const diagnosticRef = parseExternalReferenceDiagnostic(preapproval.externalReference)
 
-      switch (mpStatus) {
-        case 'authorized':
-          ourStatus = 'active'
-          shouldReactivate = true
-          break
-        case 'paused':
-          ourStatus = 'paused'
-          break
-        case 'cancelled':
-          ourStatus = 'canceled'
-          shouldSuspend = true
-          break
-        case 'pending':
-          ourStatus = 'pending'
-          break
-      }
+    const financialValidation = validatePreapprovalFinancialConsistency({
+      currencyId: preapproval.autoRecurring.currencyId,
+      mpAmount: preapproval.autoRecurring.transactionAmount,
+      contractedAmount:
+        typeof subscription.contracted_monthly_amount === 'number'
+          ? subscription.contracted_monthly_amount
+          : subscription.contracted_monthly_amount != null
+            ? Number(subscription.contracted_monthly_amount)
+            : null,
+      tolerance: 0.01,
+    })
 
-      // Atualizar assinatura no banco
-      const { data: subscription, error: subError } = await supabaseAdmin
+    if (!financialValidation.ok) {
+      await supabaseAdmin
         .from('subscriptions')
         .update({
-          mp_subscription_status: mpStatus,
-          status: ourStatus,
-          mp_payer_id: preapprovalData.payer_id?.toString(),
-          last_payment_date: preapprovalData.last_modified
-            ? new Date(preapprovalData.last_modified)
-            : null,
-          next_payment_date: preapprovalData.next_payment_date
-            ? new Date(preapprovalData.next_payment_date)
-            : null,
-          ...(mpStatus === 'cancelled' ? { canceled_at: new Date() } : {}),
+          last_value_validated_at: new Date().toISOString(),
+          last_value_validation_error: financialValidation.reason,
         })
-        .eq('mp_preapproval_id', preapprovalId)
-        .select('restaurant_id')
-        .single()
+        .eq('id', subscription.id)
 
-      if (subError) {
-        logSubEvent('error', 'subscription_update_failed', {
-          preapproval_id: preapprovalId,
-          error: subError.message,
-        })
-      }
-
-      // Suspender ou reativar restaurante
-      if (subscription?.restaurant_id) {
-        if (shouldSuspend) {
-          await supabaseAdmin.rpc('suspend_restaurant_for_nonpayment', {
-            p_restaurant_id: subscription.restaurant_id,
-          })
-          logSubEvent('info', 'subscription_restaurant_suspended', {
-            restaurant_id: subscription.restaurant_id,
-          })
-        } else if (shouldReactivate) {
-          if (externalRef.plan_slug) {
-            await supabaseAdmin
-              .from('restaurants')
-              .update({ plan_slug: externalRef.plan_slug })
-              .eq('id', subscription.restaurant_id)
-          }
-
-          await supabaseAdmin.rpc('reactivate_restaurant', {
-            p_restaurant_id: subscription.restaurant_id,
-          })
-          logSubEvent('info', 'subscription_restaurant_reactivated', {
-            restaurant_id: subscription.restaurant_id,
-          })
-
-          // ── Comissão de afiliado respeita janela real de aprovação ─────
-          // O webhook não aprova comissão. A liberação acontece no cron
-          // diário após 30 dias completos da indicação.
-          try {
-            const { data: restaurant } = await supabaseAdmin
-              .from('restaurants')
-              .select('tenant_id, origin_sale')
-              .eq('id', subscription.restaurant_id)
-              .single()
-
-            console.log(
-              `[webhook-sub] SALE_TYPE: ${restaurant?.origin_sale || 'unknown'} | restaurant_id: ${subscription.restaurant_id}`
-            )
-
-            // Venda direta do admin -> pula apenas a lógica de comissão de afiliado
-            if (restaurant?.origin_sale === 'admin_direct') {
-              logSubEvent('info', 'subscription_affiliate_commission_skipped_admin_direct', {
-                restaurant_id: subscription.restaurant_id,
-              })
-            } else {
-              const tenantId = restaurant?.tenant_id ?? subscription.restaurant_id
-              if (tenantId) {
-                logSubEvent('info', 'subscription_affiliate_commission_waiting_window', {
-                  tenant_id: tenantId,
-                  approval_window_days: 30,
-                })
-              } else {
-                logSubEvent('warn', 'subscription_affiliate_commission_skipped', { tenantId })
-              }
-            }
-          } catch (commErr) {
-            logSubEvent('warn', 'subscription_affiliate_commission_error', {
-              error: String(commErr),
-            })
-          }
-        }
-
-        await syncFinancialTruthForTenant(supabaseAdmin, {
-          tenantId: subscription.restaurant_id,
-          source: 'subscription',
-          sourceId: String(preapprovalId),
-          lastEventAt: preapprovalData.last_modified || new Date().toISOString(),
-          rawSnapshot: {
-            webhook_type: type,
-            webhook_action: action || null,
-            mp_status: mpStatus,
-            preapproval_id: preapprovalId,
-          },
-        })
-      }
-
-      await markSubscriptionWebhookProcessed(supabaseAdmin, eventId)
-      return NextResponse.json({ success: true, status: ourStatus })
+      throw new Error(financialValidation.reason)
     }
 
-    // Notificação de pagamento de assinatura
-    if (type === 'subscription_authorized_payment') {
-      const paymentId = data?.id
-      logSubEvent('info', 'subscription_payment_received', { payment_id: paymentId })
+    const mapped = mapMercadoPagoSubscriptionStatus({
+      mpStatus: preapproval.status,
+      freeTrialEndDate: preapproval.autoRecurring.freeTrialEndDate,
+      startDate: preapproval.autoRecurring.startDate,
+    })
 
-      // Atualizar last_payment_date e garantir status ativo
-      if (paymentId) {
-        try {
-          // Buscar a subscription que recebeu pagamento (via resource_id = preapproval_id)
-          const resourceId = body.resource_id || body.data?.id
-          if (resourceId) {
-            const { data: sub } = await supabaseAdmin
-              .from('subscriptions')
-              .select('id, restaurant_id')
-              .eq('mp_preapproval_id', String(resourceId))
-              .single()
-
-            if (sub) {
-              await supabaseAdmin
-                .from('subscriptions')
-                .update({
-                  status: 'active',
-                  last_payment_date: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', sub.id)
-
-              // Garantir que restaurante está ativo e não suspenso
-              await supabaseAdmin
-                .from('restaurants')
-                .update({ status_pagamento: 'ativo', suspended: false })
-                .eq('id', sub.restaurant_id)
-
-              logSubEvent('info', 'subscription_payment_processed', {
-                subscription_id: sub.id,
-                restaurant_id: sub.restaurant_id,
-              })
-
-              await syncFinancialTruthForTenant(supabaseAdmin, {
-                tenantId: sub.restaurant_id,
-                source: 'payment',
-                sourceId: String(paymentId),
-                lastEventAt: new Date().toISOString(),
-                rawSnapshot: {
-                  webhook_type: type,
-                  payment_id: paymentId,
-                  payment_status: 'approved',
-                  resource_id: resourceId,
-                },
-              })
-            }
-          }
-        } catch (payErr) {
-          logSubEvent('error', 'subscription_payment_processing_error', {
-            error: String(payErr),
-            payment_id: paymentId,
-          })
-          throw payErr
-        }
+    const { data: rpcResult, error: rpcError } = await supabaseAdmin.rpc(
+      'apply_subscription_webhook_event',
+      {
+        p_mp_preapproval_id: preapproval.id,
+        p_event_id: eventId,
+        p_event_at: preapproval.lastModified || date_created || new Date().toISOString(),
+        p_target_status: mapped.status,
+        p_target_status_rank: mapped.rank,
+        p_mp_subscription_status: preapproval.status,
+        p_contract_hash: diagnosticRef.contractHash,
+        p_contracted_monthly_amount: preapproval.autoRecurring.transactionAmount,
+        p_payload: body,
+        p_trial_ends_at: preapproval.autoRecurring.freeTrialEndDate,
+        p_last_payment_date: preapproval.lastModified,
+        p_next_payment_date: preapproval.nextPaymentDate,
       }
+    )
 
-      return NextResponse.json({ success: true, payment_id: paymentId })
+    if (rpcError) {
+      throw rpcError
     }
 
-    return NextResponse.json({ received: true })
+    const rpcRow = Array.isArray(rpcResult) ? rpcResult[0] : rpcResult
+    if (rpcRow?.ignored) {
+      if (!currentEventRowId) {
+        throw new Error('subscription_webhook_event_row_missing')
+      }
+
+      await markSubscriptionWebhookProcessed(
+        supabaseAdmin,
+        currentEventRowId,
+        rpcRow.ignored_reason || 'ignored'
+      )
+
+      logSubEvent('info', 'subscription_webhook_ignored', {
+        event_id: eventId,
+        resource_id: resourceId,
+        ignored_reason: rpcRow.ignored_reason,
+        ownership_kind: ownership.kind,
+      })
+
+      return NextResponse.json({ received: true, ignored: rpcRow.ignored_reason })
+    }
+
+    if (!currentEventRowId) {
+      throw new Error('subscription_webhook_event_row_missing')
+    }
+
+    await markSubscriptionWebhookProcessed(supabaseAdmin, currentEventRowId)
+    logSubEvent('info', 'subscription_webhook_processed', {
+      event_id: eventId,
+      resource_id: resourceId,
+      status: mapped.status,
+      ownership_kind: ownership.kind,
+    })
+
+    return NextResponse.json({ success: true, status: mapped.status })
   } catch (error) {
-    if (currentEventId) {
+    if (currentEventRowId) {
       await markSubscriptionWebhookFailed(
-        getSupabaseAdmin(),
-        currentEventId,
+        createAdminClient(),
+        currentEventRowId,
         error instanceof Error ? error.message : String(error)
       ).catch(() => undefined)
     }

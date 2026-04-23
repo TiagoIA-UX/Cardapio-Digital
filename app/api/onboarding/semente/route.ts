@@ -7,7 +7,7 @@ import { createOperationTracker } from '@/lib/shared/forgeops/operation-tracker'
 import { getRequestSiteUrl } from '@/lib/shared/site-url'
 import { slugifyRestaurantName } from '@/lib/domains/core/restaurant-onboarding'
 import { getRestaurantTemplateConfig } from '@/lib/domains/marketing/templates-config'
-import { createMercadoPagoPreferenceClient } from '@/lib/domains/core/mercadopago'
+import { createValidatedMercadoPagoPreferenceClient } from '@/lib/domains/core/mercadopago'
 import {
   buildOnboardingOrderMetadata,
   createCheckoutNumber,
@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
 
     const siteUrl = getRequestSiteUrl(request)
     const notificationUrl = `${siteUrl}/api/webhook/mercadopago`
-    const preferenceClient = createMercadoPagoPreferenceClient(10000)
+    const preferenceClient = await createValidatedMercadoPagoPreferenceClient(10000)
     const preference = await preferenceClient.create({
       body: {
         items: [
@@ -236,6 +236,7 @@ export async function POST(request: NextRequest) {
     const metadata = buildOnboardingOrderMetadata({
       templateSlug: template.slug,
       planSlug: 'self-service',
+      capacityPlanSlug: 'semente',
       subscriptionPlanSlug: 'semente',
       customerName,
       customerEmail,

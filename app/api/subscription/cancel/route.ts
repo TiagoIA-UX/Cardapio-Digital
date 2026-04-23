@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getMercadoPagoAccessToken } from '@/lib/domains/core/mercadopago'
+import { getValidatedMercadoPagoAccessToken } from '@/lib/domains/core/mercadopago'
 import {
   formatAlreadyCancelledRenewalMessage,
   formatCancelledRenewalSuccessMessage,
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 
     // ── Agendar encerramento da recorrência no fim do ciclo ───
     if (subscription.mp_preapproval_id && accessUntil) {
-      const mpToken = getMercadoPagoAccessToken()
+      const mpToken = await getValidatedMercadoPagoAccessToken()
       const mpResponse = await fetch(
         `https://api.mercadopago.com/preapproval/${subscription.mp_preapproval_id}`,
         {

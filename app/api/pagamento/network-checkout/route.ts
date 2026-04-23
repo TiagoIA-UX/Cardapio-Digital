@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/shared/supabase/server'
-import { createMercadoPagoPreferenceClient } from '@/lib/domains/core/mercadopago'
+import { createValidatedMercadoPagoPreferenceClient } from '@/lib/domains/core/mercadopago'
 import {
   calculateNetworkPrice,
   validateBranchEmails,
@@ -125,10 +125,10 @@ export async function POST(request: NextRequest) {
   const totalPrice = pricing.totalMonthly
 
   // Create Mercado Pago preference
-  const mercadopago = createMercadoPagoPreferenceClient()
   const baseUrl = getSiteUrl()
 
   try {
+    const mercadopago = await createValidatedMercadoPagoPreferenceClient()
     const preference = await mercadopago.create({
       body: {
         items: [

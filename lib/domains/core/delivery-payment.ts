@@ -9,7 +9,7 @@
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { createDomainLogger } from '@/lib/shared/domain-logger'
 import {
-  createMercadoPagoPreferenceClient,
+  createValidatedMercadoPagoPreferenceClient,
   getMercadoPagoAccessToken,
 } from '@/lib/domains/core/mercadopago'
 import { isServerSandboxMode } from '@/lib/domains/core/payment-mode'
@@ -123,7 +123,7 @@ export async function createDeliveryCheckout(
 
   // 4. Criar Preference no Mercado Pago
   const isSandbox = isServerSandboxMode()
-  const preference = createMercadoPagoPreferenceClient()
+  const preference = await createValidatedMercadoPagoPreferenceClient()
 
   const externalReference = `delivery:${ord.id}`
   const backUrls = {

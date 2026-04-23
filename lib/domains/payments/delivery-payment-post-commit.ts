@@ -1,6 +1,6 @@
 import {
-  createMercadoPagoPaymentClient,
-  getMercadoPagoAccessToken,
+  createValidatedMercadoPagoPaymentClient,
+  getValidatedMercadoPagoAccessToken,
 } from '@/lib/domains/core/mercadopago'
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import { createDomainLogger } from '@/lib/shared/domain-logger'
@@ -564,7 +564,7 @@ export async function processDeliveryPaymentPostCommitQueue(input?: { limit?: nu
 }
 
 export async function fetchMercadoPagoPaymentByExternalReference(externalReference: string) {
-  const accessToken = getMercadoPagoAccessToken()
+  const accessToken = await getValidatedMercadoPagoAccessToken()
   const params = new URLSearchParams({
     external_reference: externalReference,
     sort: 'date_created',
@@ -593,7 +593,7 @@ export async function fetchMercadoPagoPaymentByExternalReference(externalReferen
     return null
   }
 
-  const paymentClient = createMercadoPagoPaymentClient()
+  const paymentClient = await createValidatedMercadoPagoPaymentClient()
   if (typeof result.id === 'number' || typeof result.id === 'string') {
     return paymentClient.get({ id: result.id })
   }

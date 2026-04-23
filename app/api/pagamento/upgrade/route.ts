@@ -3,7 +3,7 @@ import { createClient as createServerClient } from '@/lib/shared/supabase/server
 import { createAdminClient } from '@/lib/shared/supabase/admin'
 import {
   createMercadoPagoPreApprovalClient,
-  getMercadoPagoAccessToken,
+  getValidatedMercadoPagoAccessToken,
 } from '@/lib/domains/core/mercadopago'
 import { getSiteUrl } from '@/lib/shared/site-url'
 import { getRateLimitIdentifier, withRateLimit } from '@/lib/shared/rate-limit'
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
 
       // Usar a API do MP para atualizar o valor da assinatura existente
       // PUT /preapproval/{id} com auto_recurring.transaction_amount + currency_id
-      const mpToken = getMercadoPagoAccessToken()
+      const mpToken = await getValidatedMercadoPagoAccessToken()
       const updateRes = await fetch(
         `https://api.mercadopago.com/preapproval/${subscription.mp_preapproval_id}`,
         {
