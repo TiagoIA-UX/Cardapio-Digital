@@ -63,7 +63,13 @@ export function getMercadoPagoTestAccounts() {
 }
 
 function getConfiguredMercadoPagoSellerId() {
-  return readEnvValue(['MERCADO_PAGO_TEST_SELLER_ID'], 'MERCADO_PAGO_TEST_SELLER_ID')
+  if (!isServerSandboxMode()) {
+    return readEnvValue(['MERCADO_PAGO_SELLER_ID'], 'MERCADO_PAGO_SELLER_ID')
+  }
+  return readEnvValue(
+    ['MERCADO_PAGO_TEST_SELLER_ID', 'MERCADO_PAGO_SELLER_ID'],
+    'MERCADO_PAGO_TEST_SELLER_ID'
+  )
 }
 
 async function fetchMercadoPagoOwnerIdentity(): Promise<MercadoPagoOwnerIdentity> {
